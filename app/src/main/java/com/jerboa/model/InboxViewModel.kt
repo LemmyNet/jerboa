@@ -12,13 +12,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CommentReplyResponse
 import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPersonMentionsResponse
@@ -81,11 +81,8 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         mutableStateOf(ApiState.Empty)
 
     private var pageReplies by mutableIntStateOf(1)
-        private set
     private var pageMentions by mutableIntStateOf(1)
-        private set
     private var pageMessages by mutableIntStateOf(1)
-        private set
     var unreadOnly by mutableStateOf(true)
         private set
 

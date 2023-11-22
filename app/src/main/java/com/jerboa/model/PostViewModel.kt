@@ -14,13 +14,14 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
 import com.jerboa.appendData
+import com.jerboa.datatypes.CommentSortType
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CommentId
 import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
@@ -30,7 +31,6 @@ import com.jerboa.datatypes.types.GetComments
 import com.jerboa.datatypes.types.GetCommentsResponse
 import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPostResponse
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView

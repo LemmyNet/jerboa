@@ -14,6 +14,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
@@ -32,7 +33,6 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
@@ -89,15 +89,15 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         page = 1
     }
 
-    fun nextPage() {
+    private fun nextPage() {
         page += 1
     }
 
-    fun prevPage() {
+    private fun prevPage() {
         page -= 1
     }
 
-    fun updateSavedOnly(savedOnly: Boolean) {
+    private fun updateSavedOnly(savedOnly: Boolean) {
         this.savedOnly = savedOnly
     }
 

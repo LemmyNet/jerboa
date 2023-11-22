@@ -23,9 +23,9 @@ import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.SaveUserSettings
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel

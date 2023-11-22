@@ -3,6 +3,7 @@ package com.jerboa.api
 import android.content.Context
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
+import com.jerboa.datatypes.PictrsImages
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
 import com.jerboa.toastException

@@ -1,6 +1,8 @@
 package com.jerboa.datatypes.types
 
 import android.os.Parcelable
+import com.jerboa.datatypes.CommentSortType
+import com.jerboa.datatypes.ListingType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

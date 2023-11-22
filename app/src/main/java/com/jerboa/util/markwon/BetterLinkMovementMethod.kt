@@ -251,7 +251,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
      *
      * @return The touched ClickableSpan or null.
      */
-    protected fun findClickableSpanUnderTouch(
+    private fun findClickableSpanUnderTouch(
         textView: TextView,
         text: Spannable,
         event: MotionEvent,
@@ -294,7 +294,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
     /**
      * Adds a background color span at <var>clickableSpan</var>'s location.
      */
-    protected fun highlightUrl(
+    private fun highlightUrl(
         textView: TextView,
         clickableSpan: ClickableSpan?,
         text: Spannable,
@@ -326,7 +326,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
     }
 
     // This is the crude fix, increase timeout
-    protected fun startTimerForRegisteringLongClick(
+    private fun startTimerForRegisteringLongClick(
         textView: TextView,
         longClickListener: LongPressTimer.OnTimerReachedListener,
     ) {
@@ -338,14 +338,14 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
     /**
      * Remove the long-press detection timer.
      */
-    protected fun removeLongPressCallback(textView: TextView) {
+    private fun removeLongPressCallback(textView: TextView) {
         if (ongoingLongPressTimer != null) {
             textView.removeCallbacks(ongoingLongPressTimer)
             ongoingLongPressTimer = null
         }
     }
 
-    protected fun dispatchUrlClick(
+    private fun dispatchUrlClick(
         textView: TextView,
         clickableSpan: ClickableSpan,
     ) {

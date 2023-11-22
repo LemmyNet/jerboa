@@ -80,7 +80,7 @@
     <string name="community_icon">Community icon</string>
     <string name="community_joined">Joined</string>
     <string name="community_link_users_month">%1$s users / month</string>
-    <string name="community_list_search">Search...</string>
+    <string name="community_list_search">Search…</string>
     <string name="community_pending">Pending</string>
     <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
@@ -338,7 +338,7 @@
     <string name="mark_as_read_on_scroll">Mark as read on scroll</string>
     <string name="actionbar_info_header">%1$s@%2$s Info</string>
     <string name="person_profile_dm_person">Send a message</string>
-    <string name="private_message_failed">Sending message failed, retrying...</string>
+    <string name="private_message_failed">Sending message failed, retrying…</string>
     <string name="private_message_placeholder">Type your message here</string>
     <string name="private_message_success">Message sent</string>
     <string name="image_failed_loading">Failed loading the image, tap to retry.</string>
@@ -377,7 +377,7 @@
     <string name="blocked_community_toast">%1$s is blocked</string>
     <string name="unblocked_community_toast">%1$s is unblocked</string>
     <string name="community_block_toast_failure">Failed to (un)block this community</string>
-    <string name="saving_media">Saving media...</string>
+    <string name="saving_media">Saving media…</string>
     <string name="saved_media">Saved media</string>
     <string name="share_image">Share image</string>
     <string name="save_image">Save image</string>

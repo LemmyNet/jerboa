@@ -14,7 +14,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.datatypes.types.GetSiteResponse
@@ -24,8 +23,6 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import io.github.z4kn4fein.semver.Version
-import io.github.z4kn4fein.semver.toVersion
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -153,13 +150,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
-        }
-    }
-
-    fun siteVersion(): Version {
-        return when (val res = siteRes) {
-            is ApiState.Success -> res.data.version.toVersion()
-            else -> MINIMUM_API_VERSION
         }
     }
 

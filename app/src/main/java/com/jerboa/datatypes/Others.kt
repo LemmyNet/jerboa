@@ -1,4 +1,4 @@
-package com.jerboa.datatypes.types
+package com.jerboa.datatypes
 
 import android.os.Parcelable
 import androidx.annotation.StringRes

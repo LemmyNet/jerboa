@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.R
-import com.jerboa.datatypes.types.CommentSortType
-import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.CommentSortType
+import com.jerboa.datatypes.SortType
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.ui.theme.Shapes

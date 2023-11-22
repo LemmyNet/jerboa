@@ -10,7 +10,6 @@ val MEDIUM_PADDING = 8.dp
 val LARGE_PADDING = 12.dp
 val XL_PADDING = 16.dp
 val XXL_PADDING = 20.dp
-val XXXL_PADDING = 24.dp
 
 val ICON_SIZE = 20.dp
 val MEDIUM_ICON_SIZE = 48.dp
@@ -22,9 +21,6 @@ val POST_LINK_PIC_SIZE = 70.dp
 val THUMBNAIL_CARET_SIZE = 10.dp
 
 val DRAWER_ITEM_SPACING = 24.dp
-
-val APP_BAR_ELEVATION = 2.dp
-val BODY_ELEVATION = 6.dp
 
 // TODO remove all DPs from code, put here.
 

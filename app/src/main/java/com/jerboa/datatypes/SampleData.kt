@@ -8,7 +8,6 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityAggregates
 import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.LocalSite
 import com.jerboa.datatypes.types.LocalSiteRateLimit
 import com.jerboa.datatypes.types.Person
@@ -21,11 +20,9 @@ import com.jerboa.datatypes.types.PostAggregates
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.datatypes.types.RegistrationMode
 import com.jerboa.datatypes.types.Site
 import com.jerboa.datatypes.types.SiteAggregates
 import com.jerboa.datatypes.types.SiteView
-import com.jerboa.datatypes.types.SubscribedType
 
 val samplePost =
     Post(

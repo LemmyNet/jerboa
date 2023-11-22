@@ -116,9 +116,6 @@ class JerboaAppState(
 
     fun toHome() = navController.navigate(Route.HOME) { popUpTo(navController.graph.id) }
 
-    // TODO why is this unused?
-    fun toInbox() = navController.navigate(Route.INBOX)
-
     fun toCommunity(id: Int) {
         navController.navigate(Route.CommunityFromIdArgs.makeRoute(id = "$id"))
     }
@@ -183,7 +180,7 @@ class JerboaAppState(
      *
      * When you want to pass a [Parcelable] to another screen/activity
      */
-    fun sendReturnForwards(
+    private fun sendReturnForwards(
         key: String,
         value: Parcelable,
     ) {

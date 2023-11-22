@@ -1,6 +1,7 @@
 package com.jerboa.datatypes.types
 
 import android.os.Parcelable
+import com.jerboa.datatypes.PostFeatureType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

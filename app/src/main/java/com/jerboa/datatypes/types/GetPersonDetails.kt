@@ -1,6 +1,7 @@
 package com.jerboa.datatypes.types
 
 import android.os.Parcelable
+import com.jerboa.datatypes.SortType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

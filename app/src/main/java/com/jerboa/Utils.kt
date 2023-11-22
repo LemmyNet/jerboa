@@ -8,14 +8,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -50,7 +47,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
-import arrow.core.compareTo
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.google.gson.Gson
@@ -58,6 +54,8 @@ import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.CommentSortType
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
@@ -861,20 +859,6 @@ fun imageInputStreamFromUri(
     return ctx.contentResolver.openInputStream(uri)!!
 }
 
-fun decodeUriToBitmap(
-    ctx: Context,
-    uri: Uri,
-): Bitmap? {
-    Log.d("jerboa", "decodeUriToBitmap INPUT: $uri")
-    return if (SDK_INT < 28) {
-        @Suppress("DEPRECATION")
-        MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
-    } else {
-        val source = ImageDecoder.createSource(ctx.contentResolver, uri)
-        ImageDecoder.decodeBitmap(source)
-    }
-}
-
 fun scrollToTop(
     scope: CoroutineScope,
     listState: LazyListState,
@@ -1114,7 +1098,7 @@ fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
 ): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.getResources().getDisplayMetrics()).toInt()
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.resources.displayMetrics).toInt()
 }
 
 /**
@@ -1575,11 +1559,8 @@ fun <I, O> ComponentActivity.registerActivityResultLauncher(
 fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
-    return if (snapshot != null) {
-        snapshot.data.toFile().inputStream()
-    } else {
-        API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
-    }
+    return snapshot?.data?.toFile()?.inputStream()
+        ?: API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
 }
 
 val videoRgx =

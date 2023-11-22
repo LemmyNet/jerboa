@@ -42,7 +42,7 @@
     <string name="input_fields_ok">OK</string>
     <string name="pictrs_image_upload_image">Wstaw Obraz</string>
     <string name="time_ago_ago">%1$s %2$s temu</string>
-    <string name="community_list_search">Wyszukaj...</string>
+    <string name="community_list_search">Wyszukaj…</string>
     <string name="community_users_month">%1$s użytkowników / miesiąc</string>
     <string name="community_joined">Dołączono</string>
     <string name="community_subscribe">Subskrybuj</string>

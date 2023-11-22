@@ -45,7 +45,7 @@
     <string name="input_fields_ok">OK</string>
     <string name="pictrs_image_upload_image">Subir Imagen</string>
     <string name="time_ago_ago">%1$s hace %2$s</string>
-    <string name="community_list_search">Buscar...</string>
+    <string name="community_list_search">Buscar…</string>
     <string name="community_users_month">%1$s usuarios / mes</string>
     <string name="community_joined">Unidos</string>
     <string name="community_subscribe">Suscribir</string>
@@ -258,7 +258,7 @@
     <string name="look_and_feel_show_action_bar_for_comments">Mostrar barra de acción por defecto en los comentarios</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Mostrar flechas de votos en modo de vista de lista</string>
     <string name="saved_image">Imagen guardada</string>
-    <string name="saving_image">Guardando imagen...</string>
+    <string name="saving_image">Guardando imagen…</string>
     <string name="permission_denied">Permiso denegado</string>
     <string name="inbox_activity_replies">Respuestas</string>
     <string name="inbox_activity_mentions">Menciones</string>

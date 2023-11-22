@@ -33,9 +33,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.datatypes.types.PersonView
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.feat.openMatrix
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer

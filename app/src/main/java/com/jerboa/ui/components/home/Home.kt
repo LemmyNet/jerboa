@@ -40,8 +40,8 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.ui.components.common.MenuItem

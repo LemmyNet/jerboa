@@ -2,6 +2,8 @@ package com.jerboa.datatypes.types
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.RegistrationMode
 import kotlinx.parcelize.Parcelize
 
 @Immutable

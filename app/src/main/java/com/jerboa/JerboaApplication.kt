@@ -14,7 +14,7 @@ import com.jerboa.util.downloadprogress.DownloadProgress
 class JerboaApplication : Application(), ImageLoaderFactory {
     lateinit var container: AppDBContainer
     lateinit var imageViewerLoader: ImageLoader
-    lateinit var imageLoader: ImageLoader
+    private lateinit var imageLoader: ImageLoader
     lateinit var imageGifLoader: ImageLoader
 
     override fun onCreate() {

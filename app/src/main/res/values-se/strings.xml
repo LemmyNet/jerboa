@@ -42,7 +42,7 @@
     <string name="input_fields_ok">OK</string>
     <string name="pictrs_image_upload_image">Ladda upp bild</string>
     <string name="time_ago_ago">%1$s %2$s sedan</string>
-    <string name="community_list_search">Sök...</string>
+    <string name="community_list_search">Sök…</string>
     <string name="community_users_month">%1$s användare / månad</string>
     <string name="community_joined">Gick med i</string>
     <string name="community_subscribe">Gå med i</string>

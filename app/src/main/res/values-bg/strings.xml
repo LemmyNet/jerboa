@@ -80,7 +80,7 @@
     <string name="community_icon">Иконка на общността</string>
     <string name="community_joined">Присъединен</string>
     <string name="community_link_users_month">%1$s потребители / месец</string>
-    <string name="community_list_search">Търсене...</string>
+    <string name="community_list_search">Търсене…</string>
     <string name="community_pending">В очакване</string>
     <string name="community_sortBy">Сортиране по</string>
     <string name="community_subscribe">Абониране</string>
@@ -337,7 +337,7 @@
     <string name="mark_as_read_on_scroll">Маркиране като прочетено при превъртане</string>
     <string name="actionbar_info_header">%1$s@%2$s Инфо</string>
     <string name="person_profile_dm_person">Изпращане на съобщение</string>
-    <string name="private_message_failed">Неуспешно изпращане на съобщение, повторен опит...</string>
+    <string name="private_message_failed">Неуспешно изпращане на съобщение, повторен опит…</string>
     <string name="private_message_placeholder">Въведете вашето съобщение тук</string>
     <string name="private_message_success">Съобщението изпратено</string>
     <string name="image_failed_loading">Неуспешно зареждане на изображението, докоснете за повторен опит.</string>
@@ -376,7 +376,7 @@
     <string name="blocked_community_toast">%1$s е блокиран</string>
     <string name="unblocked_community_toast">%1$s е отблокиран</string>
     <string name="community_block_toast_failure">Неуспешно (от)блокиране на тази общност</string>
-    <string name="saving_media">Запазване на мултимедията...</string>
+    <string name="saving_media">Запазване на мултимедията…</string>
     <string name="saved_media">Запазена мултимедия</string>
     <string name="share_image">Споделяне на изображението</string>
     <string name="save_image">Запазване на изображението</string>

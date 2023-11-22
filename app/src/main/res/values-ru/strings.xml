@@ -20,13 +20,13 @@
     <string name="community_icon">Иконка сообщества</string>
     <string name="community_joined">Вы присоединились</string>
     <string name="community_link_users_month">%1$s пользователей / месяц</string>
-    <string name="community_list_search">Поиск...</string>
+    <string name="community_list_search">Поиск…</string>
     <string name="community_pending">Запрошено</string>
     <string name="community_sortBy">Отсортировать по</string>
     <string name="community_subscribe">Подписаться</string>
     <string name="community_users_month">%1$s пользователей / месяц</string>
     <string name="createPost_selectCommunity">Выберите сообщество из списка</string>
-    <string name="create_post_a_title_here">заголовок тут...</string>
+    <string name="create_post_a_title_here">заголовок тут…</string>
     <string name="create_post_community">Сообщество</string>
     <string name="create_post_copy_suggested_title">скопировать предложенный заголовок: %1$s</string>
     <string name="create_post_create_post">Создать пост</string>
