@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.TextView
 import android.widget.Toast
@@ -29,8 +28,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
 import coil.Coil
-import com.jerboa.api.API
-import com.jerboa.api.ApiState
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
@@ -50,7 +47,6 @@ import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
-import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
@@ -680,8 +676,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-
 // TODO investige resource leaks not sure if caused by this or already present
-//W  A resource failed to call end.
-//2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().
-//2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().
+// W  A resource failed to call end.
+// 2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().
+// 2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().

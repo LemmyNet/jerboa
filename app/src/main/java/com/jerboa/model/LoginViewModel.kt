@@ -31,7 +31,6 @@ class LoginViewModel : ViewModel() {
         siteViewModel: SiteViewModel,
         ctx: Context,
     ) {
-
         viewModelScope.launch {
             loading = true
             try {
@@ -41,7 +40,7 @@ class LoginViewModel : ViewModel() {
                     throw Exception(ctx.getString(R.string.login_view_model_is_not_a_lemmy_instance, instance))
                 }
 
-                val api = API.createTempInstance(instance)
+                val api = API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
                 val resp = api.login(form = form).getOrThrow()
                 api.auth = resp.jwt
                 API.setLemmyInstance(api)

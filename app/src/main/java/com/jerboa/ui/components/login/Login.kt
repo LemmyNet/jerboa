@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
-import it.vercruysse.lemmyapi.v0x19.datatypes.Login
 import com.jerboa.ui.components.common.onAutofill
+import it.vercruysse.lemmyapi.v0x19.datatypes.Login
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -266,7 +266,7 @@ fun LoginForm(
 @Composable
 fun LoginFormPreview() {
     LoginForm(
-        onClickLogin = { _: Login, _: String -> }
+        onClickLogin = { _: Login, _: String -> },
     )
 }
 

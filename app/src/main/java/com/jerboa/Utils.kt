@@ -58,12 +58,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.inbox.InboxTab
-import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
-import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -88,7 +83,6 @@ val gson = Gson()
 
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
-
 
 // TODO remove this
 
@@ -1122,7 +1116,6 @@ fun convertSpToPx(
     return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
 }
 
-
 fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
     updated: PrivateMessageView,
@@ -1560,4 +1553,3 @@ fun String.toHttps(): String {
         this
     }
 }
-

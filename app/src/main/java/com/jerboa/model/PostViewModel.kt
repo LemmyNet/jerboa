@@ -54,9 +54,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         this.sortType = sortType
     }
 
-    fun getData(
-        state: ApiState<GetPostResponse> = ApiState.Loading,
-    ) {
+    fun getData(state: ApiState<GetPostResponse> = ApiState.Loading) {
         viewModelScope.launch {
             // Set the commentId for the right case
             val postForm =
@@ -95,9 +93,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         return id.isRight()
     }
 
-    fun fetchMoreChildren(
-        commentView: CommentView,
-    ) {
+    fun fetchMoreChildren(commentView: CommentView) {
         viewModelScope.launch {
             val existing = commentsRes
             when (existing) {
@@ -140,7 +136,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             // TODO same stuff
             when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
-                   // updateComment(likeRes.data.comment_view)
+                    // updateComment(likeRes.data.comment_view)
                 }
 
                 else -> {}

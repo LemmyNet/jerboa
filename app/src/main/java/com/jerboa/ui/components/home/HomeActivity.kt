@@ -39,14 +39,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -70,6 +62,14 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -274,7 +274,6 @@ fun MainPostListingsContent(
                                     currentVote = postView.my_vote,
                                     voteType = VoteType.Upvote,
                                 ),
-                      
                         ),
                     )
                 }
@@ -295,7 +294,6 @@ fun MainPostListingsContent(
                                     currentVote = postView.my_vote,
                                     voteType = VoteType.Downvote,
                                 ),
-                      
                         ),
                     )
                 }
@@ -315,7 +313,6 @@ fun MainPostListingsContent(
                         SavePost(
                             post_id = postView.post.id,
                             save = !postView.saved,
-                      
                         ),
                     )
                 }
@@ -331,7 +328,6 @@ fun MainPostListingsContent(
                     homeViewModel.blockCommunity(
                         BlockCommunity(
                             community_id = community.id,
-                      
                             block = true,
                         ),
                         ctx = ctx,
@@ -350,7 +346,6 @@ fun MainPostListingsContent(
                         BlockPerson(
                             person_id = creator.id,
                             block = true,
-                      
                         ),
                         ctx = ctx,
                     )
@@ -373,7 +368,6 @@ fun MainPostListingsContent(
                         DeletePost(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
-                      
                         ),
                     )
                 }

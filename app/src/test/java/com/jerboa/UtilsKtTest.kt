@@ -127,7 +127,6 @@ class UtilsKtTest {
         assertSame("url", validateUrl(ctx, "https://example.com").label)
     }
 
-
     @Test
     fun testIsImage() {
         assertTrue(isImage("http://example.com/test.jpg"))

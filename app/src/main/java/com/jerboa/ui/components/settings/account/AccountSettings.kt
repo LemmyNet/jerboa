@@ -1,8 +1,5 @@
 package com.jerboa.ui.components.settings.account
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,18 +24,16 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.data
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
-import com.jerboa.startActivitySafe
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
-import java.io.InputStream
 
 @Composable
 fun SettingsTextField(
@@ -104,7 +99,6 @@ fun SettingsForm(
         return
     }
 
-
     val luv =
         when (val siteRes = siteViewModel.siteRes) {
             is ApiState.Success -> siteRes.data.my_user?.local_user_view
@@ -147,7 +141,6 @@ fun SettingsForm(
 //    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
     val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.data.shortForm) } }
 
-
     // TODO all this stuff
 
     siteViewModel.saveUserSettings =
@@ -166,13 +159,13 @@ fun SettingsForm(
             show_bot_accounts = showBotAccount.value,
             show_nsfw = showNsfw.value,
             default_listing_type = ListingType.entries[defaultListingType.value],
-       //     show_new_post_notifs = showNewPostNotifs.value,
+            //     show_new_post_notifs = showNewPostNotifs.value,
             show_read_posts = showReadPosts.value,
             theme = theme,
             show_scores = showScores.value,
             discussion_languages = null,
             // True -> generates a new 2FA token, False -> removes current, null -> do nothing
-          //  generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
+            //  generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
         )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
     var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
@@ -347,5 +340,3 @@ fun SettingsForm(
 //        }
     }
 }
-
-

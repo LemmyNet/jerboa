@@ -16,7 +16,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentReport
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostReport
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportResponse
-import com.jerboa.db.entity.Account
 import kotlinx.coroutines.launch
 
 class CreateReportViewModel : ViewModel() {
@@ -72,7 +71,7 @@ class CreateReportViewModel : ViewModel() {
                 )
 
             postReportRes = ApiState.Loading
-            postReportRes =  API.getInstance().createPostReport(form).toApiState()
+            postReportRes = API.getInstance().createPostReport(form).toApiState()
 
             val message =
                 when (val res = postReportRes) {

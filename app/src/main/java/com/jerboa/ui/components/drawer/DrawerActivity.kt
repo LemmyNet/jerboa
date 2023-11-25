@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.model.AccountViewModel
@@ -17,6 +16,7 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.db.repository.AccountRepository

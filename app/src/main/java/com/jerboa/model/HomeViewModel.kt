@@ -253,7 +253,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
             when (val markRes = API.getInstance().markPostAsRead(form).toApiState()) {
                 is ApiState.Success -> {
                     // TODO same here why unit?
-                    //updatePost(markRes.data.post_view)
+                    // updatePost(markRes.data.post_view)
                 }
 
                 else -> {}

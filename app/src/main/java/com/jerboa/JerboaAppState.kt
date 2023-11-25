@@ -10,7 +10,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.feat.BlurTypes
 import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -254,9 +253,8 @@ class JerboaAppState(
         return rememberSaveable {
             Json.decodeFromString<D>(
                 navController.previousBackStackEntry!!.savedStateHandle.get<String>(key)
-                    ?: throw IllegalStateException("This route doesn't contain this key `$key`")
+                    ?: throw IllegalStateException("This route doesn't contain this key `$key`"),
             )
-
         }
     }
 

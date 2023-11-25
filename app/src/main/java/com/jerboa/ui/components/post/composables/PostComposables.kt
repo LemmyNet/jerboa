@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.InputField
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage
@@ -45,6 +44,7 @@ import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 
 @Composable
 fun CreateEditPostBody(

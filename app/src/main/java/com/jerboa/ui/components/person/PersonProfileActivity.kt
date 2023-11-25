@@ -50,19 +50,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -94,6 +81,19 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -211,7 +211,6 @@ fun PersonProfileActivity(
                                     BlockPerson(
                                         person_id = person.id,
                                         block = true,
-                                  
                                     ),
                                     ctx,
                                 )
@@ -469,7 +468,6 @@ fun UserTabs(
                                                             pv.my_vote,
                                                             VoteType.Upvote,
                                                         ),
-                                              
                                                 ),
                                             )
                                         }
@@ -490,7 +488,6 @@ fun UserTabs(
                                                             pv.my_vote,
                                                             VoteType.Downvote,
                                                         ),
-                                              
                                                 ),
                                             )
                                         }
@@ -510,7 +507,6 @@ fun UserTabs(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                              
                                                 ),
                                             )
                                         }
@@ -532,7 +528,6 @@ fun UserTabs(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
-                                              
                                                 ),
                                             )
                                         }
@@ -556,7 +551,6 @@ fun UserTabs(
                                                 BlockCommunity(
                                                     community_id = community.id,
                                                     block = true,
-                                              
                                                 ),
                                                 ctx,
                                             )
@@ -574,7 +568,6 @@ fun UserTabs(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                              
                                                 ),
                                                 ctx = ctx,
                                             )
@@ -710,7 +703,6 @@ fun UserTabs(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Upvote),
-
                                                 ),
                                             )
                                         }

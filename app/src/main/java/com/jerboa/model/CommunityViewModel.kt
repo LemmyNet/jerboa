@@ -43,7 +43,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -52,7 +52,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
@@ -94,9 +94,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
         }
     }
 
-    fun appendPosts(
-        id: CommunityId,
-    ) {
+    fun appendPosts(id: CommunityId) {
         viewModelScope.launch {
             val oldRes = postsRes
             postsRes =
@@ -226,7 +224,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                                 ApiState.Success(
                                     existing.data.copy(
                                         community_view =
-                                        blockCommunity.data.community_view,
+                                            blockCommunity.data.community_view,
                                     ),
                                 )
                             communityRes = newRes
@@ -272,11 +270,11 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
             markPostRes = ApiState.Loading
             // TODO same stuff
             API.getInstance().markPostAsRead(form).toApiState()
-         ///   markPostRes = API.getInstance().markPostAsRead(form).toApiState()
+            // /   markPostRes = API.getInstance().markPostAsRead(form).toApiState()
 
             when (val markRes = markPostRes) {
                 is ApiState.Success -> {
-                 //   updatePost(markRes.data.post_view)
+                    //   updatePost(markRes.data.post_view)
                 }
 
                 else -> {}
@@ -293,19 +291,19 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
         this.getCommunity(
             form =
-            GetCommunity(
-                id = communityId,
-                name = communityName,
-            ),
+                GetCommunity(
+                    id = communityId,
+                    name = communityName,
+                ),
         )
         this.getPosts(
             form =
-            GetPosts(
-                community_id = communityId,
-                community_name = communityName,
-                page = this.page,
-                sort = this.sortType,
-            ),
+                GetPosts(
+                    community_id = communityId,
+                    community_name = communityName,
+                    page = this.page,
+                    sort = this.sortType,
+                ),
         )
     }
 

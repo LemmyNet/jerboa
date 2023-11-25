@@ -24,15 +24,15 @@ import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.isMedia
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

@@ -17,8 +17,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.EditPost
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
@@ -29,7 +27,8 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
-import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
+import it.vercruysse.lemmyapi.v0x19.datatypes.EditPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.launch
 
 object PostEditReturn {
@@ -147,13 +146,13 @@ fun onSubmitClick(
 
     postEditViewModel.editPost(
         form =
-        EditPost(
-            post_id = postId,
-            name = nameOut,
-            url = urlOut,
-            body = bodyOut,
-            nsfw = isNsfw,
-        ),
+            EditPost(
+                post_id = postId,
+                name = nameOut,
+                url = urlOut,
+                body = bodyOut,
+                nsfw = isNsfw,
+            ),
     ) { postView ->
         appState.apply {
             addReturn(PostEditReturn.POST_VIEW, postView)

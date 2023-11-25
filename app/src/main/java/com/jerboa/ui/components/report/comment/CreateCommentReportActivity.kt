@@ -16,13 +16,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 
 @Composable
 fun CreateCommentReportActivity(

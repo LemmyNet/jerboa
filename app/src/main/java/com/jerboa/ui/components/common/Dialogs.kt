@@ -103,8 +103,8 @@ fun ShowOutdatedServerDialog(
                 stringResource(
                     R.string.dialogs_server_version_outdated,
                     siteVersion,
-                    5
-                  //  MINIMUM_API_VERSION,
+                    5,
+                    //  MINIMUM_API_VERSION,
                 ),
             )
         },

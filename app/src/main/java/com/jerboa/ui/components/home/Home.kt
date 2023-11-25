@@ -42,13 +42,13 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.data
 import com.jerboa.datatypes.getLocalizedListingTypeName
-import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import kotlinx.collections.immutable.ImmutableList
 import me.saket.cascade.CascadeDropdownMenu
 

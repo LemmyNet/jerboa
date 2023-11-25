@@ -461,9 +461,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun markAllAsRead(
-        onComplete: () -> Unit,
-    ) {
+    fun markAllAsRead(onComplete: () -> Unit) {
         viewModelScope.launch {
             markAllAsReadRes = ApiState.Loading
             markAllAsReadRes = API.getInstance().markAllAsRead().toApiState()

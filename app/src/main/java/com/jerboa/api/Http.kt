@@ -15,7 +15,6 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
 
-
 // TODO, regressed functionality: -> logging redactions
 // Remove global error handler? do we need this anymore?
 // httpAgent is now LemmyApi, not sure how to make this configurable
@@ -64,7 +63,10 @@ object API {
         }
     }
 
-    suspend fun setLemmyInstance(instance: String, auth: String? = null): LemmyApiV19 {
+    suspend fun setLemmyInstance(
+        instance: String,
+        auth: String? = null,
+    ): LemmyApiV19 {
         newApi = LemmyApi.getLemmyApi(instance, auth)
         return newApi
     }
@@ -78,6 +80,13 @@ object API {
         auth: String? = null,
     ): LemmyApiV19 {
         return LemmyApi.getLemmyApi(host, auth)
+    }
+
+    fun createTempInstanceVersion(
+        host: String,
+        version: String,
+    ): LemmyApiV19 {
+        return LemmyApi.getLemmyApi(host, version)
     }
 
     suspend fun checkIfLemmyInstance(url: String): Boolean {
@@ -104,7 +113,10 @@ object API {
         }
     }
 
-    suspend fun uploadPictrsImage(imageIs: InputStream, ctx: Context): String {
+    suspend fun uploadPictrsImage(
+        imageIs: InputStream,
+        ctx: Context,
+    ): String {
         Log.d("jerboa", "Uploading image....")
         val resp = getInstance().uploadImage(UploadImage(listOf(imageIs.readBytes())))
         Log.d("jerboa", "Uploading done.")

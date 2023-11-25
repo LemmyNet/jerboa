@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePersonView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import com.jerboa.feat.openMatrix
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
@@ -50,6 +49,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 
 @Composable
 fun PersonProfileTopSection(

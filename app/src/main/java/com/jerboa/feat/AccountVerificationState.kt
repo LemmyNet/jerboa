@@ -124,7 +124,6 @@ suspend fun checkIfAccountIsDeleted(
         if (res.isSuccess) {
             val body = res.getOrThrow()
 
-
             // This check is not perfect since, technically a different account with the same name and ID
             // can happen but that should be incredibly rare.
             return@withContext if (
@@ -152,9 +151,7 @@ fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
     }
 }
 
-suspend fun checkIfJWTValid(
-    api: LemmyApi,
-): CheckState {
+suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
         val resp = api.validateAuth()

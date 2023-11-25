@@ -18,7 +18,6 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.data
 import com.jerboa.datatypes.sampleCommunityView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.needBlur
 import com.jerboa.toEnum
@@ -28,6 +27,7 @@ import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.*
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable

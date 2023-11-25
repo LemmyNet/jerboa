@@ -92,9 +92,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-    fun appendData(
-        profileId: PersonId,
-    ) {
+    fun appendData(profileId: PersonId) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
             personDetailsRes =
@@ -301,7 +299,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             markPostRes = ApiState.Loading
             // TODO figure out if out why I dont return anything for this
             API.getInstance().markPostAsRead(form).toApiState()
-        //  markPostRes =
+            //  markPostRes =
 
 //            when (val markRes = markPostRes) {
 //                is ApiState.Success -> {

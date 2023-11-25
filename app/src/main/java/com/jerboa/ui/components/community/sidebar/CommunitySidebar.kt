@@ -2,8 +2,8 @@ package com.jerboa.ui.components.community.sidebar
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import com.jerboa.ui.components.common.Sidebar
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 
 @Composable
 fun CommunitySidebar(

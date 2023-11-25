@@ -34,16 +34,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -69,6 +59,16 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -117,11 +117,11 @@ fun CommunityActivity(
                         communityViewModel.resetPage()
                         communityViewModel.getPosts(
                             form =
-                            GetPosts(
-                                community_id = communityRes.data.community_view.community.id,
-                                page = communityViewModel.page,
-                                sort = communityViewModel.sortType,
-                            ),
+                                GetPosts(
+                                    community_id = communityRes.data.community_view.community.id,
+                                    page = communityViewModel.page,
+                                    sort = communityViewModel.sortType,
+                                ),
                             ApiState.Refreshing,
                         )
                     }
@@ -148,7 +148,7 @@ fun CommunityActivity(
                         val instance = hostName(communityRes.data.community_view.community.actor_id)
                         val communityName =
                             communityRes.data.community_view.community.name +
-                                    if (instance != null) "@$instance" else ""
+                                if (instance != null) "@$instance" else ""
                         CommunityHeader(
                             scrollBehavior = scrollBehavior,
                             communityName = communityName,
@@ -191,7 +191,6 @@ fun CommunityActivity(
                                     communityViewModel.blockCommunity(
                                         BlockCommunity(
                                             community_id = communityId,
-
                                             block = !communityRes.data.community_view.blocked,
                                         ),
                                         ctx = ctx,
@@ -202,7 +201,7 @@ fun CommunityActivity(
                             onClickCommunityShare = {
                                 shareLink(
                                     communityRes.data.community_view.community.actor_id,
-                                    ctx
+                                    ctx,
                                 )
                             },
                             onClickBack = appState::navigateUp,
@@ -253,10 +252,9 @@ fun CommunityActivity(
                                                 ) {
                                                     communityViewModel.followCommunity(
                                                         form =
-                                                        FollowCommunity(
-                                                            community_id = cfv.community.id,
-                                                            follow = cfv.subscribed == SubscribedType.NotSubscribed,
-
+                                                            FollowCommunity(
+                                                                community_id = cfv.community.id,
+                                                                follow = cfv.subscribed == SubscribedType.NotSubscribed,
                                                             ),
                                                         onSuccess = {
                                                             siteViewModel.getSite()
@@ -282,14 +280,13 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.likePost(
                                         form =
-                                        CreatePostLike(
-                                            post_id = postView.post.id,
-                                            score =
-                                            newVote(
-                                                currentVote = postView.my_vote,
-                                                voteType = VoteType.Upvote,
-                                            ),
-
+                                            CreatePostLike(
+                                                post_id = postView.post.id,
+                                                score =
+                                                    newVote(
+                                                        currentVote = postView.my_vote,
+                                                        voteType = VoteType.Upvote,
+                                                    ),
                                             ),
                                     )
                                 }
@@ -305,14 +302,13 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.likePost(
                                         form =
-                                        CreatePostLike(
-                                            post_id = postView.post.id,
-                                            score =
-                                            newVote(
-                                                currentVote = postView.my_vote,
-                                                voteType = VoteType.Downvote,
-                                            ),
-
+                                            CreatePostLike(
+                                                post_id = postView.post.id,
+                                                score =
+                                                    newVote(
+                                                        currentVote = postView.my_vote,
+                                                        voteType = VoteType.Downvote,
+                                                    ),
                                             ),
                                     )
                                 }
@@ -331,10 +327,9 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.savePost(
                                         form =
-                                        SavePost(
-                                            post_id = postView.post.id,
-                                            save = !postView.saved,
-
+                                            SavePost(
+                                                post_id = postView.post.id,
+                                                save = !postView.saved,
                                             ),
                                     )
                                 }
@@ -357,8 +352,7 @@ fun CommunityActivity(
                                         DeletePost(
                                             post_id = postView.post.id,
                                             deleted = !postView.post.deleted,
-
-                                            ),
+                                        ),
                                     )
                                 }
                             },
@@ -384,10 +378,9 @@ fun CommunityActivity(
                                         ) {
                                             communityViewModel.blockCommunity(
                                                 form =
-                                                BlockCommunity(
-                                                    community_id = communityRes.data.community_view.community.id,
-                                                    block = !communityRes.data.community_view.blocked,
-
+                                                    BlockCommunity(
+                                                        community_id = communityRes.data.community_view.community.id,
+                                                        block = !communityRes.data.community_view.blocked,
                                                     ),
                                                 ctx = ctx,
                                             )
@@ -408,10 +401,9 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.blockPerson(
                                         form =
-                                        BlockPerson(
-                                            person_id = person.id,
-                                            block = true,
-
+                                            BlockPerson(
+                                                person_id = person.id,
+                                                block = true,
                                             ),
                                         ctx = ctx,
                                     )

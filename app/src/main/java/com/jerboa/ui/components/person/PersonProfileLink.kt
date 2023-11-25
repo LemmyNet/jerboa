@@ -17,11 +17,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 
 @Composable
 fun PersonName(
