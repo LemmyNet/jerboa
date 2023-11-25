@@ -21,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
@@ -29,6 +28,7 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 
 object PrivateMessage {
     const val PM_VIEW = "private-message::return(pm-view)"
@@ -70,7 +70,6 @@ fun PrivateMessageReplyActivity(
                             privateMessageReplyViewModel.createPrivateMessage(
                                 recipientId = privateMessageView.creator.id,
                                 content = reply.text,
-                                account = account,
                                 onGoBack = onBack,
                                 focusManager,
                             )

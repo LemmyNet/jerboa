@@ -33,9 +33,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
+import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePersonView
-import com.jerboa.datatypes.types.PersonView
-import com.jerboa.datatypes.types.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import com.jerboa.feat.openMatrix
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
@@ -49,6 +49,7 @@ import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.dto.SortType
 
 @Composable
 fun PersonProfileTopSection(
@@ -70,7 +71,8 @@ fun PersonProfileTopSection(
                         Modifier
                             .height(PROFILE_BANNER_SIZE)
                             .clickable {
-                                openImageViewer(personView.person.banner)
+                                // TODO not aware of this change
+                                openImageViewer(personView.person.banner ?: "")
                             },
                 )
             }
@@ -82,7 +84,8 @@ fun PersonProfileTopSection(
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier =
                                 Modifier.clickable {
-                                    openImageViewer(personView.person.avatar)
+                                    // TODO not aware of this change
+                                    openImageViewer(personView.person.avatar ?: "")
                                 },
                         )
                     }
@@ -265,7 +268,7 @@ fun PersonProfileHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = LocalContext.current.getString(selectedSortType.shortForm),
+            text = LocalContext.current.getString(selectedSortType.data.shortForm),
             style = MaterialTheme.typography.titleMedium,
         )
     }

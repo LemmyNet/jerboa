@@ -39,14 +39,14 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.Tagline
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -122,19 +122,18 @@ fun HomeActivity(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
+                scrollToTop = {
+                    scrollToTop(scope, postListState)
+                },
                 openDrawer = {
                     scope.launch {
                         drawerState.open()
                     }
                 },
-                scrollToTop = {
-                    scrollToTop(scope, postListState)
-                },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
-                account = account,
-                scrollBehavior = scrollBehavior,
                 onClickSiteInfo = appState::toSiteSideBar,
+                scrollBehavior = scrollBehavior,
                 siteVersion = siteViewModel.siteVersion(),
             )
         },
@@ -224,7 +223,7 @@ fun MainPostListingsContent(
         rememberPullRefreshState(
             refreshing = homeViewModel.postsRes.isRefreshing(),
             onRefresh = {
-                homeViewModel.refreshPosts(account)
+                homeViewModel.refreshPosts()
             },
         )
 
@@ -275,7 +274,7 @@ fun MainPostListingsContent(
                                     currentVote = postView.my_vote,
                                     voteType = VoteType.Upvote,
                                 ),
-                            auth = it.jwt,
+                      
                         ),
                     )
                 }
@@ -296,7 +295,7 @@ fun MainPostListingsContent(
                                     currentVote = postView.my_vote,
                                     voteType = VoteType.Downvote,
                                 ),
-                            auth = it.jwt,
+                      
                         ),
                     )
                 }
@@ -316,7 +315,7 @@ fun MainPostListingsContent(
                         SavePost(
                             post_id = postView.post.id,
                             save = !postView.saved,
-                            auth = it.jwt,
+                      
                         ),
                     )
                 }
@@ -332,7 +331,7 @@ fun MainPostListingsContent(
                     homeViewModel.blockCommunity(
                         BlockCommunity(
                             community_id = community.id,
-                            auth = it.jwt,
+                      
                             block = true,
                         ),
                         ctx = ctx,
@@ -351,7 +350,7 @@ fun MainPostListingsContent(
                         BlockPerson(
                             person_id = creator.id,
                             block = true,
-                            auth = it.jwt,
+                      
                         ),
                         ctx = ctx,
                     )
@@ -374,7 +373,7 @@ fun MainPostListingsContent(
                         DeletePost(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
-                            auth = it.jwt,
+                      
                         ),
                     )
                 }
@@ -387,7 +386,7 @@ fun MainPostListingsContent(
             },
             onPersonClick = appState::toProfile,
             loadMorePosts = {
-                homeViewModel.appendPosts(account.jwt)
+                homeViewModel.appendPosts()
             },
             account = account,
             enableDownVotes = siteViewModel.enableDownvotes(),
@@ -403,9 +402,8 @@ fun MainPostListingsContent(
                 if (!account.isAnon() && !postView.read) {
                     homeViewModel.markPostAsRead(
                         MarkPostAsRead(
-                            post_id = postView.post.id,
+                            post_ids = listOf(postView.post.id),
                             read = true,
-                            auth = account.jwt,
                         ),
                         appState,
                     )
@@ -426,7 +424,6 @@ fun MainTopBar(
     openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
-    account: Account,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     siteVersion: String,
@@ -441,19 +438,19 @@ fun MainTopBar(
             onClickSortType = { sortType ->
                 scrollToTop()
                 homeViewModel.updateSortType(sortType)
-                homeViewModel.resetPosts(account)
+                homeViewModel.resetPosts()
             },
             onClickListingType = { listingType ->
                 scrollToTop()
                 homeViewModel.updateListingType(listingType)
-                homeViewModel.resetPosts(account)
+                homeViewModel.resetPosts()
             },
             onClickPostViewMode = {
                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
             },
             onClickRefresh = {
                 scrollToTop()
-                homeViewModel.resetPosts(account)
+                homeViewModel.resetPosts()
             },
             onClickSiteInfo = onClickSiteInfo,
             siteVersion = siteVersion,

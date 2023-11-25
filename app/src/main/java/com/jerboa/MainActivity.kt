@@ -31,7 +31,6 @@ import arrow.core.Either
 import coil.Coil
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
@@ -91,18 +90,6 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val ctx = LocalContext.current
 
-            API.errorHandler = {
-                Log.e("jerboa", it.toString())
-                runOnUiThread {
-                    Toast.makeText(
-                        ctx,
-                        ctx.resources.getString(R.string.networkError),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
-                null
-            }
-
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
             @Suppress("SENSELESS_COMPARISON")
@@ -143,8 +130,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
-
                 MarkdownHelper.init(
                     appState,
                     appSettings.useCustomTabs,
@@ -169,19 +154,6 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
-
-                when (val siteRes = siteViewModel.siteRes) {
-                    is ApiState.Success -> {
-                        val siteVersion = siteRes.data.version
-                        if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0 && !serverVersionOutdatedViewed.value) {
-                            ShowOutdatedServerDialog(
-                                siteVersion = siteVersion,
-                                onConfirm = { serverVersionOutdatedViewed.value = true },
-                            )
-                        }
-                    }
-                    else -> {}
-                }
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -400,7 +372,6 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
                             appState = appState,
-                            accountViewModel = accountViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
@@ -708,3 +679,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+
+// TODO investige resource leaks not sure if caused by this or already present
+//W  A resource failed to call end.
+//2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().
+//2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().

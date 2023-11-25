@@ -8,11 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.EditComment
-import com.jerboa.db.entity.Account
+import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.EditComment
 import kotlinx.coroutines.launch
 
 class CommentEditViewModel : ViewModel() {
@@ -23,7 +22,6 @@ class CommentEditViewModel : ViewModel() {
         commentView: CommentView,
         content: String,
         focusManager: FocusManager,
-        account: Account,
         onSuccess: (CommentView) -> Unit,
     ) {
         viewModelScope.launch {
@@ -31,14 +29,10 @@ class CommentEditViewModel : ViewModel() {
                 EditComment(
                     content = content,
                     comment_id = commentView.comment.id,
-                    auth = account.jwt,
                 )
 
             editCommentRes = ApiState.Loading
-            editCommentRes =
-                apiWrapper(
-                    API.getInstance().editComment(form),
-                )
+            editCommentRes = API.getInstance().editComment(form).toApiState()
             focusManager.clearFocus()
 
             // Update all the views which might have your comment

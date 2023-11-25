@@ -1,31 +1,31 @@
 package com.jerboa.datatypes
 
-import com.jerboa.datatypes.types.Comment
-import com.jerboa.datatypes.types.CommentAggregates
-import com.jerboa.datatypes.types.CommentReply
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityAggregates
-import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.LocalSite
-import com.jerboa.datatypes.types.LocalSiteRateLimit
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.PersonAggregates
-import com.jerboa.datatypes.types.PersonMention
-import com.jerboa.datatypes.types.PersonMentionView
-import com.jerboa.datatypes.types.PersonView
-import com.jerboa.datatypes.types.Post
-import com.jerboa.datatypes.types.PostAggregates
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.PrivateMessage
-import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.datatypes.types.RegistrationMode
-import com.jerboa.datatypes.types.Site
-import com.jerboa.datatypes.types.SiteAggregates
-import com.jerboa.datatypes.types.SiteView
-import com.jerboa.datatypes.types.SubscribedType
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.RegistrationMode
+import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReply
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSite
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSiteRateLimit
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMention
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Site
+import it.vercruysse.lemmyapi.v0x19.datatypes.SiteAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
 
 val samplePost =
     Post(
@@ -158,14 +158,13 @@ val samplePerson =
         updated = "2021-10-11T07:14:53.548707",
         actor_id = "https://lemmy.ml/u/homeless",
         bio =
-            "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
+        "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
                 "that I have in here. But I'm not sure blah blah blah\n\nI have " +
                 "**tres ojos**.",
         local = true,
         banner = null,
         deleted = false,
         matrix_user_id = null,
-        admin = false,
         bot_account = false,
         ban_expires = null,
         instance_id = 0,
@@ -186,7 +185,6 @@ val samplePerson2 =
         banner = null,
         deleted = false,
         matrix_user_id = null,
-        admin = false,
         bot_account = false,
         ban_expires = null,
         instance_id = 0,
@@ -214,19 +212,12 @@ val sampleCommunity =
 
 val samplePostAggregates =
     PostAggregates(
-        id = 56195,
         post_id = 135129,
         comments = 4,
         score = 8,
         upvotes = 8,
         downvotes = 0,
-        featured_local = false,
-        featured_community = false,
-        newest_comment_time_necro = "2022-01-02T04:02:44.592929",
-        newest_comment_time = "2022-01-02T04:02:44.592929",
         published = "2022-01-02T04:02:44.592929",
-        hot_rank = 5,
-        hot_rank_active = 6,
     )
 
 val samplePostView =
@@ -310,7 +301,7 @@ val sampleComment =
         creator_id = 56450,
         post_id = 139549,
         content =
-            "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
+        "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
                 " " +
                 "work" +
                 ".\n\nIts kind of a long comment\n\nbut I don't want...",
@@ -361,14 +352,12 @@ val sampleSecondReplyComment =
 
 val sampleCommentAggregates =
     CommentAggregates(
-        id = 28,
         comment_id = 24,
         score = 8,
         upvotes = 12,
         downvotes = 4,
         published = "2022-01-02T04:02:44.592929",
         child_count = 0,
-        hot_rank = 6,
     )
 
 val sampleCommentView =
@@ -465,7 +454,6 @@ val samplePersonMentionView =
 
 val sampleCommunityAggregates =
     CommunityAggregates(
-        id = 84,
         published = "2022-01-02T04:02:44.592929",
         community_id = 834,
         subscribers = 52,
@@ -475,7 +463,6 @@ val sampleCommunityAggregates =
         users_active_week = 98,
         users_active_month = 82,
         users_active_half_year = 91,
-        hot_rank = 3,
     )
 
 val sampleCommunityView =
@@ -488,18 +475,16 @@ val sampleCommunityView =
 
 val samplePersonAggregates =
     PersonAggregates(
-        id = 23,
         person_id = 54,
         post_count = 28,
-        post_score = 38,
         comment_count = 98,
-        comment_score = 168,
     )
 
 val samplePersonView =
     PersonView(
         person = samplePerson,
         counts = samplePersonAggregates,
+        is_admin = false,
     )
 
 val samplePrivateMessage =
@@ -557,7 +542,6 @@ val sampleLocalSite =
         default_post_listing_type = ListingType.All,
         default_theme = "main",
         federation_enabled = true,
-        federation_worker_count = 64,
         id = 1,
         legal_information = null,
         published = "2023-01-01",
@@ -567,11 +551,11 @@ val sampleLocalSite =
         updated = null,
         hide_modlog_mod_names = true,
         reports_email_admins = false,
+        federation_signed_fetch = false,
     )
 
 val sampleSiteAggregates =
     SiteAggregates(
-        id = 23,
         site_id = 84,
         users = 8092,
         posts = 888929,
@@ -585,7 +569,6 @@ val sampleSiteAggregates =
 
 val local_site_rate_limit =
     LocalSiteRateLimit(
-        id = 1,
         local_site_id = 2,
         message = 2,
         message_per_second = 2,
@@ -600,6 +583,8 @@ val local_site_rate_limit =
         search = 2,
         search_per_second = 2,
         published = "2022-01-02T04:02:44.592929",
+        import_user_settings = 1,
+        import_user_settings_per_second = 5
     )
 
 val sampleSiteView =

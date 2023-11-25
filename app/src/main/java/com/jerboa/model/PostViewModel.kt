@@ -12,41 +12,19 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
+import com.jerboa.api.toApiState
 import com.jerboa.appendData
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommentId
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentSortType
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetComments
-import com.jerboa.datatypes.types.GetCommentsResponse
-import com.jerboa.datatypes.types.GetPost
-import com.jerboa.datatypes.types.GetPostResponse
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.PostId
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
-import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
 
-class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewModel() {
+class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -69,7 +47,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
 
     init {
-        this.getData(account)
+        this.getData()
     }
 
     fun updateSortType(sortType: CommentSortType) {
@@ -77,20 +55,19 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     }
 
     fun getData(
-        account: Account,
         state: ApiState<GetPostResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             // Set the commentId for the right case
             val postForm =
                 id.fold({
-                    GetPost(id = it, auth = account.getJWT())
+                    GetPost(id = it)
                 }, {
-                    GetPost(comment_id = it, auth = account.getJWT())
+                    GetPost(comment_id = it)
                 })
 
             postRes = state
-            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
+            postRes = API.getInstance().getPost(postForm).toApiState()
 
             val commentsForm =
                 id.fold({
@@ -98,7 +75,6 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         post_id = it,
-                        auth = account.getJWT(),
                         sort = sortType,
                     )
                 }, {
@@ -106,13 +82,12 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         parent_id = it,
-                        auth = account.getJWT(),
                         sort = sortType,
                     )
                 })
 
             commentsRes = ApiState.Loading
-            commentsRes = apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+            commentsRes = API.getInstance().getComments(commentsForm).toApiState()
         }
     }
 
@@ -122,7 +97,6 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
 
     fun fetchMoreChildren(
         commentView: CommentView,
-        account: Account,
     ) {
         viewModelScope.launch {
             val existing = commentsRes
@@ -136,11 +110,9 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                     parent_id = commentView.comment.id,
                     max_depth = COMMENTS_DEPTH_MAX,
                     type_ = ListingType.All,
-                    auth = account.getJWT(),
                 )
 
-            val moreComments =
-                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+            val moreComments = API.getInstance().getComments(commentsForm).toApiState()
 
             when (moreComments) {
                 is ApiState.Success -> {
@@ -163,11 +135,12 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     fun likeComment(form: CreateCommentLike) {
         viewModelScope.launch {
             likeCommentRes = ApiState.Loading
-            likeCommentRes = apiWrapper(API.getInstance().likeComment(form))
+            likeCommentRes = API.getInstance().createCommentLike(form).toApiState()
 
+            // TODO same stuff
             when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
-                    updateComment(likeRes.data.comment_view)
+                   // updateComment(likeRes.data.comment_view)
                 }
 
                 else -> {}
@@ -178,7 +151,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     fun deleteComment(form: DeleteComment) {
         viewModelScope.launch {
             deleteCommentRes = ApiState.Loading
-            deleteCommentRes = apiWrapper(API.getInstance().deleteComment(form))
+            deleteCommentRes = API.getInstance().deleteComment(form).toApiState()
 
             when (val deleteRes = deleteCommentRes) {
                 is ApiState.Success -> {
@@ -193,7 +166,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     fun saveComment(form: SaveComment) {
         viewModelScope.launch {
             saveCommentRes = ApiState.Loading
-            saveCommentRes = apiWrapper(API.getInstance().saveComment(form))
+            saveCommentRes = API.getInstance().saveComment(form).toApiState()
 
             when (val saveRes = saveCommentRes) {
                 is ApiState.Success -> {
@@ -208,7 +181,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = API.getInstance().createPostLike(form).toApiState()
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -223,7 +196,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     fun savePost(form: SavePost) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = API.getInstance().savePost(form).toApiState()
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -237,7 +210,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = API.getInstance().deletePost(form).toApiState()
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
@@ -254,8 +227,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
             showBlockCommunityToast(blockCommunityRes, ctx)
         }
     }
@@ -266,7 +238,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
             showBlockPersonToast(blockPersonRes, ctx)
         }
     }
@@ -317,14 +289,13 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     companion object {
         class Factory(
             private val id: Either<PostId, CommentId>,
-            private val account: Account,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return PostViewModel(id, account) as T
+                return PostViewModel(id) as T
             }
         }
     }

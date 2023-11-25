@@ -10,11 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.PrivateMessageView
+import com.jerboa.feat.BlurTypes
 import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -23,9 +19,16 @@ import com.jerboa.ui.components.community.sidebar.CommunityViewSidebar
 import com.jerboa.ui.components.post.create.CreatePostReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.privatemessage.PrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -171,11 +174,11 @@ class JerboaAppState(
      *
      * When you want to pass a [Parcelable] to the previous screen/activity you came from
      */
-    fun addReturn(
+    inline fun <reified T> addReturn(
         key: String,
-        value: Parcelable,
+        value: T,
     ) {
-        navController.previousBackStackEntry?.savedStateHandle?.set(key, value)
+        navController.previousBackStackEntry?.savedStateHandle?.set(key, Json.encodeToString(value))
     }
 
     /**
@@ -185,11 +188,11 @@ class JerboaAppState(
      *
      * When you want to pass a [Parcelable] to another screen/activity
      */
-    fun sendReturnForwards(
+    inline fun <reified T> sendReturnForwards(
         key: String,
-        value: Parcelable,
+        value: T,
     ) {
-        navController.currentBackStackEntry?.savedStateHandle?.set(key, value)
+        navController.currentBackStackEntry?.savedStateHandle?.set(key, Json.encodeToString(value))
     }
 
     fun toPostWithPopUpTo(postId: Int) {
@@ -221,14 +224,16 @@ class JerboaAppState(
      */
 
     @Composable
-    inline fun <reified T : Parcelable> ConsumeReturn(
+    inline fun <reified T> ConsumeReturn(
         key: String,
         crossinline consumeBlock: (T) -> Unit,
     ) {
         LaunchedEffect(key) {
             val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
             if (savedStateHandle?.contains(key) == true) {
-                savedStateHandle.get<T>(key)?.also(consumeBlock)
+                savedStateHandle.get<String>(key)?.let {
+                    consumeBlock(Json.decodeFromString<T>(it))
+                }
                 savedStateHandle.remove<String>(key)
             }
         }
@@ -244,11 +249,14 @@ class JerboaAppState(
      * - It actually contains the key
      */
     @Composable
-    inline fun <reified D : Parcelable> getPrevReturn(key: String): D {
+    inline fun <reified D : Any> getPrevReturn(key: String): D {
         // This will survive process death
         return rememberSaveable {
-            navController.previousBackStackEntry!!.savedStateHandle.get<D>(key)
-                ?: throw IllegalStateException("This route doesn't contain this key `$key`")
+            Json.decodeFromString<D>(
+                navController.previousBackStackEntry!!.savedStateHandle.get<String>(key)
+                    ?: throw IllegalStateException("This route doesn't contain this key `$key`")
+            )
+
         }
     }
 
@@ -257,11 +265,11 @@ class JerboaAppState(
      * This is important as, we could navigate further up the tree and back again
      * but when you consume on second return it will be gone
      */
-    inline fun <reified T : Parcelable> getPrevReturnNullable(key: String): T? {
+    inline fun <reified T : Any> getPrevReturnNullable(key: String): T? {
         val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
 
         if (savedStateHandle?.contains(key) == true) {
-            return savedStateHandle.get<T>(key)
+            return savedStateHandle.get<String>(key)?.let { Json.decodeFromString<T>(it) }
         }
         return null
     }
@@ -280,7 +288,9 @@ class JerboaAppState(
         LaunchedEffect(key) {
             val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
             if (savedStateHandle?.contains(key) == true) {
-                savedStateHandle.get<T>(key)?.also(consumeBlock)
+                savedStateHandle.get<String>(key)
+                    ?.let { Json.decodeFromString<T>(it) }
+                    ?.also(consumeBlock)
             }
         }
     }

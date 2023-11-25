@@ -49,21 +49,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
-import arrow.core.compareTo
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
-import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
@@ -88,6 +89,9 @@ val gson = Gson()
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
+
+// TODO remove this
+
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
     return convert()
@@ -108,7 +112,7 @@ fun toastException(
     error: Exception,
 ) {
     Log.e("jerboa", "error", error)
-    Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
+    Toast.makeText(ctx, error.message ?: "UNKNOWN EXCEPTION", Toast.LENGTH_SHORT).show()
 }
 
 fun loginFirstToast(ctx: Context) {
@@ -417,7 +421,7 @@ fun LazyListState.isScrolledToEnd(): Boolean {
  * represents true if the given string as argument was
  * formatted in a lemmy specific format. Such as "/c/community"
  */
-fun parseUrl(url: String): Pair<Boolean, String>? {
+suspend fun parseUrl(url: String): Pair<Boolean, String>? {
     if (url.startsWith("https://") || url.startsWith("http://")) {
         return Pair(false, url)
     } else if (url.startsWith("/c/")) {
@@ -425,25 +429,25 @@ fun parseUrl(url: String): Pair<Boolean, String>? {
             val (community, host) = url.split("@", limit = 2)
             return Pair(true, "https://$host$community")
         }
-        return Pair(true, "https://${API.currentInstance}$url")
+        return Pair(true, API.getInstance().baseUrl + url)
     } else if (url.startsWith("/u/")) {
         if (url.count { c -> c == '@' } == 1) {
             val (userPath, host) = url.split("@", limit = 2)
             return Pair(true, "https://$host$userPath")
         }
-        return Pair(true, "https://${API.currentInstance}$url")
+        return Pair(true, API.getInstance().baseUrl + url)
     } else if (url.startsWith("!")) {
         if (url.count { c -> c == '@' } == 1) {
             val (community, host) = url.substring(1).split("@", limit = 2)
             return Pair(true, "https://$host/c/$community")
         }
-        return Pair(true, "https://${API.currentInstance}/c/${url.substring(1)}")
+        return Pair(true, API.getInstance().baseUrl + "/c/${url.substring(1)}")
     } else if (url.startsWith("@")) {
         if (url.count { c -> c == '@' } == 2) {
             val (user, host) = url.substring(1).split("@", limit = 2)
             return Pair(true, "https://$host/u/$user")
         }
-        return Pair(true, "https://${API.currentInstance}/u/${url.substring(1)}")
+        return Pair(true, API.getInstance().baseUrl + "/u/${url.substring(1)}")
     }
     return null
 }
@@ -482,10 +486,10 @@ suspend fun openLink(
     val userUrl = looksLikeUserUrl(parsedUrl)
     val communityUrl = looksLikeCommunityUrl(parsedUrl)
 
-    if (userUrl != null && (formatted || checkIfLemmyInstance(url))) {
+    if (userUrl != null && (formatted || API.checkIfLemmyInstance(url))) {
         val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
         navController.navigate(route)
-    } else if (communityUrl != null && (formatted || checkIfLemmyInstance(url))) {
+    } else if (communityUrl != null && (formatted || API.checkIfLemmyInstance(url))) {
         val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
         navController.navigate(route)
     } else {
@@ -1118,86 +1122,6 @@ fun convertSpToPx(
     return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
 }
 
-/**
- * Returns localized Strings for UserTab Enum
- */
-fun getLocalizedStringForUserTab(
-    ctx: Context,
-    tab: UserTab,
-): String {
-    val returnString =
-        when (tab) {
-            UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
-            UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
-            UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-        }
-    return returnString
-}
-
-/**
- * Returns localized Strings for ListingType Enum
- */
-fun getLocalizedListingTypeName(
-    ctx: Context,
-    listingType: ListingType,
-): String {
-    val returnString =
-        when (listingType) {
-            ListingType.All -> ctx.getString(R.string.home_all)
-            ListingType.Local -> ctx.getString(R.string.home_local)
-            ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
-        }
-    return returnString
-}
-
-/**
- * Returns localized Strings for CommentSortType Enum
- */
-fun getLocalizedCommentSortTypeName(
-    ctx: Context,
-    commentSortType: CommentSortType,
-): String {
-    val returnString =
-        when (commentSortType) {
-            CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-            CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-            CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-            CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-            CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
-        }
-    return returnString
-}
-
-/**
- * Returns localized Strings for UnreadOrAll Enum
- */
-fun getLocalizedUnreadOrAllName(
-    ctx: Context,
-    unreadOrAll: UnreadOrAll,
-): String {
-    val returnString =
-        when (unreadOrAll) {
-            UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
-            UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
-        }
-    return returnString
-}
-
-/**
- * Returns localized Strings for InboxTab Enum
- */
-fun getLocalizedStringForInboxTab(
-    ctx: Context,
-    tab: InboxTab,
-): String {
-    val returnString =
-        when (tab) {
-            InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
-            InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
-            InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
-        }
-    return returnString
-}
 
 fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
@@ -1396,42 +1320,6 @@ fun scrollToPreviousParentComment(
                 listState.animateScrollToItem(nearestPreviousIndex)
             }
     }
-}
-
-/**
- * Accepts a string that MAY be an URL, trims any protocol and extracts only the host, removing anything after a :, / or ?
- */
-fun getHostFromInstanceString(input: String): String {
-    if (input.isBlank()) {
-        return input
-    }
-
-    return try {
-        URL(input).host.toString()
-    } catch (e: MalformedURLException) {
-        input
-    }
-}
-
-/**
- * Compare two version strings.
- *
- * This attempts to do a natural comparison assuming it's a typical semver (e.g. x.y.z),
- * but it ignores anything it doesn't understand. Since we're highly confident that these verisons
- * will be properly formed, this is safe enough without overcomplicating it.
- */
-fun compareVersions(
-    a: String,
-    b: String,
-): Int {
-    val versionA: List<Int> = a.split('.').mapNotNull { it.toIntOrNull() }
-    val versionB: List<Int> = b.split('.').mapNotNull { it.toIntOrNull() }
-
-    val comparison = versionA.compareTo(versionB)
-    if (comparison == 0) {
-        return a.compareTo(b)
-    }
-    return comparison
 }
 
 /**
@@ -1672,3 +1560,4 @@ fun String.toHttps(): String {
         this
     }
 }
+

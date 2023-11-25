@@ -42,19 +42,10 @@ import com.jerboa.JerboaAppState
 import com.jerboa.UnreadOrAll
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.GetUnreadCount
-import com.jerboa.datatypes.types.MarkAllAsRead
-import com.jerboa.datatypes.types.MarkCommentReplyAsRead
-import com.jerboa.datatypes.types.MarkPersonMentionAsRead
-import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
-import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.datatypes.getLocalizedStringForInboxTab
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
-import com.jerboa.getLocalizedStringForInboxTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.InboxViewModel
@@ -75,6 +66,13 @@ import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkCommentReplyAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPersonMentionAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPrivateMessageAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -124,13 +122,13 @@ fun InboxActivity(
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            inboxViewModel.getFormReplies(it.jwt),
+                            inboxViewModel.getFormReplies(),
                         )
                         inboxViewModel.getMentions(
-                            inboxViewModel.getFormMentions(it.jwt),
+                            inboxViewModel.getFormMentions(),
                         )
                         inboxViewModel.getMessages(
-                            inboxViewModel.getFormMessages(it.jwt),
+                            inboxViewModel.getFormMessages(),
                         )
                     }
                 },
@@ -144,24 +142,17 @@ fun InboxActivity(
                         accountViewModel,
                     ) {
                         inboxViewModel.markAllAsRead(
-                            MarkAllAsRead(
-                                auth = it.jwt,
-                            ),
                             onComplete = {
-                                siteViewModel.fetchUnreadCounts(
-                                    GetUnreadCount(
-                                        auth = it.jwt,
-                                    ),
-                                )
+                                siteViewModel.fetchUnreadCounts()
                                 inboxViewModel.resetPages()
                                 inboxViewModel.getReplies(
-                                    inboxViewModel.getFormReplies(account.jwt),
+                                    inboxViewModel.getFormReplies(),
                                 )
                                 inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(account.jwt),
+                                    inboxViewModel.getFormMentions(),
                                 )
                                 inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(account.jwt),
+                                    inboxViewModel.getFormMessages(),
                                 )
                             },
                         )
@@ -260,9 +251,7 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.appendReplies(
-                                    it.jwt,
-                                )
+                                inboxViewModel.appendReplies()
                             }
                         }
                     }
@@ -282,10 +271,10 @@ fun InboxTabs(
                                 ) {
                                     inboxViewModel.resetPageReplies()
                                     inboxViewModel.getReplies(
-                                        inboxViewModel.getFormReplies(it.jwt),
+                                        inboxViewModel.getFormReplies(),
                                         ApiState.Refreshing,
                                     )
-                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
+                                    siteViewModel.fetchUnreadCounts()
                                 }
                             },
                         )
@@ -312,7 +301,6 @@ fun InboxTabs(
                                 MarkCommentReplyAsRead(
                                     comment_reply_id = crv.comment_reply.id,
                                     read = !crv.comment_reply.read,
-                                    auth = it.jwt,
                                 ),
                                 onSuccess = {
                                     siteViewModel.updateUnreadCounts(dReplies = if (crv.comment_reply.read) 1 else -1)
@@ -364,7 +352,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Upvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -381,7 +368,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Downvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -404,7 +390,6 @@ fun InboxTabs(
                                                         SaveComment(
                                                             comment_id = cr.comment.id,
                                                             save = !cr.saved,
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -439,7 +424,6 @@ fun InboxTabs(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
-                                                            auth = it.jwt,
                                                         ),
                                                         ctx,
                                                     )
@@ -485,9 +469,7 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.appendMentions(
-                                    it.jwt,
-                                )
+                                inboxViewModel.appendMentions()
                             }
                         }
                     }
@@ -509,10 +491,10 @@ fun InboxTabs(
                                 ) {
                                     inboxViewModel.resetPageMentions()
                                     inboxViewModel.getMentions(
-                                        inboxViewModel.getFormMentions(it.jwt),
+                                        inboxViewModel.getFormMentions(),
                                         ApiState.Refreshing,
                                     )
-                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
+                                    siteViewModel.fetchUnreadCounts()
                                 }
                             },
                         )
@@ -564,7 +546,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Upvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -581,7 +562,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Downvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -604,7 +584,6 @@ fun InboxTabs(
                                                         SaveComment(
                                                             comment_id = pm.comment.id,
                                                             save = !pm.saved,
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -621,7 +600,6 @@ fun InboxTabs(
                                                         MarkPersonMentionAsRead(
                                                             person_mention_id = pm.person_mention.id,
                                                             read = !pm.person_mention.read,
-                                                            auth = it.jwt,
                                                         ),
                                                         onSuccess = {
                                                             siteViewModel.updateUnreadCounts(
@@ -659,7 +637,6 @@ fun InboxTabs(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
-                                                            auth = it.jwt,
                                                         ),
                                                         ctx,
                                                     )
@@ -700,9 +677,7 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.appendMessages(
-                                    it.jwt,
-                                )
+                                inboxViewModel.appendMessages()
                             }
                         }
                     }
@@ -723,10 +698,10 @@ fun InboxTabs(
                                 ) {
                                     inboxViewModel.resetPageMessages()
                                     inboxViewModel.getMessages(
-                                        inboxViewModel.getFormMessages(it.jwt),
+                                        inboxViewModel.getFormMessages(),
                                         ApiState.Refreshing,
                                     )
-                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
+                                    siteViewModel.fetchUnreadCounts()
                                 }
                             },
                         )
@@ -777,7 +752,6 @@ fun InboxTabs(
                                                     MarkPrivateMessageAsRead(
                                                         private_message_id = pm.private_message.id,
                                                         read = !pm.private_message.read,
-                                                        auth = account.jwt,
                                                     ),
                                                     onSuccess = {
                                                         siteViewModel.updateUnreadCounts(dMessages = if (pm.private_message.read) 1 else -1)

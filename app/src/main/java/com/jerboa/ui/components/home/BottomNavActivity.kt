@@ -222,7 +222,6 @@ fun BottomNavActivity(
                     composable(route = NavTab.Search.name) {
                         CommunityListActivity(
                             appState = appState,
-                            accountViewModel = accountViewModel,
                             selectMode = false,
                             followList = siteViewModel.getFollowList(),
                             blurNSFW = appSettings.blurNSFW,

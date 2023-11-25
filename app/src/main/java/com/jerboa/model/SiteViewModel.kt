@@ -14,20 +14,16 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.datatypes.types.GetSite
-import com.jerboa.datatypes.types.GetSiteResponse
-import com.jerboa.datatypes.types.GetUnreadCount
-import com.jerboa.datatypes.types.GetUnreadCountResponse
-import com.jerboa.datatypes.types.SaveUserSettings
+import com.jerboa.api.toApiState
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import com.jerboa.serializeToMap
+import it.vercruysse.lemmyapi.LemmyApi
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -54,19 +50,15 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     Log.d("Jerboa", "acc init for id: ${it.id}")
 
                     if (it.isAnon()) {
-                        API.changeLemmyInstance(DEFAULT_INSTANCE)
+                        API.setLemmyInstance(DEFAULT_INSTANCE)
                     } else {
-                        API.changeLemmyInstance(it.instance)
+                        API.setLemmyInstance(it.instance, it.jwt)
                     }
 
-                    getSite(
-                        GetSite(
-                            auth = it.getJWT(),
-                        ),
-                    )
+                    API.getInstance().getSite()
 
                     if (!it.isAnon()) {
-                        fetchUnreadCounts(GetUnreadCount(auth = it.jwt))
+                        fetchUnreadCounts()
                     } else { // Reset the unread count if we're anonymous
                         unreadCountRes = ApiState.Empty
                     }
@@ -74,10 +66,10 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun getSite(form: GetSite): Job {
+    fun getSite(): Job {
         return viewModelScope.launch {
             siteRes = ApiState.Loading
-            siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
+            siteRes = API.getInstance().getSite().toApiState()
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
@@ -96,16 +88,17 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                         }
                     }
                 }
+
                 else -> {}
             }
         }
     }
 
-    fun fetchUnreadCounts(form: GetUnreadCount) {
+    fun fetchUnreadCounts() {
         viewModelScope.launch {
             viewModelScope.launch {
                 unreadCountRes = ApiState.Loading
-                unreadCountRes = apiWrapper(API.getInstance().getUnreadCount(form.serializeToMap()))
+                unreadCountRes = API.getInstance().getUnreadCount().toApiState()
             }
         }
     }
@@ -116,6 +109,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                 val unreads = res.data
                 unreads.mentions + unreads.private_messages + unreads.replies
             }
+
             else -> 0
         }
     }
@@ -165,7 +159,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun siteVersion(): String {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.version
-            else -> MINIMUM_API_VERSION
+            else -> LemmyApi.MIN_SUPPORTED_VERSION + ".0"
         }
     }
 

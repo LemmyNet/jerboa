@@ -3,8 +3,8 @@ package com.jerboa.feat
 import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.jerboa.R
-import com.jerboa.datatypes.types.PostView
 import com.jerboa.toEnum
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

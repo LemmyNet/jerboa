@@ -1,11 +1,10 @@
 package com.jerboa
 
 import com.jerboa.api.API
-import com.jerboa.datatypes.types.GetPost
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetSite
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.SortType
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -28,8 +27,7 @@ class ExampleUnitTest {
     fun testGetSite() =
         runBlocking {
             val api = API.getInstance()
-            val form = GetSite(null)
-            val out = api.getSite(form.serializeToMap()).body()!!
+            val out = api.getSite().getOrThrow()
 
             assertEquals("Lemmy", out.site_view.site.name)
         }
@@ -44,7 +42,7 @@ class ExampleUnitTest {
                     ListingType.All,
                     SortType.Active,
                 )
-            val out = api.getPosts(form.serializeToMap()).body()!!
+            val out = api.getPosts(form).getOrThrow()
             println(out.posts[0])
             assertNotNull(out.posts)
         }
@@ -56,9 +54,8 @@ class ExampleUnitTest {
             val form =
                 GetPost(
                     id = 139549,
-                    auth = null,
                 )
-            val out = api.getPost(form.serializeToMap()).body()!!
+            val out = api.getPost(form).getOrThrow()
             assertNotNull(out)
         }
 

@@ -13,11 +13,6 @@ import com.jerboa.MainActivity
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetSite
-import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -25,8 +20,11 @@ import com.jerboa.isCurrentlyConnected
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.serializeToMap
 import com.jerboa.toEnum
+import it.vercruysse.lemmyapi.v0x19.LemmyApi
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetailsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -118,25 +116,29 @@ suspend fun checkInstance(instance: String): CheckState {
 
 suspend fun checkIfAccountIsDeleted(
     account: Account,
-    api: API,
+    api: LemmyApi,
 ): Pair<CheckState, ApiState.Success<GetPersonDetailsResponse>?> {
     return withContext(Dispatchers.IO) {
-        val res = api.getPersonDetails(GetPersonDetails(person_id = account.id).serializeToMap())
+        val res = api.getPersonDetails(GetPersonDetails(person_id = account.id))
 
-        if (res.isSuccessful) {
+        if (res.isSuccess) {
+            val body = res.getOrThrow()
+
+
             // This check is not perfect since, technically a different account with the same name and ID
             // can happen but that should be incredibly rare.
             return@withContext if (
-                res.body()?.person_view?.person?.name.equals(account.name, true) &&
-                res.body()?.person_view?.person?.deleted != true
+                body.person_view.person.name.equals(account.name, true) && !body.person_view.person.deleted
             ) {
-                Pair(CheckState.Passed, ApiState.Success<GetPersonDetailsResponse>(res.body()!!))
+                Pair(CheckState.Passed, ApiState.Success<GetPersonDetailsResponse>(body))
             } else {
                 Pair(CheckState.Failed, null)
             }
-        } else if (res.code() == 404) {
-            return@withContext Pair(CheckState.Failed, null)
-        } else {
+        }
+//        else if ((res.exceptionOrNull() as? LemmyBadRequestException).response. == 404) {
+//            return@withContext Pair(CheckState.Failed, null)
+//        }
+        else {
             return@withContext Pair(CheckState.ConnectionFailed, null)
         }
     }
@@ -151,18 +153,18 @@ fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
 }
 
 suspend fun checkIfJWTValid(
-    account: Account,
-    api: API,
+    api: LemmyApi,
 ): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
-        val resp = api.getPersonMentions(GetPersonMentions(auth = account.jwt).serializeToMap())
+        val resp = api.validateAuth()
 
-        return@withContext if (resp.isSuccessful) {
+        return@withContext if (resp.isSuccess) {
             CheckState.Passed
             // Could check for exact body response `{"error":"not_logged_in"}` but could change over time and is unneeded
-        } else if (resp.code() == 400) {
-            CheckState.Failed
+//        } else if (resp.code() == 400) {
+//            CheckState.Failed
+            // TODO
         } else {
             CheckState.ConnectionFailed
         }
@@ -184,7 +186,7 @@ suspend fun checkIfSiteRetrievalSucceeded(
             }
         }
         else -> {
-            siteViewModel.getSite(GetSite(auth = account.jwt)).join()
+            siteViewModel.getSite().join()
             when (val res2 = siteViewModel.siteRes) {
                 is ApiState.Success -> Pair(CheckState.Passed, res2)
                 else -> Pair(CheckState.Failed, null)
@@ -218,12 +220,10 @@ suspend fun Account.checkAccountVerification(
 ): Pair<AccountVerificationState, CheckState> {
     Log.d("verification", "Verification started")
 
+// TODO
     // Exceptions create by this API don't need to be shown, they are already handled
-    val api =
-        API.createTempInstance(this.instance) {
-            Log.d("verification", "API ERROR", it)
-            null
-        }
+
+    val api = API.createTempInstance(this.instance, this.jwt)
     var checkState: CheckState = CheckState.Passed
     var curVerificationState: Int =
         if (this.verificationState >= AccountVerificationState.size) {
@@ -251,7 +251,7 @@ suspend fun Account.checkAccountVerification(
                     p.first
                 }
                 AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
-                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(this, api)
+                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
                 AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
                 AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
             }

@@ -49,24 +49,23 @@ import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.getDisplayName
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.getLocalizedStringForUserTab
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -128,7 +127,7 @@ fun PersonProfileActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val personProfileViewModel: PersonProfileViewModel =
-        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode, account))
+        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
@@ -196,7 +195,6 @@ fun PersonProfileActivity(
                                     sort = personProfileViewModel.sortType,
                                     page = personProfileViewModel.page,
                                     saved_only = personProfileViewModel.savedOnly,
-                                    auth = account.getJWT(),
                                 ),
                             )
                         },
@@ -213,7 +211,7 @@ fun PersonProfileActivity(
                                     BlockPerson(
                                         person_id = person.id,
                                         block = true,
-                                        auth = it.jwt,
+                                  
                                     ),
                                     ctx,
                                 )
@@ -329,7 +327,6 @@ fun UserTabs(
                                 sort = personProfileViewModel.sortType,
                                 page = personProfileViewModel.page,
                                 saved_only = personProfileViewModel.savedOnly,
-                                auth = account.getJWT(),
                             ),
                             ApiState.Refreshing,
                         )
@@ -472,7 +469,7 @@ fun UserTabs(
                                                             pv.my_vote,
                                                             VoteType.Upvote,
                                                         ),
-                                                    auth = it.jwt,
+                                              
                                                 ),
                                             )
                                         }
@@ -493,7 +490,7 @@ fun UserTabs(
                                                             pv.my_vote,
                                                             VoteType.Downvote,
                                                         ),
-                                                    auth = it.jwt,
+                                              
                                                 ),
                                             )
                                         }
@@ -513,7 +510,7 @@ fun UserTabs(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                                    auth = it.jwt,
+                                              
                                                 ),
                                             )
                                         }
@@ -535,7 +532,7 @@ fun UserTabs(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
-                                                    auth = it.jwt,
+                                              
                                                 ),
                                             )
                                         }
@@ -559,7 +556,7 @@ fun UserTabs(
                                                 BlockCommunity(
                                                     community_id = community.id,
                                                     block = true,
-                                                    auth = it.jwt,
+                                              
                                                 ),
                                                 ctx,
                                             )
@@ -577,7 +574,7 @@ fun UserTabs(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = it.jwt,
+                                              
                                                 ),
                                                 ctx = ctx,
                                             )
@@ -586,7 +583,6 @@ fun UserTabs(
                                     loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
-                                            account.getJWT(),
                                         )
                                     },
                                     account = account,
@@ -605,9 +601,8 @@ fun UserTabs(
                                         if (!account.isAnon() && !it.read) {
                                             personProfileViewModel.markPostAsRead(
                                                 MarkPostAsRead(
-                                                    post_id = it.post.id,
+                                                    post_ids = listOf(it.post.id),
                                                     read = true,
-                                                    auth = account.jwt,
                                                 ),
                                                 appState,
                                             )
@@ -669,7 +664,6 @@ fun UserTabs(
                                 LaunchedEffect(Unit) {
                                     personProfileViewModel.appendData(
                                         profileRes.data.person_view.person.id,
-                                        account.getJWT(),
                                     )
                                 }
                             }
@@ -716,7 +710,7 @@ fun UserTabs(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Upvote),
-                                                    auth = it.jwt,
+
                                                 ),
                                             )
                                         }
@@ -733,7 +727,6 @@ fun UserTabs(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Downvote),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -756,7 +749,6 @@ fun UserTabs(
                                                 SaveComment(
                                                     comment_id = cv.comment.id,
                                                     save = !cv.saved,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -787,7 +779,6 @@ fun UserTabs(
                                                 DeleteComment(
                                                     comment_id = cv.comment.id,
                                                     deleted = !cv.comment.deleted,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -811,7 +802,6 @@ fun UserTabs(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )

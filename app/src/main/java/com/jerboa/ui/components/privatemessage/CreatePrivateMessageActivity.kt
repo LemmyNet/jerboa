@@ -26,9 +26,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CreatePrivateMessage
-import com.jerboa.datatypes.types.PrivateMessageResponse
+import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.ActionTopBar
@@ -72,18 +72,14 @@ fun CreatePrivateMessageActivity(
                             var res: ApiState<PrivateMessageResponse> = ApiState.Empty
 
                             while (res !is ApiState.Success) {
-                                res =
-                                    apiWrapper(
-                                        withContext(Dispatchers.IO) {
-                                            API.getInstance().createPrivateMessage(
-                                                CreatePrivateMessage(
-                                                    textBody.text,
-                                                    personId,
-                                                    account.jwt,
-                                                ),
-                                            )
-                                        },
-                                    )
+                                res = withContext(Dispatchers.IO) {
+                                    API.getInstance().createPrivateMessage(
+                                        CreatePrivateMessage(
+                                            textBody.text,
+                                            personId,
+                                        ),
+                                    ).toApiState()
+                                }
                                 if (res is ApiState.Failure) {
                                     Toast.makeText(ctx, R.string.private_message_failed, Toast.LENGTH_SHORT).show()
                                 }
@@ -105,10 +101,10 @@ fun CreatePrivateMessageActivity(
 
             Column(
                 modifier =
-                    Modifier
-                        .verticalScroll(scrollState)
-                        .padding(padding)
-                        .imePadding(),
+                Modifier
+                    .verticalScroll(scrollState)
+                    .padding(padding)
+                    .imePadding(),
             ) {
                 MarkdownTextField(
                     text = textBody,

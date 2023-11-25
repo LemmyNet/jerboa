@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
-import com.jerboa.datatypes.types.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast

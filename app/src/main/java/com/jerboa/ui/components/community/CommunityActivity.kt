@@ -34,19 +34,16 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommunityId
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetSite
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.db.entity.getJWT
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -71,6 +68,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import it.vercruysse.lemmyapi.dto.SubscribedType
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -99,7 +97,7 @@ fun CommunityActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val communityViewModel: CommunityViewModel =
-        viewModel(factory = CommunityViewModel.Companion.Factory(account, communityArg))
+        viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
@@ -119,12 +117,11 @@ fun CommunityActivity(
                         communityViewModel.resetPage()
                         communityViewModel.getPosts(
                             form =
-                                GetPosts(
-                                    community_id = communityRes.data.community_view.community.id,
-                                    page = communityViewModel.page,
-                                    sort = communityViewModel.sortType,
-                                    auth = account.getJWT(),
-                                ),
+                            GetPosts(
+                                community_id = communityRes.data.community_view.community.id,
+                                page = communityViewModel.page,
+                                sort = communityViewModel.sortType,
+                            ),
                             ApiState.Refreshing,
                         )
                     }
@@ -151,7 +148,7 @@ fun CommunityActivity(
                         val instance = hostName(communityRes.data.community_view.community.actor_id)
                         val communityName =
                             communityRes.data.community_view.community.name +
-                                if (instance != null) "@$instance" else ""
+                                    if (instance != null) "@$instance" else ""
                         CommunityHeader(
                             scrollBehavior = scrollBehavior,
                             communityName = communityName,
@@ -164,7 +161,6 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account.getJWT(),
                                     ),
                                 )
                             },
@@ -180,7 +176,6 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account.getJWT(),
                                     ),
                                 )
                             },
@@ -196,7 +191,7 @@ fun CommunityActivity(
                                     communityViewModel.blockCommunity(
                                         BlockCommunity(
                                             community_id = communityId,
-                                            auth = it.jwt,
+
                                             block = !communityRes.data.community_view.blocked,
                                         ),
                                         ctx = ctx,
@@ -204,7 +199,12 @@ fun CommunityActivity(
                                 }
                             },
                             onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data.community_view) },
-                            onClickCommunityShare = { shareLink(communityRes.data.community_view.community.actor_id, ctx) },
+                            onClickCommunityShare = {
+                                shareLink(
+                                    communityRes.data.community_view.community.actor_id,
+                                    ctx
+                                )
+                            },
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
@@ -253,18 +253,13 @@ fun CommunityActivity(
                                                 ) {
                                                     communityViewModel.followCommunity(
                                                         form =
-                                                            FollowCommunity(
-                                                                community_id = cfv.community.id,
-                                                                follow = cfv.subscribed == SubscribedType.NotSubscribed,
-                                                                auth = it.jwt,
+                                                        FollowCommunity(
+                                                            community_id = cfv.community.id,
+                                                            follow = cfv.subscribed == SubscribedType.NotSubscribed,
+
                                                             ),
                                                         onSuccess = {
-                                                            siteViewModel.getSite(
-                                                                form =
-                                                                    GetSite(
-                                                                        auth = it.jwt,
-                                                                    ),
-                                                            )
+                                                            siteViewModel.getSite()
                                                         },
                                                     )
                                                 }
@@ -287,14 +282,14 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.likePost(
                                         form =
-                                            CreatePostLike(
-                                                post_id = postView.post.id,
-                                                score =
-                                                    newVote(
-                                                        currentVote = postView.my_vote,
-                                                        voteType = VoteType.Upvote,
-                                                    ),
-                                                auth = it.jwt,
+                                        CreatePostLike(
+                                            post_id = postView.post.id,
+                                            score =
+                                            newVote(
+                                                currentVote = postView.my_vote,
+                                                voteType = VoteType.Upvote,
+                                            ),
+
                                             ),
                                     )
                                 }
@@ -310,14 +305,14 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.likePost(
                                         form =
-                                            CreatePostLike(
-                                                post_id = postView.post.id,
-                                                score =
-                                                    newVote(
-                                                        currentVote = postView.my_vote,
-                                                        voteType = VoteType.Downvote,
-                                                    ),
-                                                auth = it.jwt,
+                                        CreatePostLike(
+                                            post_id = postView.post.id,
+                                            score =
+                                            newVote(
+                                                currentVote = postView.my_vote,
+                                                voteType = VoteType.Downvote,
+                                            ),
+
                                             ),
                                     )
                                 }
@@ -336,10 +331,10 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.savePost(
                                         form =
-                                            SavePost(
-                                                post_id = postView.post.id,
-                                                save = !postView.saved,
-                                                auth = it.jwt,
+                                        SavePost(
+                                            post_id = postView.post.id,
+                                            save = !postView.saved,
+
                                             ),
                                     )
                                 }
@@ -362,8 +357,8 @@ fun CommunityActivity(
                                         DeletePost(
                                             post_id = postView.post.id,
                                             deleted = !postView.post.deleted,
-                                            auth = it.jwt,
-                                        ),
+
+                                            ),
                                     )
                                 }
                             },
@@ -389,10 +384,10 @@ fun CommunityActivity(
                                         ) {
                                             communityViewModel.blockCommunity(
                                                 form =
-                                                    BlockCommunity(
-                                                        community_id = communityRes.data.community_view.community.id,
-                                                        block = !communityRes.data.community_view.blocked,
-                                                        auth = it.jwt,
+                                                BlockCommunity(
+                                                    community_id = communityRes.data.community_view.community.id,
+                                                    block = !communityRes.data.community_view.blocked,
+
                                                     ),
                                                 ctx = ctx,
                                             )
@@ -413,10 +408,10 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.blockPerson(
                                         form =
-                                            BlockPerson(
-                                                person_id = person.id,
-                                                block = true,
-                                                auth = it.jwt,
+                                        BlockPerson(
+                                            person_id = person.id,
+                                            block = true,
+
                                             ),
                                         ctx = ctx,
                                     )
@@ -427,7 +422,6 @@ fun CommunityActivity(
                                     is ApiState.Success -> {
                                         communityViewModel.appendPosts(
                                             communityRes.data.community_view.community.id,
-                                            account.getJWT(),
                                         )
                                     }
 
@@ -452,9 +446,8 @@ fun CommunityActivity(
                                 if (!account.isAnon() && !postView.read) {
                                     communityViewModel.markPostAsRead(
                                         MarkPostAsRead(
-                                            post_id = postView.post.id,
+                                            post_ids = listOf(postView.post.id),
                                             read = true,
-                                            auth = account.jwt,
                                         ),
                                         appState,
                                     )

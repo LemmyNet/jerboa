@@ -40,15 +40,15 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.datatypes.types.Tagline
-import com.jerboa.getLocalizedListingTypeName
+import com.jerboa.datatypes.data
+import com.jerboa.datatypes.getLocalizedListingTypeName
+import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.collections.immutable.ImmutableList
 import me.saket.cascade.CascadeDropdownMenu
 
@@ -64,7 +64,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = ctx.getString(selectedSortType.shortForm),
+            text = ctx.getString(selectedSortType.data.shortForm),
             style = MaterialTheme.typography.titleSmall,
         )
     }
@@ -187,7 +187,7 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-        siteVersion = MINIMUM_API_VERSION,
+        siteVersion = it.vercruysse.lemmyapi.LemmyApi.MIN_SUPPORTED_VERSION,
     )
 }
 

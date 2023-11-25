@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.InputField
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
-import com.jerboa.datatypes.types.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage

@@ -63,7 +63,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.api.uploadPictrsImage
+import com.jerboa.api.API
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
@@ -71,6 +71,7 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -116,11 +117,11 @@ fun MarkdownTextField(
                 label = { Text(text = placeholder) },
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Text,
-                        // autoCorrect = true,
-                    ),
+                KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text,
+                    // autoCorrect = true,
+                ),
             )
         } else {
             TextField(
@@ -129,20 +130,20 @@ fun MarkdownTextField(
                 placeholder = { Text(text = placeholder) },
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Text,
-                        // autoCorrect = true,
-                    ),
+                KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text,
+                    // autoCorrect = true,
+                ),
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
             )
         }
 
@@ -187,9 +188,9 @@ fun CreateLinkDialog(
         text = {
             Column(
                 modifier =
-                    Modifier
-                        .padding(MEDIUM_PADDING)
-                        .fillMaxWidth(),
+                Modifier
+                    .padding(MEDIUM_PADDING)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(
@@ -311,11 +312,12 @@ private fun imageUploadLauncher(
                 val imageIs = imageInputStreamFromUri(ctx, cUri)
                 scope.launch {
                     if (!account.isAnon()) {
-                        val url = uploadPictrsImage(account, imageIs, ctx)
-                        url?.also {
-                            imageUploading.value = false
-                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))
+                        val url = API.uploadPictrsImage(imageIs, ctx)
+                        imageUploading.value = false
+                        if (url.isNotEmpty()) {
+                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, url)))
                         }
+
                     }
                 }
             }

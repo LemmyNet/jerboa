@@ -6,6 +6,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
     id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "1.9.20"
 
 }
 
@@ -188,4 +189,9 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.6")
+
+    implementation("it.vercruysse.lemmyapi:lemmy-api-jvm:0.1.0-SNAPSHOT")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
+
+    // TODO remove gson, retrofit, parcelize
 }

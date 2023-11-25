@@ -24,10 +24,10 @@ import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.isMedia
@@ -120,7 +120,7 @@ fun PostOptionsDropdown(
                         onDismissRequest()
                         if (copyToClipboard(
                                 ctx,
-                                postView.post.thumbnail_url,
+                                postView.post.thumbnail_url ?: "",
                                 "thumbnail link",
                             )
                         ) {
@@ -148,7 +148,7 @@ fun PostOptionsDropdown(
                         onDismissRequest()
                         if (copyToClipboard(
                                 ctx,
-                                postView.post.embed_description,
+                                postView.post.embed_description ?: "", // TODO why diff
                                 "post title",
                             )
                         ) {
@@ -197,7 +197,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         onDismissRequest()
-                        if (copyToClipboard(ctx, postView.post.body, "post text")) {
+                        if (copyToClipboard(ctx, postView.post.body ?: "", "post text")) {
                             Toast.makeText(
                                 ctx,
                                 ctx.getString(R.string.post_listing_text_copied),

@@ -25,8 +25,8 @@ import com.jerboa.R
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.needBlur
 import com.jerboa.toEnum

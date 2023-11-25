@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.sampleSiteView
-import com.jerboa.datatypes.types.SiteView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable

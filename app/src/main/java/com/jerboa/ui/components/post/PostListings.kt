@@ -22,9 +22,9 @@ import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd

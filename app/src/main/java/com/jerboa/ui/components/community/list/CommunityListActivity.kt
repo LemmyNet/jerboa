@@ -18,10 +18,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.datatypes.types.Search
-import com.jerboa.datatypes.types.SearchType
-import com.jerboa.datatypes.types.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Search
 import com.jerboa.db.entity.getJWT
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommunityListViewModel
@@ -29,6 +27,8 @@ import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import it.vercruysse.lemmyapi.dto.SearchType
+import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -43,15 +43,12 @@ object CommunityListReturn {
 @Composable
 fun CommunityListActivity(
     appState: JerboaAppState,
-    accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
     followList: ImmutableList<CommunityFollowerView>,
     blurNSFW: Int,
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to community list activity")
-
-    val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val communityListViewModel: CommunityListViewModel =
         viewModel(factory = CommunityListViewModel.Companion.Factory(followList))
@@ -82,7 +79,6 @@ fun CommunityListActivity(
                                             q = search,
                                             type_ = SearchType.Communities,
                                             sort = SortType.TopAll,
-                                            auth = account.getJWT(),
                                         ),
                                 )
                             }

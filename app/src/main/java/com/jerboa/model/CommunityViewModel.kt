@@ -13,40 +13,37 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommunityId
-import com.jerboa.datatypes.types.CommunityResponse
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetCommunity
-import com.jerboa.datatypes.types.GetCommunityResponse
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetPostsResponse
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
+import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
-import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.launch
 
-class CommunityViewModel(account: Account, communityArg: Either<CommunityId, String>) : ViewModel() {
+class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel() {
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -55,7 +52,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
@@ -83,10 +80,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     fun getCommunity(form: GetCommunity) {
         viewModelScope.launch {
             communityRes = ApiState.Loading
-            communityRes =
-                apiWrapper(
-                    API.getInstance().getCommunity(form.serializeToMap()),
-                )
+            communityRes = API.getInstance().getCommunity(form).toApiState()
         }
     }
 
@@ -96,16 +90,12 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     ) {
         viewModelScope.launch {
             postsRes = state
-            postsRes =
-                apiWrapper(
-                    API.getInstance().getPosts(form.serializeToMap()),
-                )
+            postsRes = API.getInstance().getPosts(form).toApiState()
         }
     }
 
     fun appendPosts(
         id: CommunityId,
-        jwt: String?,
     ) {
         viewModelScope.launch {
             val oldRes = postsRes
@@ -122,10 +112,9 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     community_id = id,
                     page = page,
                     sort = sortType,
-                    auth = jwt,
                 )
 
-            val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+            val newRes = API.getInstance().getPosts(form).toApiState()
 
             postsRes =
                 when (newRes) {
@@ -154,8 +143,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     ) {
         viewModelScope.launch {
             followCommunityRes = ApiState.Loading
-            followCommunityRes =
-                apiWrapper(API.getInstance().followCommunity(form))
+            followCommunityRes = API.getInstance().followCommunity(form).toApiState()
 
             // Copy that response to the communityRes
             when (val followRes = followCommunityRes) {
@@ -180,7 +168,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = API.getInstance().createPostLike(form).toApiState()
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -195,7 +183,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     fun savePost(form: SavePost) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = API.getInstance().savePost(form).toApiState()
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -209,7 +197,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = API.getInstance().deletePost(form).toApiState()
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
@@ -226,7 +214,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes = apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
 
             showBlockCommunityToast(blockCommunityRes, ctx)
 
@@ -238,7 +226,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                                 ApiState.Success(
                                     existing.data.copy(
                                         community_view =
-                                            blockCommunity.data.community_view,
+                                        blockCommunity.data.community_view,
                                     ),
                                 )
                             communityRes = newRes
@@ -259,7 +247,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
             showBlockPersonToast(blockPersonRes, ctx)
         }
     }
@@ -282,11 +270,13 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     ) {
         appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
-            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+            // TODO same stuff
+            API.getInstance().markPostAsRead(form).toApiState()
+         ///   markPostRes = API.getInstance().markPostAsRead(form).toApiState()
 
             when (val markRes = markPostRes) {
                 is ApiState.Success -> {
-                    updatePost(markRes.data.post_view)
+                 //   updatePost(markRes.data.post_view)
                 }
 
                 else -> {}
@@ -303,27 +293,24 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
 
         this.getCommunity(
             form =
-                GetCommunity(
-                    id = communityId,
-                    name = communityName,
-                    auth = account.getJWT(),
-                ),
+            GetCommunity(
+                id = communityId,
+                name = communityName,
+            ),
         )
         this.getPosts(
             form =
-                GetPosts(
-                    community_id = communityId,
-                    community_name = communityName,
-                    page = this.page,
-                    sort = this.sortType,
-                    auth = account.getJWT(),
-                ),
+            GetPosts(
+                community_id = communityId,
+                community_name = communityName,
+                page = this.page,
+                sort = this.sortType,
+            ),
         )
     }
 
     companion object {
         class Factory(
-            private val account: Account,
             private val id: Either<CommunityId, String>,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -331,7 +318,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return CommunityViewModel(account, id) as T
+                return CommunityViewModel(id) as T
             }
         }
     }

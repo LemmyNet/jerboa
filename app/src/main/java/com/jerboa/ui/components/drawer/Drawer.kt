@@ -45,11 +45,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.MyUserInfo
-import com.jerboa.datatypes.types.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
@@ -69,6 +68,7 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.dto.ListingType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

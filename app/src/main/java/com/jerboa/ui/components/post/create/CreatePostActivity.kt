@@ -24,12 +24,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CreatePost
-import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
@@ -42,6 +38,9 @@ import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -136,7 +135,6 @@ fun CreatePostActivity(
                                     body = body,
                                     url = url,
                                     isNsfw = isNsfw,
-                                    account = account,
                                     createPostViewModel = createPostViewModel,
                                     selectedCommunity = selectedCommunity,
                                     onSuccess = appState::toPostWithPopUpTo,
@@ -187,7 +185,7 @@ fun CreatePostActivity(
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
                                 isUploadingImage = true
-                                url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                                url = API.uploadPictrsImage(imageIs, ctx)
                                 isUploadingImage = false
                             }
                         }
@@ -213,7 +211,6 @@ fun onSubmitClick(
     body: TextFieldValue,
     url: String,
     isNsfw: Boolean,
-    account: Account,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
     onSuccess: (Int) -> Unit,
@@ -229,7 +226,6 @@ fun onSubmitClick(
                 community_id = it,
                 url = urlOut,
                 body = bodyOut,
-                auth = account.jwt,
                 nsfw = isNsfw,
             ),
             onSuccess = onSuccess,

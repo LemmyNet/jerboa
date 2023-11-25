@@ -16,10 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.datatypes.data
 import com.jerboa.datatypes.sampleCommunityView
-import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.datatypes.types.SubscribedType
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.needBlur
 import com.jerboa.toEnum
@@ -27,6 +26,8 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.*
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.dto.SubscribedType
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
@@ -228,7 +229,7 @@ fun CommunityHeaderTitle(
             modifier = Modifier.basicMarquee(),
         )
         Text(
-            text = ctx.getString(selectedSortType.shortForm),
+            text = ctx.getString(selectedSortType.data.shortForm),
             style = MaterialTheme.typography.titleMedium,
         )
     }

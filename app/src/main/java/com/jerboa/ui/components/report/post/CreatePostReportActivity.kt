@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
@@ -60,7 +60,6 @@ fun CreatePostReportActivity(
                             reason = reason.text,
                             ctx = ctx,
                             focusManager = focusManager,
-                            account = account,
                             onBack = onBack,
                         )
                     }

@@ -56,7 +56,7 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
-import com.jerboa.datatypes.types.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isPostCreator

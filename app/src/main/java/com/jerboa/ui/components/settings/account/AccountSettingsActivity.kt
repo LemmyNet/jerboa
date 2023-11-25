@@ -18,7 +18,6 @@ import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsActivity(
     accountSettingsViewModel: AccountSettingsViewModel,

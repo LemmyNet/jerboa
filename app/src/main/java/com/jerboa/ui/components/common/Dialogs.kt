@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.jerboa.R
-import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.model.AppSettingsViewModel
 
 val DONATION_MARKDOWN =
@@ -92,6 +91,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
     }
 }
 
+// TODO remove
 @Composable
 fun ShowOutdatedServerDialog(
     siteVersion: String,
@@ -103,7 +103,8 @@ fun ShowOutdatedServerDialog(
                 stringResource(
                     R.string.dialogs_server_version_outdated,
                     siteVersion,
-                    MINIMUM_API_VERSION,
+                    5
+                  //  MINIMUM_API_VERSION,
                 ),
             )
         },

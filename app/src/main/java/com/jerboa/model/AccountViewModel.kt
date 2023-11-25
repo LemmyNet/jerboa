@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jerboa.api.API
+import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.db.repository.AccountRepository
@@ -28,9 +31,10 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
             repository.removeCurrent()
         }
 
-    fun setCurrent(accountId: Int) =
+    fun setCurrent(account: Account) =
         viewModelScope.launch {
-            repository.setCurrent(accountId)
+            repository.setCurrent(account.id)
+            API.setLemmyInstance(account.instance)
         }
 
     // Be careful when setting the verification state,
@@ -55,6 +59,8 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
             repository.delete(account)
         }
 
+    // TODO ON DONE only change
+
     fun deleteAccountAndSwapCurrent(
         account: Account,
         swapToAnon: Boolean = false,
@@ -67,7 +73,9 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         val nextAcc = accounts?.firstOrNull { it.id != account.id }
 
         if (!swapToAnon && nextAcc != null) {
-            repository.setCurrent(nextAcc.id)
+            setCurrent(nextAcc)
+        } else {
+            API.setLemmyInstance(DEFAULT_INSTANCE)
         }
     }
 }

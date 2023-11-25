@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.settings.account
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.*
@@ -23,11 +24,10 @@ import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.SaveUserSettings
-import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.data
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
@@ -35,7 +35,10 @@ import com.jerboa.startActivitySafe
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.coroutines.launch
+import java.io.InputStream
 
 @Composable
 fun SettingsTextField(
@@ -95,6 +98,13 @@ fun SettingsForm(
     account: Account,
     padding: PaddingValues,
 ) {
+    val api = API.getInstanceOrNull()
+    if (api == null) {
+        // TODO
+        return
+    }
+
+
     val luv =
         when (val siteRes = siteViewModel.siteRes) {
             is ApiState.Success -> siteRes.data.my_user?.local_user_view
@@ -115,7 +125,7 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    val supportedSortTypes = remember { SortType.getSupportedSortTypes(siteViewModel.siteVersion()) }
+    val supportedSortTypes = remember { api.getSupportedEntries<SortType>() }
     val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
     val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
     val defaultListingType =
@@ -126,20 +136,25 @@ fun SettingsForm(
     val showBotAccount = rememberBooleanSettingState(luv?.local_user?.show_bot_accounts ?: false)
     val botAccount = rememberBooleanSettingState(luv?.person?.bot_account ?: false)
     val showReadPosts = rememberBooleanSettingState(luv?.local_user?.show_read_posts ?: false)
-    val showNewPostNotifs =
-        rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
-    val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
-    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
-    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.shortForm) } }
+
+    // TODO what happened post notifs?
+//    val showNewPostNotifs =
+//        rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
+
+//    val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
+//    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
+    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.data.shortForm) } }
+
+
+    // TODO all this stuff
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
             display_name = displayName,
             bio = bio.text,
             email = email,
-            auth = account.jwt,
             avatar = avatar,
             banner = banner,
             matrix_user_id = matrixUserId,
@@ -151,13 +166,13 @@ fun SettingsForm(
             show_bot_accounts = showBotAccount.value,
             show_nsfw = showNsfw.value,
             default_listing_type = ListingType.entries[defaultListingType.value],
-            show_new_post_notifs = showNewPostNotifs.value,
+       //     show_new_post_notifs = showNewPostNotifs.value,
             show_read_posts = showReadPosts.value,
             theme = theme,
             show_scores = showScores.value,
             discussion_languages = null,
             // True -> generates a new 2FA token, False -> removes current, null -> do nothing
-            generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
+          //  generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
         )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
     var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
@@ -214,7 +229,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingAvatar = true
-                            avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            avatar = API.uploadPictrsImage(imageIs, ctx)
                             isUploadingAvatar = false
                         }
                     },
@@ -234,7 +249,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingBanner = true
-                            banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            banner = API.uploadPictrsImage(imageIs, ctx)
                             isUploadingBanner = false
                         }
                     },
@@ -294,12 +309,12 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_show_scores))
             },
         )
-        SettingsCheckbox(
-            state = showNewPostNotifs,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_notifications_for_new_posts))
-            },
-        )
+//        SettingsCheckbox(
+//            state = showNewPostNotifs,
+//            title = {
+//                Text(text = stringResource(R.string.account_settings_show_notifications_for_new_posts))
+//            },
+//        )
         SettingsCheckbox(
             enabled = email.isNotEmpty(),
             state = sendNotificationsToEmail,
@@ -307,27 +322,30 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
             },
         )
-        SettingsCheckbox(
-            title = {
-                Text(text = stringResource(R.string.settings_enable_2fa))
-            },
-            state = enable2FA,
-        )
+//        SettingsCheckbox(
+//            title = {
+//                Text(text = stringResource(R.string.settings_enable_2fa))
+//            },
+//            state = enable2FA,
+//        )
+// TODO impl totp
 
-        if (curr2FAEnabled) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                OutlinedButton(
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
-                        ctx.startActivitySafe(intent)
-                    },
-                ) {
-                    Text(stringResource(R.string.settings_2fa_link))
-                }
-            }
-        }
+//        if (curr2FAEnabled) {
+//            Row(
+//                horizontalArrangement = Arrangement.Center,
+//                modifier = Modifier.fillMaxWidth(),
+//            ) {
+//                OutlinedButton(
+//                    onClick = {
+//                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
+//                        ctx.startActivitySafe(intent)
+//                    },
+//                ) {
+//                    Text(stringResource(R.string.settings_2fa_link))
+//                }
+//            }
+//        }
     }
 }
+
+

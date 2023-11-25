@@ -13,37 +13,17 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
+import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean, account: Account) : ViewModel() {
+class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) : ViewModel() {
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -77,7 +57,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
-                auth = account.getJWT(),
                 saved_only = savedMode,
             ),
         )
@@ -109,16 +88,12 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             personDetailsRes = state
-            personDetailsRes =
-                apiWrapper(
-                    API.getInstance().getPersonDetails(form.serializeToMap()),
-                )
+            personDetailsRes = API.getInstance().getPersonDetails(form).toApiState()
         }
     }
 
     fun appendData(
         profileId: PersonId,
-        jwt: String?,
     ) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
@@ -136,9 +111,8 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                     sort = sortType,
                     page = page,
                     saved_only = savedOnly,
-                    auth = jwt,
                 )
-            val newRes = apiWrapper(API.getInstance().getPersonDetails(form.serializeToMap()))
+            val newRes = API.getInstance().getPersonDetails(form).toApiState()
 
             personDetailsRes =
                 when (newRes) {
@@ -168,7 +142,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = API.getInstance().createPostLike(form).toApiState()
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -183,7 +157,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun savePost(form: SavePost) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = API.getInstance().savePost(form).toApiState()
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -197,7 +171,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = API.getInstance().deletePost(form).toApiState()
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
@@ -214,8 +188,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
             showBlockCommunityToast(blockCommunityRes, ctx)
         }
     }
@@ -226,7 +199,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
             showBlockPersonToast(blockPersonRes, ctx)
         }
     }
@@ -234,7 +207,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun likeComment(form: CreateCommentLike) {
         viewModelScope.launch {
             likeCommentRes = ApiState.Loading
-            likeCommentRes = apiWrapper(API.getInstance().likeComment(form))
+            likeCommentRes = API.getInstance().createCommentLike(form).toApiState()
 
             when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
@@ -249,7 +222,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun deleteComment(form: DeleteComment) {
         viewModelScope.launch {
             deleteCommentRes = ApiState.Loading
-            deleteCommentRes = apiWrapper(API.getInstance().deleteComment(form))
+            deleteCommentRes = API.getInstance().deleteComment(form).toApiState()
 
             when (val deleteRes = deleteCommentRes) {
                 is ApiState.Success -> {
@@ -264,7 +237,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun saveComment(form: SaveComment) {
         viewModelScope.launch {
             saveCommentRes = ApiState.Loading
-            saveCommentRes = apiWrapper(API.getInstance().saveComment(form))
+            saveCommentRes = API.getInstance().saveComment(form).toApiState()
 
             when (val saveRes = saveCommentRes) {
                 is ApiState.Success -> {
@@ -326,15 +299,17 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
-            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+            // TODO figure out if out why I dont return anything for this
+            API.getInstance().markPostAsRead(form).toApiState()
+        //  markPostRes =
 
-            when (val markRes = markPostRes) {
-                is ApiState.Success -> {
-                    updatePost(markRes.data.post_view)
-                }
-
-                else -> {}
-            }
+//            when (val markRes = markPostRes) {
+//                is ApiState.Success -> {
+//                    updatePost(markRes.data.post_view)
+//                }
+//
+//                else -> {}
+//            }
         }
     }
 
@@ -342,14 +317,13 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         class Factory(
             private val personArg: Either<PersonId, String>,
             private val savedMode: Boolean,
-            private val account: Account,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return PersonProfileViewModel(personArg, savedMode, account) as T
+                return PersonProfileViewModel(personArg, savedMode) as T
             }
         }
     }

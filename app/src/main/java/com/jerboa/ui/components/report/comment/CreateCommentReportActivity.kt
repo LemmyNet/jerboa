@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
@@ -59,7 +59,6 @@ fun CreateCommentReportActivity(
                             ctx = ctx,
                             onBack = onBack,
                             focusManager = focusManager,
-                            account = account,
                         )
                     }
                 },

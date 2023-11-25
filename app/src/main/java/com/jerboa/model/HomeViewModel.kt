@@ -15,32 +15,29 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetPostsResponse
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
+import com.jerboa.api.toApiState
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
 import com.jerboa.jerboaApplication
 import com.jerboa.mergePosts
-import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.toEnumSafe
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -72,7 +69,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                     updateSortType(account.defaultSortType.toEnumSafe())
                     updateListingType(account.defaultListingType.toEnumSafe())
                     Log.d("jerboa", "Fetching posts")
-                    resetPosts(account)
+                    resetPosts()
                 }
         }
     }
@@ -103,14 +100,11 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     ) {
         viewModelScope.launch {
             postsRes = state
-            postsRes =
-                apiWrapper(
-                    API.getInstance().getPosts(form.serializeToMap()),
-                )
+            postsRes = API.getInstance().getPosts(form).toApiState()
         }
     }
 
-    fun appendPosts(jwt: String?) {
+    fun appendPosts() {
         viewModelScope.launch {
             val oldRes = postsRes
             postsRes =
@@ -121,7 +115,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                 }
 
             nextPage()
-            val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
+            val newRes = API.getInstance().getPosts(getForm()).toApiState()
 
             postsRes =
                 when (newRes) {
@@ -147,7 +141,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = API.getInstance().createPostLike(form).toApiState()
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -162,7 +156,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun savePost(form: SavePost) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = API.getInstance().savePost(form).toApiState()
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -176,7 +170,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = API.getInstance().deletePost(form).toApiState()
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
@@ -193,8 +187,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
             showBlockCommunityToast(blockCommunityRes, ctx)
         }
     }
@@ -205,7 +198,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
             showBlockPersonToast(blockPersonRes, ctx)
         }
     }
@@ -222,36 +215,33 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun resetPosts(account: Account) {
+    fun resetPosts() {
         resetPage()
         getPosts(
             GetPosts(
                 sort = sortType,
                 type_ = listingType,
-                auth = account.getJWT(),
             ),
         )
     }
 
-    fun refreshPosts(account: Account) {
+    fun refreshPosts() {
         resetPage()
         getPosts(
             GetPosts(
                 page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account.getJWT(),
             ),
             ApiState.Refreshing,
         )
     }
 
-    fun getForm(jwt: String?): GetPosts {
+    fun getForm(): GetPosts {
         return GetPosts(
             page = page,
             sort = sortType,
             type_ = listingType,
-            auth = jwt,
         )
     }
 
@@ -260,9 +250,10 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
-            when (val markRes = apiWrapper(API.getInstance().markAsRead(form))) {
+            when (val markRes = API.getInstance().markPostAsRead(form).toApiState()) {
                 is ApiState.Success -> {
-                    updatePost(markRes.data.post_view)
+                    // TODO same here why unit?
+                    //updatePost(markRes.data.post_view)
                 }
 
                 else -> {}

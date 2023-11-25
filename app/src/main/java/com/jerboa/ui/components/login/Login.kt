@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
-import com.jerboa.datatypes.types.Login
+import it.vercruysse.lemmyapi.v0x19.datatypes.Login
 import com.jerboa.ui.components.common.onAutofill
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -201,7 +201,7 @@ fun InstancePicker(
 fun LoginForm(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
-    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
+    onClickLogin: (form: Login, instance: String) -> Unit,
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -265,7 +265,9 @@ fun LoginForm(
 @Preview
 @Composable
 fun LoginFormPreview() {
-    LoginForm()
+    LoginForm(
+        onClickLogin = { _: Login, _: String -> }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

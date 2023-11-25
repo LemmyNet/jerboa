@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
-import com.jerboa.datatypes.types.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.model.AccountViewModel
@@ -70,7 +70,7 @@ fun MainDrawer(
         isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
-            accountViewModel.setCurrent(acct.id)
+            accountViewModel.setCurrent(acct)
 
             onSelectTab(NavTab.Home)
             closeDrawer(scope, drawerState)
@@ -91,7 +91,7 @@ fun MainDrawer(
         },
         onClickListingType = { listingType ->
             homeViewModel.updateListingType(listingType)
-            homeViewModel.resetPosts(account)
+            homeViewModel.resetPosts()
             closeDrawer(scope, drawerState)
         },
         onCommunityClick = { community ->

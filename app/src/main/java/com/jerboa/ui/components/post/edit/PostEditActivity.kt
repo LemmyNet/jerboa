@@ -1,4 +1,3 @@
-
 package com.jerboa.ui.components.post.edit
 
 import android.util.Log
@@ -16,11 +15,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.types.EditPost
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.entity.Account
+import it.vercruysse.lemmyapi.v0x19.datatypes.EditPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
@@ -31,6 +29,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
+import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import kotlinx.coroutines.launch
 
 object PostEditReturn {
@@ -86,7 +85,6 @@ fun PostEditActivity(
                         if (!account.isAnon()) {
                             onSubmitClick(
                                 postId = postView.post.id,
-                                account = account,
                                 name = name,
                                 body = body,
                                 url = url,
@@ -117,7 +115,7 @@ fun PostEditActivity(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingImage = true
-                            url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            url = API.uploadPictrsImage(imageIs, ctx)
                             isUploadingImage = false
                         }
                     }
@@ -135,7 +133,6 @@ fun PostEditActivity(
 
 fun onSubmitClick(
     postId: Int,
-    account: Account,
     name: String,
     body: TextFieldValue,
     url: String,
@@ -150,14 +147,13 @@ fun onSubmitClick(
 
     postEditViewModel.editPost(
         form =
-            EditPost(
-                post_id = postId,
-                name = nameOut,
-                url = urlOut,
-                body = bodyOut,
-                auth = account.jwt,
-                nsfw = isNsfw,
-            ),
+        EditPost(
+            post_id = postId,
+            name = nameOut,
+            url = urlOut,
+            body = bodyOut,
+            nsfw = isNsfw,
+        ),
     ) { postView ->
         appState.apply {
             addReturn(PostEditReturn.POST_VIEW, postView)

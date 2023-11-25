@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.samplePrivateMessageView
-import com.jerboa.datatypes.types.PrivateMessageView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING

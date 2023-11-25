@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
-import com.jerboa.datatypes.types.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.TextBadge
@@ -97,13 +97,14 @@ fun PersonProfileLink(
                     tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
-            if (person.admin) {
-                Icon(
-                    imageVector = Icons.Outlined.Shield,
-                    contentDescription = stringResource(R.string.person_iconAdmin),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
+            // TODO should be on localuser now
+//            if (person.admin) {
+//                Icon(
+//                    imageVector = Icons.Outlined.Shield,
+//                    contentDescription = stringResource(R.string.person_iconAdmin),
+//                    tint = MaterialTheme.colorScheme.primary,
+//                )
+//            }
             if (isCommunityBanned || person.banned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,

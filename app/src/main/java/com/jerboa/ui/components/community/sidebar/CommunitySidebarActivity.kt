@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.datatypes.types.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import com.jerboa.hostName
 import com.jerboa.ui.components.common.SimpleTopAppBar
 

@@ -398,4 +398,6 @@
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Except NSFW inside community</string>
     <string name="time_ago_failed_to_parse">Failed to parse datetime</string>
     <string name="comment_gone">There is no record of this comment</string>
+    <string name="server_version_not_supported">The version (%s) is not supported</string>
+    <string name="home_moderator_view">ModeratorView</string>
 </resources>

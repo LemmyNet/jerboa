@@ -11,10 +11,10 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
