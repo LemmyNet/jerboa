@@ -95,7 +95,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
 }
 
@@ -131,7 +131,7 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.5.0")
     implementation("io.coil-kt:coil-svg:2.5.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.7.0-20230922.054002-2")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.7.1")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
