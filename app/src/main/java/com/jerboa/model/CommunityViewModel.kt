@@ -54,7 +54,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
         private set
@@ -264,17 +264,17 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
     fun markPostAsRead(
         form: MarkPostAsRead,
+        post: PostView,
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
-            // TODO same stuff
-            API.getInstance().markPostAsRead(form).toApiState()
-            // /   markPostRes = API.getInstance().markPostAsRead(form).toApiState()
+            markPostRes = API.getInstance().markPostAsRead(form).toApiState()
 
-            when (val markRes = markPostRes) {
+
+            when (markPostRes) {
                 is ApiState.Success -> {
-                    //   updatePost(markRes.data.post_view)
+                    updatePost(post.copy(read = form.read))
                 }
 
                 else -> {}

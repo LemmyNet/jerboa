@@ -133,10 +133,9 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             likeCommentRes = ApiState.Loading
             likeCommentRes = API.getInstance().createCommentLike(form).toApiState()
 
-            // TODO same stuff
             when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
-                    // updateComment(likeRes.data.comment_view)
+                     updateComment(likeRes.data.comment_view)
                 }
 
                 else -> {}
@@ -256,7 +255,6 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         }
     }
 
-    // TODO test this to make sure comment tree inserts work
     fun appendComment(commentView: CommentView) {
         when (val existing = commentsRes) {
             is ApiState.Success -> {

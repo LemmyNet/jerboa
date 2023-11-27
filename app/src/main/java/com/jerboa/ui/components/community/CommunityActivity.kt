@@ -441,6 +441,7 @@ fun CommunityActivity(
                                             post_ids = listOf(postView.post.id),
                                             read = true,
                                         ),
+                                        postView,
                                         appState,
                                     )
                                 }

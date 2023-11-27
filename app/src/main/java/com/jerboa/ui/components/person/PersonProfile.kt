@@ -71,8 +71,7 @@ fun PersonProfileTopSection(
                         Modifier
                             .height(PROFILE_BANNER_SIZE)
                             .clickable {
-                                // TODO not aware of this change
-                                openImageViewer(personView.person.banner ?: "")
+                                openImageViewer(it)
                             },
                 )
             }
@@ -84,8 +83,7 @@ fun PersonProfileTopSection(
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier =
                                 Modifier.clickable {
-                                    // TODO not aware of this change
-                                    openImageViewer(personView.person.avatar ?: "")
+                                    openImageViewer(it)
                                 },
                         )
                     }

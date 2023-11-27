@@ -42,6 +42,8 @@ class AppSettingsRepository(
     @WorkerThread
     suspend fun updateChangelog() {
         withContext(Dispatchers.IO) {
+
+
             try {
                 Log.d("jerboa", "Fetching RELEASES.md ...")
                 // Fetch the markdown text
@@ -56,3 +58,5 @@ class AppSettingsRepository(
         }
     }
 }
+
+// TODO only change when done swapping

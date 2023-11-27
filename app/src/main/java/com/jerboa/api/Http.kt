@@ -15,7 +15,7 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
 
-// TODO, regressed functionality: -> logging redactions
+// TODO, regressed functionality: -> logging redactions + actual logging
 // Remove global error handler? do we need this anymore?
 // httpAgent is now LemmyApi, not sure how to make this configurable
 // Timeout is 20s, not 30s not configurable, need to figure this out

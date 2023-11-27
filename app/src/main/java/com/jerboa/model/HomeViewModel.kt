@@ -247,20 +247,20 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     fun markPostAsRead(
         form: MarkPostAsRead,
+        post: PostView,
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
-            when (val markRes = API.getInstance().markPostAsRead(form).toApiState()) {
+
+            when ( API.getInstance().markPostAsRead(form).toApiState()) {
                 is ApiState.Success -> {
-                    // TODO same here why unit?
-                    // updatePost(markRes.data.post_view)
+                    updatePost(post.copy(read = form.read))
                 }
 
                 else -> {}
             }
         }
     }
-
     companion object {
         val Factory =
             viewModelFactory {

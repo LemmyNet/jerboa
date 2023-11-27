@@ -19,6 +19,7 @@ import com.jerboa.ui.components.home.NavTab
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun MainDrawer(
@@ -76,10 +77,14 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onSignOutClick = {
-            accountViewModel.deleteAccountAndSwapCurrent(account)
-
-            onSelectTab(NavTab.Home)
-            closeDrawer(scope, drawerState)
+            accountViewModel.deleteAccountAndSwapCurrent(account).invokeOnCompletion {
+                if (it != null && it !is CancellationException) {
+                    // TODO
+                } else {
+                    onSelectTab(NavTab.Home)
+                    closeDrawer(scope, drawerState)
+                }
+            }
         },
         onSwitchAnon = {
             if (!account.isAnon()) {

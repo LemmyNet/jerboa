@@ -13,6 +13,7 @@ import com.jerboa.db.entity.isReady
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feat.AccountVerificationState
 import com.jerboa.jerboaApplication
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Stable
@@ -20,8 +21,11 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     val currentAccount = repository.currentAccount
     val allAccounts = repository.allAccounts
 
+    // Insert with account.current = true
     fun insert(account: Account) =
         viewModelScope.launch {
+            // Remove the default account
+            removeCurrent()
             repository.insert(account)
         }
 
@@ -30,10 +34,11 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
             repository.removeCurrent()
         }
 
-    fun setCurrent(account: Account) =
+
+    fun setCurrent(account: Account): Job =
         viewModelScope.launch {
+            API.setLemmyInstance(account.instance, account.jwt)
             repository.setCurrent(account.id)
-            API.setLemmyInstance(account.instance)
         }
 
     // Be careful when setting the verification state,
@@ -63,8 +68,11 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     fun deleteAccountAndSwapCurrent(
         account: Account,
         swapToAnon: Boolean = false,
-    ) = viewModelScope.launch {
+    ): Job = viewModelScope.launch {
         if (account.isAnon()) return@launch
+
+        API.cre
+
 
         repository.delete(account)
 
@@ -72,7 +80,7 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         val nextAcc = accounts?.firstOrNull { it.id != account.id }
 
         if (!swapToAnon && nextAcc != null) {
-            setCurrent(nextAcc)
+            setCurrent(nextAcc).join()
         } else {
             API.setLemmyInstance(DEFAULT_INSTANCE)
         }

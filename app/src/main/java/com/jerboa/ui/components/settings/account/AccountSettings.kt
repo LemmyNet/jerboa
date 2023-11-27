@@ -133,15 +133,12 @@ fun SettingsForm(
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
 
-    // TODO what happened post notifs?
-//    val showNewPostNotifs =
-//        rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
+    // TODO TOTP
 
 //    val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
 //    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
     val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.data.shortForm) } }
 
-    // TODO all this stuff
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
@@ -159,7 +156,6 @@ fun SettingsForm(
             show_bot_accounts = showBotAccount.value,
             show_nsfw = showNsfw.value,
             default_listing_type = ListingType.entries[defaultListingType.value],
-            //     show_new_post_notifs = showNewPostNotifs.value,
             show_read_posts = showReadPosts.value,
             theme = theme,
             show_scores = showScores.value,
@@ -302,12 +298,6 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_show_scores))
             },
         )
-//        SettingsCheckbox(
-//            state = showNewPostNotifs,
-//            title = {
-//                Text(text = stringResource(R.string.account_settings_show_notifications_for_new_posts))
-//            },
-//        )
         SettingsCheckbox(
             enabled = email.isNotEmpty(),
             state = sendNotificationsToEmail,

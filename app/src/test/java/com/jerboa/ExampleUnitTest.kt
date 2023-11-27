@@ -1,6 +1,7 @@
 package com.jerboa
 
 import com.jerboa.api.API
+import com.jerboa.api.DEFAULT_INSTANCE
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
@@ -8,6 +9,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 
@@ -18,6 +20,12 @@ import org.junit.Test
  */
 @Ignore
 class ExampleUnitTest {
+
+    @Before
+    fun init_api() {
+        runBlocking { API.setLemmyInstance(DEFAULT_INSTANCE) }
+    }
+
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
@@ -59,13 +67,13 @@ class ExampleUnitTest {
             assertNotNull(out)
         }
 
-/*
-    @Test
-    fun testLogin() = runBlocking {
-        val api = API.getInstance()
-        val form = Login(username_or_email = "tester12345", password = "tester12345")
-        val out = api.login(form).body()!!
-        assertNotNull(out.jwt)
-    }
-*/
+    /*
+        @Test
+        fun testLogin() = runBlocking {
+            val api = API.getInstance()
+            val form = Login(username_or_email = "tester12345", password = "tester12345")
+            val out = api.login(form).body()!!
+            assertNotNull(out.jwt)
+        }
+    */
 }

@@ -92,8 +92,6 @@ class LoginViewModel : ViewModel() {
                                 verificationState = 0,
                             )
 
-                        // Remove the default account
-                        accountViewModel.removeCurrent()
                         // Save that info in the DB
                         accountViewModel.insert(account)
 

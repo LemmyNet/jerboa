@@ -148,7 +148,7 @@ fun PostOptionsDropdown(
                         onDismissRequest()
                         if (copyToClipboard(
                                 ctx,
-                                postView.post.embed_description ?: "", // TODO why diff
+                                it,
                                 "post title",
                             )
                         ) {
@@ -281,11 +281,11 @@ fun PostOptionsDropdown(
             postView.post.body?.also {
                 PopupMenuItem(
                     text =
-                        if (viewSource) {
-                            stringResource(R.string.post_listing_view_original)
-                        } else {
-                            stringResource(R.string.post_listing_view_source)
-                        },
+                    if (viewSource) {
+                        stringResource(R.string.post_listing_view_original)
+                    } else {
+                        stringResource(R.string.post_listing_view_source)
+                    },
                     icon = Icons.Outlined.Description,
                     onClick = {
                         onDismissRequest()

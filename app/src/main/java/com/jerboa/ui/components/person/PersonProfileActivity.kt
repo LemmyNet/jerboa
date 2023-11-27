@@ -597,6 +597,7 @@ fun UserTabs(
                                                     post_ids = listOf(it.post.id),
                                                     read = true,
                                                 ),
+                                                it,
                                                 appState,
                                             )
                                         }

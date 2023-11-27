@@ -51,8 +51,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.db.APP_SETTINGS_DEFAULT
@@ -79,26 +77,6 @@ import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
 
-val gson = Gson()
-
-const val DEBOUNCE_DELAY = 1000L
-const val MAX_POST_TITLE_LENGTH = 200
-
-// TODO remove this
-
-// convert a data class to a map
-fun <T> T.serializeToMap(): Map<String, String> {
-    return convert()
-}
-
-// convert an object of type I to type O
-inline fun <I, reified O> I.convert(): O {
-    val json = gson.toJson(this)
-    return gson.fromJson(
-        json,
-        object : TypeToken<O>() {}.type,
-    )
-}
 
 // / This should be done in a UI wrapper
 fun toastException(
@@ -1480,7 +1458,11 @@ fun Context.getInputStream(url: String): InputStream {
     return if (snapshot != null) {
         snapshot.data.toFile().inputStream()
     } else {
-        API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
+        API.httpClient.newCall(
+            Request.Builder()
+                .url(url)
+                .build()
+        ).execute().body?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }
 

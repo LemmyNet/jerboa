@@ -37,7 +37,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.New)
         private set
@@ -293,21 +293,21 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
 
     fun markPostAsRead(
         form: MarkPostAsRead,
+        post: PostView,
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
-            // TODO figure out if out why I dont return anything for this
-            API.getInstance().markPostAsRead(form).toApiState()
-            //  markPostRes =
+            markPostRes = API.getInstance().markPostAsRead(form).toApiState()
 
-//            when (val markRes = markPostRes) {
-//                is ApiState.Success -> {
-//                    updatePost(markRes.data.post_view)
-//                }
-//
-//                else -> {}
-//            }
+
+            when (markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(post.copy(read = form.read))
+                }
+
+                else -> {}
+            }
         }
     }
 
