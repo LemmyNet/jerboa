@@ -34,19 +34,16 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.SubscribedType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -99,7 +96,7 @@ fun CommunityActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val communityViewModel: CommunityViewModel =
-        viewModel(factory = CommunityViewModel.Companion.Factory(account, communityArg))
+        viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
@@ -114,23 +111,7 @@ fun CommunityActivity(
         rememberPullRefreshState(
             refreshing = communityViewModel.postsRes.isRefreshing(),
             onRefresh = {
-                when (val communityRes = communityViewModel.communityRes) {
-                    is ApiState.Success -> {
-                        communityViewModel.resetPage()
-                        communityViewModel.getPosts(
-                            form =
-                                GetPosts(
-                                    community_id = communityRes.data.community_view.community.id,
-                                    page = communityViewModel.page,
-                                    sort = communityViewModel.sortType,
-                                    auth = account.getJWT(),
-                                ),
-                            ApiState.Refreshing,
-                        )
-                    }
-
-                    else -> {}
-                }
+                communityViewModel.refreshPosts()
             },
         )
 
@@ -158,31 +139,15 @@ fun CommunityActivity(
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
-                                communityViewModel.resetPage()
-                                communityViewModel.getPosts(
-                                    GetPosts(
-                                        community_id = communityId,
-                                        page = communityViewModel.page,
-                                        sort = communityViewModel.sortType,
-                                        auth = account.getJWT(),
-                                    ),
-                                )
+                                communityViewModel.resetPosts()
                             },
                             onClickPostViewMode = {
                                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
                             },
                             onClickSortType = { sortType ->
-                                communityViewModel.updateSortType(sortType)
-                                communityViewModel.resetPage()
                                 scrollToTop(scope, postListState)
-                                communityViewModel.getPosts(
-                                    GetPosts(
-                                        community_id = communityId,
-                                        page = communityViewModel.page,
-                                        sort = communityViewModel.sortType,
-                                        auth = account.getJWT(),
-                                    ),
-                                )
+                                communityViewModel.updateSortType(sortType)
+                                communityViewModel.resetPosts()
                             },
                             onBlockCommunityClick = {
                                 account.doIfReadyElseDisplayInfo(
@@ -196,7 +161,6 @@ fun CommunityActivity(
                                     communityViewModel.blockCommunity(
                                         BlockCommunity(
                                             community_id = communityId,
-                                            auth = it.jwt,
                                             block = !communityRes.data.community_view.blocked,
                                         ),
                                         ctx = ctx,
@@ -208,7 +172,6 @@ fun CommunityActivity(
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
-                            siteVersion = siteViewModel.siteVersion(),
                         )
                     }
 
@@ -256,15 +219,9 @@ fun CommunityActivity(
                                                             FollowCommunity(
                                                                 community_id = cfv.community.id,
                                                                 follow = cfv.subscribed == SubscribedType.NotSubscribed,
-                                                                auth = it.jwt,
                                                             ),
                                                         onSuccess = {
-                                                            siteViewModel.getSite(
-                                                                form =
-                                                                    GetSite(
-                                                                        auth = it.jwt,
-                                                                    ),
-                                                            )
+                                                            siteViewModel.getSite()
                                                         },
                                                     )
                                                 }
@@ -294,7 +251,6 @@ fun CommunityActivity(
                                                         currentVote = postView.my_vote,
                                                         voteType = VoteType.Upvote,
                                                     ),
-                                                auth = it.jwt,
                                             ),
                                     )
                                 }
@@ -317,7 +273,6 @@ fun CommunityActivity(
                                                         currentVote = postView.my_vote,
                                                         voteType = VoteType.Downvote,
                                                     ),
-                                                auth = it.jwt,
                                             ),
                                     )
                                 }
@@ -339,7 +294,6 @@ fun CommunityActivity(
                                             SavePost(
                                                 post_id = postView.post.id,
                                                 save = !postView.saved,
-                                                auth = it.jwt,
                                             ),
                                     )
                                 }
@@ -362,7 +316,6 @@ fun CommunityActivity(
                                         DeletePost(
                                             post_id = postView.post.id,
                                             deleted = !postView.post.deleted,
-                                            auth = it.jwt,
                                         ),
                                     )
                                 }
@@ -392,7 +345,6 @@ fun CommunityActivity(
                                                     BlockCommunity(
                                                         community_id = communityRes.data.community_view.community.id,
                                                         block = !communityRes.data.community_view.blocked,
-                                                        auth = it.jwt,
                                                     ),
                                                 ctx = ctx,
                                             )
@@ -416,23 +368,13 @@ fun CommunityActivity(
                                             BlockPerson(
                                                 person_id = person.id,
                                                 block = true,
-                                                auth = it.jwt,
                                             ),
                                         ctx = ctx,
                                     )
                                 }
                             },
                             loadMorePosts = {
-                                when (val communityRes = communityViewModel.communityRes) {
-                                    is ApiState.Success -> {
-                                        communityViewModel.appendPosts(
-                                            communityRes.data.community_view.community.id,
-                                            account.getJWT(),
-                                        )
-                                    }
-
-                                    else -> {}
-                                }
+                                communityViewModel.appendPosts()
                             },
                             account = account,
                             showCommunityName = false,
@@ -454,7 +396,6 @@ fun CommunityActivity(
                                         MarkPostAsRead(
                                             post_id = postView.post.id,
                                             read = true,
-                                            auth = account.jwt,
                                         ),
                                         appState,
                                     )

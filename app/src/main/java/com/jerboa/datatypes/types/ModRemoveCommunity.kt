@@ -10,6 +10,5 @@ data class ModRemoveCommunity(
     val community_id: CommunityId,
     val reason: String? = null,
     val removed: Boolean,
-    val expires: String? = null,
     val when_: String,
 ) : Parcelable

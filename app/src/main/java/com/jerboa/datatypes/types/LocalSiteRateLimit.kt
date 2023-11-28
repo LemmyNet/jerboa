@@ -5,7 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LocalSiteRateLimit(
-    val id: Int,
     val local_site_id: LocalSiteId,
     val message: Int,
     val message_per_second: Int,
@@ -21,4 +20,6 @@ data class LocalSiteRateLimit(
     val search_per_second: Int,
     val published: String,
     val updated: String? = null,
+    val import_user_settings: Int,
+    val import_user_settings_per_second: Int,
 ) : Parcelable

@@ -1,3 +1,3 @@
 package com.jerboa.datatypes.types
 
-typealias CommunityBlockId = Int
+typealias PaginationCursor = String

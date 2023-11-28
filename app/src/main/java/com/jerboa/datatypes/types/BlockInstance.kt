@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GetBannedPersons(
-    val auth: String,
+data class BlockInstance(
+    val instance_id: InstanceId,
+    val block: Boolean,
 ) : Parcelable

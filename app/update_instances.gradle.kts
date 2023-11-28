@@ -52,7 +52,6 @@ abstract class UpdateInstancesTask: DefaultTask() {
         return this[key] as ArrayList<*>
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun <T> LazyMap.getAs(key: String): T {
         return this[key] as T
     }
@@ -110,7 +109,7 @@ abstract class UpdateInstancesTask: DefaultTask() {
         return JsonSlurper().parse(req.inputStream.reader()) as LazyMap
     }
 
-    fun updateInstanceList(nodes: List<Pair<String, Int>>) {
+    private fun updateInstanceList(nodes: List<Pair<String, Int>>) {
         // Create output file and write header
         val outFile = instancesFile.get().asFile
         outFile.writeText("""
@@ -140,7 +139,7 @@ abstract class UpdateInstancesTask: DefaultTask() {
     }
 
 
-    fun updateManifest(list: List<String>) {
+    private fun updateManifest(list: List<String>) {
         val manifest = manifestFile.get().asFile
         val lines = manifest.readLines()
         manifest.writeText("")
@@ -161,7 +160,7 @@ abstract class UpdateInstancesTask: DefaultTask() {
         }
     }
 
-    fun genManifestHosts(list: List<String>): String {
+    private fun genManifestHosts(list: List<String>): String {
         return list.joinToString(
             separator = System.lineSeparator(),
             prefix = System.lineSeparator(),

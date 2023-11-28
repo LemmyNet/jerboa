@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class TransferCommunity(
     val community_id: CommunityId,
     val person_id: PersonId,
-    val auth: String,
 ) : Parcelable

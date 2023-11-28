@@ -2,7 +2,6 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
@@ -28,12 +28,10 @@ import com.jerboa.datatypes.types.GetCommunityResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.MarkPostAsRead
+import com.jerboa.datatypes.types.PaginationCursor
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
@@ -41,7 +39,7 @@ import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import kotlinx.coroutines.launch
 
-class CommunityViewModel(account: Account, communityArg: Either<CommunityId, String>) : ViewModel() {
+class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel() {
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -61,26 +59,20 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
 
     var sortType by mutableStateOf(SortType.Active)
         private set
-    var page by mutableIntStateOf(1)
-        private set
+    private var pageCursor: PaginationCursor? by mutableStateOf(null)
+
+    private var communityId: Int? by mutableStateOf(null)
+    private var communityName: String? by mutableStateOf(null)
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
     }
 
-    fun resetPage() {
-        page = 1
+    private fun resetPage() {
+        pageCursor = null
     }
 
-    fun nextPage() {
-        page += 1
-    }
-
-    fun prevPage() {
-        page -= 1
-    }
-
-    fun getCommunity(form: GetCommunity) {
+    private fun getCommunity(form: GetCommunity) {
         viewModelScope.launch {
             communityRes = ApiState.Loading
             communityRes =
@@ -90,7 +82,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
         }
     }
 
-    fun getPosts(
+    private fun getPosts(
         form: GetPosts,
         state: ApiState<GetPostsResponse> = ApiState.Loading,
     ) {
@@ -103,10 +95,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
         }
     }
 
-    fun appendPosts(
-        id: CommunityId,
-        jwt: String?,
-    ) {
+    fun appendPosts() {
         viewModelScope.launch {
             val oldRes = postsRes
             postsRes =
@@ -116,36 +105,46 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     else -> return@launch
                 }
 
-            nextPage()
-            val form =
-                GetPosts(
-                    community_id = id,
-                    page = page,
-                    sort = sortType,
-                    auth = jwt,
-                )
+            // Update the page cursor before fetching again
+            pageCursor = oldRes.data.next_page
 
-            val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+            val newRes = apiWrapper(API.getInstance().getPosts(getForm().serializeToMap()))
 
             postsRes =
                 when (newRes) {
                     is ApiState.Success -> {
                         ApiState.Success(
                             GetPostsResponse(
-                                mergePosts(
-                                    oldRes.data.posts,
-                                    newRes.data.posts,
-                                ),
+                                posts =
+                                    mergePosts(
+                                        oldRes.data.posts,
+                                        newRes.data.posts,
+                                    ),
+                                next_page = newRes.data.next_page,
                             ),
                         )
                     }
 
                     else -> {
-                        prevPage()
                         ApiState.AppendingFailure(oldRes.data)
                     }
                 }
         }
+    }
+
+    fun resetPosts() {
+        resetPage()
+        getPosts(
+            getForm(),
+        )
+    }
+
+    fun refreshPosts() {
+        resetPage()
+        getPosts(
+            getForm(),
+            ApiState.Refreshing,
+        )
     }
 
     fun followCommunity(
@@ -295,9 +294,8 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     }
 
     init {
-
-        val communityId = communityArg.fold({ it }, { null })
-        val communityName = communityArg.fold({ null }, { it })
+        communityId = communityArg.fold({ it }, { null })
+        communityName = communityArg.fold({ null }, { it })
 
         this.resetPage()
 
@@ -306,24 +304,24 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                 GetCommunity(
                     id = communityId,
                     name = communityName,
-                    auth = account.getJWT(),
                 ),
         )
         this.getPosts(
-            form =
-                GetPosts(
-                    community_id = communityId,
-                    community_name = communityName,
-                    page = this.page,
-                    sort = this.sortType,
-                    auth = account.getJWT(),
-                ),
+            getForm(),
+        )
+    }
+
+    private fun getForm(): GetPosts {
+        return GetPosts(
+            community_id = communityId,
+            community_name = communityName,
+            page_cursor = pageCursor,
+            sort = sortType,
         )
     }
 
     companion object {
         class Factory(
-            private val account: Account,
             private val id: Either<CommunityId, String>,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -331,7 +329,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return CommunityViewModel(account, id) as T
+                return CommunityViewModel(id) as T
             }
         }
     }

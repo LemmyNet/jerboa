@@ -278,7 +278,7 @@
     <string name="upvoted">Плюсовано</string>
     <string name="downvoted">Мінусовано</string>
     <string name="saved_image">Збережене в скрині зображення</string>
-    <string name="saving_image">Зберігаємо зображення...</string>
+    <string name="saving_image">Зберігаємо зображення…</string>
     <string name="permission_denied">У дозволі відмовлено</string>
     <string name="inbox_activity_replies">Відповіді</string>
     <string name="inbox_activity_mentions">Згадування</string>
@@ -287,7 +287,7 @@
     <string name="generic_error">Сталася помилка</string>
     <string name="create_edit_post_close">Закрити</string>
     <string name="lang_language">Мова</string>
-    <string name="loading">Завантажуємо...</string>
+    <string name="loading">Завантажуємо…</string>
     <string name="blur_nsfw">Розмивати зображення для дорослих</string>
     <string name="sorttype_tophour">Відбірне за годину</string>
     <string name="sorttype_topsixhour">Відбірне за шість годин</string>

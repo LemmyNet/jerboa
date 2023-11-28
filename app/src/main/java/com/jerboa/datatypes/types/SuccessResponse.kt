@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class CommunityJoinResponse(
-    val joined: Boolean,
+data class SuccessResponse(
+    val success: Boolean,
 ) : Parcelable

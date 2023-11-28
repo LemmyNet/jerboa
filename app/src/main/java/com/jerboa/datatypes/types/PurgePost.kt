@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class PurgePost(
     val post_id: PostId,
     val reason: String? = null,
-    val auth: String,
 ) : Parcelable

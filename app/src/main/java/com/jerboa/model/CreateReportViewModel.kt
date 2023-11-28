@@ -38,7 +38,6 @@ class CreateReportViewModel : ViewModel() {
                 CreateCommentReport(
                     comment_id = commentId,
                     reason = reason,
-                    auth = account.jwt,
                 )
 
             commentReportRes = ApiState.Loading
@@ -75,7 +74,6 @@ class CreateReportViewModel : ViewModel() {
                 CreatePostReport(
                     post_id = postId,
                     reason = reason,
-                    auth = account.jwt,
                 )
 
             postReportRes = ApiState.Loading

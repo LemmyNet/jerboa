@@ -49,7 +49,6 @@ fun AboutActivity(
 
     val ctx = LocalContext.current
 
-    @Suppress("DEPRECATION")
     val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName
 
     val snackbarHostState = remember { SnackbarHostState() }

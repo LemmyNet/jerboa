@@ -29,7 +29,6 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
@@ -136,7 +135,6 @@ fun CreatePostActivity(
                                     body = body,
                                     url = url,
                                     isNsfw = isNsfw,
-                                    account = account,
                                     createPostViewModel = createPostViewModel,
                                     selectedCommunity = selectedCommunity,
                                     onSuccess = appState::toPostWithPopUpTo,
@@ -187,7 +185,7 @@ fun CreatePostActivity(
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
                                 isUploadingImage = true
-                                url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                                url = uploadPictrsImage(imageIs, ctx).orEmpty()
                                 isUploadingImage = false
                             }
                         }
@@ -213,7 +211,6 @@ fun onSubmitClick(
     body: TextFieldValue,
     url: String,
     isNsfw: Boolean,
-    account: Account,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
     onSuccess: (Int) -> Unit,
@@ -229,7 +226,6 @@ fun onSubmitClick(
                 community_id = it,
                 url = urlOut,
                 body = bodyOut,
-                auth = account.jwt,
                 nsfw = isNsfw,
             ),
             onSuccess = onSuccess,

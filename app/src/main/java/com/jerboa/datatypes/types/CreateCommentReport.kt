@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class CreateCommentReport(
     val comment_id: CommentId,
     val reason: String,
-    val auth: String,
 ) : Parcelable

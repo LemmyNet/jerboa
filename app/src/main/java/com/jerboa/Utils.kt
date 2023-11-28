@@ -8,17 +8,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.util.TypedValue
 import android.webkit.MimeTypeMap.getFileExtensionFromUrl
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -49,7 +47,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
-import arrow.core.compareTo
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.google.gson.Gson
@@ -57,6 +54,8 @@ import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.CommentSortType
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
@@ -483,10 +482,15 @@ suspend fun openLink(
     val communityUrl = looksLikeCommunityUrl(parsedUrl)
 
     if (userUrl != null && (formatted || checkIfLemmyInstance(url))) {
-        val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
+        val route =
+            Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
         navController.navigate(route)
     } else if (communityUrl != null && (formatted || checkIfLemmyInstance(url))) {
-        val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
+        val route =
+            Route.CommunityFromUrlArgs.makeRoute(
+                instance = communityUrl.first,
+                name = communityUrl.second,
+            )
         navController.navigate(route)
     } else {
         openLinkRaw(url, navController, useCustomTab, usePrivateTab)
@@ -779,13 +783,6 @@ fun isPostCreator(commentView: CommentView): Boolean {
     return commentView.creator.id == commentView.post.creator_id
 }
 
-fun isModerator(
-    person: Person,
-    moderators: List<CommunityModeratorView>,
-): Boolean {
-    return moderators.map { it.moderator.id }.contains(person.id)
-}
-
 data class InputField(
     val label: String,
     val hasError: Boolean,
@@ -860,20 +857,6 @@ fun imageInputStreamFromUri(
     uri: Uri,
 ): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
-}
-
-fun decodeUriToBitmap(
-    ctx: Context,
-    uri: Uri,
-): Bitmap? {
-    Log.d("jerboa", "decodeUriToBitmap INPUT: $uri")
-    return if (SDK_INT < 28) {
-        @Suppress("DEPRECATION")
-        MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
-    } else {
-        val source = ImageDecoder.createSource(ctx.contentResolver, uri)
-        ImageDecoder.decodeBitmap(source)
-    }
 }
 
 fun scrollToTop(
@@ -1115,7 +1098,7 @@ fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
 ): Int {
-    return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.resources.displayMetrics).toInt()
 }
 
 /**
@@ -1146,6 +1129,7 @@ fun getLocalizedListingTypeName(
             ListingType.All -> ctx.getString(R.string.home_all)
             ListingType.Local -> ctx.getString(R.string.home_local)
             ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+            ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
         }
     return returnString
 }
@@ -1414,27 +1398,6 @@ fun getHostFromInstanceString(input: String): String {
 }
 
 /**
- * Compare two version strings.
- *
- * This attempts to do a natural comparison assuming it's a typical semver (e.g. x.y.z),
- * but it ignores anything it doesn't understand. Since we're highly confident that these verisons
- * will be properly formed, this is safe enough without overcomplicating it.
- */
-fun compareVersions(
-    a: String,
-    b: String,
-): Int {
-    val versionA: List<Int> = a.split('.').mapNotNull { it.toIntOrNull() }
-    val versionB: List<Int> = b.split('.').mapNotNull { it.toIntOrNull() }
-
-    val comparison = versionA.compareTo(versionB)
-    if (comparison == 0) {
-        return a.compareTo(b)
-    }
-    return comparison
-}
-
-/**
  * Copy a given text to the clipboard, using the Kotlin context
  *
  * @param context The app context
@@ -1450,7 +1413,8 @@ fun copyToClipboard(
 ): Boolean {
     val activity = context.findActivity()
     activity?.let {
-        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard: ClipboardManager =
+            it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(clipLabel, textToCopy)
         clipboard.setPrimaryClip(clip)
         return true

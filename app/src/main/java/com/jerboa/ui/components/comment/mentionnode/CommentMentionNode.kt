@@ -16,7 +16,6 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -65,6 +64,7 @@ fun CommentMentionNodeHeader(
         onPersonClick = onPersonClick,
         isPostCreator = false,
         isModerator = false,
+        isAdmin = false,
         isCommunityBanned = personMentionView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,

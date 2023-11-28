@@ -78,7 +78,7 @@
     <string name="community_icon">İcma Simvolu</string>
     <string name="community_joined">Qoşuldu</string>
     <string name="community_link_users_month">%1$s istifadəçi / ay</string>
-    <string name="community_list_search">Axtar...</string>
+    <string name="community_list_search">Axtar…</string>
     <string name="community_pending">Gözlə</string>
     <string name="community_sortBy">Çeşidlə</string>
     <string name="community_subscribe">Abunə ol</string>
@@ -88,7 +88,7 @@
     <string name="crash_logs_copy">Çökmə jurnalın köçür</string>
     <string name="crash_logs_delete">Bütün çökmə jurnalların sil</string>
     <string name="createPost_selectCommunity">Siyahıdan icma seç</string>
-    <string name="create_post_a_title_here">burada bir başlıq ...</string>
+    <string name="create_post_a_title_here">burada bir başlıq …</string>
     <string name="create_post_community">İcma</string>
     <string name="create_post_copy_suggested_title"> %1$s təklif olunan başlığı köçür</string>
     <string name="create_post_create_post">Elan yarat</string>
@@ -282,7 +282,7 @@
     <string name="upvoted">Müsbət səs verildi</string>
     <string name="downvoted">Mənfi səs verildi</string>
     <string name="saved_image">Şəkili saxla</string>
-    <string name="saving_image">Şəkil saxlanılır...</string>
+    <string name="saving_image">Şəkil saxlanılır…</string>
     <string name="permission_denied">İcazə rədd edildi</string>
     <string name="inbox_activity_replies">Cavablar</string>
     <string name="inbox_activity_mentions">Qeydlər</string>

@@ -14,6 +14,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
@@ -32,9 +33,7 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.getDeduplicateMerge
@@ -77,7 +76,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
-                auth = account.getJWT(),
                 saved_only = savedMode,
             ),
         )
@@ -91,15 +89,15 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         page = 1
     }
 
-    fun nextPage() {
+    private fun nextPage() {
         page += 1
     }
 
-    fun prevPage() {
+    private fun prevPage() {
         page -= 1
     }
 
-    fun updateSavedOnly(savedOnly: Boolean) {
+    private fun updateSavedOnly(savedOnly: Boolean) {
         this.savedOnly = savedOnly
     }
 
@@ -136,7 +134,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                     sort = sortType,
                     page = page,
                     saved_only = savedOnly,
-                    auth = jwt,
                 )
             val newRes = apiWrapper(API.getInstance().getPersonDetails(form.serializeToMap()))
 

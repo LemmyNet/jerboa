@@ -57,10 +57,10 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentId
-import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
@@ -75,7 +75,6 @@ import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
-import com.jerboa.isModerator
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
@@ -99,7 +98,6 @@ import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -148,7 +146,7 @@ fun PostActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
@@ -156,7 +154,7 @@ fun PostActivity(
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
-        postViewModel.getData(account)
+        postViewModel.getData()
     }
 
     val selectedSortType = postViewModel.sortType
@@ -178,7 +176,7 @@ fun PostActivity(
         rememberPullRefreshState(
             refreshing = postViewModel.postRes.isRefreshing(),
             onRefresh = {
-                postViewModel.getData(account, ApiState.Refreshing)
+                postViewModel.getData(ApiState.Refreshing)
             },
         )
 
@@ -260,7 +258,6 @@ fun PostActivity(
                                 selectedSortType = selectedSortType,
                                 onDismissRequest = { showSortOptions = false },
                                 onClickSortType = onClickSortType,
-                                siteVersion = siteViewModel.siteVersion(),
                             )
                         }
                     },
@@ -292,14 +289,6 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val setIdModerators =
-                            postRes.data.moderators
-                                .map { it.moderator.id }
-                                .toImmutableSet()
-
-                        fun isModerator(id: Int): Boolean {
-                            return setIdModerators.contains(id)
-                        }
 
                         if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
@@ -330,7 +319,6 @@ fun PostActivity(
                                                             postView.my_vote,
                                                             VoteType.Upvote,
                                                         ),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -352,16 +340,13 @@ fun PostActivity(
                                                             postView.my_vote,
                                                             VoteType.Downvote,
                                                         ),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onReplyClick = { pv ->
-                                        val isModerator = isModerator(pv.creator, postRes.data.moderators)
                                         appState.toCommentReply(
                                             replyItem = ReplyItem.PostItem(pv),
-                                            isModerator = isModerator,
                                         )
                                     },
                                     onPostClick = {},
@@ -378,7 +363,6 @@ fun PostActivity(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -404,7 +388,6 @@ fun PostActivity(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -426,7 +409,6 @@ fun PostActivity(
                                                 BlockCommunity(
                                                     community_id = c.id,
                                                     block = true,
-                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
@@ -445,18 +427,12 @@ fun PostActivity(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
                                         }
                                     },
                                     showReply = true, // Do nothing
-                                    isModerator =
-                                        isModerator(
-                                            postView.creator,
-                                            postRes.data.moderators,
-                                        ),
                                     showCommunityName = true,
                                     fullBody = true,
                                     account = account,
@@ -571,7 +547,6 @@ fun PostActivity(
                                                                 cv.my_vote,
                                                                 VoteType.Upvote,
                                                             ),
-                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
@@ -593,16 +568,13 @@ fun PostActivity(
                                                                 cv.my_vote,
                                                                 VoteType.Downvote,
                                                             ),
-                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
                                         },
                                         onReplyClick = { cv ->
-                                            val isModerator = isModerator(cv.creator, postRes.data.moderators)
                                             appState.toCommentReply(
                                                 replyItem = ReplyItem.CommentItem(cv),
-                                                isModerator = isModerator,
                                             )
                                         },
                                         onSaveClick = { cv ->
@@ -618,7 +590,6 @@ fun PostActivity(
                                                     SaveComment(
                                                         comment_id = cv.comment.id,
                                                         save = !cv.saved,
-                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
@@ -644,7 +615,6 @@ fun PostActivity(
                                                     DeleteComment(
                                                         comment_id = cv.comment.id,
                                                         deleted = !cv.comment.deleted,
-                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
@@ -658,7 +628,6 @@ fun PostActivity(
                                         onFetchChildrenClick = { cv ->
                                             postViewModel.fetchMoreChildren(
                                                 commentView = cv,
-                                                account = account,
                                             )
                                         },
                                         onBlockCreatorClick = { person ->
@@ -674,7 +643,6 @@ fun PostActivity(
                                                     BlockPerson(
                                                         person_id = person.id,
                                                         block = true,
-                                                        auth = it.jwt,
                                                     ),
                                                     ctx,
                                                 )
@@ -685,7 +653,6 @@ fun PostActivity(
                                         },
                                         onPostClick = {}, // Do nothing
                                         account = account,
-                                        isModerator = ::isModerator,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),
                                         isCollapsedByParent = false,

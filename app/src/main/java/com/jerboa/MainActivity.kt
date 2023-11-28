@@ -76,6 +76,7 @@ import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import io.github.z4kn4fein.semver.toVersion
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity() {
                 when (val siteRes = siteViewModel.siteRes) {
                     is ApiState.Success -> {
                         val siteVersion = siteRes.data.version
-                        if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0 && !serverVersionOutdatedViewed.value) {
+                        if (siteVersion.toVersion() < MINIMUM_API_VERSION && !serverVersionOutdatedViewed.value) {
                             ShowOutdatedServerDialog(
                                 siteVersion = siteVersion,
                                 onConfirm = { serverVersionOutdatedViewed.value = true },
@@ -534,20 +535,11 @@ class MainActivity : AppCompatActivity() {
 
                     composable(
                         route = Route.COMMENT_REPLY,
-                        arguments =
-                            listOf(
-                                navArgument(Route.CommentReplyArgs.IS_MODERATOR) {
-                                    type = Route.CommentReplyArgs.IS_MODERATOR_TYPE
-                                },
-                            ),
                     ) {
-                        val args = Route.CommentReplyArgs(it)
-
                         CommentReplyActivity(
                             accountViewModel = accountViewModel,
                             appState = appState,
                             siteViewModel = siteViewModel,
-                            isModerator = args.isModerator,
                         )
                     }
 

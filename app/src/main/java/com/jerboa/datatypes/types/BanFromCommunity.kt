@@ -11,5 +11,4 @@ data class BanFromCommunity(
     val remove_data: Boolean? = null,
     val reason: String? = null,
     val expires: Int? = null,
-    val auth: String,
 ) : Parcelable

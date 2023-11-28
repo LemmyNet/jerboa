@@ -91,7 +91,7 @@ fun MainDrawer(
         },
         onClickListingType = { listingType ->
             homeViewModel.updateListingType(listingType)
-            homeViewModel.resetPosts(account)
+            homeViewModel.resetPosts()
             closeDrawer(scope, drawerState)
         },
         onCommunityClick = { community ->

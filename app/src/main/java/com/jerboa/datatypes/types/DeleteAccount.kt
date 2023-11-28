@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DeleteAccount(
     val password: String,
-    val auth: String,
+    val delete_content: Boolean,
 ) : Parcelable

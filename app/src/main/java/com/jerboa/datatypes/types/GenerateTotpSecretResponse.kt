@@ -4,7 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class DeleteCustomEmojiResponse(
-    val id: CustomEmojiId,
-    val success: Boolean,
+data class GenerateTotpSecretResponse(
+    val totp_secret_url: String,
 ) : Parcelable

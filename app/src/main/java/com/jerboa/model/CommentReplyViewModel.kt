@@ -72,7 +72,6 @@ class CommentReplyViewModel : ViewModel() {
                     content = content,
                     parent_id = commentParentId,
                     post_id = postId,
-                    auth = account.jwt,
                 )
 
             createCommentRes = ApiState.Loading

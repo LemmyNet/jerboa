@@ -2,6 +2,8 @@ package com.jerboa.datatypes.types
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.RegistrationMode
 import kotlinx.parcelize.Parcelize
 
 @Immutable
@@ -19,7 +21,7 @@ data class CreateSite(
     val application_question: String? = null,
     val private_instance: Boolean? = null,
     val default_theme: String? = null,
-    val default_post_listing_type: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
+    val default_post_listing_type: ListingType? /* "All" | "Local" | "Subscribed" | "ModeratorView" */ = null,
     val legal_information: String? = null,
     val application_email_admins: Boolean? = null,
     val hide_modlog_mod_names: Boolean? = null,
@@ -40,12 +42,10 @@ data class CreateSite(
     val rate_limit_search_per_second: Int? = null,
     val federation_enabled: Boolean? = null,
     val federation_debug: Boolean? = null,
-    val federation_worker_count: Int? = null,
     val captcha_enabled: Boolean? = null,
     val captcha_difficulty: String? = null,
     val allowed_instances: List<String>? = null,
     val blocked_instances: List<String>? = null,
     val taglines: List<String>? = null,
     val registration_mode: RegistrationMode? /* "Closed" | "RequireApplication" | "Open" */ = null,
-    val auth: String,
 ) : Parcelable

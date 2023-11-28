@@ -15,8 +15,6 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
@@ -150,13 +148,10 @@ fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
     }
 }
 
-suspend fun checkIfJWTValid(
-    account: Account,
-    api: API,
-): CheckState {
+suspend fun checkIfJWTValid(api: API): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
-        val resp = api.getPersonMentions(GetPersonMentions(auth = account.jwt).serializeToMap())
+        val resp = api.validateAuth()
 
         return@withContext if (resp.isSuccessful) {
             CheckState.Passed
@@ -184,7 +179,7 @@ suspend fun checkIfSiteRetrievalSucceeded(
             }
         }
         else -> {
-            siteViewModel.getSite(GetSite(auth = account.jwt)).join()
+            siteViewModel.getSite().join()
             when (val res2 = siteViewModel.siteRes) {
                 is ApiState.Success -> Pair(CheckState.Passed, res2)
                 else -> Pair(CheckState.Failed, null)
@@ -251,7 +246,7 @@ suspend fun Account.checkAccountVerification(
                     p.first
                 }
                 AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
-                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(this, api)
+                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
                 AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
                 AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
             }

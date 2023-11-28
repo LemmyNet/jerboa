@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class PostJoin(
-    val post_id: PostId,
+data class BlockInstanceResponse(
+    val blocked: Boolean,
 ) : Parcelable

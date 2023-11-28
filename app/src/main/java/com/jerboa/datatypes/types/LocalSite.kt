@@ -1,6 +1,8 @@
 package com.jerboa.datatypes.types
 
 import android.os.Parcelable
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.RegistrationMode
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -15,18 +17,18 @@ data class LocalSite(
     val application_question: String? = null,
     val private_instance: Boolean,
     val default_theme: String,
-    val default_post_listing_type: ListingType /* "All" | "Local" | "Subscribed" */,
+    val default_post_listing_type: ListingType /* "All" | "Local" | "Subscribed" | "ModeratorView" */,
     val legal_information: String? = null,
     val hide_modlog_mod_names: Boolean,
     val application_email_admins: Boolean,
     val slur_filter_regex: String? = null,
     val actor_name_max_length: Int,
     val federation_enabled: Boolean,
-    val federation_worker_count: Int,
     val captcha_enabled: Boolean,
     val captcha_difficulty: String,
     val published: String,
     val updated: String? = null,
     val registration_mode: RegistrationMode /* "Closed" | "RequireApplication" | "Open" */,
     val reports_email_admins: Boolean,
+    val federation_signed_fetch: Boolean,
 ) : Parcelable

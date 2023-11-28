@@ -44,10 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account

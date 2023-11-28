@@ -16,10 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.SubscribedType
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.needBlur
 import com.jerboa.toEnum
@@ -143,7 +143,6 @@ fun CommunityHeader(
     onClickCommunityShare: () -> Unit,
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    siteVersion: String,
     isBlocked: Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -184,7 +183,6 @@ fun CommunityHeader(
                         onClickSortType(it)
                     },
                     selectedSortType = selectedSortType,
-                    siteVersion = siteVersion,
                 )
             }
 

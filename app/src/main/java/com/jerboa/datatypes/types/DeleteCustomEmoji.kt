@@ -6,5 +6,4 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DeleteCustomEmoji(
     val id: CustomEmojiId,
-    val auth: String,
 ) : Parcelable

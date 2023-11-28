@@ -31,7 +31,6 @@ import androidx.compose.material.icons.outlined.Superscript
 import androidx.compose.material.icons.outlined.Title
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -170,7 +169,6 @@ fun MarkdownTextField(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateLinkDialog(
     value: TextFieldValue,
@@ -311,7 +309,7 @@ private fun imageUploadLauncher(
                 val imageIs = imageInputStreamFromUri(ctx, cUri)
                 scope.launch {
                     if (!account.isAnon()) {
-                        val url = uploadPictrsImage(account, imageIs, ctx)
+                        val url = uploadPictrsImage(imageIs, ctx)
                         url?.also {
                             imageUploading.value = false
                             onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))

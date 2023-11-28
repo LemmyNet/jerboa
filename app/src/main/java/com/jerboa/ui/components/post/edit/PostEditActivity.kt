@@ -20,7 +20,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
@@ -86,7 +85,6 @@ fun PostEditActivity(
                         if (!account.isAnon()) {
                             onSubmitClick(
                                 postId = postView.post.id,
-                                account = account,
                                 name = name,
                                 body = body,
                                 url = url,
@@ -117,7 +115,7 @@ fun PostEditActivity(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingImage = true
-                            url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            url = uploadPictrsImage(imageIs, ctx).orEmpty()
                             isUploadingImage = false
                         }
                     }
@@ -135,7 +133,6 @@ fun PostEditActivity(
 
 fun onSubmitClick(
     postId: Int,
-    account: Account,
     name: String,
     body: TextFieldValue,
     url: String,
@@ -155,7 +152,6 @@ fun onSubmitClick(
                 name = nameOut,
                 url = urlOut,
                 body = bodyOut,
-                auth = account.jwt,
                 nsfw = isNsfw,
             ),
     ) { postView ->

@@ -42,7 +42,7 @@
     <string name="input_fields_ok">確定</string>
     <string name="pictrs_image_upload_image">画像をアップロード</string>
     <string name="time_ago_ago">%1$s %2$s 前</string>
-    <string name="community_list_search">検索...</string>
+    <string name="community_list_search">検索…</string>
     <string name="community_users_month">1ヶ月のユーザー%1$s名</string>
     <string name="community_joined">参加済み</string>
     <string name="community_subscribe">登録</string>

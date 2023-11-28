@@ -2,6 +2,9 @@
 
 O_CWD=$PWD
 
+# Remove all the old types
+rm app/src/main/java/com/jerboa/datatypes/types/*.kt
+
 # Go to the types folder
 cd ~/git/lemmy-js-client/src/types
 
@@ -96,8 +99,6 @@ done
 
 # Remove weird lib.es files
 rm lib.*
-rm Sensitive.kt
-rm others.kt
 
 # Remove all these weird module files
 rm *.module_lemmy-js-client.kt

@@ -1,7 +1,5 @@
 package com.jerboa.ui.components.settings.account
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,13 +23,12 @@ import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.SaveUserSettings
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
-import com.jerboa.startActivitySafe
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
@@ -115,9 +112,8 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    val supportedSortTypes = remember { SortType.getSupportedSortTypes(siteViewModel.siteVersion()) }
     val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
-    val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
+    val defaultSortType = rememberIntSettingState(SortType.entries.indexOf(defaultSortTypeInitial))
     val defaultListingType =
         rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
     val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
@@ -126,38 +122,32 @@ fun SettingsForm(
     val showBotAccount = rememberBooleanSettingState(luv?.local_user?.show_bot_accounts ?: false)
     val botAccount = rememberBooleanSettingState(luv?.person?.bot_account ?: false)
     val showReadPosts = rememberBooleanSettingState(luv?.local_user?.show_read_posts ?: false)
-    val showNewPostNotifs =
-        rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
-    val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
+    val curr2FAEnabled = luv?.local_user?.totp_2fa_enabled ?: false
     val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
-    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.shortForm) } }
+    val sortTypeNames = remember { SortType.entries.map { ctx.getString(it.shortForm) } }
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
             display_name = displayName,
             bio = bio.text,
             email = email,
-            auth = account.jwt,
             avatar = avatar,
             banner = banner,
             matrix_user_id = matrixUserId,
             interface_language = interfaceLang,
             bot_account = botAccount.value,
-            default_sort_type = supportedSortTypes[defaultSortType.value],
+            default_sort_type = SortType.entries[defaultSortType.value],
             send_notifications_to_email = sendNotificationsToEmail.value,
             show_avatars = showAvatars.value,
             show_bot_accounts = showBotAccount.value,
             show_nsfw = showNsfw.value,
             default_listing_type = ListingType.entries[defaultListingType.value],
-            show_new_post_notifs = showNewPostNotifs.value,
             show_read_posts = showReadPosts.value,
             theme = theme,
             show_scores = showScores.value,
             discussion_languages = null,
-            // True -> generates a new 2FA token, False -> removes current, null -> do nothing
-            generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
         )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
     var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
@@ -214,7 +204,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingAvatar = true
-                            avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            avatar = uploadPictrsImage(imageIs, ctx).orEmpty()
                             isUploadingAvatar = false
                         }
                     },
@@ -234,7 +224,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingBanner = true
-                            banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            banner = uploadPictrsImage(imageIs, ctx).orEmpty()
                             isUploadingBanner = false
                         }
                     },
@@ -295,12 +285,6 @@ fun SettingsForm(
             },
         )
         SettingsCheckbox(
-            state = showNewPostNotifs,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_notifications_for_new_posts))
-            },
-        )
-        SettingsCheckbox(
             enabled = email.isNotEmpty(),
             state = sendNotificationsToEmail,
             title = {
@@ -314,6 +298,7 @@ fun SettingsForm(
             state = enable2FA,
         )
 
+        // TODO need to rework this
         if (curr2FAEnabled) {
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -321,8 +306,9 @@ fun SettingsForm(
             ) {
                 OutlinedButton(
                     onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
-                        ctx.startActivitySafe(intent)
+                        // TODO need to rework this
+                        // val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
+                        // ctx.startActivitySafe(intent)
                     },
                 ) {
                     Text(stringResource(R.string.settings_2fa_link))

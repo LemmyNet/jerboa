@@ -4,11 +4,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class CommentAggregates(
-    val comment_id: CommentId,
-    val score: Int,
-    val upvotes: Int,
-    val downvotes: Int,
+data class ImageUpload(
+    val local_user_id: LocalUserId,
+    val pictrs_alias: String,
+    val pictrs_delete_token: String,
     val published: String,
-    val child_count: Int,
 ) : Parcelable

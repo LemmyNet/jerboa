@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class CreatePrivateMessage(
     val content: String,
     val recipient_id: PersonId,
-    val auth: String,
 ) : Parcelable

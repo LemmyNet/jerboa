@@ -3,12 +3,15 @@ package com.jerboa.api
 import android.content.Context
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
+import com.jerboa.datatypes.PictrsImages
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.entity.Account
 import com.jerboa.toastException
 import com.jerboa.util.CustomHttpLoggingInterceptor
+import io.github.z4kn4fein.semver.Version
+import io.github.z4kn4fein.semver.toVersion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -27,15 +30,13 @@ import java.util.concurrent.TimeUnit
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
-const val MINIMUM_API_VERSION: String = "0.18"
+val MINIMUM_API_VERSION: Version = "0.18.0".toVersion()
 val REDACTED_QUERY_PARAMS = setOf("auth")
 val REDACTED_BODY_FIELDS = setOf("jwt", "password", "auth")
 
 interface API {
     @GET("site")
-    suspend fun getSite(
-        @QueryMap form: Map<String, String>,
-    ): Response<GetSiteResponse>
+    suspend fun getSite(): Response<GetSiteResponse>
 
     /**
      * Get / fetch posts, with various filters.
@@ -60,6 +61,12 @@ interface API {
     suspend fun login(
         @Body form: Login,
     ): Response<LoginResponse>
+
+    /**
+     * Validate an auth
+     */
+    @GET("user/validate_auth")
+    suspend fun validateAuth(): Response<SuccessResponse>
 
     /**
      * Like / vote on a post.
@@ -185,9 +192,7 @@ interface API {
      * Mark all replies as read.
      */
     @POST("user/mark_all_as_read")
-    suspend fun markAllAsRead(
-        @Body form: MarkAllAsRead,
-    ): Response<GetRepliesResponse>
+    suspend fun markAllAsRead(): Response<GetRepliesResponse>
 
     /**
      * Get mentions for your user.
@@ -217,9 +222,7 @@ interface API {
      * Get your unread counts
      */
     @GET("user/unread_count")
-    suspend fun getUnreadCount(
-        @QueryMap form: Map<String, String>,
-    ): Response<GetUnreadCountResponse>
+    suspend fun getUnreadCount(): Response<GetUnreadCountResponse>
 
     /**
      * Follow / subscribe to a community.
@@ -316,7 +319,6 @@ interface API {
     @POST
     suspend fun uploadImage(
         @Url url: String,
-        @Header("Cookie") token: String,
         @Part filePart: MultipartBody.Part,
     ): Response<PictrsImages>
 
@@ -326,6 +328,8 @@ interface API {
 
         var currentInstance: String = DEFAULT_INSTANCE
             private set
+
+        private var currentAuth: String? = null
 
         private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
         private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
@@ -343,35 +347,44 @@ interface API {
                 }
                 .build()
 
-        private fun buildUrl(): String {
-            return "https://$currentInstance/api/$VERSION/"
+        private fun buildUrl(instance: String): String {
+            return "https://$instance/api/$VERSION/"
         }
 
-        fun changeLemmyInstance(instance: String): API {
+        fun changeLemmyInstance(
+            instance: String,
+            auth: String?,
+        ): API {
             currentInstance = instance
-            api = buildApi(buildUrl())
+            currentAuth = auth
+            api = buildApi()
             return api!!
         }
 
         fun getInstance(): API {
             if (api == null) {
-                api = buildApi(buildUrl())
+                api = buildApi()
             }
             return api!!
         }
 
         fun createTempInstance(
             host: String,
+            auth: String? = null,
             customErrorHandler: ((Exception) -> Exception?)? = null,
         ): API {
-            return buildApi("https://$host/api/$VERSION/", customErrorHandler)
+            return buildApi(host, auth, customErrorHandler)
         }
 
         private fun buildApi(
-            baseUrl: String,
+            customUrl: String? = null,
+            customAuth: String? = null,
             customErrorHandler: ((Exception) -> Exception?)? = null,
         ): API {
             val currErrorHandler = customErrorHandler ?: errorHandler
+            val url = customUrl ?: currentInstance
+            val auth = customAuth ?: currentAuth
+            val baseUrl = buildUrl(url)
 
             val client =
                 httpClient.newBuilder()
@@ -394,6 +407,7 @@ interface API {
                                 .build()
                         }
                     }
+                    .addInterceptor(AuthInterceptor(auth))
                     .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
                     .build()
 
@@ -403,6 +417,19 @@ interface API {
                 .client(client)
                 .build()
                 .create(API::class.java)
+        }
+
+        /** * Interceptor to add auth token to requests */
+        class AuthInterceptor(private val auth: String?) : Interceptor {
+            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                val requestBuilder = chain.request().newBuilder()
+
+                // If token has been saved, add it to the request
+                auth?.let {
+                    requestBuilder.addHeader("Authorization", "Bearer $auth")
+                }
+                return chain.proceed(requestBuilder.build())
+            }
         }
 
         suspend fun checkIfLemmyInstance(url: String): Boolean {
@@ -416,7 +443,7 @@ interface API {
                 } else {
                     val api = createTempInstance(host)
                     return withContext(Dispatchers.IO) {
-                        return@withContext when (apiWrapper(api.getSite(emptyMap()))) {
+                        return@withContext when (apiWrapper(api.getSite())) {
                             is ApiState.Success -> {
                                 TEMP_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
                                 true
@@ -463,7 +490,6 @@ fun <T> apiWrapper(form: Response<T>): ApiState<T> {
 }
 
 suspend fun uploadPictrsImage(
-    account: Account,
     imageIs: InputStream,
     ctx: Context,
 ): String? {
@@ -478,8 +504,7 @@ suspend fun uploadPictrsImage(
                 imageIs.readBytes().toRequestBody(),
             )
         val url = "https://${API.currentInstance}/pictrs/image"
-        val cookie = "jwt=${account.jwt}"
-        val images = retrofitErrorHandler(api.uploadImage(url, cookie, part))
+        val images = retrofitErrorHandler(api.uploadImage(url, part))
         Log.d("jerboa", "Uploading done.")
         imageUrl = "$url/${images.files?.get(0)?.file}"
     } catch (e: Exception) {

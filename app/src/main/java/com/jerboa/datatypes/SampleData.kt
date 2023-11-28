@@ -8,7 +8,6 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityAggregates
 import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.LocalSite
 import com.jerboa.datatypes.types.LocalSiteRateLimit
 import com.jerboa.datatypes.types.Person
@@ -21,11 +20,9 @@ import com.jerboa.datatypes.types.PostAggregates
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.datatypes.types.RegistrationMode
 import com.jerboa.datatypes.types.Site
 import com.jerboa.datatypes.types.SiteAggregates
 import com.jerboa.datatypes.types.SiteView
-import com.jerboa.datatypes.types.SubscribedType
 
 val samplePost =
     Post(
@@ -165,7 +162,6 @@ val samplePerson =
         banner = null,
         deleted = false,
         matrix_user_id = null,
-        admin = false,
         bot_account = false,
         ban_expires = null,
         instance_id = 0,
@@ -186,7 +182,6 @@ val samplePerson2 =
         banner = null,
         deleted = false,
         matrix_user_id = null,
-        admin = false,
         bot_account = false,
         ban_expires = null,
         instance_id = 0,
@@ -214,19 +209,12 @@ val sampleCommunity =
 
 val samplePostAggregates =
     PostAggregates(
-        id = 56195,
         post_id = 135129,
         comments = 4,
         score = 8,
         upvotes = 8,
         downvotes = 0,
-        featured_local = false,
-        featured_community = false,
-        newest_comment_time_necro = "2022-01-02T04:02:44.592929",
-        newest_comment_time = "2022-01-02T04:02:44.592929",
         published = "2022-01-02T04:02:44.592929",
-        hot_rank = 5,
-        hot_rank_active = 6,
     )
 
 val samplePostView =
@@ -235,13 +223,15 @@ val samplePostView =
         creator = samplePerson,
         community = sampleCommunity,
         creator_banned_from_community = false,
+        creator_is_moderator = false,
+        creator_is_admin = false,
         counts = samplePostAggregates,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 2,
     )
 
 val sampleLinkPostView =
@@ -250,13 +240,15 @@ val sampleLinkPostView =
         creator = samplePerson,
         community = sampleCommunity,
         creator_banned_from_community = false,
+        creator_is_moderator = false,
+        creator_is_admin = false,
         counts = samplePostAggregates,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleLinkNoThumbnailPostView =
@@ -265,13 +257,15 @@ val sampleLinkNoThumbnailPostView =
         creator = samplePerson,
         community = sampleCommunity,
         creator_banned_from_community = false,
+        creator_is_moderator = false,
+        creator_is_admin = false,
         counts = samplePostAggregates,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleImagePostView =
@@ -280,13 +274,15 @@ val sampleImagePostView =
         creator = samplePerson,
         community = sampleCommunity,
         creator_banned_from_community = false,
+        creator_is_moderator = false,
+        creator_is_admin = false,
         counts = samplePostAggregates,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleMarkdownPostView =
@@ -295,13 +291,15 @@ val sampleMarkdownPostView =
         creator = samplePerson,
         community = sampleCommunity,
         creator_banned_from_community = false,
+        creator_is_moderator = false,
+        creator_is_admin = false,
         counts = samplePostAggregates,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleComment =
@@ -361,14 +359,12 @@ val sampleSecondReplyComment =
 
 val sampleCommentAggregates =
     CommentAggregates(
-        id = 28,
         comment_id = 24,
         score = 8,
         upvotes = 12,
         downvotes = 4,
         published = "2022-01-02T04:02:44.592929",
         child_count = 0,
-        hot_rank = 6,
     )
 
 val sampleCommentView =
@@ -382,7 +378,8 @@ val sampleCommentView =
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleSecondReplyCommentView =
@@ -396,7 +393,8 @@ val sampleSecondReplyCommentView =
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleReplyCommentView =
@@ -410,7 +408,8 @@ val sampleReplyCommentView =
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleCommentReply =
@@ -444,7 +443,8 @@ val sampleCommentReplyView =
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val samplePersonMentionView =
@@ -460,12 +460,12 @@ val samplePersonMentionView =
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleCommunityAggregates =
     CommunityAggregates(
-        id = 84,
         published = "2022-01-02T04:02:44.592929",
         community_id = 834,
         subscribers = 52,
@@ -475,7 +475,6 @@ val sampleCommunityAggregates =
         users_active_week = 98,
         users_active_month = 82,
         users_active_half_year = 91,
-        hot_rank = 3,
     )
 
 val sampleCommunityView =
@@ -488,18 +487,16 @@ val sampleCommunityView =
 
 val samplePersonAggregates =
     PersonAggregates(
-        id = 23,
         person_id = 54,
         post_count = 28,
-        post_score = 38,
         comment_count = 98,
-        comment_score = 168,
     )
 
 val samplePersonView =
     PersonView(
         person = samplePerson,
         counts = samplePersonAggregates,
+        is_admin = false,
     )
 
 val samplePrivateMessage =
@@ -557,7 +554,6 @@ val sampleLocalSite =
         default_post_listing_type = ListingType.All,
         default_theme = "main",
         federation_enabled = true,
-        federation_worker_count = 64,
         id = 1,
         legal_information = null,
         published = "2023-01-01",
@@ -566,12 +562,12 @@ val sampleLocalSite =
         slur_filter_regex = null,
         updated = null,
         hide_modlog_mod_names = true,
+        federation_signed_fetch = false,
         reports_email_admins = false,
     )
 
 val sampleSiteAggregates =
     SiteAggregates(
-        id = 23,
         site_id = 84,
         users = 8092,
         posts = 888929,
@@ -585,7 +581,6 @@ val sampleSiteAggregates =
 
 val local_site_rate_limit =
     LocalSiteRateLimit(
-        id = 1,
         local_site_id = 2,
         message = 2,
         message_per_second = 2,
@@ -599,7 +594,9 @@ val local_site_rate_limit =
         comment_per_second = 2,
         search = 2,
         search_per_second = 2,
-        published = "2022-01-02T04:02:44.592929",
+        import_user_settings = 2,
+        import_user_settings_per_second = 2,
+        published = "2022-01-01T09:53:46.904077",
     )
 
 val sampleSiteView =

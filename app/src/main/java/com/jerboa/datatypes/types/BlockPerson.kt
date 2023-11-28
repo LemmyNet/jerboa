@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class BlockPerson(
     val person_id: PersonId,
     val block: Boolean,
-    val auth: String,
 ) : Parcelable

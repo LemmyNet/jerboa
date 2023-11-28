@@ -18,11 +18,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.SearchType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.datatypes.types.Search
-import com.jerboa.datatypes.types.SearchType
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.getJWT
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommunityListViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -82,7 +81,6 @@ fun CommunityListActivity(
                                             q = search,
                                             type_ = SearchType.Communities,
                                             sort = SortType.TopAll,
-                                            auth = account.getJWT(),
                                         ),
                                 )
                             }

@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class PurgeComment(
     val comment_id: CommentId,
     val reason: String? = null,
-    val auth: String,
 ) : Parcelable

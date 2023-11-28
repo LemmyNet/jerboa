@@ -80,7 +80,7 @@
     <string name="community_icon">صورة المجتمع</string>
     <string name="community_joined">منضمٌّ له</string>
     <string name="community_link_users_month">%1$s مستخدم \ شهر</string>
-    <string name="community_list_search">ابحث...</string>
+    <string name="community_list_search">ابحث…</string>
     <string name="community_pending">انتظر الإذن</string>
     <string name="community_sortBy">رتِّب حسب</string>
     <string name="community_subscribe">اشترك</string>
@@ -297,7 +297,7 @@
     <string name="upvoted">مُؤيَّد</string>
     <string name="downvoted">مُعارَض</string>
     <string name="saved_image">حُفِظت الصورة</string>
-    <string name="saving_image">تُحفظ الصورة...</string>
+    <string name="saving_image">تُحفظ الصورة…</string>
     <string name="permission_denied">لم يُؤذَن</string>
     <string name="inbox_activity_replies">الردود</string>
     <string name="inbox_activity_mentions">الذِّكر</string>
@@ -337,7 +337,7 @@
     <string name="mark_as_read_on_scroll">علِّم المقروء فور المرور عليه</string>
     <string name="actionbar_info_header">أخبار %1$s@%2$s</string>
     <string name="person_profile_dm_person">أرسل رسالةً</string>
-    <string name="private_message_failed">فشل إرسال الرسالة، فيُعاد إرسالها...</string>
+    <string name="private_message_failed">فشل إرسال الرسالة، فيُعاد إرسالها…</string>
     <string name="private_message_placeholder">اكتب رسالتك هنا</string>
     <string name="private_message_success">أُرسلت الرسالة</string>
     <string name="image_failed_loading">فشل تحميل الصورة، وإن ضغطت أعدَّت تحميلها.</string>
@@ -376,7 +376,7 @@
     <string name="blocked_community_toast">%1$s محظور</string>
     <string name="unblocked_community_toast">%1$s أُلغيَ حظره</string>
     <string name="community_block_toast_failure">فشل إلغاء حظر هذا المجتمع</string>
-    <string name="saving_media">تُحفَظ الوسائط...</string>
+    <string name="saving_media">تُحفَظ الوسائط…</string>
     <string name="saved_media">حُفِظت الوسائط</string>
     <string name="share_image">شارك الصورة</string>
     <string name="save_image">احفظ الصورة</string>

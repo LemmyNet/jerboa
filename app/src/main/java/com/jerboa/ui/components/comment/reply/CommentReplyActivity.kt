@@ -39,7 +39,6 @@ fun CommentReplyActivity(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appState: JerboaAppState,
-    isModerator: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply activity")
     val ctx = LocalContext.current
@@ -100,7 +99,6 @@ fun CommentReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
-                            isModerator = isModerator,
                             modifier =
                                 Modifier
                                     .padding(padding)
@@ -116,7 +114,6 @@ fun CommentReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
-                            isModerator = isModerator,
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                             modifier =

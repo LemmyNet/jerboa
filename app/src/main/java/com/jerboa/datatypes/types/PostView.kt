@@ -1,6 +1,7 @@
 package com.jerboa.datatypes.types
 
 import android.os.Parcelable
+import com.jerboa.datatypes.SubscribedType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -9,6 +10,8 @@ data class PostView(
     val creator: Person,
     val community: Community,
     val creator_banned_from_community: Boolean,
+    val creator_is_moderator: Boolean,
+    val creator_is_admin: Boolean,
     val counts: PostAggregates,
     val subscribed: SubscribedType /* "Subscribed" | "NotSubscribed" | "Pending" */,
     val saved: Boolean,

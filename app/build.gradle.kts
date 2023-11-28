@@ -95,7 +95,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
 }
 
@@ -131,12 +131,15 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.5.0")
     implementation("io.coil-kt:coil-svg:2.5.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.7.0-20230922.054002-2")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.7.1")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
+
+    // Versioning
+    implementation("io.github.z4kn4fein:semver:1.4.2")
 
     // To use Kotlin annotation processing tool
     ksp("androidx.room:room-compiler:2.6.0")
@@ -174,7 +177,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.4")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -182,7 +185,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.7.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 
-    implementation("androidx.browser:browser:1.6.0")
+    implementation("androidx.browser:browser:1.7.0")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))

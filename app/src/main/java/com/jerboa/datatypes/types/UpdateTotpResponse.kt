@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GetUnreadCount(
-    val auth: String,
+data class UpdateTotpResponse(
+    val enabled: Boolean,
 ) : Parcelable

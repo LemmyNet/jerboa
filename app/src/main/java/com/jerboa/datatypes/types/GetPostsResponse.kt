@@ -8,4 +8,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class GetPostsResponse(
     val posts: List<PostView>,
+    val next_page: PaginationCursor? = null,
 ) : Parcelable

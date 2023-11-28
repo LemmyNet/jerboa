@@ -14,20 +14,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
-import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
 import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import com.jerboa.serializeToMap
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -54,19 +49,15 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     Log.d("Jerboa", "acc init for id: ${it.id}")
 
                     if (it.isAnon()) {
-                        API.changeLemmyInstance(DEFAULT_INSTANCE)
+                        API.changeLemmyInstance(DEFAULT_INSTANCE, null)
                     } else {
-                        API.changeLemmyInstance(it.instance)
+                        API.changeLemmyInstance(it.instance, it.jwt)
                     }
 
-                    getSite(
-                        GetSite(
-                            auth = it.getJWT(),
-                        ),
-                    )
+                    getSite()
 
                     if (!it.isAnon()) {
-                        fetchUnreadCounts(GetUnreadCount(auth = it.jwt))
+                        fetchUnreadCounts()
                     } else { // Reset the unread count if we're anonymous
                         unreadCountRes = ApiState.Empty
                     }
@@ -74,10 +65,10 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun getSite(form: GetSite): Job {
+    fun getSite(): Job {
         return viewModelScope.launch {
             siteRes = ApiState.Loading
-            siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
+            siteRes = apiWrapper(API.getInstance().getSite())
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
@@ -101,11 +92,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun fetchUnreadCounts(form: GetUnreadCount) {
+    fun fetchUnreadCounts() {
         viewModelScope.launch {
             viewModelScope.launch {
                 unreadCountRes = ApiState.Loading
-                unreadCountRes = apiWrapper(API.getInstance().getUnreadCount(form.serializeToMap()))
+                unreadCountRes = apiWrapper(API.getInstance().getUnreadCount())
             }
         }
     }
@@ -159,13 +150,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
-        }
-    }
-
-    fun siteVersion(): String {
-        return when (val res = siteRes) {
-            is ApiState.Success -> res.data.version
-            else -> MINIMUM_API_VERSION
         }
     }
 

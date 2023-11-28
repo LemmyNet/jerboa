@@ -1,11 +1,10 @@
 package com.jerboa
 
 import com.jerboa.api.API
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetSite
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.SortType
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -28,8 +27,7 @@ class ExampleUnitTest {
     fun testGetSite() =
         runBlocking {
             val api = API.getInstance()
-            val form = GetSite(null)
-            val out = api.getSite(form.serializeToMap()).body()!!
+            val out = api.getSite().body()!!
 
             assertEquals("Lemmy", out.site_view.site.name)
         }
@@ -56,7 +54,6 @@ class ExampleUnitTest {
             val form =
                 GetPost(
                     id = 139549,
-                    auth = null,
                 )
             val out = api.getPost(form.serializeToMap()).body()!!
             assertNotNull(out)

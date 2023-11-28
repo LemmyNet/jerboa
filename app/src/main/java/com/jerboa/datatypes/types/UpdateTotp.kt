@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class UserJoin(
-    val auth: String,
+data class UpdateTotp(
+    val totp_token: String,
+    val enabled: Boolean,
 ) : Parcelable
