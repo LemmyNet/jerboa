@@ -57,7 +57,7 @@ class LoginViewModel : ViewModel() {
                 Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
                 return@launch
             }
-            // Login was sucessful after this point
+            // Login was successful after this point
 
             // Change the temp lemmy instance to a new one with the auth
             tempAPI = API.createTempInstance(newInstance, jwt)
