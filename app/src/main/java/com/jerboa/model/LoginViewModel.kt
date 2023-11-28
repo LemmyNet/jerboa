@@ -34,7 +34,7 @@ class LoginViewModel : ViewModel() {
         ctx: Context,
     ) {
         val newInstance = getHostFromInstanceString(instance)
-        val tempAPI = API.createTempInstance(newInstance)
+        var tempAPI = API.createTempInstance(newInstance)
         var jwt: String
 
         viewModelScope.launch {
@@ -59,11 +59,11 @@ class LoginViewModel : ViewModel() {
             }
             // Login was sucessful after this point
 
-            // Change the lemmy instance to the new one
-            API.changeLemmyInstance(instance, jwt)
+            // Change the temp lemmy instance to a new one with the auth
+            tempAPI = API.createTempInstance(newInstance, jwt)
 
             // Fetch the site to get your name and id
-            siteViewModel.siteRes = apiWrapper(API.getInstance().getSite())
+            siteViewModel.siteRes = apiWrapper(tempAPI.getSite())
 
             try {
                 when (val siteRes = siteViewModel.siteRes) {
@@ -115,6 +115,7 @@ class LoginViewModel : ViewModel() {
                         accountViewModel.insert(account)
 
                         loading = false
+                        API.changeLemmyInstance(newInstance, jwt)
                         onGoHome()
                     }
 

@@ -370,17 +370,20 @@ interface API {
 
         fun createTempInstance(
             host: String,
+            auth: String? = null,
             customErrorHandler: ((Exception) -> Exception?)? = null,
         ): API {
-            return buildApi(host, customErrorHandler)
+            return buildApi(host, auth, customErrorHandler)
         }
 
         private fun buildApi(
             customUrl: String? = null,
+            customAuth: String? = null,
             customErrorHandler: ((Exception) -> Exception?)? = null,
         ): API {
             val currErrorHandler = customErrorHandler ?: errorHandler
             val url = customUrl ?: currentInstance
+            val auth = customAuth ?: currentAuth
             val baseUrl = buildUrl(url)
 
             val client =
@@ -404,7 +407,7 @@ interface API {
                                 .build()
                         }
                     }
-                    .addInterceptor(AuthInterceptor(currentAuth))
+                    .addInterceptor(AuthInterceptor(auth))
                     .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
                     .build()
 
