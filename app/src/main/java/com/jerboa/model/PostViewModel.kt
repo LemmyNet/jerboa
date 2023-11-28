@@ -36,7 +36,6 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
@@ -45,7 +44,7 @@ import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
 
-class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewModel() {
+class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -68,17 +67,14 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
 
     init {
-        this.getData(account)
+        this.getData()
     }
 
     fun updateSortType(sortType: CommentSortType) {
         this.sortType = sortType
     }
 
-    fun getData(
-        account: Account,
-        state: ApiState<GetPostResponse> = ApiState.Loading,
-    ) {
+    fun getData(state: ApiState<GetPostResponse> = ApiState.Loading) {
         viewModelScope.launch {
             // Set the commentId for the right case
             val postForm =
@@ -117,10 +113,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
         return id.isRight()
     }
 
-    fun fetchMoreChildren(
-        commentView: CommentView,
-        account: Account,
-    ) {
+    fun fetchMoreChildren(commentView: CommentView) {
         viewModelScope.launch {
             val existing = commentsRes
             when (existing) {
@@ -313,14 +306,13 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     companion object {
         class Factory(
             private val id: Either<PostId, CommentId>,
-            private val account: Account,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return PostViewModel(id, account) as T
+                return PostViewModel(id) as T
             }
         }
     }

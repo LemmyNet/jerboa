@@ -204,7 +204,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingAvatar = true
-                            avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            avatar = uploadPictrsImage(imageIs, ctx).orEmpty()
                             isUploadingAvatar = false
                         }
                     },
@@ -224,7 +224,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingBanner = true
-                            banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            banner = uploadPictrsImage(imageIs, ctx).orEmpty()
                             isUploadingBanner = false
                         }
                     },

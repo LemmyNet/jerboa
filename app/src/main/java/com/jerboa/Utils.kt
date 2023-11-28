@@ -1129,6 +1129,7 @@ fun getLocalizedListingTypeName(
             ListingType.All -> ctx.getString(R.string.home_all)
             ListingType.Local -> ctx.getString(R.string.home_local)
             ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+            ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
         }
     return returnString
 }
@@ -1559,8 +1560,11 @@ fun <I, O> ComponentActivity.registerActivityResultLauncher(
 fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
-    return snapshot?.data?.toFile()?.inputStream()
-        ?: API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
+    return if (snapshot != null) {
+        snapshot.data.toFile().inputStream()
+    } else {
+        API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
+    }
 }
 
 val videoRgx =

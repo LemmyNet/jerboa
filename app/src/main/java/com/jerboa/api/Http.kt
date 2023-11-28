@@ -5,7 +5,6 @@ import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.PictrsImages
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.entity.Account
 import com.jerboa.toastException
 import com.jerboa.util.CustomHttpLoggingInterceptor
 import io.github.z4kn4fein.semver.Version
@@ -320,8 +319,6 @@ interface API {
     @POST
     suspend fun uploadImage(
         @Url url: String,
-        // TODO get rid of this cookie
-        @Header("Cookie") token: String,
         @Part filePart: MultipartBody.Part,
     ): Response<PictrsImages>
 
@@ -490,7 +487,6 @@ fun <T> apiWrapper(form: Response<T>): ApiState<T> {
 }
 
 suspend fun uploadPictrsImage(
-    account: Account,
     imageIs: InputStream,
     ctx: Context,
 ): String? {
@@ -505,8 +501,7 @@ suspend fun uploadPictrsImage(
                 imageIs.readBytes().toRequestBody(),
             )
         val url = "https://${API.currentInstance}/pictrs/image"
-        val cookie = "jwt=${account.jwt}"
-        val images = retrofitErrorHandler(api.uploadImage(url, cookie, part))
+        val images = retrofitErrorHandler(api.uploadImage(url, part))
         Log.d("jerboa", "Uploading done.")
         imageUrl = "$url/${images.files?.get(0)?.file}"
     } catch (e: Exception) {

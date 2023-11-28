@@ -148,10 +148,7 @@ fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
     }
 }
 
-suspend fun checkIfJWTValid(
-    account: Account,
-    api: API,
-): CheckState {
+suspend fun checkIfJWTValid(api: API): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
         val resp = api.validateAuth()
@@ -249,7 +246,7 @@ suspend fun Account.checkAccountVerification(
                     p.first
                 }
                 AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
-                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(this, api)
+                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
                 AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
                 AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
             }

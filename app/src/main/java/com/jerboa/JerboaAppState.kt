@@ -180,7 +180,7 @@ class JerboaAppState(
      *
      * When you want to pass a [Parcelable] to another screen/activity
      */
-    private fun sendReturnForwards(
+    fun sendReturnForwards(
         key: String,
         value: Parcelable,
     ) {

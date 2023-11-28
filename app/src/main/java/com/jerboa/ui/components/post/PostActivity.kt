@@ -146,7 +146,7 @@ fun PostActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
@@ -154,7 +154,7 @@ fun PostActivity(
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
-        postViewModel.getData(account)
+        postViewModel.getData()
     }
 
     val selectedSortType = postViewModel.sortType
@@ -176,7 +176,7 @@ fun PostActivity(
         rememberPullRefreshState(
             refreshing = postViewModel.postRes.isRefreshing(),
             onRefresh = {
-                postViewModel.getData(account, ApiState.Refreshing)
+                postViewModel.getData(ApiState.Refreshing)
             },
         )
 
@@ -628,7 +628,6 @@ fun PostActivity(
                                         onFetchChildrenClick = { cv ->
                                             postViewModel.fetchMoreChildren(
                                                 commentView = cv,
-                                                account = account,
                                             )
                                         },
                                         onBlockCreatorClick = { person ->

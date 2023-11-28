@@ -273,6 +273,9 @@ enum class ListingType {
 
     @SerializedName("Subscribed")
     Subscribed,
+
+    @SerializedName("ModeratorView")
+    ModeratorView,
 }
 
 /**
