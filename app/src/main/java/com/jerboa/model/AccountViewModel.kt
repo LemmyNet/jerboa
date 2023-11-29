@@ -71,7 +71,7 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     ): Job = viewModelScope.launch {
         if (account.isAnon()) return@launch
 
-        API.cre
+   //     API.cre
 
 
         repository.delete(account)

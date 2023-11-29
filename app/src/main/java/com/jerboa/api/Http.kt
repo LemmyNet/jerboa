@@ -6,6 +6,7 @@ import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.toastException
 import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -24,6 +25,8 @@ import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
 const val DEFAULT_INSTANCE = "lemmy.ml"
 
 object API {
+    private var initialized = CompletableDeferred<Unit>()
+
     // Kinda crucial that newApi is initialized before we do anything with it
     // Example even before those parseUrl util calls
     private lateinit var newApi: LemmyApiV19
@@ -46,11 +49,12 @@ object API {
             .build()
 
     suspend fun getInstance(): LemmyApiV19 {
-        if (!::newApi.isInitialized) {
-            // SHOULD NOT HAPPEN
-            Log.e("Jerboa", "API.getInstance() called before API.setLemmyInstance()")
-            newApi = LemmyApi.getLemmyApi(DEFAULT_INSTANCE)
-        }
+        initialized.await()
+//        if (!::newApi.isInitialized) {
+//            // SHOULD NOT HAPPEN
+//            Log.e("Jerboa", "API.getInstance() called before API.setLemmyInstance()")
+//            newApi = LemmyApi.getLemmyApi(DEFAULT_INSTANCE)
+//        }
         return newApi
     }
 
@@ -63,16 +67,23 @@ object API {
         }
     }
 
+    // make it safe, can propagate exceptions atm
+
     suspend fun setLemmyInstance(
         instance: String,
         auth: String? = null,
+        waitOnInit: Boolean = true, // forces other calls to wait for this to finish
     ): LemmyApiV19 {
-        newApi = LemmyApi.getLemmyApi(instance, auth)
+        if (waitOnInit) {
+            initialized = CompletableDeferred()
+        }
+        setLemmyInstance(LemmyApi.getLemmyApi(instance, auth))
         return newApi
     }
 
     fun setLemmyInstance(api: LemmyApiV19) {
         newApi = api
+        initialized.complete(Unit)
     }
 
     suspend fun createTempInstance(
