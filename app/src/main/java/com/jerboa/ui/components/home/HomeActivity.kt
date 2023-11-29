@@ -132,9 +132,8 @@ fun HomeActivity(
                 },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
-                onClickSiteInfo = appState::toSiteSideBar,
                 scrollBehavior = scrollBehavior,
-                siteVersion = siteViewModel.siteVersion(),
+                onClickSiteInfo = appState::toSiteSideBar,
             )
         },
         content = { padding ->
@@ -421,7 +420,6 @@ fun MainTopBar(
     appSettingsViewModel: AppSettingsViewModel,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    siteVersion: String,
 ) {
     Column {
         HomeHeader(
@@ -448,7 +446,6 @@ fun MainTopBar(
                 homeViewModel.resetPosts()
             },
             onClickSiteInfo = onClickSiteInfo,
-            siteVersion = siteVersion,
         )
     }
 }

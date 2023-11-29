@@ -59,6 +59,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         private set
     var page by mutableIntStateOf(1)
         private set
+    private var pageCursor: PaginationCursor? by mutableStateOf(null)
 
     init {
         viewModelScope.launch {
@@ -68,7 +69,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                 .collect { account ->
                     updateSortType(account.defaultSortType.toEnumSafe())
                     updateListingType(account.defaultListingType.toEnumSafe())
-                    Log.d("jerboa", "Fetching posts")
+                    Log.d("homeviewmodel", "Fetching posts")
                     resetPosts()
                 }
         }
@@ -82,10 +83,6 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         this.listingType = listingType
     }
 
-    fun resetPage() {
-        page = 1
-    }
-
     fun nextPage() {
         page += 1
     }
@@ -94,7 +91,13 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         page -= 1
     }
 
-    fun getPosts(
+
+    private fun resetPage() {
+        page = 1
+        pageCursor = null
+    }
+
+    private fun getPosts(
         form: GetPosts,
         state: ApiState<GetPostsResponse> = ApiState.Loading,
     ) {
@@ -114,19 +117,25 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                     else -> return@launch
                 }
 
+            // Update the page cursor before fetching again
+            pageCursor = oldRes.data.next_page
             nextPage()
             val newRes = API.getInstance().getPosts(getForm()).toApiState()
 
             postsRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        ApiState.Success(
+                        val res =
                             GetPostsResponse(
-                                mergePosts(
-                                    oldRes.data.posts,
-                                    newRes.data.posts,
-                                ),
-                            ),
+                                posts =
+                                    mergePosts(
+                                        oldRes.data.posts,
+                                        newRes.data.posts,
+                                    ),
+                                next_page = newRes.data.next_page,
+                            )
+                        ApiState.Success(
+                            res,
                         )
                     }
 
@@ -219,6 +228,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         resetPage()
         getPosts(
             GetPosts(
+                page_cursor = pageCursor,
                 sort = sortType,
                 type_ = listingType,
             ),
@@ -228,8 +238,10 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun refreshPosts() {
         resetPage()
         getPosts(
+            // TODO remove duplicate
             GetPosts(
                 page = page,
+                page_cursor = pageCursor,
                 sort = sortType,
                 type_ = listingType,
             ),
@@ -237,9 +249,10 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         )
     }
 
-    fun getForm(): GetPosts {
+    private fun getForm(): GetPosts {
         return GetPosts(
             page = page,
+            page_cursor = pageCursor,
             sort = sortType,
             type_ = listingType,
         )

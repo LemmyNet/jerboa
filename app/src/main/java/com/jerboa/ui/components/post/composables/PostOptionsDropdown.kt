@@ -229,9 +229,7 @@ fun PostOptionsDropdown(
                     },
                 )
 
-                val mediaType = PostType.fromURL(url)
-
-                when (mediaType) {
+                when (val mediaType = PostType.fromURL(url)) {
                     PostType.Image ->
                         PopupMenuItem(
                             text = stringResource(R.string.share_image),

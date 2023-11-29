@@ -169,7 +169,6 @@ fun PersonProfileActivity(
                         scrollBehavior = scrollBehavior,
                         onBack = onBack,
                         isLoggedIn = { false },
-                        siteVersion = siteViewModel.siteVersion(),
                         matrixId = null,
                     )
                 }
@@ -234,7 +233,6 @@ fun PersonProfileActivity(
                         openDrawer = ::openDrawer,
                         onBack = onBack,
                         isLoggedIn = { !account.isAnon() },
-                        siteVersion = siteViewModel.siteVersion(),
                         matrixId = person.matrix_user_id,
                     )
                 }
@@ -727,7 +725,6 @@ fun UserTabs(
                                     onReplyClick = { cv ->
                                         appState.toCommentReply(
                                             replyItem = ReplyItem.CommentItem(cv),
-                                            isModerator = false,
                                         )
                                     },
                                     onSaveClick = { cv ->
@@ -807,7 +804,6 @@ fun UserTabs(
                                         showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                                     },
                                     account = account,
-                                    isModerator = { false },
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,

@@ -57,7 +57,7 @@
     <string name="comment_node_copy_comment">Copia testo del commento</string>
     <string name="comment_node_delete">Elimina</string>
     <string name="comment_node_edit">Modifica</string>
-    <string name="comment_node_go_to">Vai a</string>
+    <string name="comment_node_go_to">Vai a %1$s</string>
     <string name="comment_node_goto_comment">Mostra commento</string>
     <string name="comment_node_in">"in "</string>
     <string name="comment_node_more_replies">%1$s altre risposte</string>

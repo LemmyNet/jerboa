@@ -83,7 +83,6 @@ fun HomeHeader(
     selectedPostViewMode: PostViewMode,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
@@ -146,7 +145,6 @@ fun HomeHeader(
                         onClickSortType(it)
                     },
                     selectedSortType = selectedSortType,
-                    siteVersion = siteVersion,
                 )
             }
             Box {
@@ -187,7 +185,6 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-        siteVersion = it.vercruysse.lemmyapi.LemmyApi.MIN_SUPPORTED_VERSION,
     )
 }
 

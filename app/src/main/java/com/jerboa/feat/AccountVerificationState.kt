@@ -133,11 +133,10 @@ suspend fun checkIfAccountIsDeleted(
             } else {
                 Pair(CheckState.Failed, null)
             }
-        }
-//        else if ((res.exceptionOrNull() as? LemmyBadRequestException).response. == 404) {
-//            return@withContext Pair(CheckState.Failed, null)
-//        }
-        else {
+            // TODO
+        } else if (res.code() == 404) {
+            return@withContext Pair(CheckState.Failed, null)
+        } else {
             return@withContext Pair(CheckState.ConnectionFailed, null)
         }
     }

@@ -27,12 +27,10 @@ import com.jerboa.datatypes.data
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
+import com.jerboa.startActivitySafe
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
 
 @Composable
@@ -132,13 +130,9 @@ fun SettingsForm(
     val showReadPosts = rememberBooleanSettingState(luv?.local_user?.show_read_posts ?: false)
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
-
-    // TODO TOTP
-
-//    val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
-//    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
+    val curr2FAEnabled = luv?.local_user?.totp_2fa_enabled ?: false
+    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
     val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.data.shortForm) } }
-
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
@@ -160,8 +154,6 @@ fun SettingsForm(
             theme = theme,
             show_scores = showScores.value,
             discussion_languages = null,
-            // True -> generates a new 2FA token, False -> removes current, null -> do nothing
-            //  generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
         )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
     var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
@@ -305,14 +297,14 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
             },
         )
+        // TODO
 //        SettingsCheckbox(
 //            title = {
 //                Text(text = stringResource(R.string.settings_enable_2fa))
 //            },
 //            state = enable2FA,
 //        )
-// TODO impl totp
-
+//
 //        if (curr2FAEnabled) {
 //            Row(
 //                horizontalArrangement = Arrangement.Center,

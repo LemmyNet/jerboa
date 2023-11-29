@@ -249,7 +249,6 @@ fun PostActivity(
                                 selectedSortType = selectedSortType,
                                 onDismissRequest = { showSortOptions = false },
                                 onClickSortType = onClickSortType,
-                                siteVersion = siteViewModel.siteVersion(),
                             )
                         }
                     },
@@ -281,14 +280,6 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val setIdModerators =
-                            postRes.data.moderators
-                                .map { it.moderator.id }
-                                .toImmutableSet()
-
-                        fun isModerator(id: Int): Boolean {
-                            return setIdModerators.contains(id)
-                        }
 
                         if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
@@ -345,10 +336,8 @@ fun PostActivity(
                                         }
                                     },
                                     onReplyClick = { pv ->
-                                        val isModerator = isModerator(pv.creator, postRes.data.moderators)
                                         appState.toCommentReply(
                                             replyItem = ReplyItem.PostItem(pv),
-                                            isModerator = isModerator,
                                         )
                                     },
                                     onPostClick = {},
@@ -435,11 +424,6 @@ fun PostActivity(
                                         }
                                     },
                                     showReply = true, // Do nothing
-                                    isModerator =
-                                        isModerator(
-                                            postView.creator,
-                                            postRes.data.moderators,
-                                        ),
                                     showCommunityName = true,
                                     fullBody = true,
                                     account = account,
@@ -580,10 +564,8 @@ fun PostActivity(
                                             }
                                         },
                                         onReplyClick = { cv ->
-                                            val isModerator = isModerator(cv.creator, postRes.data.moderators)
                                             appState.toCommentReply(
                                                 replyItem = ReplyItem.CommentItem(cv),
-                                                isModerator = isModerator,
                                             )
                                         },
                                         onSaveClick = { cv ->
@@ -662,7 +644,6 @@ fun PostActivity(
                                         },
                                         onPostClick = {}, // Do nothing
                                         account = account,
-                                        isModerator = ::isModerator,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),
                                         isCollapsedByParent = false,

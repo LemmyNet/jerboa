@@ -8,17 +8,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.util.TypedValue
 import android.webkit.MimeTypeMap.getFileExtensionFromUrl
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -755,13 +753,6 @@ fun isPostCreator(commentView: CommentView): Boolean {
     return commentView.creator.id == commentView.post.creator_id
 }
 
-fun isModerator(
-    person: Person,
-    moderators: List<CommunityModeratorView>,
-): Boolean {
-    return moderators.map { it.moderator.id }.contains(person.id)
-}
-
 data class InputField(
     val label: String,
     val hasError: Boolean,
@@ -836,20 +827,6 @@ fun imageInputStreamFromUri(
     uri: Uri,
 ): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
-}
-
-fun decodeUriToBitmap(
-    ctx: Context,
-    uri: Uri,
-): Bitmap? {
-    Log.d("jerboa", "decodeUriToBitmap INPUT: $uri")
-    return if (SDK_INT < 28) {
-        @Suppress("DEPRECATION")
-        MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
-    } else {
-        val source = ImageDecoder.createSource(ctx.contentResolver, uri)
-        ImageDecoder.decodeBitmap(source)
-    }
 }
 
 fun scrollToTop(
@@ -1091,7 +1068,7 @@ fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
 ): Int {
-    return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.resources.displayMetrics).toInt()
 }
 
 fun findAndUpdatePrivateMessage(

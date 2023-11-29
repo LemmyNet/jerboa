@@ -233,8 +233,8 @@ val samplePostView =
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 2,
     )
 
 val sampleLinkPostView =
@@ -250,8 +250,8 @@ val sampleLinkPostView =
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleLinkNoThumbnailPostView =
@@ -267,8 +267,8 @@ val sampleLinkNoThumbnailPostView =
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleImagePostView =
@@ -284,8 +284,8 @@ val sampleImagePostView =
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleMarkdownPostView =
@@ -301,8 +301,8 @@ val sampleMarkdownPostView =
         saved = false,
         read = false,
         creator_blocked = false,
+        unread_comments = 1,
         my_vote = null,
-        unread_comments = 0,
     )
 
 val sampleComment =
@@ -377,13 +377,12 @@ val sampleCommentView =
         post = samplePost,
         community = sampleCommunity,
         counts = sampleCommentAggregates,
-        creator_is_moderator = false,
-        creator_is_admin = false,
         creator_banned_from_community = false,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleSecondReplyCommentView =
@@ -394,12 +393,11 @@ val sampleSecondReplyCommentView =
         community = sampleCommunity,
         counts = sampleCommentAggregates,
         creator_banned_from_community = false,
-        creator_is_moderator = false,
-        creator_is_admin = false,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleReplyCommentView =
@@ -410,12 +408,11 @@ val sampleReplyCommentView =
         community = sampleCommunity,
         counts = sampleCommentAggregates,
         creator_banned_from_community = false,
-        creator_is_moderator = false,
-        creator_is_admin = false,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleCommentReply =
@@ -443,15 +440,14 @@ val sampleCommentReplyView =
         creator = samplePerson2,
         recipient = samplePerson,
         post = samplePost,
-        creator_is_moderator = false,
-        creator_is_admin = false,
         community = sampleCommunity,
         counts = sampleCommentAggregates,
         creator_banned_from_community = false,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val samplePersonMentionView =
@@ -463,13 +459,12 @@ val samplePersonMentionView =
         post = samplePost,
         community = sampleCommunity,
         counts = sampleCommentAggregates,
-        creator_is_moderator = false,
-        creator_is_admin = false,
         creator_banned_from_community = false,
         subscribed = SubscribedType.NotSubscribed,
         saved = false,
         creator_blocked = false,
-        my_vote = null,
+        creator_is_moderator = false,
+        creator_is_admin = false,
     )
 
 val sampleCommunityAggregates =
@@ -570,8 +565,8 @@ val sampleLocalSite =
         slur_filter_regex = null,
         updated = null,
         hide_modlog_mod_names = true,
-        reports_email_admins = false,
         federation_signed_fetch = false,
+        reports_email_admins = false,
     )
 
 val sampleSiteAggregates =
@@ -602,9 +597,9 @@ val local_site_rate_limit =
         comment_per_second = 2,
         search = 2,
         search_per_second = 2,
-        published = "2022-01-02T04:02:44.592929",
-        import_user_settings = 1,
-        import_user_settings_per_second = 5
+        import_user_settings = 2,
+        import_user_settings_per_second = 2,
+        published = "2022-01-01T09:53:46.904077",
     )
 
 val sampleSiteView =

@@ -95,7 +95,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
 }
 
@@ -137,6 +137,9 @@ dependencies {
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
+
+    // Versioning
+    implementation("io.github.z4kn4fein:semver:1.4.2")
 
     // To use Kotlin annotation processing tool
     ksp("androidx.room:room-compiler:2.6.0")

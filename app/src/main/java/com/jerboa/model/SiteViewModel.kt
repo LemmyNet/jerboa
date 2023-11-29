@@ -55,7 +55,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                         API.setLemmyInstance(it.instance, it.jwt)
                     }
 
-                    API.getInstance().getSite()
+                    getSite()
 
                     if (!it.isAnon()) {
                         fetchUnreadCounts()
@@ -153,13 +153,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
-        }
-    }
-
-    fun siteVersion(): String {
-        return when (val res = siteRes) {
-            is ApiState.Success -> res.data.version
-            else -> LemmyApi.MIN_SUPPORTED_VERSION + ".0"
         }
     }
 

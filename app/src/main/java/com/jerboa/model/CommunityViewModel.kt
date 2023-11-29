@@ -58,33 +58,31 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
     var sortType by mutableStateOf(SortType.Active)
         private set
+
     var page by mutableIntStateOf(1)
         private set
+    private var pageCursor: PaginationCursor? by mutableStateOf(null)
+
+    private var communityId: Int? by mutableStateOf(null)
+    private var communityName: String? by mutableStateOf(null)
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
     }
 
-    fun resetPage() {
+    private fun resetPage() {
         page = 1
+        pageCursor = null
     }
 
-    fun nextPage() {
-        page += 1
-    }
-
-    fun prevPage() {
-        page -= 1
-    }
-
-    fun getCommunity(form: GetCommunity) {
+    private fun getCommunity(form: GetCommunity) {
         viewModelScope.launch {
             communityRes = ApiState.Loading
             communityRes = API.getInstance().getCommunity(form).toApiState()
         }
     }
 
-    fun getPosts(
+    private fun getPosts(
         form: GetPosts,
         state: ApiState<GetPostsResponse> = ApiState.Loading,
     ) {
@@ -94,7 +92,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
         }
     }
 
-    fun appendPosts(id: CommunityId) {
+    fun appendPosts() {
         viewModelScope.launch {
             val oldRes = postsRes
             postsRes =
@@ -104,25 +102,23 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                     else -> return@launch
                 }
 
+            // Update the page cursor before fetching again
+            pageCursor = oldRes.data.next_page
             nextPage()
-            val form =
-                GetPosts(
-                    community_id = id,
-                    page = page,
-                    sort = sortType,
-                )
 
-            val newRes = API.getInstance().getPosts(form).toApiState()
+            val newRes = API.getInstance().getPosts(getForm()).toApiState()
 
             postsRes =
                 when (newRes) {
                     is ApiState.Success -> {
                         ApiState.Success(
                             GetPostsResponse(
-                                mergePosts(
-                                    oldRes.data.posts,
-                                    newRes.data.posts,
-                                ),
+                                posts =
+                                    mergePosts(
+                                        oldRes.data.posts,
+                                        newRes.data.posts,
+                                    ),
+                                next_page = newRes.data.next_page,
                             ),
                         )
                     }
@@ -133,6 +129,21 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                     }
                 }
         }
+    }
+
+    fun resetPosts() {
+        resetPage()
+        getPosts(
+            getForm(),
+        )
+    }
+
+    fun refreshPosts() {
+        resetPage()
+        getPosts(
+            getForm(),
+            ApiState.Refreshing,
+        )
     }
 
     fun followCommunity(
@@ -283,9 +294,8 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     }
 
     init {
-
-        val communityId = communityArg.fold({ it }, { null })
-        val communityName = communityArg.fold({ null }, { it })
+        communityId = communityArg.fold({ it }, { null })
+        communityName = communityArg.fold({ null }, { it })
 
         this.resetPage()
 
@@ -297,13 +307,16 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                 ),
         )
         this.getPosts(
-            form =
-                GetPosts(
-                    community_id = communityId,
-                    community_name = communityName,
-                    page = this.page,
-                    sort = this.sortType,
-                ),
+            getForm(),
+        )
+    }
+
+    private fun getForm(): GetPosts {
+        return GetPosts(
+            community_id = communityId,
+            community_name = communityName,
+            page_cursor = pageCursor,
+            sort = sortType,
         )
     }
 

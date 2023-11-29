@@ -375,7 +375,6 @@ fun InboxTabs(
                                             onReplyClick = { cr ->
                                                 appState.toCommentReply(
                                                     replyItem = ReplyItem.CommentReplyItem(cr),
-                                                    isModerator = false,
                                                 )
                                             },
                                             onSaveClick = { cr ->
@@ -569,7 +568,6 @@ fun InboxTabs(
                                             onReplyClick = { pm ->
                                                 appState.toCommentReply(
                                                     replyItem = ReplyItem.MentionReplyItem(pm),
-                                                    isModerator = false,
                                                 )
                                             },
                                             onSaveClick = { pm ->

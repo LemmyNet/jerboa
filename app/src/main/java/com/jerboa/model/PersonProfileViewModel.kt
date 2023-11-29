@@ -70,15 +70,15 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         page = 1
     }
 
-    fun nextPage() {
+    private fun nextPage() {
         page += 1
     }
 
-    fun prevPage() {
+    private fun prevPage() {
         page -= 1
     }
 
-    fun updateSavedOnly(savedOnly: Boolean) {
+    private fun updateSavedOnly(savedOnly: Boolean) {
         this.savedOnly = savedOnly
     }
 

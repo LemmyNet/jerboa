@@ -61,12 +61,9 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
 
-    var pageReplies by mutableIntStateOf(1)
-        private set
-    var pageMentions by mutableIntStateOf(1)
-        private set
-    var pageMessages by mutableIntStateOf(1)
-        private set
+    private var pageReplies by mutableIntStateOf(1)
+    private var pageMentions by mutableIntStateOf(1)
+    private var pageMessages by mutableIntStateOf(1)
     var unreadOnly by mutableStateOf(true)
         private set
 

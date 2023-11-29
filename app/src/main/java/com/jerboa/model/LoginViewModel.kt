@@ -92,6 +92,8 @@ class LoginViewModel : ViewModel() {
                                 verificationState = 0,
                             )
 
+
+                        // TODO remove current based on info
                         // Save that info in the DB
                         accountViewModel.insert(account)
 

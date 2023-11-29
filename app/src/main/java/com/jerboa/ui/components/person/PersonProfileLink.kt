@@ -67,6 +67,7 @@ fun PersonProfileLink(
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
+    isAdmin: Boolean = false,
     isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
     showAvatar: Boolean,
@@ -97,14 +98,13 @@ fun PersonProfileLink(
                     tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
-            // TODO should be on localuser now
-//            if (person.admin) {
-//                Icon(
-//                    imageVector = Icons.Outlined.Shield,
-//                    contentDescription = stringResource(R.string.person_iconAdmin),
-//                    tint = MaterialTheme.colorScheme.primary,
-//                )
-//            }
+            if (isAdmin) {
+                Icon(
+                    imageVector = Icons.Outlined.Shield,
+                    contentDescription = stringResource(R.string.person_iconAdmin),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
             if (isCommunityBanned || person.banned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,

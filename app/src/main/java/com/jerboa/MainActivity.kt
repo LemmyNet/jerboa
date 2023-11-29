@@ -501,20 +501,11 @@ class MainActivity : AppCompatActivity() {
 
                     composable(
                         route = Route.COMMENT_REPLY,
-                        arguments =
-                            listOf(
-                                navArgument(Route.CommentReplyArgs.IS_MODERATOR) {
-                                    type = Route.CommentReplyArgs.IS_MODERATOR_TYPE
-                                },
-                            ),
                     ) {
-                        val args = Route.CommentReplyArgs(it)
-
                         CommentReplyActivity(
                             accountViewModel = accountViewModel,
                             appState = appState,
                             siteViewModel = siteViewModel,
-                            isModerator = args.isModerator,
                         )
                     }
 

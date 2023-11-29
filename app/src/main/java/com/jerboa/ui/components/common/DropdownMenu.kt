@@ -43,7 +43,6 @@ val isTopSort = { sort: SortType -> sort.name.startsWith("Top") }
 fun SortOptionsDropdown(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    siteVersion: String,
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
 ) {
@@ -98,7 +97,6 @@ fun CommentSortOptionsDropdown(
     onDismissRequest: () -> Unit,
     onClickSortType: (CommentSortType) -> Unit,
     selectedSortType: CommentSortType,
-    siteVersion: String,
 ) {
     CascadeDropdownMenu(
         expanded = expanded,

@@ -47,23 +47,62 @@ val SortType.data: SortData
         SortType.Hot -> SortData(R.string.sorttype_hot, R.string.sorttype_hot, Icons.Outlined.LocalFireDepartment)
         SortType.New -> SortData(R.string.sorttype_new, R.string.sorttype_new, Icons.Outlined.BrightnessLow)
         SortType.Old -> SortData(R.string.sorttype_old, R.string.sorttype_old, Icons.Outlined.History)
-        SortType.Controversial -> SortData(R.string.sorttype_controversial, R.string.sorttype_controversial, Icons.Outlined.ThumbsUpDown)
+        SortType.Controversial -> SortData(
+            R.string.sorttype_controversial,
+            R.string.sorttype_controversial,
+            Icons.Outlined.ThumbsUpDown
+        )
+
         SortType.TopDay -> SortData(R.string.sorttype_topday, R.string.dialogs_top_day, Icons.Outlined.BarChart)
         SortType.TopWeek -> SortData(R.string.sorttype_topweek, R.string.dialogs_top_week, Icons.Outlined.BarChart)
         SortType.TopMonth -> SortData(R.string.sorttype_topmonth, R.string.dialogs_top_month, Icons.Outlined.BarChart)
         SortType.TopYear -> SortData(R.string.sorttype_topyear, R.string.dialogs_top_year, Icons.Outlined.BarChart)
         SortType.TopAll -> SortData(R.string.sorttype_topall, R.string.dialogs_top_all, Icons.Outlined.BarChart)
-        SortType.MostComments -> SortData(R.string.sorttype_mostcomments, R.string.sorttype_mostcomments, Icons.Outlined.FormatListNumbered)
-        SortType.NewComments -> SortData(R.string.sorttype_newcomments, R.string.sorttype_newcomments, Icons.Outlined.NewReleases)
-        SortType.TopHour -> SortData(R.string.sorttype_tophour, R.string.dialogs_top_hour, Icons.Outlined.BarChart)
-        SortType.TopSixHour -> SortData(R.string.sorttype_topsixhour, R.string.dialogs_top_six_hour, Icons.Outlined.BarChart)
-        SortType.TopTwelveHour -> SortData(R.string.sorttype_toptwelvehour, R.string.dialogs_top_twelve_hour, Icons.Outlined.BarChart)
-        SortType.TopThreeMonths -> SortData(R.string.sorttype_topthreemonths, R.string.dialogs_top_three_month, Icons.Outlined.BarChart)
-        SortType.TopSixMonths -> SortData(R.string.sorttype_topsixmonths, R.string.dialogs_top_six_month, Icons.Outlined.BarChart )
-        SortType.TopNineMonths -> SortData(R.string.sorttype_topninemonths, R.string.dialogs_top_nine_month, Icons.Outlined.BarChart )
-        SortType.Scaled -> TODO() // TODO
-    }
+        SortType.MostComments -> SortData(
+            R.string.sorttype_mostcomments,
+            R.string.sorttype_mostcomments,
+            Icons.Outlined.FormatListNumbered
+        )
 
+        SortType.NewComments -> SortData(
+            R.string.sorttype_newcomments,
+            R.string.sorttype_newcomments,
+            Icons.Outlined.NewReleases
+        )
+
+        SortType.TopHour -> SortData(R.string.sorttype_tophour, R.string.dialogs_top_hour, Icons.Outlined.BarChart)
+        SortType.TopSixHour -> SortData(
+            R.string.sorttype_topsixhour,
+            R.string.dialogs_top_six_hour,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopTwelveHour -> SortData(
+            R.string.sorttype_toptwelvehour,
+            R.string.dialogs_top_twelve_hour,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopThreeMonths -> SortData(
+            R.string.sorttype_topthreemonths,
+            R.string.dialogs_top_three_month,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopSixMonths -> SortData(
+            R.string.sorttype_topsixmonths,
+            R.string.dialogs_top_six_month,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopNineMonths -> SortData(
+            R.string.sorttype_topninemonths,
+            R.string.dialogs_top_nine_month,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.Scaled -> SortData(R.string.sorttype_scaled, R.string.sorttype_scaled, Icons.Outlined.Scale)
+    }
 
 
 /**
