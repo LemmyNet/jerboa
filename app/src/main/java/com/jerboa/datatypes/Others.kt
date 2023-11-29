@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.Scale
 import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jerboa.R
@@ -143,15 +144,15 @@ fun getLocalizedListingTypeName(
  */
 fun getLocalizedCommentSortTypeName(
     ctx: Context,
-    commentSortType: it.vercruysse.lemmyapi.dto.CommentSortType,
+    commentSortType: CommentSortType,
 ): String {
     val returnString =
         when (commentSortType) {
-            it.vercruysse.lemmyapi.dto.CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-            it.vercruysse.lemmyapi.dto.CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-            it.vercruysse.lemmyapi.dto.CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-            it.vercruysse.lemmyapi.dto.CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-            it.vercruysse.lemmyapi.dto.CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+            CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+            CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+            CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+            CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+            CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
         }
     return returnString
 }
