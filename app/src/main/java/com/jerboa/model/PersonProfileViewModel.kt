@@ -300,7 +300,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             markPostRes = ApiState.Loading
             markPostRes = API.getInstance().markPostAsRead(form).toApiState()
 
-
             when (markPostRes) {
                 is ApiState.Success -> {
                     updatePost(post.copy(read = form.read))

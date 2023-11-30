@@ -60,7 +60,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import org.ocpsoft.prettytime.PrettyTime
 import org.xmlpull.v1.XmlPullParser
@@ -74,7 +73,6 @@ import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
-
 
 // / This should be done in a UI wrapper
 fun toastException(
@@ -1438,7 +1436,7 @@ fun Context.getInputStream(url: String): InputStream {
         API.httpClient.newCall(
             Request.Builder()
                 .url(url)
-                .build()
+                .build(),
         ).execute().body?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }

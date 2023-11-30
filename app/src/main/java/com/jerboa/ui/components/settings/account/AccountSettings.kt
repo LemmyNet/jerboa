@@ -27,10 +27,12 @@ import com.jerboa.datatypes.data
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
-import com.jerboa.startActivitySafe
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
 
 @Composable

@@ -23,9 +23,14 @@ import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
 // Reuse httpClient
 
 const val DEFAULT_INSTANCE = "lemmy.ml"
+const val DEFAULT_VERSION = "0.19.0"
 
 object API {
     private var initialized = CompletableDeferred<Unit>()
+
+    // Not super reliable if used during startup
+    // But simplifies a lot of things
+    var version: String = DEFAULT_VERSION
 
     // Kinda crucial that newApi is initialized before we do anything with it
     // Example even before those parseUrl util calls
@@ -82,6 +87,7 @@ object API {
     }
 
     fun setLemmyInstance(api: LemmyApiV19) {
+        API.version = api.version
         newApi = api
         initialized.complete(Unit)
     }

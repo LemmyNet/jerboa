@@ -35,6 +35,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -57,8 +58,9 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
-    var page by mutableIntStateOf(1)
-        private set
+
+    private var page by mutableIntStateOf(1)
+
     private var pageCursor: PaginationCursor? by mutableStateOf(null)
 
     init {
@@ -83,14 +85,13 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         this.listingType = listingType
     }
 
-    fun nextPage() {
+    private fun nextPage() {
         page += 1
     }
 
-    fun prevPage() {
+    private fun prevPage() {
         page -= 1
     }
-
 
     private fun resetPage() {
         page = 1
@@ -264,8 +265,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
-
-            when ( API.getInstance().markPostAsRead(form).toApiState()) {
+            when (API.getInstance().markPostAsRead(form).toApiState()) {
                 is ApiState.Success -> {
                     updatePost(post.copy(read = form.read))
                 }
@@ -274,6 +274,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
             }
         }
     }
+
     companion object {
         val Factory =
             viewModelFactory {

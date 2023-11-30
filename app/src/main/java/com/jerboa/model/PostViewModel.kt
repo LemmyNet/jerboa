@@ -135,7 +135,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
 
             when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
-                     updateComment(likeRes.data.comment_view)
+                    updateComment(likeRes.data.comment_view)
                 }
 
                 else -> {}

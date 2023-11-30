@@ -20,7 +20,6 @@ import org.junit.Test
  */
 @Ignore
 class ExampleUnitTest {
-
     @Before
     fun init_api() {
         runBlocking { API.setLemmyInstance(DEFAULT_INSTANCE) }
@@ -75,5 +74,5 @@ class ExampleUnitTest {
             val out = api.login(form).body()!!
             assertNotNull(out.jwt)
         }
-    */
+     */
 }

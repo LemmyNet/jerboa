@@ -19,7 +19,6 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse

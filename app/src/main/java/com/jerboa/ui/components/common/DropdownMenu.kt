@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.datatypes.data
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
@@ -51,7 +52,7 @@ fun SortOptionsDropdown(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
-        getSupportedEntries<SortType>(siteVersion).filter { !isTopSort(it) }.forEach {
+        getSupportedEntries<SortType>(API.version).filter { !isTopSort(it) }.forEach {
             DropdownMenuItem(
                 text = { Text(stringResource(it.data.longForm)) },
                 leadingIcon = { Icon(it.data.icon, contentDescription = null) },
@@ -73,7 +74,7 @@ fun SortOptionsDropdown(
                     Modifier
                 },
             children = {
-                getSupportedEntries<SortType>(siteVersion).filter(isTopSort).forEach {
+                getSupportedEntries<SortType>(API.version).filter(isTopSort).forEach {
                     DropdownMenuItem(
                         text = { Text(stringResource(it.data.longForm)) },
                         onClick = {
@@ -102,7 +103,7 @@ fun CommentSortOptionsDropdown(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
     ) {
-        getSupportedEntries<CommentSortType>(siteVersion).forEach {
+        getSupportedEntries<CommentSortType>(API.version).forEach {
             DropdownMenuItem(
                 text = { Text(stringResource(it.data.text)) },
                 leadingIcon = { Icon(imageVector = it.data.icon, contentDescription = null) },

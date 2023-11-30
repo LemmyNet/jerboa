@@ -1,6 +1,5 @@
 package com.jerboa.feat
 
-import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.jerboa.R
 import com.jerboa.toEnum

@@ -21,6 +21,7 @@ import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
+import it.vercruysse.lemmyapi.exception.LemmyBadRequestException
 import it.vercruysse.lemmyapi.v0x19.LemmyApi
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetailsResponse
@@ -134,7 +135,7 @@ suspend fun checkIfAccountIsDeleted(
                 Pair(CheckState.Failed, null)
             }
             // TODO
-        } else if (res.code() == 404) {
+        } else if ((res.exceptionOrNull() as? LemmyBadRequestException)?.code == 404) {
             return@withContext Pair(CheckState.Failed, null)
         } else {
             return@withContext Pair(CheckState.ConnectionFailed, null)

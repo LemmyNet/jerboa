@@ -33,6 +33,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -59,8 +60,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     var sortType by mutableStateOf(SortType.Active)
         private set
 
-    var page by mutableIntStateOf(1)
-        private set
+    private var page by mutableIntStateOf(1)
     private var pageCursor: PaginationCursor? by mutableStateOf(null)
 
     private var communityId: Int? by mutableStateOf(null)
@@ -73,6 +73,14 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     private fun resetPage() {
         page = 1
         pageCursor = null
+    }
+
+    private fun nextPage() {
+        page += 1
+    }
+
+    private fun prevPage() {
+        page -= 1
     }
 
     private fun getCommunity(form: GetCommunity) {
@@ -281,7 +289,6 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
         appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
             markPostRes = API.getInstance().markPostAsRead(form).toApiState()
-
 
             when (markPostRes) {
                 is ApiState.Success -> {

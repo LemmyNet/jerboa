@@ -62,7 +62,6 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
-import com.jerboa.isModerator
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
@@ -88,7 +87,6 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"

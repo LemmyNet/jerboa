@@ -34,7 +34,6 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
             repository.removeCurrent()
         }
 
-
     fun setCurrent(account: Account): Job =
         viewModelScope.launch {
             API.setLemmyInstance(account.instance, account.jwt)
@@ -68,23 +67,23 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     fun deleteAccountAndSwapCurrent(
         account: Account,
         swapToAnon: Boolean = false,
-    ): Job = viewModelScope.launch {
-        if (account.isAnon()) return@launch
+    ): Job =
+        viewModelScope.launch {
+            if (account.isAnon()) return@launch
 
-   //     API.cre
+            //     API.cre
 
+            repository.delete(account)
 
-        repository.delete(account)
+            val accounts = repository.allAccounts.value
+            val nextAcc = accounts?.firstOrNull { it.id != account.id }
 
-        val accounts = repository.allAccounts.value
-        val nextAcc = accounts?.firstOrNull { it.id != account.id }
-
-        if (!swapToAnon && nextAcc != null) {
-            setCurrent(nextAcc).join()
-        } else {
-            API.setLemmyInstance(DEFAULT_INSTANCE)
+            if (!swapToAnon && nextAcc != null) {
+                setCurrent(nextAcc).join()
+            } else {
+                API.setLemmyInstance(DEFAULT_INSTANCE)
+            }
         }
-    }
 }
 
 object AccountViewModelFactory {
