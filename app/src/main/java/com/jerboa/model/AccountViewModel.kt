@@ -25,7 +25,9 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     fun insert(account: Account) =
         viewModelScope.launch {
             // Remove the default account
-            removeCurrent()
+            if (account.current) {
+                repository.removeCurrent()
+            }
             repository.insert(account)
         }
 

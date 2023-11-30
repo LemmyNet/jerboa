@@ -134,7 +134,6 @@ suspend fun checkIfAccountIsDeleted(
             } else {
                 Pair(CheckState.Failed, null)
             }
-            // TODO
         } else if ((res.exceptionOrNull() as? LemmyBadRequestException)?.code == 404) {
             return@withContext Pair(CheckState.Failed, null)
         } else {
@@ -158,10 +157,9 @@ suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
 
         return@withContext if (resp.isSuccess) {
             CheckState.Passed
-            // Could check for exact body response `{"error":"not_logged_in"}` but could change over time and is unneeded
-//        } else if (resp.code() == 400) {
-//            CheckState.Failed
-            // TODO
+            //  Could check for exact body response `{"error":"not_logged_in"}` but could change over time and is unneeded
+        } else if ((resp.exceptionOrNull() as? LemmyBadRequestException)?.code in 400..499) {
+            CheckState.Failed
         } else {
             CheckState.ConnectionFailed
         }
@@ -182,6 +180,7 @@ suspend fun checkIfSiteRetrievalSucceeded(
                 checkIfSiteRetrievalSucceeded(siteViewModel, account)
             }
         }
+
         else -> {
             siteViewModel.getSite().join()
             when (val res2 = siteViewModel.siteRes) {
@@ -240,6 +239,7 @@ suspend fun Account.checkAccountVerification(
                     // Anon account does not do any checks
                     CheckState.from(this.id != -1)
                 }
+
                 AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
                 AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
                 AccountVerificationState.ACCOUNT_DELETED -> {
@@ -247,9 +247,14 @@ suspend fun Account.checkAccountVerification(
                     userRes = p.second
                     p.first
                 }
+
                 AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
                 AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
-                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
+                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(
+                    siteViewModel,
+                    this
+                ).first
+
                 AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
             }
 

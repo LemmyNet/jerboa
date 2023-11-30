@@ -239,13 +239,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun refreshPosts() {
         resetPage()
         getPosts(
-            // TODO remove duplicate
-            GetPosts(
-                page = page,
-                page_cursor = pageCursor,
-                sort = sortType,
-                type_ = listingType,
-            ),
+            getForm(),
             ApiState.Refreshing,
         )
     }
