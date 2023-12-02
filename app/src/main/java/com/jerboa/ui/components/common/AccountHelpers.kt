@@ -27,17 +27,6 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
     return acc
 }
 
-val SpecialAccount =
-    Account(
-        id = -2,
-        name = "Don't use this",
-        defaultSortType = 0,
-        jwt = "",
-        defaultListingType = 0,
-        current = false,
-        verificationState = 0,
-        instance = "",
-    )
 
 fun getPostViewMode(appSettingsViewModel: AppSettingsViewModel): PostViewMode {
     return getEnumFromIntSetting<PostViewMode>(appSettingsViewModel.appSettings) { it.postViewMode }

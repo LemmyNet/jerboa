@@ -79,7 +79,7 @@ fun toastException(
     ctx: Context,
     error: Exception,
 ) {
-    Log.e("jerboa", "error", error)
+    Log.e("toastException", "error", error)
     Toast.makeText(ctx, error.message ?: "UNKNOWN EXCEPTION", Toast.LENGTH_SHORT).show()
 }
 

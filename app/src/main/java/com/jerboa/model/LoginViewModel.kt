@@ -34,7 +34,7 @@ class LoginViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             loading = true
-            // java.net.UnknownHostException: Unable to resolve host "lemmy.ml": No address associated with hostname
+            lateinit var tempInstance: it.vercruysse.lemmyapi.v0x19.LemmyApi
             try {
                 val nodeInfo = LemmyApi.getNodeInfo(instance).getOrThrow()
 
@@ -42,10 +42,9 @@ class LoginViewModel : ViewModel() {
                     throw UnknownHostException()
                 }
 
-                val api = API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
-                val resp = api.login(form = form).getOrThrow()
-                api.auth = resp.jwt
-                API.setLemmyInstance(api)
+                tempInstance = API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
+                val resp = tempInstance.login(form = form).getOrThrow()
+                tempInstance.auth = resp.jwt
             } catch (e: Throwable) {
                 loading = false
 
@@ -54,6 +53,7 @@ class LoginViewModel : ViewModel() {
                         R.string.login_view_model_is_not_a_lemmy_instance,
                         instance
                     )
+
                     is NotSupportedException -> ctx.getString(R.string.server_version_not_supported, instance)
                     else -> matchLoginErrorMsgToStringRes(ctx, e)
                 }
@@ -63,7 +63,7 @@ class LoginViewModel : ViewModel() {
             }
 
             // Fetch the site to get your name and id
-            siteViewModel.siteRes = API.getInstance().getSite().toApiState()
+            siteViewModel.siteRes = tempInstance.getSite().toApiState()
 
             try {
                 when (val siteRes = siteViewModel.siteRes) {
@@ -100,7 +100,7 @@ class LoginViewModel : ViewModel() {
 
                         // Save that info in the DB
                         accountViewModel.insert(account)
-
+                        API.setLemmyInstance(tempInstance)
                         loading = false
                         onGoHome()
                     }

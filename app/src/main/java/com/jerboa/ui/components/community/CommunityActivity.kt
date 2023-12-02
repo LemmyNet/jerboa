@@ -138,6 +138,7 @@ fun CommunityActivity(
                             communityName = communityName,
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
+                                // TODO scroll to top doesnt seem to work
                                 scrollToTop(scope, postListState)
                                 communityViewModel.resetPosts()
                             },

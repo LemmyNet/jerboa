@@ -307,11 +307,11 @@ fun DrawerAddAccountMode(
     onSignOutClick: () -> Unit,
     onSwitchAnon: () -> Unit,
 ) {
-    val allAccounts = accountViewModel.allAccounts.observeAsState()
-    val accountsWithoutCurrent = allAccounts.value?.toMutableList()
+    val allAccounts = accountViewModel.allAccounts.observeAsState(emptyList())
+    val accountsWithoutCurrent = allAccounts.value.toMutableList()
     val currentAccount = getCurrentAccount(accountViewModel = accountViewModel)
 
-    accountsWithoutCurrent?.remove(currentAccount)
+    accountsWithoutCurrent.remove(currentAccount)
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (!currentAccount.isAnon()) {
@@ -328,7 +328,7 @@ fun DrawerAddAccountMode(
             )
         }
 
-        accountsWithoutCurrent?.forEach {
+        accountsWithoutCurrent.forEach {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_switch_to, it.name, it.instance),
                 icon = Icons.Outlined.Login,

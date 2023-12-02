@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.jerboa.db.entity.Account
 
@@ -16,6 +17,8 @@ interface AccountDao {
 
     @Query("SELECT * FROM account where current = 1 limit 1")
     fun getCurrent(): LiveData<Account?>
+    @Query("SELECT * FROM account where current = 1 limit 1")
+    suspend fun getCurrentAsync(): Account?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Account::class)
     suspend fun insert(account: Account)
@@ -28,6 +31,14 @@ interface AccountDao {
 
     @Query("UPDATE account set current = 1 where id = :accountId")
     suspend fun setCurrent(accountId: Int)
+
+    // Important to use this instead of calling removeCurrent and setCurrent manually
+    // Because the previous would cause livedata to emit null then newAccount
+    @Transaction
+    suspend fun updateCurrent(accountId: Int) {
+        removeCurrent()
+        setCurrent(accountId)
+    }
 
     @Query("Update account set verification_state = :state where id = :accountId")
     suspend fun setVerificationState(

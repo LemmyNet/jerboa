@@ -4,10 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.toastException
+import io.github.z4kn4fein.semver.Version
 import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.InputStream
@@ -16,7 +19,7 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
 
-// TODO, regressed functionality: -> logging redactions + actual logging
+// TODO: regressed functionality: -> logging redactions + actual logging
 // Remove global error handler? do we need this anymore?
 // httpAgent is now LemmyApi, not sure how to make this configurable
 // Timeout is 20s, not 30s not configurable, need to figure this out
@@ -26,18 +29,19 @@ const val DEFAULT_INSTANCE = "lemmy.ml"
 const val DEFAULT_VERSION = "0.19.0"
 
 object API {
+    private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+    private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
     private var initialized = CompletableDeferred<Unit>()
+    private lateinit var newApi: LemmyApiV19
 
     // Not super reliable if used during startup
     // But simplifies a lot of things
     var version: String = DEFAULT_VERSION
 
-    // Kinda crucial that newApi is initialized before we do anything with it
-    // Example even before those parseUrl util calls
-    private lateinit var newApi: LemmyApiV19
-
-    private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
-    private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+    // This allows verificationState to respond on failure of the api creation
+    private val _apiFailState = MutableStateFlow(false)
+    // TODO add check for this
+    val apiFailState: StateFlow<Boolean> = _apiFailState
 
     // TODO make this to be passed to LemmyApi
     val httpClient: OkHttpClient =
@@ -72,7 +76,26 @@ object API {
         }
     }
 
-    // make it safe, can propagate exceptions atm
+
+    /**
+     * This is a safe way to set the lemmy instance,
+     * Use this when we know the instance is valid
+     *
+     * It fallbacks to a default if the instantiation fails
+     */
+    suspend fun setLemmyInstanceSafe(
+        instance: String,
+        auth: String? = null,
+        overrideVersion: String = DEFAULT_VERSION,
+    ) {
+        try {
+            setLemmyInstance(instance, auth)
+        } catch (e: Throwable) {
+            Log.i("setLemmyInstanceSafe", "Failed to set lemmy instance", e)
+            _apiFailState.value = true
+            setLemmyInstance(createTempInstanceVersion(instance, overrideVersion, auth))
+        }
+    }
 
     suspend fun setLemmyInstance(
         instance: String,
@@ -87,7 +110,8 @@ object API {
     }
 
     fun setLemmyInstance(api: LemmyApiV19) {
-        API.version = api.version
+        Log.d("setLemmyInstance", "Setting lemmy instance to ${api.baseUrl}")
+        API.version = api.version.toString()
         newApi = api
         initialized.complete(Unit)
     }
@@ -102,8 +126,9 @@ object API {
     fun createTempInstanceVersion(
         host: String,
         version: String,
+        auth: String? = null,
     ): LemmyApiV19 {
-        return LemmyApi.getLemmyApi(host, version)
+        return LemmyApi.getLemmyApi(host, version, auth)
     }
 
     suspend fun checkIfLemmyInstance(url: String): Boolean {
@@ -138,14 +163,23 @@ object API {
         val resp = getInstance().uploadImage(UploadImage(listOf(imageIs.readBytes())))
         Log.d("jerboa", "Uploading done.")
 
-        // TODO could be empty
         return resp.fold(
-            onSuccess = { it.files[0].url.orEmpty() },
+            onSuccess = {
+                if (it.files.isEmpty()) {
+                    toastException(ctx, Exception("Upload image failed"))
+                    return ""
+                } else {
+                    it.files[0].url.orEmpty()
+                }
+            },
             onFailure = {
                 toastException(ctx, it as? Exception ?: Exception("Unknown error"))
                 ""
             },
         )
+    }
+    fun apiFailureHandled() {
+        _apiFailState.value = false
     }
 }
 

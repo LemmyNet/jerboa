@@ -42,24 +42,27 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     init {
         viewModelScope.launch {
+
+            val currAccount = accountRepository.getCurrentAsync()
+
+            if (currAccount == null) {
+                API.setLemmyInstance(DEFAULT_INSTANCE)
+            } else {
+                API.setLemmyInstanceSafe(currAccount.instance, currAccount.jwt)
+            }
+
+            // Makes sure that the site is fetched when the account is changed
             accountRepository.currentAccount
                 .asFlow()
                 .map { it ?: AnonAccount }
                 .collect {
-                    Log.d("Jerboa", "acc init for id: ${it.id}")
-
-                    if (it.isAnon()) {
-                        API.setLemmyInstance(DEFAULT_INSTANCE)
-                    } else {
-                        API.setLemmyInstance(it.instance, it.jwt)
-                    }
-
+                    Log.d("SiteViewModel", "acc init for id: ${it.id}")
                     getSite()
 
-                    if (!it.isAnon()) {
-                        fetchUnreadCounts()
-                    } else { // Reset the unread count if we're anonymous
+                    if (it.isAnon()) { // Reset the unread count if we're anonymous
                         unreadCountRes = ApiState.Empty
+                    } else {
+                        fetchUnreadCounts()
                     }
                 }
         }

@@ -179,7 +179,7 @@ fun PostCommunitySelector(
             OutlinedTextField(
                 value = community.name,
                 readOnly = true,
-                onValueChange = {}, // TODO what?
+                onValueChange = {},
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },
@@ -206,7 +206,7 @@ fun PostCommunitySelector(
         } ?: run {
             OutlinedTextField(
                 value = "",
-                onValueChange = {}, // TODO what?
+                onValueChange = {},
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },

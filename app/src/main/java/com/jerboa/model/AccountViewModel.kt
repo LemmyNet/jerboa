@@ -21,7 +21,6 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     val currentAccount = repository.currentAccount
     val allAccounts = repository.allAccounts
 
-    // Insert with account.current = true
     fun insert(account: Account) =
         viewModelScope.launch {
             // Remove the default account
@@ -31,15 +30,18 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
             repository.insert(account)
         }
 
-    fun removeCurrent() =
+    fun removeCurrent(toAnon: Boolean = false): Job =
         viewModelScope.launch {
+            if (toAnon) {
+                API.setLemmyInstanceSafe(DEFAULT_INSTANCE)
+            }
             repository.removeCurrent()
         }
 
-    fun setCurrent(account: Account): Job =
+    fun updateCurrent(account: Account): Job =
         viewModelScope.launch {
-            API.setLemmyInstance(account.instance, account.jwt)
-            repository.setCurrent(account.id)
+            API.setLemmyInstanceSafe(account.instance, account.jwt)
+            repository.updateCurrent(account.id)
         }
 
     // Be careful when setting the verification state,
@@ -64,8 +66,6 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
             repository.delete(account)
         }
 
-    // TODO ON DONE only change
-
     fun deleteAccountAndSwapCurrent(
         account: Account,
         swapToAnon: Boolean = false,
@@ -73,18 +73,16 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         viewModelScope.launch {
             if (account.isAnon()) return@launch
 
-            //     API.cre
-
-            repository.delete(account)
-
             val accounts = repository.allAccounts.value
             val nextAcc = accounts?.firstOrNull { it.id != account.id }
 
             if (!swapToAnon && nextAcc != null) {
-                setCurrent(nextAcc).join()
+                updateCurrent(nextAcc).join()
             } else {
-                API.setLemmyInstance(DEFAULT_INSTANCE)
+                removeCurrent(true).join()
             }
+
+            repository.delete(account)
         }
 }
 
