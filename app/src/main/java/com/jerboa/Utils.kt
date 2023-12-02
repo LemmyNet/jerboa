@@ -1388,12 +1388,15 @@ fun matchLoginErrorMsgToStringRes(
         "registration_denied" -> ctx.getString(R.string.login_view_model_registration_denied)
         "registration_application_pending", "registration_application_is_pending" ->
             ctx.getString(R.string.login_view_model_registration_pending)
-
         "missing_totp_token" -> ctx.getString(R.string.login_view_model_missing_totp)
         "incorrect_totp_token" -> ctx.getString(R.string.login_view_model_incorrect_totp)
         else -> {
-            Log.d("login", "failed", e)
-            ctx.getString(R.string.login_view_model_login_failed)
+            return if (e.message?.contains("timeout") == true) {
+                ctx.getString(R.string.login_view_model_timeout)
+            } else {
+                Log.d("login", "failed", e)
+                ctx.getString(R.string.login_view_model_login_failed)
+            }
         }
     }
 }

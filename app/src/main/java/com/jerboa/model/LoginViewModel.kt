@@ -18,6 +18,7 @@ import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.exception.NotSupportedException
 import it.vercruysse.lemmyapi.v0x19.datatypes.Login
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 
 class LoginViewModel : ViewModel() {
     var loading by mutableStateOf(false)
@@ -33,25 +34,30 @@ class LoginViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             loading = true
+            // java.net.UnknownHostException: Unable to resolve host "lemmy.ml": No address associated with hostname
             try {
                 val nodeInfo = LemmyApi.getNodeInfo(instance).getOrThrow()
 
                 if (!LemmyApi.isLemmyInstance(nodeInfo)) {
-                    throw Exception(ctx.getString(R.string.login_view_model_is_not_a_lemmy_instance, instance))
+                    throw UnknownHostException()
                 }
 
                 val api = API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
                 val resp = api.login(form = form).getOrThrow()
                 api.auth = resp.jwt
                 API.setLemmyInstance(api)
-            } catch (e: NotSupportedException) {
+            } catch (e: Throwable) {
                 loading = false
-                val msg = ctx.getString(R.string.server_version_not_supported, instance)
-                Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
-                return@launch
-            } catch (e: Exception) {
-                loading = false
-                val msg = matchLoginErrorMsgToStringRes(ctx, e)
+
+                val msg = when (e) {
+                    is UnknownHostException -> ctx.getString(
+                        R.string.login_view_model_is_not_a_lemmy_instance,
+                        instance
+                    )
+                    is NotSupportedException -> ctx.getString(R.string.server_version_not_supported, instance)
+                    else -> matchLoginErrorMsgToStringRes(ctx, e)
+                }
+
                 Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
                 return@launch
             }
