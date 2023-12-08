@@ -92,7 +92,7 @@ class LoginViewModel : ViewModel() {
                                 name = luv.person.name,
                                 current = true,
                                 instance = instance,
-                                jwt = API.getInstance().auth!!,
+                                jwt = tempInstance.auth!!,
                                 defaultListingType = luv.local_user.default_listing_type.ordinal,
                                 defaultSortType = luv.local_user.default_sort_type.ordinal,
                                 verificationState = 0,

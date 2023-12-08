@@ -97,6 +97,7 @@ suspend fun checkInstance(instance: String): CheckState {
                 API.httpClient
                     .newCall(Request("https://$instance".toHttpUrlOrNull()!!))
                     .execute()
+            response.close()
 
             if (response.isSuccessful) {
                 CheckState.Passed
