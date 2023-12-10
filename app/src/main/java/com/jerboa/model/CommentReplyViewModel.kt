@@ -19,14 +19,17 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreateComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class ReplyItem {
+    @Serializable
     class PostItem(val item: PostView) : ReplyItem()
-
+    @Serializable
     class CommentItem(val item: CommentView) : ReplyItem()
-
+    @Serializable
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
-
+    @Serializable
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 

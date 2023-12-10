@@ -7,6 +7,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -245,7 +246,8 @@ class JerboaAppState(
     @Composable
     inline fun <reified D : Any> getPrevReturn(key: String): D {
         // This will survive process death
-        return rememberSaveable {
+        @Suppress("UNCHECKED_CAST")
+        return rememberSaveable(saver = KotlinxSerializerSaver2 as Saver<D, String>) {
             Json.decodeFromString<D>(
                 navController.previousBackStackEntry!!.savedStateHandle.get<String>(key)
                     ?: throw IllegalStateException("This route doesn't contain this key `$key`"),
@@ -274,7 +276,7 @@ class JerboaAppState(
      *
      */
     @Composable
-    inline fun <reified T : Parcelable> usePrevReturn(
+    inline fun <reified T> usePrevReturn(
         key: String,
         crossinline consumeBlock: (T) -> Unit,
     ) {
@@ -288,3 +290,18 @@ class JerboaAppState(
         }
     }
 }
+
+// TODO: decide
+
+inline fun <reified T> getKotlinxSerializerSaver(): Saver<T, String> {
+    return Saver(
+        save = { Json.encodeToString(it) },
+        restore = { Json.decodeFromString<T>(it) },
+    )
+}
+
+
+val KotlinxSerializerSaver2 = Saver<Any, String>(
+    save = { Json.encodeToString(it) },
+    restore = { Json.decodeFromString(it) },
+)
