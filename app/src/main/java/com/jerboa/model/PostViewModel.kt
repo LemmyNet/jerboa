@@ -15,7 +15,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.appendData
 import com.jerboa.findAndUpdateComment
-import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
@@ -214,6 +213,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             }
         }
     }
+
     fun blockPerson(
         form: BlockPerson,
         ctx: Context,

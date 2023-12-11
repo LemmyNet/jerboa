@@ -287,11 +287,11 @@ fun PostOptionsDropdown(
             postView.post.body?.also {
                 PopupMenuItem(
                     text =
-                    if (viewSource) {
-                        stringResource(R.string.post_listing_view_original)
-                    } else {
-                        stringResource(R.string.post_listing_view_source)
-                    },
+                        if (viewSource) {
+                            stringResource(R.string.post_listing_view_original)
+                        } else {
+                            stringResource(R.string.post_listing_view_source)
+                        },
                     icon = Icons.Outlined.Description,
                     onClick = {
                         onDismissRequest()
@@ -344,11 +344,12 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         blockPerson(
-                            scope, BlockPerson(
+                            scope,
+                            BlockPerson(
                                 person_id = postView.creator.id,
                                 block = true,
                             ),
-                            ctx
+                            ctx,
                         )
                     },
                 )
@@ -359,11 +360,12 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         blockCommunity(
-                            scope, BlockCommunity(
+                            scope,
+                            BlockCommunity(
                                 community_id = postView.community.id,
                                 block = true,
                             ),
-                            ctx
+                            ctx,
                         )
                     },
                 )

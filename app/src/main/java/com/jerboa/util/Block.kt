@@ -19,7 +19,6 @@ fun getInstanceFromCommunityUrl(url: String): String {
     return url.substringBefore("/c/")
 }
 
-
 fun blockCommunity(
     scope: CoroutineScope,
     form: BlockCommunity,
@@ -46,13 +45,11 @@ fun blockPerson(
     }
 }
 
-
 fun showBlockCommunityToast(
     blockInstanceResp: Result<BlockInstanceResponse>,
     instance: String,
     ctx: Context,
 ) {
-
     blockInstanceResp
         .onSuccess {
             Toast.makeText(
@@ -63,7 +60,7 @@ fun showBlockCommunityToast(
                     } else {
                         R.string.unblocked_community_toast
                     },
-                    instance
+                    instance,
                 ),
                 Toast.LENGTH_SHORT,
             ).show()
@@ -75,5 +72,4 @@ fun showBlockCommunityToast(
                 Toast.LENGTH_SHORT,
             ).show()
         }
-
 }

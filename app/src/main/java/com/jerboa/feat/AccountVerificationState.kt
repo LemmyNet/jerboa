@@ -248,10 +248,11 @@ suspend fun Account.checkAccountVerification(
 
                 AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
                 AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
-                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(
-                    siteViewModel,
-                    this
-                ).first
+                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED ->
+                    checkIfSiteRetrievalSucceeded(
+                        siteViewModel,
+                        this,
+                    ).first
 
                 AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
             }

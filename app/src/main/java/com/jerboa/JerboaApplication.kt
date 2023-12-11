@@ -2,7 +2,6 @@ package com.jerboa
 
 import android.app.Application
 import android.os.Build
-import android.os.StrictMode
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.decode.GifDecoder

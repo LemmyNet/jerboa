@@ -17,12 +17,9 @@ import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike

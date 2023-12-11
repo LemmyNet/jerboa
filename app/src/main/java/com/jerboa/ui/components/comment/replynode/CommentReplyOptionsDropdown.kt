@@ -19,7 +19,6 @@ import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
 import com.jerboa.copyToClipboard
 import com.jerboa.ui.components.common.PopupMenuItem
-import com.jerboa.util.blockPerson
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person

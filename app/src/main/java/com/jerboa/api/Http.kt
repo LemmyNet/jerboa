@@ -5,7 +5,6 @@ import android.net.TrafficStats
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.toastException
-import io.github.z4kn4fein.semver.Version
 import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import kotlinx.coroutines.CompletableDeferred
@@ -41,6 +40,7 @@ object API {
 
     // This allows verificationState to respond on failure of the api creation
     private val _apiFailState = MutableStateFlow(false)
+
     // TODO add check for this
     val apiFailState: StateFlow<Boolean> = _apiFailState
 
@@ -72,7 +72,6 @@ object API {
             null
         }
     }
-
 
     /**
      * This is a safe way to set the lemmy instance,
@@ -171,6 +170,7 @@ object API {
             },
         )
     }
+
     fun apiFailureHandled() {
         _apiFailState.value = false
     }

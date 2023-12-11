@@ -17,6 +17,7 @@ interface AccountDao {
 
     @Query("SELECT * FROM account where current = 1 limit 1")
     fun getCurrent(): LiveData<Account?>
+
     @Query("SELECT * FROM account where current = 1 limit 1")
     suspend fun getCurrentAsync(): Account?
 

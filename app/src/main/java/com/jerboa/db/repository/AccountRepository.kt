@@ -31,7 +31,10 @@ class AccountRepository(private val accountDao: AccountDao) {
     }
 
     @WorkerThread
-    suspend fun setVerificationState(accountId: Int, state: Int) {
+    suspend fun setVerificationState(
+        accountId: Int,
+        state: Int,
+    ) {
         accountDao.setVerificationState(accountId, state)
     }
 
@@ -47,5 +50,4 @@ class AccountRepository(private val accountDao: AccountDao) {
 
     @WorkerThread
     suspend fun getCurrentAsync(): Account? = accountDao.getCurrentAsync()
-
 }

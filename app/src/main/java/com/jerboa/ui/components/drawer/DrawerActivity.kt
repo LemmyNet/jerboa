@@ -73,7 +73,6 @@ fun MainDrawer(
                 onSelectTab(NavTab.Home)
                 closeDrawer(scope, drawerState)
             }
-
         },
         onSignOutClick = {
             accountViewModel.deleteAccountAndSwapCurrent(account).invokeOnCompletion {

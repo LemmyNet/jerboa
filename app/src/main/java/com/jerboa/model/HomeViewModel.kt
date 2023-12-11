@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
@@ -21,15 +20,9 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
 import com.jerboa.jerboaApplication
 import com.jerboa.mergePosts
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts

@@ -27,7 +27,6 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
     return acc
 }
 
-
 fun getPostViewMode(appSettingsViewModel: AppSettingsViewModel): PostViewMode {
     return getEnumFromIntSetting<PostViewMode>(appSettingsViewModel.appSettings) { it.postViewMode }
 }

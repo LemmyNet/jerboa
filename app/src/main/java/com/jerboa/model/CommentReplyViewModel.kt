@@ -25,10 +25,13 @@ import kotlinx.serialization.Serializable
 sealed class ReplyItem {
     @Serializable
     class PostItem(val item: PostView) : ReplyItem()
+
     @Serializable
     class CommentItem(val item: CommentView) : ReplyItem()
+
     @Serializable
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
+
     @Serializable
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
