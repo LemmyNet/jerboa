@@ -12,7 +12,7 @@ plugins {
 apply(from = "update_instances.gradle.kts")
 
 android {
-    buildToolsVersion = "34.0.0-rc3"
+    buildToolsVersion = "34.0.0"
     compileSdk = 34
 
     defaultConfig {
@@ -95,7 +95,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
 }
 
