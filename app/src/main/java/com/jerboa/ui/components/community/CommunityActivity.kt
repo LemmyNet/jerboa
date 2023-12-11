@@ -60,7 +60,6 @@ import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import it.vercruysse.lemmyapi.dto.SubscribedType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
@@ -329,50 +328,6 @@ fun CommunityActivity(
                             },
                             onPersonClick = { personId ->
                                 appState.toProfile(id = personId)
-                            },
-                            onBlockCommunityClick = {
-                                when (val communityRes = communityViewModel.communityRes) {
-                                    is ApiState.Success -> {
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
-                                            communityViewModel.blockCommunity(
-                                                form =
-                                                    BlockCommunity(
-                                                        community_id = communityRes.data.community_view.community.id,
-                                                        block = !communityRes.data.community_view.blocked,
-                                                    ),
-                                                ctx = ctx,
-                                            )
-                                        }
-                                    }
-
-                                    else -> {}
-                                }
-                            },
-                            onBlockCreatorClick = { person ->
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                    accountViewModel,
-                                ) {
-                                    communityViewModel.blockPerson(
-                                        form =
-                                            BlockPerson(
-                                                person_id = person.id,
-                                                block = true,
-                                            ),
-                                        ctx = ctx,
-                                    )
-                                }
                             },
                             loadMorePosts = {
                                 communityViewModel.appendPosts()

@@ -1,6 +1,7 @@
 package com.jerboa.api
 
 import android.content.Context
+import android.net.TrafficStats
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.toastException
@@ -31,7 +32,7 @@ const val DEFAULT_VERSION = "0.19.0"
 object API {
     private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
     private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
-    private var initialized = CompletableDeferred<Unit>()
+    private val initialized = CompletableDeferred<Unit>()
     private lateinit var newApi: LemmyApiV19
 
     // Not super reliable if used during startup
@@ -50,6 +51,7 @@ object API {
             .writeTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .addNetworkInterceptor { chain ->
+                TrafficStats.setThreadStatsTag(Thread.currentThread().id.toInt())
                 chain.request().newBuilder()
                     .header("User-Agent", "Jerboa")
                     .build()
@@ -100,11 +102,7 @@ object API {
     suspend fun setLemmyInstance(
         instance: String,
         auth: String? = null,
-        waitOnInit: Boolean = true, // forces other calls to wait for this to finish
     ): LemmyApiV19 {
-        if (waitOnInit) {
-            initialized = CompletableDeferred()
-        }
         setLemmyInstance(LemmyApi.getLemmyApi(instance, auth))
         return newApi
     }

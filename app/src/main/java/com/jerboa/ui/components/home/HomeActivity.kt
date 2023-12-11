@@ -62,8 +62,6 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
@@ -252,10 +250,7 @@ fun MainPostListingsContent(
             }
 
         PostListings(
-            listState = postListState,
-            padding = padding,
             posts = posts,
-            postViewMode = getPostViewMode(appSettingsViewModel),
             contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
@@ -316,40 +311,6 @@ fun MainPostListingsContent(
                     )
                 }
             },
-            onBlockCommunityClick = { community ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.blockCommunity(
-                        BlockCommunity(
-                            community_id = community.id,
-                            block = true,
-                        ),
-                        ctx = ctx,
-                    )
-                }
-            },
-            onBlockCreatorClick = { creator ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.blockPerson(
-                        BlockPerson(
-                            person_id = creator.id,
-                            block = true,
-                        ),
-                        ctx = ctx,
-                    )
-                }
-            },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
                     postView = postView,
@@ -382,9 +343,12 @@ fun MainPostListingsContent(
                 homeViewModel.appendPosts()
             },
             account = account,
+            padding = padding,
+            listState = postListState,
+            postViewMode = getPostViewMode(appSettingsViewModel),
+            showVotingArrowsInListView = showVotingArrowsInListView,
             enableDownVotes = siteViewModel.enableDownvotes(),
             showAvatar = siteViewModel.showAvatar(),
-            showVotingArrowsInListView = showVotingArrowsInListView,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,

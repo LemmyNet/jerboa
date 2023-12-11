@@ -385,44 +385,7 @@ fun PostActivity(
                                         appState.toPostReport(id = pv.post.id)
                                     },
                                     onPersonClick = appState::toProfile,
-                                    onBlockCommunityClick = { c ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
-                                            postViewModel.blockCommunity(
-                                                BlockCommunity(
-                                                    community_id = c.id,
-                                                    block = true,
-                                                ),
-                                                ctx,
-                                            )
-                                        }
-                                    },
-                                    onBlockCreatorClick = { person ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
-                                            postViewModel.blockPerson(
-                                                BlockPerson(
-                                                    person_id = person.id,
-                                                    block = true,
-                                                ),
-                                                ctx,
-                                            )
-                                        }
-                                    },
                                     showReply = true, // Do nothing
-                                    showCommunityName = true,
                                     fullBody = true,
                                     account = account,
                                     postViewMode = PostViewMode.Card,

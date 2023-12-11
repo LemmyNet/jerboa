@@ -54,7 +54,6 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
-    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
@@ -255,17 +254,6 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
                 else -> {}
             }
-        }
-    }
-
-    fun blockPerson(
-        form: BlockPerson,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
         }
     }
 

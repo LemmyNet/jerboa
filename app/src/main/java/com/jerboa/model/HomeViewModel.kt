@@ -49,8 +49,6 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
-    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     val lazyListState = LazyListState()
 
@@ -188,28 +186,6 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
 
                 else -> {}
             }
-        }
-    }
-
-    fun blockCommunity(
-        form: BlockCommunity,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockCommunityRes = ApiState.Loading
-            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
-            showBlockCommunityToast(blockCommunityRes, ctx)
-        }
-    }
-
-    fun blockPerson(
-        form: BlockPerson,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
         }
     }
 

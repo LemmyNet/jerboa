@@ -32,6 +32,10 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
 
     fun removeCurrent(toAnon: Boolean = false): Job =
         viewModelScope.launch {
+            val api = API.getInstance()
+            if (api.FF.logout()) {
+                api.logout()
+            }
             if (toAnon) {
                 API.setLemmyInstanceSafe(DEFAULT_INSTANCE)
             }

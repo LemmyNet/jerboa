@@ -81,7 +81,6 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
@@ -537,40 +536,6 @@ fun UserTabs(
                                         appState.toCommunity(id = community.id)
                                     },
                                     onPersonClick = appState::toProfile,
-                                    onBlockCommunityClick = { community ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            loginAsToast = true,
-                                        ) {
-                                            personProfileViewModel.blockCommunity(
-                                                BlockCommunity(
-                                                    community_id = community.id,
-                                                    block = true,
-                                                ),
-                                                ctx,
-                                            )
-                                        }
-                                    },
-                                    onBlockCreatorClick = { person ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            loginAsToast = true,
-                                        ) {
-                                            personProfileViewModel.blockPerson(
-                                                BlockPerson(
-                                                    person_id = person.id,
-                                                    block = true,
-                                                ),
-                                                ctx = ctx,
-                                            )
-                                        }
-                                    },
                                     loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,

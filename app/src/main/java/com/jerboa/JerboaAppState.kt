@@ -246,8 +246,7 @@ class JerboaAppState(
     @Composable
     inline fun <reified D : Any> getPrevReturn(key: String): D {
         // This will survive process death
-        @Suppress("UNCHECKED_CAST")
-        return rememberSaveable(saver = KotlinxSerializerSaver2 as Saver<D, String>) {
+        return rememberSaveable(saver = getKotlinxSerializerSaver<D>()) {
             Json.decodeFromString<D>(
                 navController.previousBackStackEntry!!.savedStateHandle.get<String>(key)
                     ?: throw IllegalStateException("This route doesn't contain this key `$key`"),
@@ -291,17 +290,9 @@ class JerboaAppState(
     }
 }
 
-// TODO: decide
-
 inline fun <reified T> getKotlinxSerializerSaver(): Saver<T, String> {
     return Saver(
         save = { Json.encodeToString(it) },
         restore = { Json.decodeFromString<T>(it) },
     )
 }
-
-
-val KotlinxSerializerSaver2 = Saver<Any, String>(
-    save = { Json.encodeToString(it) },
-    restore = { Json.decodeFromString(it) },
-)
