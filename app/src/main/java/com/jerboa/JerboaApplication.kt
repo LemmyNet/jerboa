@@ -21,31 +21,6 @@ class JerboaApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-        try {
-            Class.forName("dalvik.system.CloseGuard")
-                .getMethod("setEnabled", Boolean::class.javaPrimitiveType)
-                .invoke(null, true)
-        } catch (e: ReflectiveOperationException) {
-            throw RuntimeException(e)
-        }
-        StrictMode.setVmPolicy(
-            StrictMode.VmPolicy.Builder()
-                .detectActivityLeaks()
-                .detectLeakedClosableObjects()
-                .detectContentUriWithoutPermission()
-                .detectCleartextNetwork()
-                .detectFileUriExposure()
-                .detectLeakedRegistrationObjects()
-                .detectLeakedSqlLiteObjects()
-                .penaltyLog()
-                .build())
-        StrictMode.setThreadPolicy(
-            StrictMode.ThreadPolicy.Builder()
-                .detectAll()
-                .permitDiskReads()
-                .penaltyLog()
-                .build())
-
         container = AppDBContainer(this)
         imageLoader =
             ImageLoader.Builder(this)

@@ -61,11 +61,6 @@ object API {
 
     suspend fun getInstance(): LemmyApiV19 {
         initialized.await()
-//        if (!::newApi.isInitialized) {
-//            // SHOULD NOT HAPPEN
-//            Log.e("Jerboa", "API.getInstance() called before API.setLemmyInstance()")
-//            newApi = LemmyApi.getLemmyApi(DEFAULT_INSTANCE)
-//        }
         return newApi
     }
 

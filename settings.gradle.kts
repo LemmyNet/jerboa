@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
         // For snapshot version of Telephoto
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-        mavenLocal()
+        maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
     }
 }
 rootProject.name = "jerboa"

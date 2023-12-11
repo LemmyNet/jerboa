@@ -666,8 +666,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-// TODO investige resource leaks not sure if caused by this or already present
-// W  A resource failed to call end.
-// 2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().
-// 2023-11-25 14:40:06.451  5112-6547  System                  com.jerboa.debug                     W  A resource failed to call response.body().close().

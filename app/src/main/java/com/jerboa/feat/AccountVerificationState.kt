@@ -217,9 +217,6 @@ suspend fun Account.checkAccountVerification(
 ): Pair<AccountVerificationState, CheckState> {
     Log.d("verification", "Verification started")
 
-// TODO
-    // Exceptions create by this API don't need to be shown, they are already handled
-
     val api = API.createTempInstance(this.instance, this.jwt)
     var checkState: CheckState = CheckState.Passed
     var curVerificationState: Int =

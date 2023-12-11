@@ -56,5 +56,3 @@ class AppSettingsRepository(
         }
     }
 }
-
-// TODO only change when done swapping
