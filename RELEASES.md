@@ -1,3 +1,15 @@
+# Jerboa v0.0.51-alpha Release (2023-12-12)
+
+## What's Changed
+
+- Upgrading kotlinter. by @dessalines in https://github.com/dessalines/jerboa/pull/1275
+- Fix edgecase crash when login fails causes crash by @MV-GH in https://github.com/dessalines/jerboa/pull/1278
+- v0.19 upgrade by @dessalines in https://github.com/dessalines/jerboa/pull/1277
+- Initial MVP integration with my BackwardsCompatibleAPI by @MV-GH in https://github.com/dessalines/jerboa/pull/1284
+- Increasing java memory to fix release build. by @dessalines in https://github.com/dessalines/jerboa/pull/1286
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.50...0.0.51
+
 # Jerboa v0.0.50-alpha Release (2023-11-02)
 
 ## What's Changed
