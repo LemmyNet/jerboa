@@ -13,8 +13,6 @@ import com.jerboa.MainActivity
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.api.DEFAULT_VERSION
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -219,12 +217,7 @@ suspend fun Account.checkAccountVerification(
 ): Pair<AccountVerificationState, CheckState> {
     Log.d("verification", "Verification started")
 
-    val api =
-        if (this.isAnon()) {
-            API.createTempInstanceVersion(DEFAULT_INSTANCE, DEFAULT_VERSION)
-        } else {
-            API.createTempInstance(this.instance, this.jwt)
-        }
+    lateinit var api: LemmyApi
 
     var checkState: CheckState = CheckState.Passed
     var curVerificationState: Int =
@@ -249,6 +242,7 @@ suspend fun Account.checkAccountVerification(
                 AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
                 AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
                 AccountVerificationState.ACCOUNT_DELETED -> {
+                    api = API.createTempInstanceSafe(this.instance, this.jwt)
                     val p = checkIfAccountIsDeleted(this, api)
                     userRes = p.second
                     p.first
