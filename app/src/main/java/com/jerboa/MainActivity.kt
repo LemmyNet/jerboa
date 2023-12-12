@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.TextView
 import android.widget.Toast
@@ -29,9 +28,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
 import coil.Coil
-import com.jerboa.api.API
-import com.jerboa.api.ApiState
-import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
@@ -51,7 +47,6 @@ import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
-import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
@@ -76,7 +71,6 @@ import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
-import io.github.z4kn4fein.semver.toVersion
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
@@ -91,18 +85,6 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val ctx = LocalContext.current
-
-            API.errorHandler = {
-                Log.e("jerboa", it.toString())
-                runOnUiThread {
-                    Toast.makeText(
-                        ctx,
-                        ctx.resources.getString(R.string.networkError),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
-                null
-            }
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
@@ -144,8 +126,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
-
                 MarkdownHelper.init(
                     appState,
                     appSettings.useCustomTabs,
@@ -170,19 +150,6 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
-
-                when (val siteRes = siteViewModel.siteRes) {
-                    is ApiState.Success -> {
-                        val siteVersion = siteRes.data.version
-                        if (siteVersion.toVersion() < MINIMUM_API_VERSION && !serverVersionOutdatedViewed.value) {
-                            ShowOutdatedServerDialog(
-                                siteVersion = siteVersion,
-                                onConfirm = { serverVersionOutdatedViewed.value = true },
-                            )
-                        }
-                    }
-                    else -> {}
-                }
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -401,7 +368,6 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
                             appState = appState,
-                            accountViewModel = accountViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,

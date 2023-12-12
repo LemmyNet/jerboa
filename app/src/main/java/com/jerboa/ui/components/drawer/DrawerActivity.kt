@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
-import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.model.AccountViewModel
@@ -17,6 +16,7 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 
@@ -69,24 +69,23 @@ fun MainDrawer(
         onAddAccount = onClickLogin,
         isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
-            accountViewModel.removeCurrent()
-            accountViewModel.setCurrent(acct.id)
-
-            onSelectTab(NavTab.Home)
-            closeDrawer(scope, drawerState)
+            accountViewModel.updateCurrent(acct).invokeOnCompletion {
+                onSelectTab(NavTab.Home)
+                closeDrawer(scope, drawerState)
+            }
         },
         onSignOutClick = {
-            accountViewModel.deleteAccountAndSwapCurrent(account)
-
-            onSelectTab(NavTab.Home)
-            closeDrawer(scope, drawerState)
+            accountViewModel.deleteAccountAndSwapCurrent(account).invokeOnCompletion {
+                onSelectTab(NavTab.Home)
+                closeDrawer(scope, drawerState)
+            }
         },
         onSwitchAnon = {
             if (!account.isAnon()) {
-                accountViewModel.removeCurrent()
-
-                onSelectTab(NavTab.Home)
-                closeDrawer(scope, drawerState)
+                accountViewModel.removeCurrent(true).invokeOnCompletion {
+                    onSelectTab(NavTab.Home)
+                    closeDrawer(scope, drawerState)
+                }
             }
         },
         onClickListingType = { listingType ->

@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.EditPost
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
+import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.EditPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.launch
 
 class PostEditViewModel : ViewModel() {
@@ -23,10 +23,7 @@ class PostEditViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             editPostRes = ApiState.Loading
-            editPostRes =
-                apiWrapper(
-                    API.getInstance().editPost(form),
-                )
+            editPostRes = API.getInstance().editPost(form).toApiState()
 
             when (val res = editPostRes) {
                 is ApiState.Success -> {

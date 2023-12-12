@@ -29,9 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.datatypes.sampleCommentReplyView
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -42,6 +39,9 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 
 @Composable
 fun CommentReplyNodeHeader(

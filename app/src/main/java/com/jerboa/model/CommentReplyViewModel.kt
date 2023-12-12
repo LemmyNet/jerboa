@@ -1,7 +1,6 @@
 package com.jerboa.model
 
 import android.content.Context
-import android.os.Parcelable
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,26 +10,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateComment
-import com.jerboa.datatypes.types.PersonMentionView
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.entity.Account
+import com.jerboa.api.toApiState
 import com.jerboa.ui.components.common.apiErrorToast
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-@Parcelize
-sealed class ReplyItem : Parcelable {
+@Serializable
+sealed class ReplyItem {
+    @Serializable
     class PostItem(val item: PostView) : ReplyItem()
 
+    @Serializable
     class CommentItem(val item: CommentView) : ReplyItem()
 
+    @Serializable
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
 
+    @Serializable
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 
@@ -42,7 +44,6 @@ class CommentReplyViewModel : ViewModel() {
         reply: ReplyItem,
         ctx: Context,
         content: String,
-        account: Account,
         focusManager: FocusManager,
         onSuccess: (CommentView) -> Unit,
     ) {
@@ -75,7 +76,7 @@ class CommentReplyViewModel : ViewModel() {
                 )
 
             createCommentRes = ApiState.Loading
-            createCommentRes = apiWrapper(API.getInstance().createComment(form))
+            createCommentRes = API.getInstance().createComment(form).toApiState()
 
             when (val res = createCommentRes) {
                 is ApiState.Success -> {

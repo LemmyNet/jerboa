@@ -364,6 +364,7 @@
     <string name="login_view_model_registration_pending">Registration approval is still pending</string>
     <string name="login_view_model_missing_totp">TOTP token is missing</string>
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
+    <string name="login_view_model_timeout">Couldn\'t connect to the instance</string>
     <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
     <string name="verification_failed_user_banned">Your account is banned until %s</string>
     <string name="share">Share</string>
@@ -378,6 +379,7 @@
     <string name="blocked_community_toast">%1$s is blocked</string>
     <string name="unblocked_community_toast">%1$s is unblocked</string>
     <string name="community_block_toast_failure">Failed to (un)block this community</string>
+    <string name="instance_block_toast_failure">Failed to (un)block this instance</string>
     <string name="saving_media">Saving media…</string>
     <string name="saved_media">Saved media</string>
     <string name="share_image">Share image</string>
@@ -400,4 +402,5 @@
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Except NSFW inside community</string>
     <string name="time_ago_failed_to_parse">Failed to parse datetime</string>
     <string name="comment_gone">There is no record of this comment</string>
+    <string name="server_version_not_supported">The version (%s) is not supported</string>
 </resources>

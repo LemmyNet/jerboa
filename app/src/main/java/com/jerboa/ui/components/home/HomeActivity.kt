@@ -39,14 +39,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -70,6 +62,12 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -122,13 +120,13 @@ fun HomeActivity(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
+                scrollToTop = {
+                    scrollToTop(scope, postListState)
+                },
                 openDrawer = {
                     scope.launch {
                         drawerState.open()
                     }
-                },
-                scrollToTop = {
-                    scrollToTop(scope, postListState)
                 },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
@@ -252,10 +250,7 @@ fun MainPostListingsContent(
             }
 
         PostListings(
-            listState = postListState,
-            padding = padding,
             posts = posts,
-            postViewMode = getPostViewMode(appSettingsViewModel),
             contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
@@ -316,40 +311,6 @@ fun MainPostListingsContent(
                     )
                 }
             },
-            onBlockCommunityClick = { community ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.blockCommunity(
-                        BlockCommunity(
-                            community_id = community.id,
-                            block = true,
-                        ),
-                        ctx = ctx,
-                    )
-                }
-            },
-            onBlockCreatorClick = { creator ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.blockPerson(
-                        BlockPerson(
-                            person_id = creator.id,
-                            block = true,
-                        ),
-                        ctx = ctx,
-                    )
-                }
-            },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
                     postView = postView,
@@ -382,9 +343,12 @@ fun MainPostListingsContent(
                 homeViewModel.appendPosts()
             },
             account = account,
+            padding = padding,
+            listState = postListState,
+            postViewMode = getPostViewMode(appSettingsViewModel),
+            showVotingArrowsInListView = showVotingArrowsInListView,
             enableDownVotes = siteViewModel.enableDownvotes(),
             showAvatar = siteViewModel.showAvatar(),
-            showVotingArrowsInListView = showVotingArrowsInListView,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
@@ -395,9 +359,10 @@ fun MainPostListingsContent(
                 if (!account.isAnon() && !postView.read) {
                     homeViewModel.markPostAsRead(
                         MarkPostAsRead(
-                            post_id = postView.post.id,
+                            post_ids = listOf(postView.post.id),
                             read = true,
                         ),
+                        postView,
                         appState,
                     )
                 }

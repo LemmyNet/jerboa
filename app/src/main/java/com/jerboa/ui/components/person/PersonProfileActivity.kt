@@ -49,24 +49,10 @@ import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.getDisplayName
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -95,6 +81,18 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -128,7 +126,7 @@ fun PersonProfileActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val personProfileViewModel: PersonProfileViewModel =
-        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode, account))
+        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
@@ -538,44 +536,9 @@ fun UserTabs(
                                         appState.toCommunity(id = community.id)
                                     },
                                     onPersonClick = appState::toProfile,
-                                    onBlockCommunityClick = { community ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            loginAsToast = true,
-                                        ) {
-                                            personProfileViewModel.blockCommunity(
-                                                BlockCommunity(
-                                                    community_id = community.id,
-                                                    block = true,
-                                                ),
-                                                ctx,
-                                            )
-                                        }
-                                    },
-                                    onBlockCreatorClick = { person ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            loginAsToast = true,
-                                        ) {
-                                            personProfileViewModel.blockPerson(
-                                                BlockPerson(
-                                                    person_id = person.id,
-                                                    block = true,
-                                                ),
-                                                ctx = ctx,
-                                            )
-                                        }
-                                    },
                                     loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
-                                            account.getJWT(),
                                         )
                                     },
                                     account = account,
@@ -594,9 +557,10 @@ fun UserTabs(
                                         if (!account.isAnon() && !it.read) {
                                             personProfileViewModel.markPostAsRead(
                                                 MarkPostAsRead(
-                                                    post_id = it.post.id,
+                                                    post_ids = listOf(it.post.id),
                                                     read = true,
                                                 ),
+                                                it,
                                                 appState,
                                             )
                                         }
@@ -657,7 +621,6 @@ fun UserTabs(
                                 LaunchedEffect(Unit) {
                                     personProfileViewModel.appendData(
                                         profileRes.data.person_view.person.id,
-                                        account.getJWT(),
                                     )
                                 }
                             }

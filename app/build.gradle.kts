@@ -5,14 +5,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "1.9.21"
 
 }
 
 apply(from = "update_instances.gradle.kts")
 
 android {
-    buildToolsVersion = "34.0.0-rc3"
+    buildToolsVersion = "34.0.0"
     compileSdk = 34
 
     defaultConfig {
@@ -95,7 +95,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
 }
 
@@ -138,37 +138,32 @@ dependencies {
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
-    // Versioning
-    implementation("io.github.z4kn4fein:semver:1.4.2")
-
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.6.0")
+    ksp("androidx.room:room-compiler:2.6.1")
 
-    implementation("androidx.room:room-runtime:2.6.0")
-    annotationProcessor("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.6.0")
+    testImplementation("androidx.room:room-testing:2.6.1")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.6.0")
+    androidTestImplementation("androidx.room:room-testing:2.6.1")
 
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:2.6.0")
+    implementation("androidx.room:room-paging:2.6.1")
 
     implementation("io.arrow-kt:arrow-core:1.2.1")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
     implementation("androidx.navigation:navigation-compose:2.7.5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("androidx.compose.ui:ui:1.5.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
@@ -191,4 +186,7 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.6")
+
+    implementation("it.vercruysse.lemmyapi:lemmy-api-jvm:0.1.0-SNAPSHOT")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
 }

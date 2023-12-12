@@ -11,20 +11,19 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.LoginResponse
-import com.jerboa.datatypes.types.SaveUserSettings
+import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import com.jerboa.ui.components.common.apiErrorToast
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
 
 @Stable
 class AccountSettingsViewModel(
     private val accountRepository: AccountRepository,
 ) : ViewModel() {
-    var saveUserSettingsRes: ApiState<LoginResponse> by mutableStateOf(ApiState.Empty)
+    var saveUserSettingsRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
         private set
 
     fun saveSettings(
@@ -36,7 +35,7 @@ class AccountSettingsViewModel(
     ) {
         viewModelScope.launch {
             saveUserSettingsRes = ApiState.Loading
-            saveUserSettingsRes = apiWrapper(API.getInstance().saveUserSettings(form))
+            saveUserSettingsRes = API.getInstance().saveUserSettings(form).toApiState()
 
             when (val res = saveUserSettingsRes) {
                 is ApiState.Success -> {

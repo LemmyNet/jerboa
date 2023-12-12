@@ -27,7 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.getLocalizedUnreadOrAllName
+import com.jerboa.datatypes.getLocalizedUnreadOrAllName
 import com.jerboa.ui.components.common.MenuItem
 
 @Composable

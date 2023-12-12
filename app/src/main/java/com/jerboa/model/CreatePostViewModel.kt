@@ -7,12 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CreatePost
-import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.datatypes.types.GetSiteMetadataResponse
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.serializeToMap
+import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadataResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {
@@ -27,10 +26,7 @@ class CreatePostViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             createPostRes = ApiState.Loading
-            createPostRes =
-                apiWrapper(
-                    API.getInstance().createPost(form),
-                )
+            createPostRes = API.getInstance().createPost(form).toApiState()
 
             when (val postRes = createPostRes) {
                 is ApiState.Success -> {
@@ -44,10 +40,7 @@ class CreatePostViewModel : ViewModel() {
     fun getSiteMetadata(form: GetSiteMetadata) {
         viewModelScope.launch {
             siteMetadataRes = ApiState.Loading
-            siteMetadataRes =
-                apiWrapper(
-                    API.getInstance().getSiteMetadata(form.serializeToMap()),
-                )
+            siteMetadataRes = API.getInstance().getSiteMetadata(form).toApiState()
         }
     }
 }

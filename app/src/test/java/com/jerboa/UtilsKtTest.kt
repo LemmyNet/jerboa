@@ -3,10 +3,12 @@ package com.jerboa
 import android.content.Context
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
+import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.ui.theme.SMALL_PADDING
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -126,18 +128,6 @@ class UtilsKtTest {
     }
 
     @Test
-    fun testSerializeToMap() {
-        val dataClass = InputField(label = "some label", hasError = true)
-        val exp = mapOf("hasError" to dataClass.hasError.toString(), "label" to dataClass.label)
-        val converted = dataClass.serializeToMap()
-
-        exp.keys.forEach {
-            assertTrue(converted.containsKey(it))
-            assertEquals(exp[it], converted[it])
-        }
-    }
-
-    @Test
     fun testIsImage() {
         assertTrue(isImage("http://example.com/test.jpg"))
         assertFalse(isImage("test.jpg"))
@@ -164,23 +154,6 @@ class UtilsKtTest {
     }
 
     @Test
-    fun testGetHostFromInstanceString() {
-        val cases =
-            mapOf(
-                "" to "",
-                "localhost" to "localhost",
-                "something useless" to "something useless",
-                "https://localhost" to "localhost",
-                "http://localhost" to "localhost",
-                "https://localhost:443" to "localhost",
-                "https://localhost:443/path" to "localhost",
-                "https://localhost:443/path?param" to "localhost",
-                "https://host.tld" to "host.tld",
-            )
-        cases.forEach { (instanceString, exp) -> assertEquals(exp, getHostFromInstanceString(instanceString)) }
-    }
-
-    @Test
     @Parameters(method = "siFormatCases")
     fun testSiFormat(
         expected: String,
@@ -201,19 +174,23 @@ class UtilsKtTest {
 
     @Test
     fun testParseUrl() {
-        val cases =
-            mapOf(
-                "https://feddit.de" to "https://feddit.de",
-                "http://example.com" to "http://example.com",
-                "/c/community" to "https://${API.currentInstance}/c/community",
-                "/c/community@instance.ml" to "https://instance.ml/c/community",
-                "!community@instance.ml" to "https://instance.ml/c/community",
-                "!community" to "https://${API.currentInstance}/c/community",
-                "/u/user@instance.ml" to "https://instance.ml/u/user",
-                "@user@instance.ml" to "https://instance.ml/u/user",
-            )
+        runBlocking {
+            API.setLemmyInstance(DEFAULT_INSTANCE)
+            assertTrue(API.getInstance().baseUrl.contains(DEFAULT_INSTANCE))
+            val cases =
+                mapOf(
+                    "https://feddit.de" to "https://feddit.de",
+                    "http://example.com" to "http://example.com",
+                    "/c/community" to "https://lemmy.ml/c/community",
+                    "/c/community@instance.ml" to "https://instance.ml/c/community",
+                    "!community@instance.ml" to "https://instance.ml/c/community",
+                    "!community" to "https://lemmy.ml/c/community",
+                    "/u/user@instance.ml" to "https://instance.ml/u/user",
+                    "@user@instance.ml" to "https://instance.ml/u/user",
+                )
 
-        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)?.second) }
+            cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)?.second) }
+        }
     }
 
     @Test

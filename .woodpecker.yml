@@ -26,7 +26,7 @@ steps:
       [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
 
   check_formatting:
-    image: cimg/android:2023.08
+    image: cimg/android:2023.12
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew lintKotlin
@@ -34,7 +34,7 @@ steps:
       GRADLE_USER_HOME: ".gradle"
 
   build_project:
-    image: cimg/android:2023.08
+    image: cimg/android:2023.12
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleDebug
@@ -42,7 +42,7 @@ steps:
       GRADLE_USER_HOME: ".gradle"
 
   run_tests:
-    image: cimg/android:2023.08
+    image: cimg/android:2023.12
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew testDebug

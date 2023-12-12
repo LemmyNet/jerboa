@@ -22,9 +22,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd
@@ -32,6 +29,8 @@ import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -48,8 +47,6 @@ fun PostListings(
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCommunityClick: (community: Community) -> Unit,
-    onBlockCreatorClick: (person: Person) -> Unit,
     loadMorePosts: () -> Unit,
     account: Account,
     showCommunityName: Boolean = true,
@@ -90,6 +87,8 @@ fun PostListings(
         ) { index, postView ->
             PostListing(
                 postView = postView,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
                 onPostClick = onPostClick,
@@ -99,8 +98,6 @@ fun PostListings(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onPersonClick = onPersonClick,
-                onBlockCommunityClick = onBlockCommunityClick,
-                onBlockCreatorClick = onBlockCreatorClick,
                 showCommunityName = showCommunityName,
                 fullBody = false,
                 account = account,
@@ -108,11 +105,9 @@ fun PostListings(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = enableDownVotes,
                 showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                showPostLinkPreview = showPostLinkPreviews,
                 appState = appState,
+                showPostLinkPreview = showPostLinkPreviews,
                 showIfRead = showIfRead,
                 showScores = showScores,
                 postActionbarMode = postActionbarMode,
@@ -166,8 +161,6 @@ fun PreviewPostListings() {
         onReportClick = {},
         onCommunityClick = {},
         onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
         loadMorePosts = {},
         account = AnonAccount,
         listState = rememberLazyListState(),

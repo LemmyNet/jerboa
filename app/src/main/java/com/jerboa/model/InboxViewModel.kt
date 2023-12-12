@@ -11,27 +11,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.CommentSortType
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommentReplyResponse
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetPersonMentionsResponse
-import com.jerboa.datatypes.types.GetPrivateMessages
-import com.jerboa.datatypes.types.GetReplies
-import com.jerboa.datatypes.types.GetRepliesResponse
-import com.jerboa.datatypes.types.MarkCommentReplyAsRead
-import com.jerboa.datatypes.types.MarkPersonMentionAsRead
-import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
-import com.jerboa.datatypes.types.PersonMentionResponse
-import com.jerboa.datatypes.types.PrivateMessageResponse
-import com.jerboa.datatypes.types.PrivateMessagesResponse
-import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.findAndUpdateCommentReply
@@ -39,9 +19,10 @@ import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
 class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {
@@ -114,7 +95,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             repliesRes = state
-            repliesRes = apiWrapper(API.getInstance().getReplies(form.serializeToMap()))
+            repliesRes = API.getInstance().getReplies(form).toApiState()
         }
     }
 
@@ -127,7 +108,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             }
 
             pageReplies += 1
-            val newRes = apiWrapper(API.getInstance().getReplies(getFormReplies().serializeToMap()))
+            val newRes = API.getInstance().getReplies(getFormReplies()).toApiState()
 
             repliesRes =
                 when (newRes) {
@@ -155,7 +136,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             mentionsRes = state
-            mentionsRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
+            mentionsRes = API.getInstance().getPersonMentions(form).toApiState()
         }
     }
 
@@ -175,7 +156,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                     page = pageMentions,
                 )
 
-            val newRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
+            val newRes = API.getInstance().getPersonMentions(form).toApiState()
 
             mentionsRes =
                 when (newRes) {
@@ -203,7 +184,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             messagesRes = state
-            messagesRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
+            messagesRes = API.getInstance().getPrivateMessages(form).toApiState()
         }
     }
 
@@ -222,7 +203,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                     page = pageMessages,
                 )
 
-            val newRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
+            val newRes = API.getInstance().getPrivateMessages(form).toApiState()
 
             messagesRes =
                 when (newRes) {
@@ -250,7 +231,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     fun likeReply(form: CreateCommentLike) {
         viewModelScope.launch {
             likeReplyRes = ApiState.Loading
-            likeReplyRes = apiWrapper(API.getInstance().likeComment(form))
+            likeReplyRes = API.getInstance().createCommentLike(form).toApiState()
 
             when (val likeRes = likeReplyRes) {
                 is ApiState.Success -> {
@@ -277,7 +258,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     fun saveReply(form: SaveComment) {
         viewModelScope.launch {
             saveReplyRes = ApiState.Loading
-            saveReplyRes = apiWrapper(API.getInstance().saveComment(form))
+            saveReplyRes = API.getInstance().saveComment(form).toApiState()
 
             when (val saveRes = saveReplyRes) {
                 is ApiState.Success -> {
@@ -304,7 +285,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     fun likeMention(form: CreateCommentLike) {
         viewModelScope.launch {
             likeMentionRes = ApiState.Loading
-            likeMentionRes = apiWrapper(API.getInstance().likeComment(form))
+            likeMentionRes = API.getInstance().createCommentLike(form).toApiState()
 
             when (val likeRes = likeMentionRes) {
                 is ApiState.Success -> {
@@ -332,7 +313,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     fun saveMention(form: SaveComment) {
         viewModelScope.launch {
             saveReplyRes = ApiState.Loading
-            saveReplyRes = apiWrapper(API.getInstance().saveComment(form))
+            saveReplyRes = API.getInstance().saveComment(form).toApiState()
 
             when (val saveRes = saveMentionRes) {
                 is ApiState.Success -> {
@@ -363,7 +344,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             markReplyAsReadRes = ApiState.Loading
-            markReplyAsReadRes = apiWrapper(API.getInstance().markCommentReplyAsRead(form))
+            markReplyAsReadRes = API.getInstance().markCommentReplyAsRead(form).toApiState()
 
             when (val readRes = markReplyAsReadRes) {
                 is ApiState.Success -> {
@@ -399,7 +380,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             markMentionAsReadRes = ApiState.Loading
-            markMentionAsReadRes = apiWrapper(API.getInstance().markPersonMentionAsRead(form))
+            markMentionAsReadRes = API.getInstance().markPersonMentionAsRead(form).toApiState()
 
             when (val readRes = markMentionAsReadRes) {
                 is ApiState.Success -> {
@@ -430,7 +411,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             markMessageAsReadRes = ApiState.Loading
-            markMessageAsReadRes = apiWrapper(API.getInstance().markPrivateMessageAsRead(form))
+            markMessageAsReadRes = API.getInstance().markPrivateMessageAsRead(form).toApiState()
 
             when (val readRes = markMessageAsReadRes) {
                 is ApiState.Success -> {
@@ -461,8 +442,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
             showBlockCommunityToast(blockCommunityRes, ctx)
         }
     }
@@ -473,7 +453,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
             showBlockPersonToast(blockPersonRes, ctx)
         }
     }
@@ -481,7 +461,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     fun markAllAsRead(onComplete: () -> Unit) {
         viewModelScope.launch {
             markAllAsReadRes = ApiState.Loading
-            markAllAsReadRes = apiWrapper(API.getInstance().markAllAsRead())
+            markAllAsReadRes = API.getInstance().markAllAsRead().toApiState()
 
             when (val replies = repliesRes) {
                 is ApiState.Success -> {

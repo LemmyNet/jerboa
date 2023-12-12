@@ -1,6 +1,6 @@
 package com.jerboa.datatypes
 
-import android.os.Parcelable
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
@@ -12,379 +12,178 @@ import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Scale
 import androidx.compose.material.icons.outlined.ThumbsUpDown
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.google.gson.annotations.SerializedName
 import com.jerboa.R
-import kotlinx.parcelize.Parcelize
+import com.jerboa.UnreadOrAll
+import com.jerboa.ui.components.inbox.InboxTab
+import com.jerboa.ui.components.person.UserTab
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
 
-enum class RegistrationMode {
-    @SerializedName("Closed")
-    Closed,
 
-    @SerializedName("RequireApplication")
-    RequireApplication,
+data class CommentSortData(
+    @StringRes val text: Int,
+    val icon: ImageVector,
+)
 
-    @SerializedName("Open")
-    Open,
-}
+val CommentSortType.data: CommentSortData
+    get() = when (this) {
+        CommentSortType.Hot -> CommentSortData(R.string.dialogs_hot, Icons.Outlined.LocalFireDepartment)
+        CommentSortType.New -> CommentSortData(R.string.dialogs_new, Icons.Outlined.BrightnessLow)
+        CommentSortType.Old -> CommentSortData(R.string.dialogs_old, Icons.Outlined.History)
+        CommentSortType.Top -> CommentSortData(R.string.dialogs_top, Icons.Outlined.BarChart)
+        CommentSortType.Controversial -> CommentSortData(R.string.sorttype_controversial, Icons.Outlined.ThumbsUpDown)
+    }
 
-/**
- * Different sort types used in lemmy.
- */
-enum class SortType(
+data class SortData(
     @StringRes val shortForm: Int,
     @StringRes val longForm: Int,
     val icon: ImageVector,
-) {
-    /**
-     * Posts sorted by the most recent comment.
-     */
-    @SerializedName("Active")
-    Active(
-        R.string.sorttype_active,
-        R.string.sorttype_active,
-        Icons.Outlined.Moving,
-    ),
+)
 
-    /**
-     * Posts sorted by the published time.
-     */
-    @SerializedName("Hot")
-    Hot(
-        R.string.sorttype_hot,
-        R.string.sorttype_hot,
-        Icons.Outlined.LocalFireDepartment,
-    ),
+val SortType.data: SortData
+    get() = when (this) {
+        SortType.Active -> SortData(R.string.sorttype_active, R.string.sorttype_active, Icons.Outlined.Moving)
+        SortType.Hot -> SortData(R.string.sorttype_hot, R.string.sorttype_hot, Icons.Outlined.LocalFireDepartment)
+        SortType.New -> SortData(R.string.sorttype_new, R.string.sorttype_new, Icons.Outlined.BrightnessLow)
+        SortType.Old -> SortData(R.string.sorttype_old, R.string.sorttype_old, Icons.Outlined.History)
+        SortType.Controversial -> SortData(
+            R.string.sorttype_controversial,
+            R.string.sorttype_controversial,
+            Icons.Outlined.ThumbsUpDown
+        )
 
-    /**
-     * Posts sorted by scaled rank
-     */
-    @SerializedName("Scaled")
-    Scaled(
-        R.string.sorttype_scaled,
-        R.string.sorttype_scaled,
-        Icons.Outlined.Scale,
-    ),
+        SortType.TopDay -> SortData(R.string.sorttype_topday, R.string.dialogs_top_day, Icons.Outlined.BarChart)
+        SortType.TopWeek -> SortData(R.string.sorttype_topweek, R.string.dialogs_top_week, Icons.Outlined.BarChart)
+        SortType.TopMonth -> SortData(R.string.sorttype_topmonth, R.string.dialogs_top_month, Icons.Outlined.BarChart)
+        SortType.TopYear -> SortData(R.string.sorttype_topyear, R.string.dialogs_top_year, Icons.Outlined.BarChart)
+        SortType.TopAll -> SortData(R.string.sorttype_topall, R.string.dialogs_top_all, Icons.Outlined.BarChart)
+        SortType.MostComments -> SortData(
+            R.string.sorttype_mostcomments,
+            R.string.sorttype_mostcomments,
+            Icons.Outlined.FormatListNumbered
+        )
 
-    @SerializedName("New")
-    New(
-        R.string.sorttype_new,
-        R.string.sorttype_new,
-        Icons.Outlined.BrightnessLow,
-    ),
+        SortType.NewComments -> SortData(
+            R.string.sorttype_newcomments,
+            R.string.sorttype_newcomments,
+            Icons.Outlined.NewReleases
+        )
 
-    /**
-     * Posts sorted by the published time ascending
-     */
-    @SerializedName("Old")
-    Old(
-        R.string.sorttype_old,
-        R.string.sorttype_old,
-        Icons.Outlined.History,
-    ),
+        SortType.TopHour -> SortData(R.string.sorttype_tophour, R.string.dialogs_top_hour, Icons.Outlined.BarChart)
+        SortType.TopSixHour -> SortData(
+            R.string.sorttype_topsixhour,
+            R.string.dialogs_top_six_hour,
+            Icons.Outlined.BarChart
+        )
 
-    /**
-     * Posts sorted by controversy rank.
-     */
-    @SerializedName("Controversial")
-    Controversial(
-        R.string.sorttype_controversial,
-        R.string.sorttype_controversial,
-        Icons.Outlined.ThumbsUpDown,
-    ),
+        SortType.TopTwelveHour -> SortData(
+            R.string.sorttype_toptwelvehour,
+            R.string.dialogs_top_twelve_hour,
+            Icons.Outlined.BarChart
+        )
 
-    /**
-     * The top posts for this last day.
-     */
-    @SerializedName("TopDay")
-    TopDay(
-        R.string.sorttype_topday,
-        R.string.dialogs_top_day,
-        Icons.Outlined.BarChart,
-    ),
+        SortType.TopThreeMonths -> SortData(
+            R.string.sorttype_topthreemonths,
+            R.string.dialogs_top_three_month,
+            Icons.Outlined.BarChart
+        )
 
-    /**
-     * The top posts for this last week.
-     */
-    @SerializedName("TopWeek")
-    TopWeek(
-        R.string.sorttype_topweek,
-        R.string.dialogs_top_week,
-        Icons.Outlined.BarChart,
-    ),
+        SortType.TopSixMonths -> SortData(
+            R.string.sorttype_topsixmonths,
+            R.string.dialogs_top_six_month,
+            Icons.Outlined.BarChart
+        )
 
-    /**
-     * The top posts for this last month.
-     */
-    @SerializedName("TopMonth")
-    TopMonth(
-        R.string.sorttype_topmonth,
-        R.string.dialogs_top_month,
-        Icons.Outlined.BarChart,
-    ),
+        SortType.TopNineMonths -> SortData(
+            R.string.sorttype_topninemonths,
+            R.string.dialogs_top_nine_month,
+            Icons.Outlined.BarChart
+        )
 
-    /**
-     * The top posts for this last year.
-     */
-    @SerializedName("TopYear")
-    TopYear(
-        R.string.sorttype_topyear,
-        R.string.dialogs_top_year,
-        Icons.Outlined.BarChart,
-    ),
+        SortType.Scaled -> SortData(R.string.sorttype_scaled, R.string.sorttype_scaled, Icons.Outlined.Scale)
+    }
 
-    /**
-     * The top posts of all time.
-     */
-    @SerializedName("TopAll")
-    TopAll(
-        R.string.sorttype_topall,
-        R.string.dialogs_top_all,
-        Icons.Outlined.BarChart,
-    ),
 
-    /**
-     * Posts sorted by the most comments.
-     */
-    @SerializedName("MostComments")
-    MostComments(
-        R.string.sorttype_mostcomments,
-        R.string.sorttype_mostcomments,
-        Icons.Outlined.FormatListNumbered,
-    ),
-
-    /**
-     * Posts sorted by the newest comments, with no necrobumping. IE a forum sort.
-     */
-    @SerializedName("NewComments")
-    NewComments(
-        R.string.sorttype_newcomments,
-        R.string.sorttype_newcomments,
-        Icons.Outlined.NewReleases,
-    ),
-
-    /**
-     * Posts sorted by the top hour.
-     */
-    @SerializedName("TopHour")
-    TopHour(
-        R.string.sorttype_tophour,
-        R.string.dialogs_top_hour,
-        Icons.Outlined.BarChart,
-    ),
-
-    /**
-     * Posts sorted by the top six hour.
-     */
-    @SerializedName("TopSixHour")
-    TopSixHour(
-        R.string.sorttype_topsixhour,
-        R.string.dialogs_top_six_hour,
-        Icons.Outlined.BarChart,
-    ),
-
-    /**
-     * Posts sorted by the top twelve hour.
-     */
-    @SerializedName("TopTwelveHour")
-    TopTwelveHour(
-        R.string.sorttype_toptwelvehour,
-        R.string.dialogs_top_twelve_hour,
-        Icons.Outlined.BarChart,
-    ),
-
-    /**
-     * Posts sorted by the top three months.
-     */
-    @SerializedName("TopThreeMonths")
-    TopThreeMonths(
-        R.string.sorttype_topthreemonths,
-        R.string.dialogs_top_three_month,
-        Icons.Outlined.BarChart,
-    ),
-
-    /**
-     * Posts sorted by the top six months.
-     */
-    @SerializedName("TopSixMonths")
-    TopSixMonths(
-        R.string.sorttype_topsixmonths,
-        R.string.dialogs_top_six_month,
-        Icons.Outlined.BarChart,
-    ),
-
-    /**
-     * Posts sorted by the top nine months.
-     */
-    @SerializedName("TopNineMonths")
-    TopNineMonths(
-        R.string.sorttype_topninemonths,
-        R.string.dialogs_top_nine_month,
-        Icons.Outlined.BarChart,
-    ),
+/**
+ * Returns localized Strings for UserTab Enum
+ */
+fun getLocalizedStringForUserTab(
+    ctx: Context,
+    tab: UserTab,
+): String {
+    val returnString =
+        when (tab) {
+            UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+            UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+            UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+        }
+    return returnString
 }
 
 /**
- * Different comment sort types used in lemmy.
+ * Returns localized Strings for ListingType Enum
  */
-enum class CommentSortType(val text: Int, val icon: ImageVector) {
-    /**
-     * Comments sorted by a decaying rank.
-     */
-    @SerializedName("Hot")
-    Hot(R.string.dialogs_hot, Icons.Outlined.LocalFireDepartment),
-
-    /**
-     * Comments sorted by top score.
-     */
-    @SerializedName("Top")
-    Top(R.string.dialogs_top, Icons.Outlined.BarChart),
-
-    /**
-     * Comments sorted by new.
-     */
-    @SerializedName("New")
-    New(R.string.dialogs_new, Icons.Outlined.BrightnessLow),
-
-    /**
-     * Comments sorted by old.
-     */
-    @SerializedName("Old")
-    Old(R.string.dialogs_old, Icons.Outlined.History),
-
-    /**
-     * Posts sorted by controversy rank.
-     */
-    @SerializedName("Controversial")
-    Controversial(R.string.sorttype_controversial, Icons.Outlined.ThumbsUpDown),
-
+fun getLocalizedListingTypeName(
+    ctx: Context,
+    listingType: ListingType,
+): String {
+    val returnString =
+        when (listingType) {
+            ListingType.All -> ctx.getString(R.string.home_all)
+            ListingType.Local -> ctx.getString(R.string.home_local)
+            ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+            ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
+        }
+    return returnString
 }
 
 /**
- * The different listing types for post and comment fetches.
+ * Returns localized Strings for CommentSortType Enum
  */
-enum class ListingType {
-    @SerializedName("All")
-    All,
-
-    @SerializedName("Local")
-    Local,
-
-    @SerializedName("Subscribed")
-    Subscribed,
-
-    @SerializedName("ModeratorView")
-    ModeratorView,
+fun getLocalizedCommentSortTypeName(
+    ctx: Context,
+    commentSortType: CommentSortType,
+): String {
+    val returnString =
+        when (commentSortType) {
+            CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+            CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+            CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+            CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+            CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+        }
+    return returnString
 }
 
 /**
- * Search types for lemmy's search.
+ * Returns localized Strings for UnreadOrAll Enum
  */
-enum class SearchType {
-    @SerializedName("All")
-    All,
-
-    @SerializedName("Comments")
-    Comments,
-
-    @SerializedName("Posts")
-    Posts,
-
-    @SerializedName("Communities")
-    Communities,
-
-    @SerializedName("Users")
-    Users,
-
-    @SerializedName("Url")
-    Url,
+fun getLocalizedUnreadOrAllName(
+    ctx: Context,
+    unreadOrAll: UnreadOrAll,
+): String {
+    val returnString =
+        when (unreadOrAll) {
+            UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
+            UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+        }
+    return returnString
 }
 
 /**
- * Different Subscribed states
+ * Returns localized Strings for InboxTab Enum
  */
-enum class SubscribedType {
-    @SerializedName("Subscribed")
-    Subscribed,
-
-    @SerializedName("NotSubscribed")
-    NotSubscribed,
-
-    @SerializedName("Pending")
-    Pending,
+fun getLocalizedStringForInboxTab(
+    ctx: Context,
+    tab: InboxTab,
+): String {
+    val returnString =
+        when (tab) {
+            InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
+            InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
+            InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
+        }
+    return returnString
 }
-
-/**
- * Different Subscribed states
- */
-enum class PostFeatureType {
-    @SerializedName("Local")
-    Local,
-
-    @SerializedName("Community")
-    Community,
-}
-
-enum class ModlogActionType {
-    @SerializedName("All")
-    All,
-
-    @SerializedName("ModRemovePost")
-    ModRemovePost,
-
-    @SerializedName("ModLockPost")
-    ModLockPost,
-
-    @SerializedName("ModFeaturePost")
-    ModFeaturePost,
-
-    @SerializedName("ModRemoveComment")
-    ModRemoveComment,
-
-    @SerializedName("ModRemoveCommunity")
-    ModRemoveCommunity,
-
-    @SerializedName("ModBanFromCommunity")
-    ModBanFromCommunity,
-
-    @SerializedName("ModAddCommunity")
-    ModAddCommunity,
-
-    @SerializedName("ModTransferCommunity")
-    ModTransferCommunity,
-
-    @SerializedName("ModAdd")
-    ModAdd,
-
-    @SerializedName("ModBan")
-    ModBan,
-
-    @SerializedName("ModHideCommunity")
-    ModHideCommunity,
-
-    @SerializedName("AdminPurgePerson")
-    AdminPurgePerson,
-
-    @SerializedName("AdminPurgeCommunity")
-    AdminPurgeCommunity,
-
-    @SerializedName("AdminPurgePost")
-    AdminPurgePost,
-
-    @SerializedName("AdminPurgeComment")
-    AdminPurgeComment,
-}
-
-@Parcelize
-data class PictrsImage(
-    val file: String,
-    val delete_token: String,
-) : Parcelable
-
-@Immutable
-@Parcelize
-data class PictrsImages(
-    val msg: String,
-    val files: List<PictrsImage>?,
-) : Parcelable

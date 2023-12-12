@@ -26,11 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.R
-import com.jerboa.datatypes.CommentSortType
-import com.jerboa.datatypes.SortType
+import com.jerboa.api.API
+import com.jerboa.datatypes.data
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.ui.theme.Shapes
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.dto.getSupportedEntries
 import me.saket.cascade.CascadeColumnScope
 import me.saket.cascade.CascadeDropdownMenu
 
@@ -49,10 +52,10 @@ fun SortOptionsDropdown(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
-        SortType.entries.filter { !isTopSort(it) }.forEach {
+        getSupportedEntries<SortType>(API.version).filter { !isTopSort(it) }.forEach {
             DropdownMenuItem(
-                text = { Text(stringResource(it.longForm)) },
-                leadingIcon = { Icon(it.icon, contentDescription = null) },
+                text = { Text(stringResource(it.data.longForm)) },
+                leadingIcon = { Icon(it.data.icon, contentDescription = null) },
                 onClick = { onClickSortType(it) },
                 modifier =
                     Modifier.ifDo(selectedSortType == it) {
@@ -71,9 +74,9 @@ fun SortOptionsDropdown(
                     Modifier
                 },
             children = {
-                SortType.entries.filter(isTopSort).forEach {
+                getSupportedEntries<SortType>(API.version).filter(isTopSort).forEach {
                     DropdownMenuItem(
-                        text = { Text(stringResource(it.longForm)) },
+                        text = { Text(stringResource(it.data.longForm)) },
                         onClick = {
                             onDismissRequest()
                             onClickSortType(it)
@@ -100,10 +103,10 @@ fun CommentSortOptionsDropdown(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
     ) {
-        CommentSortType.entries.forEach {
+        getSupportedEntries<CommentSortType>(API.version).forEach {
             DropdownMenuItem(
-                text = { Text(stringResource(it.text)) },
-                leadingIcon = { Icon(imageVector = it.icon, contentDescription = null) },
+                text = { Text(stringResource(it.data.text)) },
+                leadingIcon = { Icon(imageVector = it.data.icon, contentDescription = null) },
                 onClick = {
                     onDismissRequest()
                     onClickSortType(it)

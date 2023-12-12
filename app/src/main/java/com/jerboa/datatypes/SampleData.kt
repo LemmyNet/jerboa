@@ -1,28 +1,31 @@
 package com.jerboa.datatypes
 
-import com.jerboa.datatypes.types.Comment
-import com.jerboa.datatypes.types.CommentAggregates
-import com.jerboa.datatypes.types.CommentReply
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityAggregates
-import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.LocalSite
-import com.jerboa.datatypes.types.LocalSiteRateLimit
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.PersonAggregates
-import com.jerboa.datatypes.types.PersonMention
-import com.jerboa.datatypes.types.PersonMentionView
-import com.jerboa.datatypes.types.PersonView
-import com.jerboa.datatypes.types.Post
-import com.jerboa.datatypes.types.PostAggregates
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.PrivateMessage
-import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.datatypes.types.Site
-import com.jerboa.datatypes.types.SiteAggregates
-import com.jerboa.datatypes.types.SiteView
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.RegistrationMode
+import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReply
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSite
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSiteRateLimit
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMention
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Site
+import it.vercruysse.lemmyapi.v0x19.datatypes.SiteAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
 
 val samplePost =
     Post(
@@ -155,7 +158,7 @@ val samplePerson =
         updated = "2021-10-11T07:14:53.548707",
         actor_id = "https://lemmy.ml/u/homeless",
         bio =
-            "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
+        "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
                 "that I have in here. But I'm not sure blah blah blah\n\nI have " +
                 "**tres ojos**.",
         local = true,
@@ -308,7 +311,7 @@ val sampleComment =
         creator_id = 56450,
         post_id = 139549,
         content =
-            "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
+        "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
                 " " +
                 "work" +
                 ".\n\nIts kind of a long comment\n\nbut I don't want...",

@@ -22,18 +22,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.PostType
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostView
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.isMedia
 import com.jerboa.ui.components.common.PopupMenuItem
+import com.jerboa.util.blockCommunity
+import com.jerboa.util.blockPerson
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
+import com.jerboa.util.getInstanceFromCommunityUrl
+import com.jerboa.util.showBlockCommunityToast
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun PostOptionsDropdown(
@@ -44,8 +54,6 @@ fun PostOptionsDropdown(
     onEditPostClick: (PostView) -> Unit,
     onDeletePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
-    onBlockCreatorClick: (Person) -> Unit,
-    onBlockCommunityClick: (Community) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     viewSource: Boolean,
@@ -120,7 +128,7 @@ fun PostOptionsDropdown(
                         onDismissRequest()
                         if (copyToClipboard(
                                 ctx,
-                                postView.post.thumbnail_url,
+                                postView.post.thumbnail_url ?: "",
                                 "thumbnail link",
                             )
                         ) {
@@ -148,7 +156,7 @@ fun PostOptionsDropdown(
                         onDismissRequest()
                         if (copyToClipboard(
                                 ctx,
-                                postView.post.embed_description,
+                                it,
                                 "post title",
                             )
                         ) {
@@ -197,7 +205,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         onDismissRequest()
-                        if (copyToClipboard(ctx, postView.post.body, "post text")) {
+                        if (copyToClipboard(ctx, postView.post.body ?: "", "post text")) {
                             Toast.makeText(
                                 ctx,
                                 ctx.getString(R.string.post_listing_text_copied),
@@ -335,7 +343,14 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Block,
                     onClick = {
                         onDismissRequest()
-                        onBlockCreatorClick(postView.creator)
+                        blockPerson(
+                            scope,
+                            BlockPerson(
+                                person_id = postView.creator.id,
+                                block = true,
+                            ),
+                            ctx,
+                        )
                     },
                 )
 
@@ -344,9 +359,35 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Block,
                     onClick = {
                         onDismissRequest()
-                        onBlockCommunityClick(postView.community)
+                        blockCommunity(
+                            scope,
+                            BlockCommunity(
+                                community_id = postView.community.id,
+                                block = true,
+                            ),
+                            ctx,
+                        )
                     },
                 )
+
+                val api = API.getInstanceOrNull()
+
+                if (api != null && api.FF.instanceBlock()) {
+                    val instance = getInstanceFromCommunityUrl(postView.community.actor_id)
+                    PopupMenuItem(
+                        text = stringResource(R.string.post_listing_block, instance),
+                        icon = Icons.Outlined.Block,
+                        onClick = {
+                            onDismissRequest()
+                            scope.launch(Dispatchers.IO) {
+                                val resp = api.blockInstance(BlockInstance(postView.community.instance_id, true))
+                                withContext(Dispatchers.Main) {
+                                    showBlockCommunityToast(resp, instance, ctx)
+                                }
+                            }
+                        },
+                    )
+                }
             }
 
             PopupMenuItem(

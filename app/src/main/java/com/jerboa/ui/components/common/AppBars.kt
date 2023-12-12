@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
-import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
@@ -60,6 +59,7 @@ import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

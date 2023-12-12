@@ -44,12 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
-import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.samplePerson
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.datatypes.types.MyUserInfo
-import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
@@ -69,6 +64,11 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -307,11 +307,11 @@ fun DrawerAddAccountMode(
     onSignOutClick: () -> Unit,
     onSwitchAnon: () -> Unit,
 ) {
-    val allAccounts = accountViewModel.allAccounts.observeAsState()
-    val accountsWithoutCurrent = allAccounts.value?.toMutableList()
+    val allAccounts = accountViewModel.allAccounts.observeAsState(emptyList())
+    val accountsWithoutCurrent = allAccounts.value.toMutableList()
     val currentAccount = getCurrentAccount(accountViewModel = accountViewModel)
 
-    accountsWithoutCurrent?.remove(currentAccount)
+    accountsWithoutCurrent.remove(currentAccount)
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (!currentAccount.isAnon()) {
@@ -328,7 +328,7 @@ fun DrawerAddAccountMode(
             )
         }
 
-        accountsWithoutCurrent?.forEach {
+        accountsWithoutCurrent.forEach {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_switch_to, it.name, it.instance),
                 icon = Icons.Outlined.Login,

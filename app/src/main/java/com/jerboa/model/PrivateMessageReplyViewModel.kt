@@ -8,10 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CreatePrivateMessage
-import com.jerboa.datatypes.types.PrivateMessageResponse
-import com.jerboa.db.entity.Account
+import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.launch
 
 class PrivateMessageReplyViewModel : ViewModel() {
@@ -21,7 +20,6 @@ class PrivateMessageReplyViewModel : ViewModel() {
     fun createPrivateMessage(
         recipientId: Int,
         content: String,
-        account: Account,
         onGoBack: () -> Unit,
         focusManager: FocusManager,
     ) {
@@ -32,7 +30,7 @@ class PrivateMessageReplyViewModel : ViewModel() {
                     recipient_id = recipientId,
                 )
             createMessageRes = ApiState.Loading
-            createMessageRes = apiWrapper(API.getInstance().createPrivateMessage(form))
+            createMessageRes = API.getInstance().createPrivateMessage(form).toApiState()
 
             focusManager.clearFocus()
             onGoBack()

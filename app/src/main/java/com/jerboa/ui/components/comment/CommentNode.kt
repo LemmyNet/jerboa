@@ -56,7 +56,6 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
-import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isPostCreator
@@ -72,6 +71,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable

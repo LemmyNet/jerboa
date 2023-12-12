@@ -1,13 +1,15 @@
 package com.jerboa
 
 import com.jerboa.api.API
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.types.GetPost
-import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.api.DEFAULT_INSTANCE
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 
@@ -18,6 +20,11 @@ import org.junit.Test
  */
 @Ignore
 class ExampleUnitTest {
+    @Before
+    fun init_api() {
+        runBlocking { API.setLemmyInstance(DEFAULT_INSTANCE) }
+    }
+
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
@@ -27,7 +34,7 @@ class ExampleUnitTest {
     fun testGetSite() =
         runBlocking {
             val api = API.getInstance()
-            val out = api.getSite().body()!!
+            val out = api.getSite().getOrThrow()
 
             assertEquals("Lemmy", out.site_view.site.name)
         }
@@ -35,14 +42,13 @@ class ExampleUnitTest {
     @Test
     fun testGetPosts() =
         runBlocking {
-            // TODO
             val api = API.getInstance()
             val form =
                 GetPosts(
                     ListingType.All,
                     SortType.Active,
                 )
-            val out = api.getPosts(form.serializeToMap()).body()!!
+            val out = api.getPosts(form).getOrThrow()
             println(out.posts[0])
             assertNotNull(out.posts)
         }
@@ -55,17 +61,17 @@ class ExampleUnitTest {
                 GetPost(
                     id = 139549,
                 )
-            val out = api.getPost(form.serializeToMap()).body()!!
+            val out = api.getPost(form).getOrThrow()
             assertNotNull(out)
         }
 
-/*
-    @Test
-    fun testLogin() = runBlocking {
-        val api = API.getInstance()
-        val form = Login(username_or_email = "tester12345", password = "tester12345")
-        val out = api.login(form).body()!!
-        assertNotNull(out.jwt)
-    }
-*/
+    /*
+        @Test
+        fun testLogin() = runBlocking {
+            val api = API.getInstance()
+            val form = Login(username_or_email = "tester12345", password = "tester12345")
+            val out = api.login(form).body()!!
+            assertNotNull(out.jwt)
+        }
+     */
 }

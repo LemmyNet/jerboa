@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.InputField
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
-import com.jerboa.datatypes.types.Community
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage
@@ -45,6 +44,7 @@ import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 
 @Composable
 fun CreateEditPostBody(
@@ -179,7 +179,7 @@ fun PostCommunitySelector(
             OutlinedTextField(
                 value = community.name,
                 readOnly = true,
-                onValueChange = {}, // TODO what?
+                onValueChange = {},
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },
@@ -206,7 +206,7 @@ fun PostCommunitySelector(
         } ?: run {
             OutlinedTextField(
                 value = "",
-                onValueChange = {}, // TODO what?
+                onValueChange = {},
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },

@@ -11,12 +11,11 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.CommentReportResponse
-import com.jerboa.datatypes.types.CreateCommentReport
-import com.jerboa.datatypes.types.CreatePostReport
-import com.jerboa.datatypes.types.PostReportResponse
-import com.jerboa.db.entity.Account
+import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportResponse
 import kotlinx.coroutines.launch
 
 class CreateReportViewModel : ViewModel() {
@@ -28,7 +27,6 @@ class CreateReportViewModel : ViewModel() {
     fun createCommentReport(
         commentId: Int,
         reason: String,
-        account: Account,
         ctx: Context,
         focusManager: FocusManager,
         onBack: () -> Unit,
@@ -41,10 +39,7 @@ class CreateReportViewModel : ViewModel() {
                 )
 
             commentReportRes = ApiState.Loading
-            commentReportRes =
-                apiWrapper(
-                    API.getInstance().createCommentReport(form),
-                )
+            commentReportRes = API.getInstance().createCommentReport(form).toApiState()
 
             val message =
                 when (val res = commentReportRes) {
@@ -64,7 +59,6 @@ class CreateReportViewModel : ViewModel() {
     fun createPostReport(
         postId: Int,
         reason: String,
-        account: Account,
         ctx: Context,
         focusManager: FocusManager,
         onBack: () -> Unit,
@@ -77,10 +71,7 @@ class CreateReportViewModel : ViewModel() {
                 )
 
             postReportRes = ApiState.Loading
-            postReportRes =
-                apiWrapper(
-                    API.getInstance().createPostReport(form),
-                )
+            postReportRes = API.getInstance().createPostReport(form).toApiState()
 
             val message =
                 when (val res = postReportRes) {

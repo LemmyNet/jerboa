@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.common
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,10 @@ fun apiErrorToast(
     ctx: Context,
     msg: Throwable,
 ) {
-    msg.message?.also { Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show() }
+    msg.message?.also {
+        Log.e("apiErrorToast", it)
+        Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
+    }
 }
 
 @Composable

@@ -15,10 +15,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommentView
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.PersonMentionView
-import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
@@ -27,6 +23,10 @@ import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 
 @Composable
 fun RepliedComment(

@@ -67,10 +67,6 @@ import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.Post
-import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurTypes
@@ -116,6 +112,7 @@ import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -545,8 +542,6 @@ fun PostFooterLine(
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCreatorClick: (person: Person) -> Unit,
-    onBlockCommunityClick: (community: Community) -> Unit,
     onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
@@ -569,8 +564,6 @@ fun PostFooterLine(
             onEditPostClick = onEditPostClick,
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            onBlockCommunityClick = onBlockCommunityClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             viewSource = viewSource,
@@ -762,8 +755,6 @@ fun PostFooterLinePreview() {
         onReportClick = {},
         onCommunityClick = {},
         onPersonClick = {},
-        onBlockCreatorClick = {},
-        onBlockCommunityClick = {},
         onViewSourceClick = {},
         account = AnonAccount,
         enableDownVotes = true,
@@ -792,8 +783,6 @@ fun PreviewPostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
         fullBody = false,
         account = AnonAccount,
         postViewMode = PostViewMode.Card,
@@ -826,8 +815,6 @@ fun PreviewLinkPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
         fullBody = false,
         account = AnonAccount,
         postViewMode = PostViewMode.Card,
@@ -860,8 +847,6 @@ fun PreviewImagePostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
         fullBody = false,
         account = AnonAccount,
         postViewMode = PostViewMode.Card,
@@ -894,8 +879,6 @@ fun PreviewImagePostListingSmallCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
         fullBody = false,
         account = AnonAccount,
         postViewMode = PostViewMode.SmallCard,
@@ -928,8 +911,6 @@ fun PreviewLinkNoThumbnailPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
         fullBody = false,
         account = AnonAccount,
         postViewMode = PostViewMode.Card,
@@ -960,8 +941,6 @@ fun PostListing(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCommunityClick: (community: Community) -> Unit,
-    onBlockCreatorClick: (person: Person) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
@@ -1021,8 +1000,6 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onPersonClick = onPersonClick,
-                onBlockCommunityClick = onBlockCommunityClick,
-                onBlockCreatorClick = onBlockCreatorClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
                 },
@@ -1072,8 +1049,6 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onPersonClick = onPersonClick,
-                onBlockCommunityClick = onBlockCommunityClick,
-                onBlockCreatorClick = onBlockCreatorClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
                 },
@@ -1466,8 +1441,6 @@ fun PostListingCard(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCommunityClick: (community: Community) -> Unit,
-    onBlockCreatorClick: (person: Person) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
     showReply: Boolean = false,
@@ -1542,8 +1515,6 @@ fun PostListingCard(
             onReportClick = onReportClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            onBlockCommunityClick = onBlockCommunityClick,
             onViewSourceClick = onViewSourceClick,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showReply = showReply,

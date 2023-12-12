@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jerboa.api.API
+import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feat.AccountVerificationState
 import com.jerboa.jerboaApplication
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Stable
@@ -20,17 +23,29 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
 
     fun insert(account: Account) =
         viewModelScope.launch {
+            // Remove the default account
+            if (account.current) {
+                repository.removeCurrent()
+            }
             repository.insert(account)
         }
 
-    fun removeCurrent() =
+    fun removeCurrent(toAnon: Boolean = false): Job =
         viewModelScope.launch {
+            val api = API.getInstance()
+            if (api.FF.logout()) {
+                api.logout()
+            }
+            if (toAnon) {
+                API.setLemmyInstanceSafe(DEFAULT_INSTANCE)
+            }
             repository.removeCurrent()
         }
 
-    fun setCurrent(accountId: Int) =
+    fun updateCurrent(account: Account): Job =
         viewModelScope.launch {
-            repository.setCurrent(accountId)
+            API.setLemmyInstanceSafe(account.instance, account.jwt)
+            repository.updateCurrent(account.id)
         }
 
     // Be careful when setting the verification state,
@@ -58,18 +73,21 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     fun deleteAccountAndSwapCurrent(
         account: Account,
         swapToAnon: Boolean = false,
-    ) = viewModelScope.launch {
-        if (account.isAnon()) return@launch
+    ): Job =
+        viewModelScope.launch {
+            if (account.isAnon()) return@launch
 
-        repository.delete(account)
+            val accounts = repository.allAccounts.value
+            val nextAcc = accounts?.firstOrNull { it.id != account.id }
 
-        val accounts = repository.allAccounts.value
-        val nextAcc = accounts?.firstOrNull { it.id != account.id }
+            if (!swapToAnon && nextAcc != null) {
+                updateCurrent(nextAcc).join()
+            } else {
+                removeCurrent(true).join()
+            }
 
-        if (!swapToAnon && nextAcc != null) {
-            repository.setCurrent(nextAcc.id)
+            repository.delete(account)
         }
-    }
 }
 
 object AccountViewModelFactory {

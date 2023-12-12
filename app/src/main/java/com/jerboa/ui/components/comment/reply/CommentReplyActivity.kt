@@ -73,7 +73,6 @@ fun CommentReplyActivity(
                             replyItem,
                             ctx = ctx,
                             content = reply.text,
-                            account = account,
                             focusManager = focusManager,
                         ) { cv ->
                             appState.apply {

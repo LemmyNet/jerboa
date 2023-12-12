@@ -34,16 +34,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.SubscribedType
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommunityId
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -68,6 +58,15 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -138,6 +137,7 @@ fun CommunityActivity(
                             communityName = communityName,
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
+                                // TODO scroll to top doesnt seem to work
                                 scrollToTop(scope, postListState)
                                 communityViewModel.resetPosts()
                             },
@@ -329,50 +329,6 @@ fun CommunityActivity(
                             onPersonClick = { personId ->
                                 appState.toProfile(id = personId)
                             },
-                            onBlockCommunityClick = {
-                                when (val communityRes = communityViewModel.communityRes) {
-                                    is ApiState.Success -> {
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
-                                            communityViewModel.blockCommunity(
-                                                form =
-                                                    BlockCommunity(
-                                                        community_id = communityRes.data.community_view.community.id,
-                                                        block = !communityRes.data.community_view.blocked,
-                                                    ),
-                                                ctx = ctx,
-                                            )
-                                        }
-                                    }
-
-                                    else -> {}
-                                }
-                            },
-                            onBlockCreatorClick = { person ->
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                    accountViewModel,
-                                ) {
-                                    communityViewModel.blockPerson(
-                                        form =
-                                            BlockPerson(
-                                                person_id = person.id,
-                                                block = true,
-                                            ),
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
                             loadMorePosts = {
                                 communityViewModel.appendPosts()
                             },
@@ -394,9 +350,10 @@ fun CommunityActivity(
                                 if (!account.isAnon() && !postView.read) {
                                     communityViewModel.markPostAsRead(
                                         MarkPostAsRead(
-                                            post_id = postView.post.id,
+                                            post_ids = listOf(postView.post.id),
                                             read = true,
                                         ),
+                                        postView,
                                         appState,
                                     )
                                 }

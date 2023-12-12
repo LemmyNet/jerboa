@@ -62,7 +62,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.api.uploadPictrsImage
+import com.jerboa.api.API
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
@@ -309,10 +309,10 @@ private fun imageUploadLauncher(
                 val imageIs = imageInputStreamFromUri(ctx, cUri)
                 scope.launch {
                     if (!account.isAnon()) {
-                        val url = uploadPictrsImage(imageIs, ctx)
-                        url?.also {
-                            imageUploading.value = false
-                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))
+                        val url = API.uploadPictrsImage(imageIs, ctx)
+                        imageUploading.value = false
+                        if (url.isNotEmpty()) {
+                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, url)))
                         }
                     }
                 }

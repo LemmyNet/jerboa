@@ -42,17 +42,10 @@ import com.jerboa.JerboaAppState
 import com.jerboa.UnreadOrAll
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.MarkCommentReplyAsRead
-import com.jerboa.datatypes.types.MarkPersonMentionAsRead
-import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
-import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.datatypes.getLocalizedStringForInboxTab
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
-import com.jerboa.getLocalizedStringForInboxTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.InboxViewModel
@@ -73,6 +66,13 @@ import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkCommentReplyAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPersonMentionAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPrivateMessageAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -12,31 +13,27 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommunityId
-import com.jerboa.datatypes.types.CommunityResponse
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetCommunity
-import com.jerboa.datatypes.types.GetCommunityResponse
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetPostsResponse
-import com.jerboa.datatypes.types.MarkPostAsRead
-import com.jerboa.datatypes.types.PaginationCursor
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
+import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
-import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.launch
 
 class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel() {
@@ -54,11 +51,12 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
-    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
         private set
+
+    private var page by mutableIntStateOf(1)
     private var pageCursor: PaginationCursor? by mutableStateOf(null)
 
     private var communityId: Int? by mutableStateOf(null)
@@ -69,16 +67,22 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     }
 
     private fun resetPage() {
+        page = 1
         pageCursor = null
+    }
+
+    private fun nextPage() {
+        page += 1
+    }
+
+    private fun prevPage() {
+        page -= 1
     }
 
     private fun getCommunity(form: GetCommunity) {
         viewModelScope.launch {
             communityRes = ApiState.Loading
-            communityRes =
-                apiWrapper(
-                    API.getInstance().getCommunity(form.serializeToMap()),
-                )
+            communityRes = API.getInstance().getCommunity(form).toApiState()
         }
     }
 
@@ -88,10 +92,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     ) {
         viewModelScope.launch {
             postsRes = state
-            postsRes =
-                apiWrapper(
-                    API.getInstance().getPosts(form.serializeToMap()),
-                )
+            postsRes = API.getInstance().getPosts(form).toApiState()
         }
     }
 
@@ -107,8 +108,9 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
             // Update the page cursor before fetching again
             pageCursor = oldRes.data.next_page
+            nextPage()
 
-            val newRes = apiWrapper(API.getInstance().getPosts(getForm().serializeToMap()))
+            val newRes = API.getInstance().getPosts(getForm()).toApiState()
 
             postsRes =
                 when (newRes) {
@@ -126,6 +128,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                     }
 
                     else -> {
+                        prevPage()
                         ApiState.AppendingFailure(oldRes.data)
                     }
                 }
@@ -153,8 +156,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     ) {
         viewModelScope.launch {
             followCommunityRes = ApiState.Loading
-            followCommunityRes =
-                apiWrapper(API.getInstance().followCommunity(form))
+            followCommunityRes = API.getInstance().followCommunity(form).toApiState()
 
             // Copy that response to the communityRes
             when (val followRes = followCommunityRes) {
@@ -179,7 +181,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = API.getInstance().createPostLike(form).toApiState()
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -194,7 +196,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     fun savePost(form: SavePost) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = API.getInstance().savePost(form).toApiState()
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -208,7 +210,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = API.getInstance().deletePost(form).toApiState()
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
@@ -225,7 +227,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes = apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
 
             showBlockCommunityToast(blockCommunityRes, ctx)
 
@@ -252,17 +254,6 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
         }
     }
 
-    fun blockPerson(
-        form: BlockPerson,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
-            showBlockPersonToast(blockPersonRes, ctx)
-        }
-    }
-
     fun updatePost(postView: PostView) {
         when (val existing = postsRes) {
             is ApiState.Success -> {
@@ -277,15 +268,16 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
     fun markPostAsRead(
         form: MarkPostAsRead,
+        post: PostView,
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
-            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+            markPostRes = API.getInstance().markPostAsRead(form).toApiState()
 
-            when (val markRes = markPostRes) {
+            when (markPostRes) {
                 is ApiState.Success -> {
-                    updatePost(markRes.data.post_view)
+                    updatePost(post.copy(read = form.read))
                 }
 
                 else -> {}

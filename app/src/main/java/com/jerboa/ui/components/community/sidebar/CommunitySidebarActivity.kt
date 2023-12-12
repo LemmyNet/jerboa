@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.hostName
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 
 object CommunityViewSidebar {
     const val COMMUNITY_VIEW = "side-bar::return(community-view)"

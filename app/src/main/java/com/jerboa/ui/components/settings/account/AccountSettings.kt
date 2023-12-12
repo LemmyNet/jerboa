@@ -1,14 +1,30 @@
 package com.jerboa.ui.components.settings.account
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,17 +37,22 @@ import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.types.SaveUserSettings
+import com.jerboa.datatypes.data
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.*
+import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.MarkdownTextField
+import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.dto.getSupportedEntries
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
 
 @Composable
@@ -112,8 +133,9 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
+    val supportedSortTypes = remember { getSupportedEntries<SortType>(API.version) }
     val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
-    val defaultSortType = rememberIntSettingState(SortType.entries.indexOf(defaultSortTypeInitial))
+    val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
     val defaultListingType =
         rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
     val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
@@ -126,7 +148,7 @@ fun SettingsForm(
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
     val curr2FAEnabled = luv?.local_user?.totp_2fa_enabled ?: false
     val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
-    val sortTypeNames = remember { SortType.entries.map { ctx.getString(it.shortForm) } }
+    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.data.shortForm) } }
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
@@ -138,7 +160,7 @@ fun SettingsForm(
             matrix_user_id = matrixUserId,
             interface_language = interfaceLang,
             bot_account = botAccount.value,
-            default_sort_type = SortType.entries[defaultSortType.value],
+            default_sort_type = supportedSortTypes[defaultSortType.value],
             send_notifications_to_email = sendNotificationsToEmail.value,
             show_avatars = showAvatars.value,
             show_bot_accounts = showBotAccount.value,
@@ -204,7 +226,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingAvatar = true
-                            avatar = uploadPictrsImage(imageIs, ctx).orEmpty()
+                            avatar = API.uploadPictrsImage(imageIs, ctx)
                             isUploadingAvatar = false
                         }
                     },
@@ -224,7 +246,7 @@ fun SettingsForm(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             isUploadingBanner = true
-                            banner = uploadPictrsImage(imageIs, ctx).orEmpty()
+                            banner = API.uploadPictrsImage(imageIs, ctx)
                             isUploadingBanner = false
                         }
                     },
@@ -291,29 +313,28 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
             },
         )
-        SettingsCheckbox(
-            title = {
-                Text(text = stringResource(R.string.settings_enable_2fa))
-            },
-            state = enable2FA,
-        )
-
-        // TODO need to rework this
-        if (curr2FAEnabled) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                OutlinedButton(
-                    onClick = {
-                        // TODO need to rework this
-                        // val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
-                        // ctx.startActivitySafe(intent)
-                    },
-                ) {
-                    Text(stringResource(R.string.settings_2fa_link))
-                }
-            }
-        }
+        // TODO
+//        SettingsCheckbox(
+//            title = {
+//                Text(text = stringResource(R.string.settings_enable_2fa))
+//            },
+//            state = enable2FA,
+//        )
+//
+//        if (curr2FAEnabled) {
+//            Row(
+//                horizontalArrangement = Arrangement.Center,
+//                modifier = Modifier.fillMaxWidth(),
+//            ) {
+//                OutlinedButton(
+//                    onClick = {
+//                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
+//                        ctx.startActivitySafe(intent)
+//                    },
+//                ) {
+//                    Text(stringResource(R.string.settings_2fa_link))
+//                }
+//            }
+//        }
     }
 }

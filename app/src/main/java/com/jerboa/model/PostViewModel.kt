@@ -12,34 +12,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
+import com.jerboa.api.toApiState
 import com.jerboa.appendData
-import com.jerboa.datatypes.CommentSortType
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommentId
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetComments
-import com.jerboa.datatypes.types.GetCommentsResponse
-import com.jerboa.datatypes.types.GetPost
-import com.jerboa.datatypes.types.GetPostResponse
-import com.jerboa.datatypes.types.PostId
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
 import com.jerboa.findAndUpdateComment
-import com.jerboa.serializeToMap
-import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
@@ -60,7 +39,6 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
@@ -85,7 +63,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
                 })
 
             postRes = state
-            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
+            postRes = API.getInstance().getPost(postForm).toApiState()
 
             val commentsForm =
                 id.fold({
@@ -105,7 +83,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
                 })
 
             commentsRes = ApiState.Loading
-            commentsRes = apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+            commentsRes = API.getInstance().getComments(commentsForm).toApiState()
         }
     }
 
@@ -128,8 +106,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
                     type_ = ListingType.All,
                 )
 
-            val moreComments =
-                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+            val moreComments = API.getInstance().getComments(commentsForm).toApiState()
 
             when (moreComments) {
                 is ApiState.Success -> {
@@ -152,7 +129,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     fun likeComment(form: CreateCommentLike) {
         viewModelScope.launch {
             likeCommentRes = ApiState.Loading
-            likeCommentRes = apiWrapper(API.getInstance().likeComment(form))
+            likeCommentRes = API.getInstance().createCommentLike(form).toApiState()
 
             when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
@@ -167,7 +144,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     fun deleteComment(form: DeleteComment) {
         viewModelScope.launch {
             deleteCommentRes = ApiState.Loading
-            deleteCommentRes = apiWrapper(API.getInstance().deleteComment(form))
+            deleteCommentRes = API.getInstance().deleteComment(form).toApiState()
 
             when (val deleteRes = deleteCommentRes) {
                 is ApiState.Success -> {
@@ -182,7 +159,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     fun saveComment(form: SaveComment) {
         viewModelScope.launch {
             saveCommentRes = ApiState.Loading
-            saveCommentRes = apiWrapper(API.getInstance().saveComment(form))
+            saveCommentRes = API.getInstance().saveComment(form).toApiState()
 
             when (val saveRes = saveCommentRes) {
                 is ApiState.Success -> {
@@ -197,7 +174,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = API.getInstance().createPostLike(form).toApiState()
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -212,7 +189,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     fun savePost(form: SavePost) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = API.getInstance().savePost(form).toApiState()
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -226,7 +203,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = API.getInstance().deletePost(form).toApiState()
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
@@ -237,25 +214,13 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         }
     }
 
-    fun blockCommunity(
-        form: BlockCommunity,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
-            showBlockCommunityToast(blockCommunityRes, ctx)
-        }
-    }
-
     fun blockPerson(
         form: BlockPerson,
         ctx: Context,
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
             showBlockPersonToast(blockPersonRes, ctx)
         }
     }
@@ -277,7 +242,6 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         }
     }
 
-    // TODO test this to make sure comment tree inserts work
     fun appendComment(commentView: CommentView) {
         when (val existing = commentsRes) {
             is ApiState.Success -> {

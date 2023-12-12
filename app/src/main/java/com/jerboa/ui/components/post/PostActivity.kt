@@ -57,24 +57,11 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
-import com.jerboa.datatypes.CommentSortType
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentId
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.PostId
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
-import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
@@ -98,6 +85,8 @@ import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -286,7 +275,7 @@ fun PostActivity(
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->
                         LoadingBar(padding)
-                    is ApiState.Failure -> ApiErrorText(postRes.msg)
+                    is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
 
@@ -396,44 +385,7 @@ fun PostActivity(
                                         appState.toPostReport(id = pv.post.id)
                                     },
                                     onPersonClick = appState::toProfile,
-                                    onBlockCommunityClick = { c ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
-                                            postViewModel.blockCommunity(
-                                                BlockCommunity(
-                                                    community_id = c.id,
-                                                    block = true,
-                                                ),
-                                                ctx,
-                                            )
-                                        }
-                                    },
-                                    onBlockCreatorClick = { person ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
-                                            postViewModel.blockPerson(
-                                                BlockPerson(
-                                                    person_id = person.id,
-                                                    block = true,
-                                                ),
-                                                ctx,
-                                            )
-                                        }
-                                    },
                                     showReply = true, // Do nothing
-                                    showCommunityName = true,
                                     fullBody = true,
                                     account = account,
                                     postViewMode = PostViewMode.Card,
