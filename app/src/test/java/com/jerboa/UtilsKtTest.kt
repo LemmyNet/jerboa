@@ -297,5 +297,6 @@ class UtilsKtTest {
         assertEquals("http://example.com", "http://example.com".padUrlWithHttps())
         assertEquals("https://example.com", "https://example.com".padUrlWithHttps())
         assertEquals("ws://example.com", "ws://example.com".padUrlWithHttps())
+        assertEquals("", "".padUrlWithHttps())
     }
 }
