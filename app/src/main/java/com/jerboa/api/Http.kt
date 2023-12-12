@@ -108,6 +108,20 @@ object API {
         initialized.complete(Unit)
     }
 
+    suspend fun createTempInstanceSafe(
+        host: String,
+        auth: String? = null,
+        overrideVersion: String = DEFAULT_VERSION,
+    ): LemmyApiV19 {
+        return try {
+            createTempInstance(host, auth)
+        } catch (e: Throwable) {
+            Log.i("createTempInstanceSafe", "Failed to set lemmy instance", e)
+            createTempInstanceVersion(host, overrideVersion, auth)
+        }
+    }
+
+
     suspend fun createTempInstance(
         host: String,
         auth: String? = null,
