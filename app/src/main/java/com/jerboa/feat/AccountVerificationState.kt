@@ -13,6 +13,8 @@ import com.jerboa.MainActivity
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.api.DEFAULT_INSTANCE
+import com.jerboa.api.DEFAULT_VERSION
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -217,7 +219,13 @@ suspend fun Account.checkAccountVerification(
 ): Pair<AccountVerificationState, CheckState> {
     Log.d("verification", "Verification started")
 
-    val api = API.createTempInstance(this.instance, this.jwt)
+    val api =
+        if (this.isAnon()) {
+            API.createTempInstanceVersion(DEFAULT_INSTANCE, DEFAULT_VERSION)
+        } else {
+            API.createTempInstance(this.instance, this.jwt)
+        }
+
     var checkState: CheckState = CheckState.Passed
     var curVerificationState: Int =
         if (this.verificationState >= AccountVerificationState.size) {
@@ -235,7 +243,7 @@ suspend fun Account.checkAccountVerification(
             when (verifyState) {
                 AccountVerificationState.NOT_CHECKED -> {
                     // Anon account does not do any checks
-                    CheckState.from(this.id != -1)
+                    CheckState.from(!this.isAnon())
                 }
 
                 AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
