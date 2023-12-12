@@ -189,4 +189,7 @@ dependencies {
 
     implementation("it.vercruysse.lemmyapi:lemmy-api-jvm:0.1.0-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
+    // Ktor uses SLF4J
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("uk.uuid.slf4j:slf4j-android:2.0.9-0")
 }

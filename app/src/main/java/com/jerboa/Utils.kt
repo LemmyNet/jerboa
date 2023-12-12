@@ -1515,7 +1515,7 @@ fun String.toHttps(): String {
 }
 
 fun String.padUrlWithHttps(): String {
-    return if (this.contains("://")) {
+    return if (this.contains("://") || this.isBlank()) {
         this
     } else {
         "https://$this"
