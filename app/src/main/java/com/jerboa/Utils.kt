@@ -1513,3 +1513,11 @@ fun String.toHttps(): String {
         this
     }
 }
+
+fun String.padUrlWithHttps(): String {
+    return if (this.contains("://")) {
+        this
+    } else {
+        "https://$this"
+    }
+}

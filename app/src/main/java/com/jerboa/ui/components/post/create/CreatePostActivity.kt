@@ -27,9 +27,11 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.isAnon
+import com.jerboa.getKotlinxSerializerSaver
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
+import com.jerboa.padUrlWithHttps
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -69,9 +71,9 @@ fun CreatePostActivity(
 
     val createPostViewModel: CreatePostViewModel = viewModel()
 
-    var selectedCommunity: Community? by rememberSaveable {
+    var selectedCommunity by rememberSaveable(stateSaver = getKotlinxSerializerSaver<Community?>()) {
         // Init return from Community post creation
-        mutableStateOf(appState.getPrevReturnNullable<Community>(CreatePostReturn.COMMUNITY_SEND))
+        mutableStateOf(appState.getPrevReturnNullable<Community?>(CreatePostReturn.COMMUNITY_SEND))
     }
 
     // On return from the community picker
@@ -133,7 +135,7 @@ fun CreatePostActivity(
                                 onSubmitClick(
                                     name = name,
                                     body = body,
-                                    url = url,
+                                    url = url.padUrlWithHttps(),
                                     isNsfw = isNsfw,
                                     createPostViewModel = createPostViewModel,
                                     selectedCommunity = selectedCommunity,
@@ -171,8 +173,8 @@ fun CreatePostActivity(
                         fetchSiteMetadataJob =
                             scope.launch {
                                 delay(DEBOUNCE_DELAY)
-                                if (Patterns.WEB_URL.matcher(cUrl).matches()) {
-                                    createPostViewModel.getSiteMetadata(GetSiteMetadata(cUrl))
+                                if (Patterns.WEB_URL.matcher(url).matches()) {
+                                    createPostViewModel.getSiteMetadata(GetSiteMetadata(url.padUrlWithHttps()))
                                 }
                             }
                     },

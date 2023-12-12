@@ -290,4 +290,12 @@ class UtilsKtTest {
         assertEquals("0.1", getParentPath("0.1.2"))
         assertEquals("0.1.2", getParentPath("0.1.2.3"))
     }
+
+    @Test
+    fun shouldPadUrlWithHttps() {
+        assertEquals("https://example.com", "example.com".padUrlWithHttps())
+        assertEquals("http://example.com", "http://example.com".padUrlWithHttps())
+        assertEquals("https://example.com", "https://example.com".padUrlWithHttps())
+        assertEquals("ws://example.com", "ws://example.com".padUrlWithHttps())
+    }
 }
