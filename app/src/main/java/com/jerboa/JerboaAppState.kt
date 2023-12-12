@@ -259,7 +259,7 @@ class JerboaAppState(
      * This is important as, we could navigate further up the tree and back again
      * but when you consume on second return it will be gone
      */
-    inline fun <reified T : Any> getPrevReturnNullable(key: String): T? {
+    inline fun <reified T> getPrevReturnNullable(key: String): T? {
         val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
 
         if (savedStateHandle?.contains(key) == true) {
@@ -291,6 +291,13 @@ class JerboaAppState(
 }
 
 inline fun <reified T> getKotlinxSerializerSaver(): Saver<T, String> {
+    return Saver(
+        save = { Json.encodeToString(it) },
+        restore = { Json.decodeFromString<T>(it) },
+    )
+}
+
+inline fun <reified T> getKotlinxSerializerSaver3(): Saver<T?, String> {
     return Saver(
         save = { Json.encodeToString(it) },
         restore = { Json.decodeFromString<T>(it) },

@@ -399,7 +399,7 @@ class MainActivity : AppCompatActivity() {
                         var url = ""
                         var body = ""
                         if (Patterns.WEB_URL.matcher(text).matches()) {
-                            url = text
+                            url = text.padUrlWithHttps()
                         } else {
                             body = text
                         }
