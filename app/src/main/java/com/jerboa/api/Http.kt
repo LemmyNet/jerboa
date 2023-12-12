@@ -121,7 +121,6 @@ object API {
         }
     }
 
-
     suspend fun createTempInstance(
         host: String,
         auth: String? = null,
