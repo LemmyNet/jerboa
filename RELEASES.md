@@ -1,3 +1,12 @@
+# Jerboa v0.0.52-alpha Release (2023-12-12)
+
+## What's Changed
+
+- Fix crash on creating Post by @MV-GH in https://github.com/dessalines/jerboa/pull/1287
+- Fix crash on opening profile anonymous by @MV-GH in https://github.com/dessalines/jerboa/pull/1288
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.51...0.0.52
+
 # Jerboa v0.0.51-alpha Release (2023-12-12)
 
 ## What's Changed
