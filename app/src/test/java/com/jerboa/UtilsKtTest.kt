@@ -176,22 +176,20 @@ class UtilsKtTest {
 
     @Test
     fun testParseUrl() {
-        runBlocking {
-            val baseUrl = "https://lemmy.ml"
-            val cases =
-                mapOf(
-                    "https://feddit.de" to "https://feddit.de",
-                    "http://example.com" to "http://example.com",
-                    "/c/community" to "https://lemmy.ml/c/community",
-                    "/c/community@instance.ml" to "https://instance.ml/c/community",
-                    "!community@instance.ml" to "https://instance.ml/c/community",
-                    "!community" to "https://lemmy.ml/c/community",
-                    "/u/user@instance.ml" to "https://instance.ml/u/user",
-                    "@user@instance.ml" to "https://instance.ml/u/user",
-                )
+        val baseUrl = "https://lemmy.ml"
+        val cases =
+            mapOf(
+                "https://feddit.de" to "https://feddit.de",
+                "http://example.com" to "http://example.com",
+                "/c/community" to "https://lemmy.ml/c/community",
+                "/c/community@instance.ml" to "https://instance.ml/c/community",
+                "!community@instance.ml" to "https://instance.ml/c/community",
+                "!community" to "https://lemmy.ml/c/community",
+                "/u/user@instance.ml" to "https://instance.ml/u/user",
+                "@user@instance.ml" to "https://instance.ml/u/user",
+            )
 
-            cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(baseUrl, url)?.second) }
-        }
+        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(baseUrl, url)?.second) }
     }
 
     @Test
