@@ -6,7 +6,6 @@ import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.ui.theme.SMALL_PADDING
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
