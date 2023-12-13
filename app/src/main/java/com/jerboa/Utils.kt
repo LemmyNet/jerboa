@@ -389,7 +389,10 @@ fun LazyListState.isScrolledToEnd(): Boolean {
  * represents true if the given string as argument was
  * formatted in a lemmy specific format. Such as "/c/community"
  */
-suspend fun parseUrl(url: String): Pair<Boolean, String>? {
+fun parseUrl(
+    baseUrl: String,
+    url: String,
+): Pair<Boolean, String>? {
     if (url.startsWith("https://") || url.startsWith("http://")) {
         return Pair(false, url)
     } else if (url.startsWith("/c/")) {
@@ -397,25 +400,25 @@ suspend fun parseUrl(url: String): Pair<Boolean, String>? {
             val (community, host) = url.split("@", limit = 2)
             return Pair(true, "https://$host$community")
         }
-        return Pair(true, API.getInstance().baseUrl + url)
+        return Pair(true, baseUrl + url)
     } else if (url.startsWith("/u/")) {
         if (url.count { c -> c == '@' } == 1) {
             val (userPath, host) = url.split("@", limit = 2)
             return Pair(true, "https://$host$userPath")
         }
-        return Pair(true, API.getInstance().baseUrl + url)
+        return Pair(true, baseUrl + url)
     } else if (url.startsWith("!")) {
         if (url.count { c -> c == '@' } == 1) {
             val (community, host) = url.substring(1).split("@", limit = 2)
             return Pair(true, "https://$host/c/$community")
         }
-        return Pair(true, API.getInstance().baseUrl + "/c/${url.substring(1)}")
+        return Pair(true, baseUrl + "/c/${url.substring(1)}")
     } else if (url.startsWith("@")) {
         if (url.count { c -> c == '@' } == 2) {
             val (user, host) = url.substring(1).split("@", limit = 2)
             return Pair(true, "https://$host/u/$user")
         }
-        return Pair(true, API.getInstance().baseUrl + "/u/${url.substring(1)}")
+        return Pair(true, baseUrl + "/u/${url.substring(1)}")
     }
     return null
 }
@@ -449,7 +452,8 @@ suspend fun openLink(
     useCustomTab: Boolean,
     usePrivateTab: Boolean,
 ) {
-    val (formatted, parsedUrl) = parseUrl(url) ?: return
+    val baseUrl = API.getInstance().baseUrl
+    val (formatted, parsedUrl) = parseUrl(baseUrl, url) ?: return
 
     val userUrl = looksLikeUserUrl(parsedUrl)
     val communityUrl = looksLikeCommunityUrl(parsedUrl)
@@ -1388,6 +1392,7 @@ fun matchLoginErrorMsgToStringRes(
         "registration_denied" -> ctx.getString(R.string.login_view_model_registration_denied)
         "registration_application_pending", "registration_application_is_pending" ->
             ctx.getString(R.string.login_view_model_registration_pending)
+
         "missing_totp_token" -> ctx.getString(R.string.login_view_model_missing_totp)
         "incorrect_totp_token" -> ctx.getString(R.string.login_view_model_incorrect_totp)
         else -> {
@@ -1515,7 +1520,7 @@ fun String.toHttps(): String {
 }
 
 fun String.padUrlWithHttps(): String {
-    return if (this.contains("://")) {
+    return if (this.contains("://") || this.isBlank()) {
         this
     } else {
         "https://$this"

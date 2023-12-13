@@ -135,7 +135,7 @@ fun CreatePostActivity(
                                 onSubmitClick(
                                     name = name,
                                     body = body,
-                                    url = url.padUrlWithHttps(),
+                                    url = url,
                                     isNsfw = isNsfw,
                                     createPostViewModel = createPostViewModel,
                                     selectedCommunity = selectedCommunity,
@@ -221,7 +221,7 @@ fun onSubmitClick(
         // Clean up that data
         val nameOut = name.trim()
         val bodyOut = body.text.trim().ifEmpty { null }
-        val urlOut = url.trim().ifEmpty { null }
+        val urlOut = url.trim().ifEmpty { null }?.padUrlWithHttps()
         createPostViewModel.createPost(
             CreatePost(
                 name = nameOut,
