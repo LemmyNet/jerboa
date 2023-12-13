@@ -2,14 +2,16 @@ package com.jerboa
 
 import android.content.Context
 import androidx.compose.ui.unit.dp
-import com.jerboa.api.API
-import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.ui.theme.SMALL_PADDING
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -175,8 +177,7 @@ class UtilsKtTest {
     @Test
     fun testParseUrl() {
         runBlocking {
-            API.setLemmyInstance(DEFAULT_INSTANCE)
-            assertTrue(API.getInstance().baseUrl.contains(DEFAULT_INSTANCE))
+            val baseUrl = "https://lemmy.ml"
             val cases =
                 mapOf(
                     "https://feddit.de" to "https://feddit.de",
@@ -189,7 +190,7 @@ class UtilsKtTest {
                     "@user@instance.ml" to "https://instance.ml/u/user",
                 )
 
-            cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)?.second) }
+            cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(baseUrl, url)?.second) }
         }
     }
 
