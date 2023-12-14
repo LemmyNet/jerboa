@@ -1,3 +1,12 @@
+# Jerboa v0.0.53-alpha Release (2023-12-14)
+
+## What's Changed
+
+- Better fix for API creation in Verification procedure by @MV-GH in https://github.com/dessalines/jerboa/pull/1290
+- Fix empty url causing post creation failing by @MV-GH in https://github.com/dessalines/jerboa/pull/1291
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.52...0.0.53
+
 # Jerboa v0.0.52-alpha Release (2023-12-12)
 
 ## What's Changed
