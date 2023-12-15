@@ -157,7 +157,7 @@ suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
         val resp = api.validateAuth()
 
         return@withContext if (resp.isSuccess) {
-            CheckState.Failed
+            CheckState.Passed
             //  Could check for exact body response `{"error":"not_logged_in"}` but could change over time and is unneeded
         } else if ((resp.exceptionOrNull() as? LemmyBadRequestException)?.code in 400..499) {
             CheckState.Failed
