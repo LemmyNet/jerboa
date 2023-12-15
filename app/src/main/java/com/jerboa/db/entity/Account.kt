@@ -49,6 +49,3 @@ fun Account.isReady(): Boolean {
     return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
 }
 
-fun Account.getJWT(): String? {
-    return if (isAnon()) null else this.jwt
-}
