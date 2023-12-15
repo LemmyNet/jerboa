@@ -157,7 +157,7 @@ suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
         val resp = api.validateAuth()
 
         return@withContext if (resp.isSuccess) {
-            CheckState.Passed
+            CheckState.Failed
             //  Could check for exact body response `{"error":"not_logged_in"}` but could change over time and is unneeded
         } else if ((resp.exceptionOrNull() as? LemmyBadRequestException)?.code in 400..499) {
             CheckState.Failed
@@ -421,13 +421,16 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                         }
 
                         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
-                            appState.toHome()
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                                appState.toLogin()
+                            }
                         }
 
                         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
-                            appState.toLogin()
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                                appState.toLogin()
+                            }
+
                         }
 
                         else ->
