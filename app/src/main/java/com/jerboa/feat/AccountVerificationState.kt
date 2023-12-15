@@ -421,13 +421,15 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                         }
 
                         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
-                            appState.toHome()
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                                appState.toLogin()
+                            }
                         }
 
                         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
-                            appState.toLogin()
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                                appState.toLogin()
+                            }
                         }
 
                         else ->
