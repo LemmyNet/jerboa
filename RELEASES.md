@@ -1,3 +1,12 @@
+# Jerboa v0.0.54-alpha Release (2023-12-15)
+
+## What's Changed
+
+- Fix logging in failing by @MV-GH in https://github.com/dessalines/jerboa/pull/1295
+- Fixed sort options by @MV-GH
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.53...0.0.54
+
 # Jerboa v0.0.53-alpha Release (2023-12-14)
 
 ## What's Changed
