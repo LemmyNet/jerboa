@@ -48,4 +48,3 @@ fun Account.isAnon(): Boolean {
 fun Account.isReady(): Boolean {
     return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
 }
-

@@ -430,7 +430,6 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                             accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
                                 appState.toLogin()
                             }
-
                         }
 
                         else ->
