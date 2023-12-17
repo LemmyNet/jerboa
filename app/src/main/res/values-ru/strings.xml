@@ -164,7 +164,7 @@
     <string name="postListing_locked">Заблокировано</string>
     <string name="postListing_reply">Ответить на пост</string>
     <string name="post_activity_comments">Комментарии</string>
-    <string name="post_edit_body_placeholder">Тело</string>
+    <string name="post_edit_body_placeholder">Наполнение</string>
     <string name="post_edit_edit_post">Отредактировать пост</string>
     <string name="post_listing_block">Заблокировать %1$s</string>
     <string name="post_listing_comments_count">%1$s комментариев</string>
@@ -322,7 +322,7 @@
     <string name="dialogs_top_three_month">Лучшее за 3 месяца</string>
     <string name="dialogs_top_six_month">Лучшее за 6 месяцев</string>
     <string name="dialogs_top_nine_month">Лучшее за 9 месяцев</string>
-    <string name="post_listing_view_source">Показать источник</string>
+    <string name="post_listing_view_source">Показать исходник</string>
     <string name="post_listing_view_original">Показать оригинал</string>
     <string name="download">Скачать</string>
     <string name="back_confirmation">Нажмите назад еще раз, чтобы выйти</string>
