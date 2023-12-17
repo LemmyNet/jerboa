@@ -291,7 +291,7 @@
     <string name="title_min_3_chars">Title must be at least three characters</string>
     <string name="title_required">Title required</string>
     <string name="topAppBar_back">Back</string>
-    <string name="url">URL</string>
+    <string name="url" translatable="false">URL</string>
     <string name="url_invalid">Invalid URL</string>
     <string name="utils_login_first">Login first</string>
     <string name="upvote">Upvote</string>
@@ -397,7 +397,7 @@
     <string name="posts_failed_loading">Posts failed loading, retry</string>
     <string name="failed_sharing_media">Failed to share media!</string>
     <string name="app_settings_nothing">Nothing</string>
-    <string name="app_settings_blur_nsfw">NSFW</string>
+    <string name="app_settings_blur_nsfw" translatable="false">NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_communities">NSFW except from NSFW communities</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Except NSFW inside community</string>
     <string name="time_ago_failed_to_parse">Failed to parse datetime</string>
