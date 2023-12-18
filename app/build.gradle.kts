@@ -152,9 +152,6 @@ dependencies {
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
-    // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:2.6.1")
-
     implementation("io.arrow-kt:arrow-core:1.2.1")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.1.2")
