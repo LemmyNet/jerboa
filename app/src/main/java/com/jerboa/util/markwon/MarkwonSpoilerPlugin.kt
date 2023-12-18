@@ -114,10 +114,7 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
                                     getSpoilerTitle(open),
                                 )
                                 if (open) {
-                                    spanned.insert(
-                                        spoilerStart + spoilerTitle.length,
-                                        spoilerContent
-                                    )
+                                    spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
                                 } else {
                                     spanned.replace(
                                         spoilerStart + spoilerTitle.length,

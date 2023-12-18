@@ -26,10 +26,10 @@ fun CreateReportBody(
 
     Column(
         modifier =
-        Modifier
-            .verticalScroll(scrollState)
-            .padding(padding)
-            .imePadding(),
+            Modifier
+                .verticalScroll(scrollState)
+                .padding(padding)
+                .imePadding(),
     ) {
         MarkdownTextField(
             text = reason,

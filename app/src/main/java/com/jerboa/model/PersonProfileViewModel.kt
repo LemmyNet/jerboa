@@ -23,8 +23,7 @@ import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) :
-    ViewModel() {
+class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) : ViewModel() {
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -116,8 +115,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             personDetailsRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        val appendedPosts =
-                            getDeduplicateMerge(oldRes.data.posts, newRes.data.posts) { it.post.id }
+                        val appendedPosts = getDeduplicateMerge(oldRes.data.posts, newRes.data.posts) { it.post.id }
                         val appendedComments =
                             getDeduplicateMerge(
                                 oldRes.data.comments, newRes.data.comments,

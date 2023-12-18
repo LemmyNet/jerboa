@@ -76,19 +76,19 @@ fun MyTextField(
         singleLine = true,
         placeholder = { placeholder?.let { Text(text = it) } },
         keyboardOptions =
-        KeyboardOptions.Default.copy(
-            capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Text,
-            autoCorrect = false,
-        ),
+            KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Text,
+                autoCorrect = false,
+            ),
         modifier =
-        modifier
-            .width(OutlinedTextFieldDefaults.MinWidth)
-            .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-            .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
-                onValueChange(it)
-                wasAutofilled = true
-            },
+            modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
+                    onValueChange(it)
+                    wasAutofilled = true
+                },
     )
 }
 
@@ -104,17 +104,17 @@ fun PasswordField(
 
     OutlinedTextField(
         modifier =
-        modifier
-            .width(OutlinedTextFieldDefaults.MinWidth)
-            .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-            .onAutofill(
-                LocalAutofillTree.current,
-                LocalAutofill.current,
-                persistentListOf(AutofillType.Password),
-            ) {
-                onValueChange(it)
-                wasAutofilled = true
-            },
+            modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(
+                    LocalAutofillTree.current,
+                    LocalAutofill.current,
+                    persistentListOf(AutofillType.Password),
+                ) {
+                    onValueChange(it)
+                    wasAutofilled = true
+                },
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
@@ -146,8 +146,7 @@ fun InstancePicker(
     instance: String,
     setInstance: ((String) -> Unit),
 ) {
-    val filteringOptions =
-        DEFAULT_LEMMY_INSTANCES.filter { it.contains(instance, ignoreCase = true) }
+    val filteringOptions = DEFAULT_LEMMY_INSTANCES.filter { it.contains(instance, ignoreCase = true) }
     val expand = filteringOptions.isNotEmpty() && expanded
 
     ExposedDropdownMenuBox(
@@ -156,9 +155,9 @@ fun InstancePicker(
     ) {
         OutlinedTextField(
             modifier =
-            Modifier
-                .menuAnchor()
-                .width(OutlinedTextFieldDefaults.MinWidth),
+                Modifier
+                    .menuAnchor()
+                    .width(OutlinedTextFieldDefaults.MinWidth),
             label = { Text(stringResource(R.string.login_instance)) },
             placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
             value = instance,
@@ -222,9 +221,9 @@ fun LoginForm(
 
     Column(
         modifier =
-        modifier
-            .fillMaxSize()
-            .imePadding(),
+            modifier
+                .fillMaxSize()
+                .imePadding(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

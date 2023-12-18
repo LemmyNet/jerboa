@@ -1,18 +1,18 @@
+import java.io.OutputStreamWriter
+import java.net.URL
+import java.net.HttpURLConnection
+import java.time.LocalDate
+
 // We can't import libraries here for some reason, so we must use what is provided
 // by gradle, which isn't much. The groovy JSON library is meant for use by groovy code,
 // so we need some creativity to use it in Kotlin.
+import org.apache.groovy.json.internal.LazyMap
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.apache.groovy.json.internal.LazyMap
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
-import java.time.LocalDate
 
 // Run this as `./gradlew app:updateInstances`
 tasks.register<UpdateInstancesTask>("updateInstances") {
-    description =
-        "Fetches a list of popular Lemmy instances and writes it to the DefaultInstances.kt file"
+    description = "Fetches a list of popular Lemmy instances and writes it to the DefaultInstances.kt file"
 
     // All lemmy instances with at least this amount of monthly active users will be included.
     minimumMAU.set(50)
@@ -24,7 +24,7 @@ tasks.register<UpdateInstancesTask>("updateInstances") {
 }
 
 @UntrackedTask(because = "Output depends on api response")
-abstract class UpdateInstancesTask : DefaultTask() {
+abstract class UpdateInstancesTask: DefaultTask() {
     private companion object {
         const val START_TAG = "<!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->"
         const val END_TAG = "<!--#INSTANCE_LIST_END#-->"
@@ -33,16 +33,13 @@ abstract class UpdateInstancesTask : DefaultTask() {
 
     @get:Input
     abstract val minimumMAU: Property<Int>
-
     @get:Input
     abstract val endpointUrl: Property<String>
-
     @get:Input
     abstract val nsfwList: ListProperty<String>
 
     @get:OutputFile
     abstract val instancesFile: RegularFileProperty
-
     @get:OutputFile
     abstract val manifestFile: RegularFileProperty
 
@@ -115,8 +112,7 @@ abstract class UpdateInstancesTask : DefaultTask() {
     private fun updateInstanceList(nodes: List<Pair<String, Int>>) {
         // Create output file and write header
         val outFile = instancesFile.get().asFile
-        outFile.writeText(
-            """
+        outFile.writeText("""
             /***********************************************
              *        WARNING: AUTO-GENERATED FILE         *
              ***********************************************/

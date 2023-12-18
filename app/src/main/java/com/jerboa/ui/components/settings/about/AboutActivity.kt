@@ -1,3 +1,4 @@
+
 package com.jerboa.ui.components.settings.about
 
 import android.util.Log
@@ -7,13 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AttachMoney
-import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.Chat
-import androidx.compose.material.icons.outlined.Code
-import androidx.compose.material.icons.outlined.NewReleases
-import androidx.compose.material.icons.outlined.TravelExplore
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,28 +60,18 @@ fun AboutActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.settings_about_about),
-                onClickBack = onBack
-            )
+            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), onClickBack = onBack)
         },
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(padding),
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(padding),
             ) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
-                    subtitle = {
-                        Text(
-                            stringResource(
-                                R.string.settings_about_version,
-                                version ?: ""
-                            )
-                        )
-                    },
+                    subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
@@ -180,7 +165,7 @@ fun AboutActivity(
                     subtitle = {
                         Text(
                             stringResource(R.string.settings_about_source_code_subtitle_part1) +
-                                    stringResource(R.string.settings_about_source_code_subtitle_part2),
+                                stringResource(R.string.settings_about_source_code_subtitle_part2),
                         )
                     },
                     icon = {

@@ -25,10 +25,10 @@ import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import me.saket.cascade.CascadeColumnScope
 import me.saket.cascade.CascadeDefaults
 import me.saket.cascade.CascadeState
-import me.saket.cascade.internal.copy
 import me.saket.cascade.rememberCascadeState
 import me.saket.cascade.PopupContent as CascadePopupContent
 import me.saket.cascade.internal.clickableWithoutRipple as clickableWithoutRippleCascade
+import me.saket.cascade.internal.copy as copy
 import me.saket.cascade.internal.then as thenCascade
 
 @Composable
@@ -67,13 +67,13 @@ fun CascadeCenteredDropdownMenu(
             ) {
                 CascadePopupContent(
                     modifier =
-                    Modifier
-                        // Prevent clicks from leaking behind. Otherwise, they'll get picked up as outside
-                        // clicks to dismiss the popup. This must be set _before_ the downstream modifiers to
-                        // avoid overriding any clickable modifiers registered by the developer.
-                        .clickableWithoutRippleCascade {}
-                        .padding(vertical = LARGE_PADDING)
-                        .then(modifier),
+                        Modifier
+                            // Prevent clicks from leaking behind. Otherwise, they'll get picked up as outside
+                            // clicks to dismiss the popup. This must be set _before_ the downstream modifiers to
+                            // avoid overriding any clickable modifiers registered by the developer.
+                            .clickableWithoutRippleCascade {}
+                            .padding(vertical = LARGE_PADDING)
+                            .then(modifier),
                     state = state,
                     fixedWidth = fixedWidth,
                     expandedStates = expandedStates,

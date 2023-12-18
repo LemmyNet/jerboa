@@ -26,9 +26,9 @@ fun TextBadge(
 ) {
     Box(
         modifier =
-        Modifier
-            .clip(RoundedCornerShape(containerRadius.dp))
-            .background(containerColor),
+            Modifier
+                .clip(RoundedCornerShape(containerRadius.dp))
+                .background(containerColor),
     ) {
         Text(
             text = text,
@@ -37,8 +37,8 @@ fun TextBadge(
             maxLines = 1,
             color = textColor,
             modifier =
-            Modifier
-                .padding(horizontalTextPadding.dp, verticalTextPadding.dp),
+                Modifier
+                    .padding(horizontalTextPadding.dp, verticalTextPadding.dp),
         )
     }
 }

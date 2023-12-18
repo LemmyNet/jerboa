@@ -42,10 +42,7 @@ fun SettingsActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.settings_activity_settings),
-                onClickBack = onBack
-            )
+            SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), onClickBack = onBack)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {

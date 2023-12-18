@@ -85,17 +85,9 @@ fun CommentMentionsOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     if (copyToClipboard(ctx, personMentionView.comment.content, "comment")) {
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_node_comment_copied),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.generic_error),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
                     }
                 },
             )
@@ -103,11 +95,11 @@ fun CommentMentionsOptionsDropdown(
 
         PopupMenuItem(
             text =
-            if (viewSource) {
-                stringResource(R.string.comment_node_view_original)
-            } else {
-                stringResource(R.string.comment_node_view_source)
-            },
+                if (viewSource) {
+                    stringResource(R.string.comment_node_view_original)
+                } else {
+                    stringResource(R.string.comment_node_view_source)
+                },
             icon = Icons.Outlined.Description,
             onClick = {
                 onDismissRequest()

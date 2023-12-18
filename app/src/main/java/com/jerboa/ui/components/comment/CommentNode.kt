@@ -71,11 +71,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -225,7 +221,7 @@ fun LazyListScope.commentNodeItem(
 
     val showMoreChildren =
         isExpanded(commentId) && node.children.isEmpty() &&
-                commentView.counts.child_count > 0 && !isFlat
+            commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
@@ -256,10 +252,10 @@ fun LazyListScope.commentNodeItem(
         ) {
             Column(
                 modifier =
-                Modifier
-                    .padding(
-                        start = offset,
-                    ),
+                    Modifier
+                        .padding(
+                            start = offset,
+                        ),
             ) {
                 Column(
                     modifier = Modifier.border(start = border),
@@ -267,10 +263,10 @@ fun LazyListScope.commentNodeItem(
                     Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
-                        Modifier.padding(
-                            start = offset2,
-                            end = MEDIUM_PADDING,
-                        ),
+                            Modifier.padding(
+                                start = offset2,
+                                end = MEDIUM_PADDING,
+                            ),
                     ) {
                         if (showPostAndCommunityContext) {
                             PostAndCommunityContextHeader(
@@ -380,12 +376,7 @@ fun LazyListScope.commentNodeItem(
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            ShowMoreChildrenNode(
-                node.depth,
-                commentView,
-                onFetchChildrenClick,
-                isCollapsedByParent || !isExpanded(commentId)
-            )
+            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick, isCollapsedByParent || !isExpanded(commentId))
         }
     }
 
@@ -490,10 +481,10 @@ fun LazyListScope.missingCommentNodeItem(
         ) {
             Column(
                 modifier =
-                Modifier
-                    .padding(
-                        start = offset,
-                    ),
+                    Modifier
+                        .padding(
+                            start = offset,
+                        ),
             ) {
                 Column(
                     modifier = Modifier.border(start = border),
@@ -501,10 +492,10 @@ fun LazyListScope.missingCommentNodeItem(
                     Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
-                        Modifier.padding(
-                            start = offset2,
-                            end = MEDIUM_PADDING,
-                        ),
+                            Modifier.padding(
+                                start = offset2,
+                                end = MEDIUM_PADDING,
+                            ),
                     ) {
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -590,10 +581,10 @@ private fun ShowMoreChildrenNode(
     ) {
         Column(
             modifier =
-            Modifier
-                .padding(
-                    start = offset,
-                ),
+                Modifier
+                    .padding(
+                        start = offset,
+                    ),
         ) {
             Divider()
             Column(
@@ -631,10 +622,7 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = stringResource(R.string.comment_node_in),
-                color = MaterialTheme.colorScheme.onBackground.muted
-            )
+            Text(text = stringResource(R.string.comment_node_in), color = MaterialTheme.colorScheme.onBackground.muted)
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
@@ -701,15 +689,15 @@ fun CommentFooterLine(
     Row(
         horizontalArrangement = Arrangement.End,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick,
-                onLongClick = onLongClick,
-            )
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                )
+                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -740,24 +728,24 @@ fun CommentFooterLine(
             )
             ActionBarButton(
                 icon =
-                if (commentView.saved) {
-                    Icons.Filled.Bookmark
-                } else {
-                    Icons.Outlined.BookmarkBorder
-                },
+                    if (commentView.saved) {
+                        Icons.Filled.Bookmark
+                    } else {
+                        Icons.Outlined.BookmarkBorder
+                    },
                 contentDescription =
-                if (commentView.saved) {
-                    stringResource(R.string.removeBookmark)
-                } else {
-                    stringResource(R.string.addBookmark)
-                },
+                    if (commentView.saved) {
+                        stringResource(R.string.removeBookmark)
+                    } else {
+                        stringResource(R.string.addBookmark)
+                    },
                 onClick = { onSaveClick(commentView) },
                 contentColor =
-                if (commentView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                    if (commentView.saved) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.muted
+                    },
                 account = account,
             )
             ActionBarButton(

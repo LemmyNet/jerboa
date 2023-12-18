@@ -23,8 +23,7 @@ enum class BlurTypes(
     }
 }
 
-fun BlurTypes.needBlur(postView: PostView) =
-    this.needBlur(postView.community.nsfw, postView.post.nsfw)
+fun BlurTypes.needBlur(postView: PostView) = this.needBlur(postView.community.nsfw, postView.post.nsfw)
 
 fun BlurTypes.needBlur(
     isCommunityNsfw: Boolean,

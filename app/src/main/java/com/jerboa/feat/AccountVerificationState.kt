@@ -129,10 +129,7 @@ suspend fun checkIfAccountIsDeleted(
             // This check is not perfect since, technically a different account with the same name and ID
             // can happen but that should be incredibly rare.
             return@withContext if (
-                body.person_view.person.name.equals(
-                    account.name,
-                    true
-                ) && !body.person_view.person.deleted
+                body.person_view.person.name.equals(account.name, true) && !body.person_view.person.deleted
             ) {
                 Pair(CheckState.Passed, ApiState.Success<GetPersonDetailsResponse>(body))
             } else {
@@ -403,11 +400,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
     val ready = isReady()
     if (!ready) {
         if (lockAccount.contains(this)) {
-            Toast.makeText(
-                ctx,
-                ctx.getString(R.string.verification_account_busy, this.name),
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(ctx, ctx.getString(R.string.verification_account_busy, this.name), Toast.LENGTH_SHORT).show()
             return false
         } else {
             lockAccount.add(this)
@@ -428,17 +421,15 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                         }
 
                         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
-                                .invokeOnCompletion {
-                                    appState.toLogin()
-                                }
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                                appState.toLogin()
+                            }
                         }
 
                         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
-                                .invokeOnCompletion {
-                                    appState.toLogin()
-                                }
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                                appState.toLogin()
+                            }
                         }
 
                         else ->

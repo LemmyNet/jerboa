@@ -32,7 +32,6 @@ class CreatePostViewModel : ViewModel() {
                 is ApiState.Success -> {
                     onSuccess(postRes.data.post_view.post.id)
                 }
-
                 else -> {}
             }
         }

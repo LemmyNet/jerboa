@@ -72,11 +72,11 @@ fun CommunityListActivity(
                                 delay(DEBOUNCE_DELAY)
                                 communityListViewModel.searchCommunities(
                                     form =
-                                    Search(
-                                        q = search,
-                                        type_ = SearchType.Communities,
-                                        sort = SortType.TopAll,
-                                    ),
+                                        Search(
+                                            q = search,
+                                            type_ = SearchType.Communities,
+                                            sort = SortType.TopAll,
+                                        ),
                                 )
                             }
                     },
@@ -104,9 +104,9 @@ fun CommunityListActivity(
                                 }
                             },
                             modifier =
-                            Modifier
-                                .padding(padding)
-                                .imePadding(),
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             blurNSFW = blurNSFW,
                         )
                     }

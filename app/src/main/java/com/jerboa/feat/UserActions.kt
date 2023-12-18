@@ -39,8 +39,7 @@ fun storeMedia(
             if (granted) {
                 actualStoreImage(scope, ctx, url, mediaType)
             } else {
-                Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
             }
         }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     } else {
@@ -82,8 +81,7 @@ private suspend fun saveMedia(
                 }
             }
         }
-        val toastId2 =
-            if (mediaType == PostType.Image) R.string.saved_image else R.string.saved_media
+        val toastId2 = if (mediaType == PostType.Image) R.string.saved_image else R.string.saved_media
         Toast.makeText(context, context.getString(toastId2), Toast.LENGTH_SHORT).show()
     } catch (e: IOException) {
         Log.d("saveMedia", "failed saving media", e)

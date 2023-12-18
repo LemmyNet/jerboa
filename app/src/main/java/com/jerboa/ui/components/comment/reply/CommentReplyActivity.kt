@@ -99,9 +99,9 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             modifier =
-                            Modifier
-                                .padding(padding)
-                                .imePadding(),
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                         )
@@ -116,9 +116,9 @@ fun CommentReplyActivity(
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                             modifier =
-                            Modifier
-                                .padding(padding)
-                                .imePadding(),
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                         )
 
                     is ReplyItem.CommentReplyItem ->
@@ -129,9 +129,9 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             modifier =
-                            Modifier
-                                .padding(padding)
-                                .imePadding(),
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                         )
@@ -144,9 +144,9 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             modifier =
-                            Modifier
-                                .padding(padding)
-                                .imePadding(),
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                         )

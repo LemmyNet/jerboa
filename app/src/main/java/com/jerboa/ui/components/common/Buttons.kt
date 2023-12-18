@@ -16,15 +16,15 @@ import com.jerboa.ui.theme.XXL_PADDING
 fun RetryLoadingPosts(onClick: () -> Unit) {
     Button(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = XXL_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = XXL_PADDING),
         onClick = onClick,
         colors =
-        ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        ),
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+            ),
     ) {
         Text(stringResource(R.string.posts_failed_loading))
     }

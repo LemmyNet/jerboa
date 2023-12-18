@@ -58,9 +58,9 @@ fun SortOptionsDropdown(
                 leadingIcon = { Icon(it.data.icon, contentDescription = null) },
                 onClick = { onClickSortType(it) },
                 modifier =
-                Modifier.ifDo(selectedSortType == it) {
-                    this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                },
+                    Modifier.ifDo(selectedSortType == it) {
+                        this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                    },
             )
         }
 
@@ -68,11 +68,11 @@ fun SortOptionsDropdown(
             text = { Text(stringResource(R.string.dialogs_top)) },
             leadingIcon = { Icon(Icons.Outlined.BarChart, contentDescription = null) },
             modifier =
-            if (isTopSort(selectedSortType)) {
-                Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-            } else {
-                Modifier
-            },
+                if (isTopSort(selectedSortType)) {
+                    Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                } else {
+                    Modifier
+                },
             children = {
                 getSupportedEntries<SortType>(API.version).filter(isTopSort).forEach {
                     DropdownMenuItem(
@@ -82,9 +82,9 @@ fun SortOptionsDropdown(
                             onClickSortType(it)
                         },
                         modifier =
-                        Modifier.ifDo(selectedSortType == it) {
-                            this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                        },
+                            Modifier.ifDo(selectedSortType == it) {
+                                this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                            },
                     )
                 }
             },
@@ -112,9 +112,9 @@ fun CommentSortOptionsDropdown(
                     onClickSortType(it)
                 },
                 modifier =
-                Modifier.ifDo(selectedSortType == it) {
-                    this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                },
+                    Modifier.ifDo(selectedSortType == it) {
+                        this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                    },
             )
         }
     }
@@ -186,11 +186,11 @@ fun MenuItem(
         icon = icon,
         onClick = onClick,
         modifier =
-        if (highlight) {
-            modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-        } else {
-            modifier
-        },
+            if (highlight) {
+                modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+            } else {
+                modifier
+            },
     )
 }
 
@@ -271,9 +271,9 @@ fun CenteredPopupMenu(
             ) {
                 Column(
                     modifier =
-                    Modifier
-                        .fillMaxWidth(POPUP_MENU_WIDTH_RATIO)
-                        .padding(vertical = LARGE_PADDING),
+                        Modifier
+                            .fillMaxWidth(POPUP_MENU_WIDTH_RATIO)
+                            .padding(vertical = LARGE_PADDING),
                     content = content,
                 )
             }

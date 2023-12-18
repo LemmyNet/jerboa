@@ -137,7 +137,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         if (this === singleInstance) {
             throw UnsupportedOperationException(
                 "Setting a click listener on the instance returned by getInstance() is not supported to avoid memory " +
-                        "leaks. Please use newInstance() or any of the linkify() methods instead.",
+                    "leaks. Please use newInstance() or any of the linkify() methods instead.",
             )
         }
         onLinkClickListener = clickListener
@@ -151,7 +151,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         if (this === singleInstance) {
             throw UnsupportedOperationException(
                 "Setting a long-click listener on the instance returned by getInstance() is not supported to avoid " +
-                        "memory leaks. Please use newInstance() or any of the linkify() methods instead.",
+                    "memory leaks. Please use newInstance() or any of the linkify() methods instead.",
             )
         }
         onLinkLongClickListener = longClickListener
@@ -170,8 +170,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
             activeTextViewHashcode = textView.hashCode()
             textView.autoLinkMask = 0
         }
-        val clickableSpanUnderTouch: ClickableSpan? =
-            findClickableSpanUnderTouch(textView, text, event)
+        val clickableSpanUnderTouch: ClickableSpan? = findClickableSpanUnderTouch(textView, text, event)
         if (event.action == MotionEvent.ACTION_DOWN) {
             clickableSpanUnderTouchOnActionDown = clickableSpanUnderTouch
         }
@@ -229,10 +228,9 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
                 }
                 if (!wasLongPressRegistered) {
                     // Toggle highlight.
-                    clickableSpanUnderTouch?.let { highlightUrl(textView, it, text) }
-                        ?: removeUrlHighlightColor(
-                            textView,
-                        )
+                    clickableSpanUnderTouch?.let { highlightUrl(textView, it, text) } ?: removeUrlHighlightColor(
+                        textView,
+                    )
                 }
                 touchStartedOverAClickableSpan
             }
@@ -279,8 +277,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         touchedLineBounds.bottom = layout.getLineBottom(touchedLine).toFloat()
         return if (touchedLineBounds.contains(touchX.toFloat(), touchY.toFloat())) {
             // Find a ClickableSpan that lies under the touched area.
-            val spans: Array<ClickableSpan?> =
-                text.getSpans(touchOffset, touchOffset, ClickableSpan::class.java)
+            val spans: Array<ClickableSpan?> = text.getSpans(touchOffset, touchOffset, ClickableSpan::class.java)
             for (span in spans) {
                 if (span is ClickableSpan) {
                     return span
@@ -323,8 +320,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         }
         isUrlHighlighted = false
         val text = textView.text as Spannable
-        val highlightSpan =
-            textView.getTag(R.id.bettermovementmethod_highlight_background_span) as BackgroundColorSpan
+        val highlightSpan = textView.getTag(R.id.bettermovementmethod_highlight_background_span) as BackgroundColorSpan
         text.removeSpan(highlightSpan)
         Selection.removeSelection(text)
     }
@@ -336,10 +332,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
     ) {
         ongoingLongPressTimer = LongPressTimer()
         ongoingLongPressTimer!!.setOnTimerReachedListener(longClickListener)
-        textView.postDelayed(
-            ongoingLongPressTimer,
-            ViewConfiguration.getLongPressTimeout().toLong() + 100L
-        )
+        textView.postDelayed(ongoingLongPressTimer, ViewConfiguration.getLongPressTimeout().toLong() + 100L)
     }
 
     /**
@@ -356,13 +349,9 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         textView: TextView,
         clickableSpan: ClickableSpan,
     ) {
-        val clickableSpanWithText: ClickableSpanWithText =
-            ClickableSpanWithText.ofSpan(textView, clickableSpan)
+        val clickableSpanWithText: ClickableSpanWithText = ClickableSpanWithText.ofSpan(textView, clickableSpan)
         val handled =
-            onLinkClickListener != null && onLinkClickListener!!.onClick(
-                textView,
-                clickableSpanWithText.text()
-            )
+            onLinkClickListener != null && onLinkClickListener!!.onClick(textView, clickableSpanWithText.text())
         if (!handled) {
             // Let Android handle this click.
             clickableSpanWithText.span().onClick(textView)
@@ -373,14 +362,13 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         textView: TextView,
         clickableSpan: ClickableSpan,
     ) {
-        val clickableSpanWithText: ClickableSpanWithText =
-            ClickableSpanWithText.ofSpan(textView, clickableSpan)
+        val clickableSpanWithText: ClickableSpanWithText = ClickableSpanWithText.ofSpan(textView, clickableSpan)
         val handled =
             onLinkLongClickListener != null &&
-                    onLinkLongClickListener!!.onLongClick(
-                        textView,
-                        clickableSpanWithText.text(),
-                    )
+                onLinkLongClickListener!!.onLongClick(
+                    textView,
+                    clickableSpanWithText.text(),
+                )
         if (!handled) {
             // Let Android handle this long click as a short-click.
             clickableSpanWithText.span().onClick(textView)

@@ -128,9 +128,9 @@ fun CommentMentionNodeFooterLine(
     Row(
         horizontalArrangement = Arrangement.End,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -161,24 +161,24 @@ fun CommentMentionNodeFooterLine(
             )
             ActionBarButton(
                 icon =
-                if (personMentionView.person_mention.read) {
-                    Icons.Outlined.MarkChatRead
-                } else {
-                    Icons.Outlined.MarkChatUnread
-                },
+                    if (personMentionView.person_mention.read) {
+                        Icons.Outlined.MarkChatRead
+                    } else {
+                        Icons.Outlined.MarkChatUnread
+                    },
                 contentDescription =
-                if (personMentionView.person_mention.read) {
-                    stringResource(R.string.markUnread)
-                } else {
-                    stringResource(R.string.markRead)
-                },
+                    if (personMentionView.person_mention.read) {
+                        stringResource(R.string.markUnread)
+                    } else {
+                        stringResource(R.string.markRead)
+                    },
                 onClick = { onMarkAsReadClick(personMentionView) },
                 contentColor =
-                if (personMentionView.person_mention.read) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                    if (personMentionView.person_mention.read) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.muted
+                    },
                 account = account,
             )
             // Don't let you respond to your own comment.
@@ -192,24 +192,24 @@ fun CommentMentionNodeFooterLine(
             }
             ActionBarButton(
                 icon =
-                if (personMentionView.saved) {
-                    Icons.Filled.Bookmark
-                } else {
-                    Icons.Outlined.BookmarkBorder
-                },
+                    if (personMentionView.saved) {
+                        Icons.Filled.Bookmark
+                    } else {
+                        Icons.Outlined.BookmarkBorder
+                    },
                 contentDescription =
-                if (personMentionView.saved) {
-                    stringResource(R.string.comment_unsave)
-                } else {
-                    stringResource(R.string.comment_save)
-                },
+                    if (personMentionView.saved) {
+                        stringResource(R.string.comment_unsave)
+                    } else {
+                        stringResource(R.string.comment_save)
+                    },
                 onClick = { onSaveClick(personMentionView) },
                 contentColor =
-                if (personMentionView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                    if (personMentionView.saved) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.muted
+                    },
                 account = account,
             )
             ActionBarButton(

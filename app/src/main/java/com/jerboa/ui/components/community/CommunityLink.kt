@@ -82,11 +82,11 @@ fun CommunityLink(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier =
-        if (clickable) {
-            modifier.clickable { onClick(community) }
-        } else {
-            modifier
-        },
+            if (clickable) {
+                modifier.clickable { onClick(community) }
+            } else {
+                modifier
+            },
     ) {
         community.icon?.let {
             CircularIcon(
@@ -132,9 +132,9 @@ fun CommunityLinkLarger(
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
         modifier =
-        Modifier
-            .padding(LARGE_PADDING)
-            .fillMaxWidth(),
+            Modifier
+                .padding(LARGE_PADDING)
+                .fillMaxWidth(),
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
@@ -156,9 +156,9 @@ fun CommunityLinkLargerWithUserCount(
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
         modifier =
-        Modifier
-            .padding(LARGE_PADDING)
-            .fillMaxWidth(),
+            Modifier
+                .padding(LARGE_PADDING)
+                .fillMaxWidth(),
         style = MaterialTheme.typography.titleLarge,
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,

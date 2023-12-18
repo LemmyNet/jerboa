@@ -140,10 +140,7 @@ object API {
         try {
             val host = URL(url).host
 
-            if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(
-                    host
-                )
-            ) {
+            if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
                 return true
             } else if (TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
                 return false

@@ -42,9 +42,9 @@ fun SwipeToNavigateBack(
             background = {
                 Box(
                     modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background),
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
                 )
             },
             dismissContent = {

@@ -120,10 +120,10 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                         val res =
                             GetPostsResponse(
                                 posts =
-                                mergePosts(
-                                    oldRes.data.posts,
-                                    newRes.data.posts,
-                                ),
+                                    mergePosts(
+                                        oldRes.data.posts,
+                                        newRes.data.posts,
+                                    ),
                                 next_page = newRes.data.next_page,
                             )
                         ApiState.Success(

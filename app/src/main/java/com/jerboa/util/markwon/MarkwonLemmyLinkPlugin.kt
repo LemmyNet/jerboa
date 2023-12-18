@@ -6,10 +6,7 @@ import android.text.style.URLSpan
 import android.text.util.Linkify
 import com.jerboa.ui.components.common.lemmyCommunityPattern
 import com.jerboa.ui.components.common.lemmyUserPattern
-import io.noties.markwon.AbstractMarkwonPlugin
-import io.noties.markwon.MarkwonPlugin
-import io.noties.markwon.MarkwonVisitor
-import io.noties.markwon.SpannableBuilder
+import io.noties.markwon.*
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.CoreProps
 import org.commonmark.node.Link

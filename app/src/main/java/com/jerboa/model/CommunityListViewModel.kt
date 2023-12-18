@@ -44,17 +44,17 @@ class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) 
                     subscribed = SubscribedType.Subscribed,
                     blocked = false,
                     counts =
-                    CommunityAggregates(
-                        community_id = cfv.community.id,
-                        subscribers = 0,
-                        posts = 0,
-                        comments = 0,
-                        published = "",
-                        users_active_day = 0,
-                        users_active_week = 0,
-                        users_active_month = 0,
-                        users_active_half_year = 0,
-                    ),
+                        CommunityAggregates(
+                            community_id = cfv.community.id,
+                            subscribers = 0,
+                            posts = 0,
+                            comments = 0,
+                            published = "",
+                            users_active_day = 0,
+                            users_active_week = 0,
+                            users_active_month = 0,
+                            users_active_half_year = 0,
+                        ),
                 )
             }
 

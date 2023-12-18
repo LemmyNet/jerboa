@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -127,11 +128,11 @@ fun BottomAppBarAll(
                     InboxIconAndBadge(
                         iconBadgeCount = if (tab == NavTab.Inbox) unreadCounts else null,
                         icon =
-                        if (selected) {
-                            tab.iconFilled
-                        } else {
-                            tab.iconOutlined
-                        },
+                            if (selected) {
+                                tab.iconFilled
+                            } else {
+                                tab.iconOutlined
+                            },
                         contentDescription = stringResource(tab.contentDescriptionId),
                     )
                 },
@@ -222,18 +223,18 @@ fun CommentOrPostNodeHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalArrangement = Arrangement.Center,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(
-                top = LARGE_PADDING,
-                bottom = MEDIUM_PADDING,
-            )
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onLongClick = onLongCLick,
-                onClick = onClick,
-            ),
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = LARGE_PADDING,
+                    bottom = MEDIUM_PADDING,
+                )
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onLongClick = onLongCLick,
+                    onClick = onClick,
+                ),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -489,9 +490,9 @@ fun Sidebar(
     LazyColumn(
         state = listState,
         modifier =
-        Modifier
-            .padding(padding)
-            .simpleVerticalScrollbar(listState),
+            Modifier
+                .padding(padding)
+                .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         item {
@@ -642,10 +643,10 @@ fun Modifier.simpleVerticalScrollbar(
 fun LoadingBar(padding: PaddingValues = PaddingValues(0.dp)) {
     LinearProgressIndicator(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(padding)
-            .testTag("jerboa:loading"),
+            Modifier
+                .fillMaxWidth()
+                .padding(padding)
+                .testTag("jerboa:loading"),
     )
 }
 

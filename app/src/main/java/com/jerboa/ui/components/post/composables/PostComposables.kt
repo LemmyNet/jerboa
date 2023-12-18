@@ -71,14 +71,14 @@ fun CreateEditPostBody(
 
     Column(
         modifier =
-        Modifier
-            .verticalScroll(scrollState)
-            .imePadding()
-            .padding(
-                vertical = padding.calculateTopPadding(),
-                horizontal = MEDIUM_PADDING,
-            )
-            .fillMaxWidth(),
+            Modifier
+                .verticalScroll(scrollState)
+                .imePadding()
+                .padding(
+                    vertical = padding.calculateTopPadding(),
+                    horizontal = MEDIUM_PADDING,
+                )
+                .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         /**
@@ -200,8 +200,8 @@ fun PostCommunitySelector(
                     )
                 },
                 modifier =
-                Modifier
-                    .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
             )
         } ?: run {
             OutlinedTextField(
@@ -211,19 +211,19 @@ fun PostCommunitySelector(
                     Text(stringResource(R.string.create_post_community))
                 },
                 modifier =
-                Modifier
-                    .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
             )
         }
         // A box to draw over the textview and override clicks
         Box(
             modifier =
-            Modifier
-                .height(60.dp)
-                .fillMaxWidth()
-                .clickable {
-                    onClickCommunityList()
-                },
+                Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        onClickCommunityList()
+                    },
         )
     }
 }

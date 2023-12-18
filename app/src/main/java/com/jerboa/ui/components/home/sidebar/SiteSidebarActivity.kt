@@ -42,7 +42,6 @@ fun SiteSidebarActivity(
                 is ApiState.Success -> {
                     SiteSidebar(siteView = siteRes.data.site_view, padding = padding)
                 }
-
                 else -> {}
             }
         },

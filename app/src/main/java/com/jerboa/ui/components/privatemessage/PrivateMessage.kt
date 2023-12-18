@@ -53,9 +53,9 @@ fun PrivateMessageHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(vertical = SMALL_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = SMALL_PADDING),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -113,11 +113,11 @@ fun PrivateMessage(
 ) {
     Column(
         modifier =
-        Modifier
-            .padding(
-                horizontal = LARGE_PADDING,
-                vertical = SMALL_PADDING,
-            ),
+            Modifier
+                .padding(
+                    horizontal = LARGE_PADDING,
+                    vertical = SMALL_PADDING,
+                ),
     ) {
         PrivateMessageHeader(
             privateMessageView = privateMessageView,
@@ -147,9 +147,9 @@ fun PrivateMessageFooterLine(
     Row(
         horizontalArrangement = Arrangement.End,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -157,24 +157,24 @@ fun PrivateMessageFooterLine(
             if (!isCreator(myPersonId, privateMessageView)) {
                 ActionBarButton(
                     icon =
-                    if (privateMessageView.private_message.read) {
-                        Icons.Outlined.MarkChatRead
-                    } else {
-                        Icons.Outlined.MarkChatUnread
-                    },
+                        if (privateMessageView.private_message.read) {
+                            Icons.Outlined.MarkChatRead
+                        } else {
+                            Icons.Outlined.MarkChatUnread
+                        },
                     contentDescription =
-                    if (privateMessageView.private_message.read) {
-                        stringResource(R.string.markUnread)
-                    } else {
-                        stringResource(R.string.markRead)
-                    },
+                        if (privateMessageView.private_message.read) {
+                            stringResource(R.string.markUnread)
+                        } else {
+                            stringResource(R.string.markRead)
+                        },
                     onClick = { onMarkAsReadClick(privateMessageView) },
                     contentColor =
-                    if (privateMessageView.private_message.read) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.muted
-                    },
+                        if (privateMessageView.private_message.read) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground.muted
+                        },
                     account = account,
                 )
                 ActionBarButton(

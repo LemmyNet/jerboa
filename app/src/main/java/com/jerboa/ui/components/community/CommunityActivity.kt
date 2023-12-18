@@ -131,7 +131,7 @@ fun CommunityActivity(
                         val instance = hostName(communityRes.data.community_view.community.actor_id)
                         val communityName =
                             communityRes.data.community_view.community.name +
-                                    if (instance != null) "@$instance" else ""
+                                if (instance != null) "@$instance" else ""
                         CommunityHeader(
                             scrollBehavior = scrollBehavior,
                             communityName = communityName,
@@ -168,12 +168,7 @@ fun CommunityActivity(
                                 }
                             },
                             onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data.community_view) },
-                            onClickCommunityShare = {
-                                shareLink(
-                                    communityRes.data.community_view.community.actor_id,
-                                    ctx
-                                )
-                            },
+                            onClickCommunityShare = { shareLink(communityRes.data.community_view.community.actor_id, ctx) },
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
@@ -221,19 +216,17 @@ fun CommunityActivity(
                                                 ) {
                                                     communityViewModel.followCommunity(
                                                         form =
-                                                        FollowCommunity(
-                                                            community_id = cfv.community.id,
-                                                            follow = cfv.subscribed == SubscribedType.NotSubscribed,
-                                                        ),
+                                                            FollowCommunity(
+                                                                community_id = cfv.community.id,
+                                                                follow = cfv.subscribed == SubscribedType.NotSubscribed,
+                                                            ),
                                                         onSuccess = {
                                                             siteViewModel.getSite()
                                                         },
                                                     )
                                                 }
                                             },
-                                            blurNSFW = BlurTypes.changeBlurTypeInsideCommunity(
-                                                blurNSFW
-                                            ),
+                                            blurNSFW = BlurTypes.changeBlurTypeInsideCommunity(blurNSFW),
                                         )
                                     }
 
@@ -251,14 +244,14 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.likePost(
                                         form =
-                                        CreatePostLike(
-                                            post_id = postView.post.id,
-                                            score =
-                                            newVote(
-                                                currentVote = postView.my_vote,
-                                                voteType = VoteType.Upvote,
+                                            CreatePostLike(
+                                                post_id = postView.post.id,
+                                                score =
+                                                    newVote(
+                                                        currentVote = postView.my_vote,
+                                                        voteType = VoteType.Upvote,
+                                                    ),
                                             ),
-                                        ),
                                     )
                                 }
                             },
@@ -273,14 +266,14 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.likePost(
                                         form =
-                                        CreatePostLike(
-                                            post_id = postView.post.id,
-                                            score =
-                                            newVote(
-                                                currentVote = postView.my_vote,
-                                                voteType = VoteType.Downvote,
+                                            CreatePostLike(
+                                                post_id = postView.post.id,
+                                                score =
+                                                    newVote(
+                                                        currentVote = postView.my_vote,
+                                                        voteType = VoteType.Downvote,
+                                                    ),
                                             ),
-                                        ),
                                     )
                                 }
                             },
@@ -298,10 +291,10 @@ fun CommunityActivity(
                                 ) {
                                     communityViewModel.savePost(
                                         form =
-                                        SavePost(
-                                            post_id = postView.post.id,
-                                            save = !postView.saved,
-                                        ),
+                                            SavePost(
+                                                post_id = postView.post.id,
+                                                save = !postView.saved,
+                                            ),
                                     )
                                 }
                             },

@@ -60,8 +60,7 @@ class AccountSettingsViewModel(
     ): Account {
         val newAccount =
             account.copy(
-                defaultListingType = form.default_listing_type?.ordinal
-                    ?: account.defaultListingType,
+                defaultListingType = form.default_listing_type?.ordinal ?: account.defaultListingType,
                 defaultSortType = form.default_sort_type?.ordinal ?: account.defaultSortType,
             )
         if (newAccount != account) {

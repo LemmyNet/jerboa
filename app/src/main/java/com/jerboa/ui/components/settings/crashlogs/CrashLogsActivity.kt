@@ -96,9 +96,9 @@ fun CrashLogs(onClickBack: () -> Unit) {
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(padding),
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(padding),
             ) {
                 logs.map {
                     CrashLog(crash = it.readText(), modified = it.lastModified())
@@ -119,9 +119,9 @@ fun CrashLog(
 
     Row(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(MEDIUM_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .padding(MEDIUM_PADDING),
     ) {
         Column(
             modifier = Modifier.padding(MEDIUM_PADDING),

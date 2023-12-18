@@ -1,3 +1,4 @@
+
 package com.jerboa.ui.components.comment.edit
 
 import androidx.compose.foundation.layout.Column
@@ -26,10 +27,10 @@ fun CommentEdit(
 
     Column(
         modifier =
-        Modifier
-            .verticalScroll(scrollState)
-            .padding(padding)
-            .imePadding(),
+            Modifier
+                .verticalScroll(scrollState)
+                .padding(padding)
+                .imePadding(),
     ) {
         MarkdownTextField(
             text = content,

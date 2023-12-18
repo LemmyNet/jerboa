@@ -4,9 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.NoAccounts
-import androidx.compose.material.icons.outlined.Shield
-import androidx.compose.material.icons.outlined.SmartToy
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -78,11 +76,11 @@ fun PersonProfileLink(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier =
-        if (clickable) {
-            Modifier.clickable { onClick(person.id) }
-        } else {
-            Modifier
-        },
+            if (clickable) {
+                Modifier.clickable { onClick(person.id) }
+            } else {
+                Modifier
+            },
     ) {
         if (showAvatar) {
             person.avatar?.also {

@@ -55,13 +55,11 @@ class CommentReplyViewModel : ViewModel() {
                         reply.item.post.id,
                         reply.item.comment.id,
                     )
-
                 is ReplyItem.CommentReplyItem ->
                     Pair(
                         reply.item.post.id,
                         reply.item.comment.id,
                     )
-
                 is ReplyItem.MentionReplyItem ->
                     Pair(
                         reply.item.post.id,
@@ -87,12 +85,10 @@ class CommentReplyViewModel : ViewModel() {
                     focusManager.clearFocus()
                     onSuccess(commentView)
                 }
-
                 is ApiState.Failure -> {
                     Log.d("createComment", "failed", res.msg)
                     apiErrorToast(msg = res.msg, ctx = ctx)
                 }
-
                 else -> {}
             }
         }

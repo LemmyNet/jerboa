@@ -86,17 +86,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.*
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -148,14 +138,8 @@ fun PostActivity(
     val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
-    appState.ConsumeReturn<CommentView>(
-        CommentReplyReturn.COMMENT_VIEW,
-        postViewModel::appendComment
-    )
-    appState.ConsumeReturn<CommentView>(
-        CommentEditReturn.COMMENT_VIEW,
-        postViewModel::updateComment
-    )
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -192,33 +176,33 @@ fun PostActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier =
-        Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true }
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .focusRequester(focusRequester)
-            .focusable()
-            .onKeyEvent { keyEvent ->
-                if (navigateParentCommentsWithVolumeButtons) {
-                    when (keyEvent.key) {
-                        Key.VolumeUp -> {
-                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true }
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .focusRequester(focusRequester)
+                .focusable()
+                .onKeyEvent { keyEvent ->
+                    if (navigateParentCommentsWithVolumeButtons) {
+                        when (keyEvent.key) {
+                            Key.VolumeUp -> {
+                                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        Key.VolumeDown -> {
-                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+                            Key.VolumeDown -> {
+                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        else -> {
-                            false
+                            else -> {
+                                false
+                            }
                         }
+                    } else {
+                        false
                     }
-                } else {
-                    false
-                }
-            },
+                },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
@@ -273,9 +257,9 @@ fun PostActivity(
         content = { padding ->
             Box(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
+                    Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState),
             ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
@@ -291,22 +275,18 @@ fun PostActivity(
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->
                         LoadingBar(padding)
-
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
 
-                        if (!account.isAnon()) appState.addReturn(
-                            PostViewReturn.POST_VIEW,
-                            postView.copy(read = true)
-                        )
+                        if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
                             state = listState,
                             modifier =
-                            Modifier
-                                .padding(top = padding.calculateTopPadding())
-                                .simpleVerticalScrollbar(listState)
-                                .testTag("jerboa:comments"),
+                                Modifier
+                                    .padding(top = padding.calculateTopPadding())
+                                    .simpleVerticalScrollbar(listState)
+                                    .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
@@ -324,10 +304,10 @@ fun PostActivity(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                    newVote(
-                                                        postView.my_vote,
-                                                        VoteType.Upvote,
-                                                    ),
+                                                        newVote(
+                                                            postView.my_vote,
+                                                            VoteType.Upvote,
+                                                        ),
                                                 ),
                                             )
                                         }
@@ -345,10 +325,10 @@ fun PostActivity(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                    newVote(
-                                                        postView.my_vote,
-                                                        VoteType.Downvote,
-                                                    ),
+                                                        newVote(
+                                                            postView.my_vote,
+                                                            VoteType.Downvote,
+                                                        ),
                                                 ),
                                             )
                                         }
@@ -464,22 +444,15 @@ fun PostActivity(
                                         }
                                     }
 
-                                    item(
-                                        key = "${postView.post.id}_is_comment_view",
-                                        contentType = "contextButtons"
-                                    ) {
+                                    item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
                                         if (postViewModel.isCommentView()) {
                                             val firstCommentNodeData = commentTree.firstOrNull()
 
                                             val firstCommentPath = firstCommentNodeData?.getPath()
 
-                                            val hasParent =
-                                                firstCommentPath != null && getDepthFromComment(
-                                                    firstCommentPath
-                                                ) > 0
+                                            val hasParent = firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
 
-                                            val commentParentId =
-                                                firstCommentPath?.let(::getCommentParentId)
+                                            val commentParentId = firstCommentPath?.let(::getCommentParentId)
 
                                             ShowCommentContextButtons(
                                                 postView.post.id,
@@ -522,10 +495,10 @@ fun PostActivity(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
                                                         score =
-                                                        newVote(
-                                                            cv.my_vote,
-                                                            VoteType.Upvote,
-                                                        ),
+                                                            newVote(
+                                                                cv.my_vote,
+                                                                VoteType.Upvote,
+                                                            ),
                                                     ),
                                                 )
                                             }
@@ -543,10 +516,10 @@ fun PostActivity(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
                                                         score =
-                                                        newVote(
-                                                            cv.my_vote,
-                                                            VoteType.Downvote,
-                                                        ),
+                                                            newVote(
+                                                                cv.my_vote,
+                                                                VoteType.Downvote,
+                                                            ),
                                                     ),
                                                 )
                                             }
@@ -575,11 +548,7 @@ fun PostActivity(
                                         },
                                         onPersonClick = appState::toProfile,
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
-                                        onHeaderLongClick = { commentView ->
-                                            toggleActionBar(
-                                                commentView.comment.id
-                                            )
-                                        },
+                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
                                             appState.toCommentEdit(
                                                 commentView = cv,
@@ -642,9 +611,9 @@ fun PostActivity(
                                         showCollapsedCommentContent = showCollapsedCommentContent,
                                         showActionBar = { commentId ->
                                             showActionBarByDefault xor
-                                                    commentsWithToggledActionBar.contains(
-                                                        commentId,
-                                                    )
+                                                commentsWithToggledActionBar.contains(
+                                                    commentId,
+                                                )
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),

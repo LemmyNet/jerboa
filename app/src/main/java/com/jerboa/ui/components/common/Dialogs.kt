@@ -60,9 +60,9 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                 text = {
                     Column(
                         modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState),
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState),
                     ) {
                         MyMarkdownText(
                             markdown = DONATION_MARKDOWN + markdown,
@@ -76,9 +76,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                             whatsChangedDialogOpen = false
                             appSettingsViewModel.markChangelogViewed()
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag("jerboa:changelogbtn"),
+                        modifier = Modifier.fillMaxWidth().testTag("jerboa:changelogbtn"),
                     ) {
                         Text(stringResource(R.string.dialogs_done))
                     }

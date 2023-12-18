@@ -139,9 +139,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     fun showAvatar(): Boolean {
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_avatars
-                ?: true
-
+            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_avatars ?: true
             else -> true
         }
     }
@@ -155,18 +153,14 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     fun showScores(): Boolean {
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores
-                ?: true
-
+            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
         }
     }
 
     fun getFollowList(): ImmutableList<CommunityFollowerView> {
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.follows?.toImmutableList()
-                ?: persistentListOf()
-
+            is ApiState.Success -> res.data.my_user?.follows?.toImmutableList() ?: persistentListOf()
             else -> persistentListOf()
         }
     }

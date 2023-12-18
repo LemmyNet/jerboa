@@ -68,7 +68,6 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 scoreColor(myVote = myVote),
             )
-
         else ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_outline),
@@ -86,7 +85,6 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
                 ImageVector.vectorResource(id = R.drawable.down_filled),
                 scoreColor(myVote = myVote),
             )
-
         else ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_outline),

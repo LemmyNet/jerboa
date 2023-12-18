@@ -164,10 +164,10 @@ fun CollapsedIndicator(
         Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
             Box(
                 modifier =
-                Modifier
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(horizontal = SMALL_PADDING),
+                    Modifier
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .padding(horizontal = SMALL_PADDING),
             ) {
                 Text(
                     text = "+$descendants",
@@ -195,10 +195,10 @@ fun NsfwBadge(visible: Boolean) {
         Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
             Box(
                 modifier =
-                Modifier
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(horizontal = SMALL_PADDING),
+                    Modifier
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .padding(horizontal = SMALL_PADDING),
             ) {
                 Text(
                     text = "NSFW",
