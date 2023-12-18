@@ -1,10 +1,11 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.jerboa.util
 
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
-import okhttp3.internal.charset
 import okhttp3.internal.http.promisesBody
 import okhttp3.internal.platform.Platform
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,6 +17,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
+import okhttp3.internal.charsetOrUtf8 as charsetOrUtf8
 
 /**
  * Based of [HttpLoggingInterceptor], redacts the giving fields
@@ -103,7 +105,7 @@ class CustomHttpLoggingInterceptor
                 } else if (gzippedLength != null) {
                     logger.log("--> END ${request.method} (${buffer.size}-byte, $gzippedLength-gzipped-byte body)")
                 } else {
-                    val charset: Charset = requestBody.contentType().charset()
+                    val charset: Charset = requestBody.contentType().charsetOrUtf8()
                     logger.log(redactBody(buffer.readString(charset)))
                     logger.log("--> END ${request.method} (${requestBody.contentLength()}-byte body)")
                 }
@@ -154,7 +156,7 @@ class CustomHttpLoggingInterceptor
                     }
                 }
 
-                val charset: Charset = responseBody.contentType().charset()
+                val charset: Charset = responseBody.contentType().charsetOrUtf8()
 
                 if (!buffer.isProbablyUtf8()) {
                     logger.log("")
