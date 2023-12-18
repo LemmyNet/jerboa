@@ -71,11 +71,11 @@ fun PostListings(
     LazyColumn(
         state = listState,
         modifier =
-            Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .simpleVerticalScrollbar(listState)
-                .testTag("jerboa:posts"),
+        Modifier
+            .padding(padding)
+            .fillMaxSize()
+            .simpleVerticalScrollbar(listState)
+            .testTag("jerboa:posts"),
     ) {
         item(contentType = "aboveContent") {
             contentAboveListings()

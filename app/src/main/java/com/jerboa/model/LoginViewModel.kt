@@ -42,7 +42,8 @@ class LoginViewModel : ViewModel() {
                     throw UnknownHostException()
                 }
 
-                tempInstance = API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
+                tempInstance =
+                    API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
                 val resp = tempInstance.login(form = form).getOrThrow()
                 tempInstance.auth = resp.jwt
             } catch (e: Throwable) {
@@ -56,7 +57,11 @@ class LoginViewModel : ViewModel() {
                                 instance,
                             )
 
-                        is NotSupportedException -> ctx.getString(R.string.server_version_not_supported, instance)
+                        is NotSupportedException -> ctx.getString(
+                            R.string.server_version_not_supported,
+                            instance
+                        )
+
                         else -> matchLoginErrorMsgToStringRes(ctx, e)
                     }
 
@@ -70,7 +75,8 @@ class LoginViewModel : ViewModel() {
             try {
                 when (val siteRes = siteViewModel.siteRes) {
                     is ApiState.Failure -> {
-                        val txt = siteRes.msg.message ?: "FAILURE: NO MESSAGE, probably that version not supported"
+                        val txt = siteRes.msg.message
+                            ?: "FAILURE: NO MESSAGE, probably that version not supported"
                         Toast.makeText(ctx, txt, Toast.LENGTH_SHORT).show()
                         throw Exception(txt)
                     }

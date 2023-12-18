@@ -116,6 +116,7 @@ fun CreatePostActivity(
             ApiState.Loading -> MetaDataRes(null, true)
             is ApiState.Success ->
                 MetaDataRes(res.data.metadata.title, false)
+
             else -> MetaDataRes(null, false)
         }
     Surface(color = MaterialTheme.colorScheme.background) {
@@ -144,11 +145,11 @@ fun CreatePostActivity(
                             }
                         },
                         actionIcon =
-                            if (formValid) {
-                                Icons.Filled.Send
-                            } else {
-                                Icons.Outlined.Send
-                            },
+                        if (formValid) {
+                            Icons.Filled.Send
+                        } else {
+                            Icons.Outlined.Send
+                        },
                         actionText = R.string.form_submit,
                         title = stringResource(R.string.create_post_create_post),
                         onBackClick = appState::popBackStack,

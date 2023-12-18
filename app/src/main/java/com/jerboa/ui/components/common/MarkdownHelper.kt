@@ -106,7 +106,8 @@ object MarkdownHelper {
                 .usePlugin(
                     MovementMethodPlugin.create(
                         TableAwareMovementMethod(
-                            BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
+                            BetterLinkMovementMethod.newInstance()
+                                .setOnLinkLongClickListener(onLongClick),
                         ),
                     ),
                 )

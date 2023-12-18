@@ -69,16 +69,16 @@ fun SettingsTextField(
             value = text,
             onValueChange = onValueChange,
             modifier =
-                Modifier
-                    .padding(top = MEDIUM_PADDING)
-                    .fillMaxWidth(),
+            Modifier
+                .padding(top = MEDIUM_PADDING)
+                .fillMaxWidth(),
             singleLine = true,
             keyboardOptions =
-                KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.None,
-                    keyboardType = KeyboardType.Text,
-                    autoCorrect = false,
-                ),
+            KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Text,
+                autoCorrect = false,
+            ),
         )
     }
 }
@@ -94,10 +94,10 @@ fun ImageWithClose(
             onClick = onClick,
             // Hard to see close button without a contrasting background
             colors =
-                IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surface.muted,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+            IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface.muted,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
         ) {
             Icon(
                 imageVector = Icons.Outlined.Close,
@@ -135,7 +135,8 @@ fun SettingsForm(
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
     val supportedSortTypes = remember { getSupportedEntries<SortType>(API.version) }
     val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
-    val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
+    val defaultSortType =
+        rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
     val defaultListingType =
         rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
     val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
@@ -176,10 +177,10 @@ fun SettingsForm(
 
     Column(
         modifier =
-            Modifier
-                .padding(padding)
-                .imePadding()
-                .verticalScroll(rememberScrollState()),
+        Modifier
+            .padding(padding)
+            .imePadding()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         SettingsTextField(
@@ -198,8 +199,8 @@ fun SettingsForm(
                 outlined = true,
                 focusImmediate = false,
                 modifier =
-                    Modifier
-                        .fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth(),
             )
         }
 
@@ -257,11 +258,11 @@ fun SettingsForm(
             state = defaultListingType,
             title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
             items =
-                listOf(
-                    stringResource(R.string.account_settings_all),
-                    stringResource(R.string.account_settings_local),
-                    stringResource(R.string.account_settings_subscribed),
-                ),
+            listOf(
+                stringResource(R.string.account_settings_all),
+                stringResource(R.string.account_settings_local),
+                stringResource(R.string.account_settings_subscribed),
+            ),
         )
         SettingsListDropdown(
             state = defaultSortType,

@@ -129,7 +129,10 @@ fun PersonProfileActivity(
         viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
+    appState.ConsumeReturn<CommentView>(
+        CommentEditReturn.COMMENT_VIEW,
+        personProfileViewModel::updateComment
+    )
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         when (val res = personProfileViewModel.personDetailsRes) {
@@ -138,6 +141,7 @@ fun PersonProfileActivity(
                     personProfileViewModel.insertComment(cv)
                 }
             }
+
             else -> {}
         }
     }
@@ -171,16 +175,17 @@ fun PersonProfileActivity(
                         matrixId = null,
                     )
                 }
+
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =
-                            if (savedMode) {
-                                ctx.getString(R.string.bookmarks_activity_saved)
-                            } else {
-                                person.name
-                            },
+                        if (savedMode) {
+                            ctx.getString(R.string.bookmarks_activity_saved)
+                        } else {
+                            person.name
+                        },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
@@ -235,6 +240,7 @@ fun PersonProfileActivity(
                         matrixId = person.matrix_user_id,
                     )
                 }
+
                 else -> {}
             }
         },
@@ -327,6 +333,7 @@ fun UserTabs(
                             ApiState.Refreshing,
                         )
                     }
+
                     else -> {}
                 }
             },
@@ -382,9 +389,9 @@ fun UserTabs(
                             LazyColumn(
                                 state = listState,
                                 modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                Modifier
+                                    .fillMaxSize()
+                                    .simpleVerticalScrollbar(listState),
                             ) {
                                 item(contentType = "topSection") {
                                     PersonProfileTopSection(
@@ -420,6 +427,7 @@ fun UserTabs(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -427,9 +435,9 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     Box(
                         modifier =
-                            Modifier
-                                .pullRefresh(pullRefreshState)
-                                .fillMaxSize(),
+                        Modifier
+                            .pullRefresh(pullRefreshState)
+                            .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -461,10 +469,10 @@ fun UserTabs(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                        newVote(
-                                                            pv.my_vote,
-                                                            VoteType.Upvote,
-                                                        ),
+                                                    newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Upvote,
+                                                    ),
                                                 ),
                                             )
                                         }
@@ -481,10 +489,10 @@ fun UserTabs(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                        newVote(
-                                                            pv.my_vote,
-                                                            VoteType.Downvote,
-                                                        ),
+                                                    newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Downvote,
+                                                    ),
                                                 ),
                                             )
                                         }
@@ -571,6 +579,7 @@ fun UserTabs(
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                 )
                             }
+
                             else -> {}
                         }
                     }
@@ -596,7 +605,8 @@ fun UserTabs(
 
                             // Holds the un-expanded comment ids
                             val unExpandedComments = remember { mutableStateListOf<Int>() }
-                            val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+                            val commentsWithToggledActionBar =
+                                remember { mutableStateListOf<Int>() }
 
                             val toggleExpanded = { commentId: Int ->
                                 if (unExpandedComments.contains(commentId)) {
@@ -627,9 +637,9 @@ fun UserTabs(
 
                             Box(
                                 modifier =
-                                    Modifier
-                                        .pullRefresh(pullRefreshState)
-                                        .fillMaxSize(),
+                                Modifier
+                                    .pullRefresh(pullRefreshState)
+                                    .fillMaxSize(),
                             ) {
                                 JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -647,7 +657,11 @@ fun UserTabs(
                                     increaseLazyListIndexTracker = {},
                                     addToParentIndexes = {},
                                     isFlat = true,
-                                    isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
+                                    isExpanded = { commentId ->
+                                        !unExpandedComments.contains(
+                                            commentId
+                                        )
+                                    },
                                     listState = listState,
                                     toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
@@ -766,7 +780,9 @@ fun UserTabs(
                                     showCollapsedCommentContent = true,
                                     isCollapsedByParent = false,
                                     showActionBar = { commentId ->
-                                        showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+                                        showActionBarByDefault xor commentsWithToggledActionBar.contains(
+                                            commentId
+                                        )
                                     },
                                     account = account,
                                     enableDownVotes = enableDownVotes,

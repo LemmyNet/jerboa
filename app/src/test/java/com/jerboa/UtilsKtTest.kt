@@ -224,7 +224,8 @@ class UtilsKtTest {
         assertEquals(1, tree1.size)
         assertTrue(tree1[0] is CommentNode)
 
-        val sampleCV2 = sampleCommentView.copy(comment = sampleCommentView.comment.copy(path = "0.1.2", id = 2))
+        val sampleCV2 =
+            sampleCommentView.copy(comment = sampleCommentView.comment.copy(path = "0.1.2", id = 2))
 
         val tree2 = buildCommentsTree(listOf(sampleCommentView, sampleCV2), null)
         assertEquals(1, tree2.size)
@@ -259,7 +260,12 @@ class UtilsKtTest {
         assertEquals(1, child4.depth)
         assertEquals(root4, child4.parent)
 
-        val sampleCV5 = sampleCommentView.copy(comment = sampleCommentView.comment.copy(path = "0.1.2.3", id = 3))
+        val sampleCV5 = sampleCommentView.copy(
+            comment = sampleCommentView.comment.copy(
+                path = "0.1.2.3",
+                id = 3
+            )
+        )
 
         // Confirm recursive missing parent behaviour
         val tree5 = buildCommentsTree(listOf(sampleCV5), null)

@@ -108,15 +108,22 @@ fun HomeActivity(
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
-            account.doIfReadyElseDisplayInfo(appState, ctx, snackbarHostState, scope, siteViewModel, accountViewModel) {}
+            account.doIfReadyElseDisplayInfo(
+                appState,
+                ctx,
+                snackbarHostState,
+                scope,
+                siteViewModel,
+                accountViewModel
+            ) {}
         }
     }
 
     Scaffold(
         modifier =
-            Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .semantics { testTagsAsResourceId = true },
+        Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true },
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
@@ -211,6 +218,7 @@ fun MainPostListingsContent(
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
+
         else -> {}
     }
 
@@ -245,6 +253,7 @@ fun MainPostListingsContent(
                     apiErrorToast(ctx, postsRes.msg)
                     persistentListOf()
                 }
+
                 is ApiState.Holder -> postsRes.data.posts.toImmutableList()
                 else -> persistentListOf()
             }
@@ -264,10 +273,10 @@ fun MainPostListingsContent(
                         CreatePostLike(
                             post_id = postView.post.id,
                             score =
-                                newVote(
-                                    currentVote = postView.my_vote,
-                                    voteType = VoteType.Upvote,
-                                ),
+                            newVote(
+                                currentVote = postView.my_vote,
+                                voteType = VoteType.Upvote,
+                            ),
                         ),
                     )
                 }
@@ -284,10 +293,10 @@ fun MainPostListingsContent(
                         CreatePostLike(
                             post_id = postView.post.id,
                             score =
-                                newVote(
-                                    currentVote = postView.my_vote,
-                                    voteType = VoteType.Downvote,
-                                ),
+                            newVote(
+                                currentVote = postView.my_vote,
+                                voteType = VoteType.Downvote,
+                            ),
                         ),
                     )
                 }

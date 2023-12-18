@@ -84,7 +84,8 @@ fun Modifier.pagerTabIndicatorOffset2(
             // If there are no pages, nothing to show
             layout(constraints.maxWidth, 0) {}
         } else {
-            val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
+            val currentPage =
+                minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
             val currentTab = tabPositions[currentPage]
             val previousTab = tabPositions.getOrNull(currentPage - 1)
             val nextTab = tabPositions.getOrNull(currentPage + 1)

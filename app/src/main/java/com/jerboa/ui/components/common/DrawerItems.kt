@@ -43,17 +43,17 @@ fun IconAndTextDrawerItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick)
-                .background(
-                    color =
-                        if (highlight) {
-                            MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)
-                        } else {
-                            Color.Transparent
-                        },
-                ),
+        modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .background(
+                color =
+                if (highlight) {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)
+                } else {
+                    Color.Transparent
+                },
+            ),
     ) {
         Row {
             icon?.also { ico ->

@@ -146,13 +146,13 @@ fun onSubmitClick(
 
     postEditViewModel.editPost(
         form =
-            EditPost(
-                post_id = postId,
-                name = nameOut,
-                url = urlOut,
-                body = bodyOut,
-                nsfw = isNsfw,
-            ),
+        EditPost(
+            post_id = postId,
+            name = nameOut,
+            url = urlOut,
+            body = bodyOut,
+            nsfw = isNsfw,
+        ),
     ) { postView ->
         appState.apply {
             addReturn(PostEditReturn.POST_VIEW, postView)

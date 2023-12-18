@@ -76,10 +76,10 @@ fun JerboaTheme(
     fun makeBlack(darkTheme: JerboaColorScheme): JerboaColorScheme {
         return darkTheme.copy(
             material =
-                darkTheme.material.copy(
-                    background = Color(0xFF000000),
-                    surface = Color(0xFF000000),
-                ),
+            darkTheme.material.copy(
+                background = Color(0xFF000000),
+                surface = Color(0xFF000000),
+            ),
         )
     }
 

@@ -67,12 +67,12 @@ fun CircularIcon(
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier =
-            modifier
-                .getBlurredOrRounded(
-                    rounded = true,
-                    blur = blur,
-                )
-                .size(size),
+        modifier
+            .getBlurredOrRounded(
+                rounded = true,
+                blur = blur,
+            )
+            .size(size),
     )
 }
 
@@ -151,19 +151,19 @@ fun PictrsThumbnailImage(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier =
-            modifier
-                .getBlurredOrRounded(
-                    rounded = false,
-                    blur = blur,
-                )
-                .clip(
-                    RoundedCornerShape(
-                        12f,
-                        12f,
-                        if (roundBottomEndCorner) 0f else 12f,
-                        12f,
-                    ),
+        modifier
+            .getBlurredOrRounded(
+                rounded = false,
+                blur = blur,
+            )
+            .clip(
+                RoundedCornerShape(
+                    12f,
+                    12f,
+                    if (roundBottomEndCorner) 0f else 12f,
+                    12f,
                 ),
+            ),
     )
 }
 
@@ -190,12 +190,12 @@ fun PictrsUrlImage(
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
         modifier =
-            modifier
-                .getBlurredOrRounded(
-                    rounded = false,
-                    blur = blur,
-                )
-                .fillMaxWidth(),
+        modifier
+            .getBlurredOrRounded(
+                rounded = false,
+                blur = blur,
+            )
+            .fillMaxWidth(),
     )
 }
 
@@ -223,11 +223,11 @@ fun PictrsBannerImage(
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier =
-            modifier
-                .getBlurredOrRounded(
-                    blur = blur,
-                )
-                .fillMaxWidth(),
+        modifier
+            .getBlurredOrRounded(
+                blur = blur,
+            )
+            .fillMaxWidth(),
     )
 }
 

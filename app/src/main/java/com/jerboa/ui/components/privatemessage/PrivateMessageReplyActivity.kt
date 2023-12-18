@@ -49,7 +49,13 @@ fun PrivateMessageReplyActivity(
 
     val privateMessageReplyViewModel: PrivateMessageReplyViewModel = viewModel()
 
-    var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
+    var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue(
+                ""
+            )
+        )
+    }
 
     val focusManager = LocalFocusManager.current
 
@@ -91,9 +97,9 @@ fun PrivateMessageReplyActivity(
                         onReplyChange = { reply = it },
                         onPersonClick = onProfile,
                         modifier =
-                            Modifier
-                                .padding(padding)
-                                .imePadding(),
+                        Modifier
+                            .padding(padding)
+                            .imePadding(),
                         showAvatar = siteViewModel.showAvatar(),
                     )
                 }

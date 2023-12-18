@@ -44,25 +44,27 @@ fun MainDrawer(
 
     Drawer(
         myUserInfo =
-            when (val res = siteViewModel.siteRes) {
-                is ApiState.Success -> {
-                    // JWT Failed
-                    if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
-                        accountViewModel.invalidateAccount(account)
-                    }
-                    follows = res.data.my_user?.follows?.sortedBy { it.community.title }.orEmpty()
-                    res.data.my_user
+        when (val res = siteViewModel.siteRes) {
+            is ApiState.Success -> {
+                // JWT Failed
+                if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
+                    accountViewModel.invalidateAccount(account)
                 }
-                is ApiState.Failure -> {
-                    // Invalidate account
-                    if (account.isReady()) {
-                        accountViewModel.invalidateAccount(account)
-                    }
+                follows = res.data.my_user?.follows?.sortedBy { it.community.title }.orEmpty()
+                res.data.my_user
+            }
 
-                    null
+            is ApiState.Failure -> {
+                // Invalidate account
+                if (account.isReady()) {
+                    accountViewModel.invalidateAccount(account)
                 }
-                else -> null
-            },
+
+                null
+            }
+
+            else -> null
+        },
         follows = follows.toImmutableList(),
         unreadCount = siteViewModel.unreadCount,
         accountViewModel = accountViewModel,

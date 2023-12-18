@@ -1,4 +1,3 @@
-
 package com.jerboa.ui.components.report.post
 
 import android.util.Log
@@ -38,7 +37,11 @@ fun CreatePostReportActivity(
 
     val createReportViewModel: CreateReportViewModel = viewModel()
 
-    var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
+    var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue("")
+        )
+    }
 
     val focusManager = LocalFocusManager.current
     val loading =

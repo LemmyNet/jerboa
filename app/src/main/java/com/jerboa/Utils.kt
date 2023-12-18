@@ -459,10 +459,14 @@ suspend fun openLink(
     val communityUrl = looksLikeCommunityUrl(parsedUrl)
 
     if (userUrl != null && (formatted || API.checkIfLemmyInstance(url))) {
-        val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
+        val route =
+            Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
         navController.navigate(route)
     } else if (communityUrl != null && (formatted || API.checkIfLemmyInstance(url))) {
-        val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
+        val route = Route.CommunityFromUrlArgs.makeRoute(
+            instance = communityUrl.first,
+            name = communityUrl.second
+        )
         navController.navigate(route)
     } else {
         openLinkRaw(url, navController, useCustomTab, usePrivateTab)
@@ -1070,7 +1074,11 @@ fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
 ): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.resources.displayMetrics).toInt()
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        sp.value,
+        ctx.resources.displayMetrics
+    ).toInt()
 }
 
 fun findAndUpdatePrivateMessage(
@@ -1288,7 +1296,8 @@ fun copyToClipboard(
 ): Boolean {
     val activity = context.findActivity()
     activity?.let {
-        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard: ClipboardManager =
+            it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(clipLabel, textToCopy)
         clipboard.setPrimaryClip(clip)
         return true

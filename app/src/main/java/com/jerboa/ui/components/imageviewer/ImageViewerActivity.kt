@@ -166,7 +166,8 @@ fun ImageViewer(
                     }
                 } else {
                     if (imageState == ImageState.LOADING) {
-                        val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
+                        val currentProgress =
+                            DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
 
                         if (currentProgress.value.progressAvailable) {
                             LinearProgressIndicator(
@@ -194,7 +195,8 @@ fun ImageViewer(
                             // and show it again upon user's touch. We just want the user to be able to show the
                             // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                             // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                            systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                            systemUiController.systemBarsBehavior =
+                                BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                         },
                         modifier = Modifier.fillMaxSize(),
                     )

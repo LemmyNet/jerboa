@@ -8,11 +8,11 @@ data class ProgressEvent(
     val progressAvailable: Boolean,
 ) {
     constructor(downloadIdentifier: String, contentLength: Long, bytesRead: Long) :
-        this(
-            progress = (bytesRead.toFloat() / contentLength),
-            contentLength = contentLength,
-            downloadURL = downloadIdentifier,
-            bytesRead = bytesRead,
-            progressAvailable = contentLength > 0,
-        )
+            this(
+                progress = (bytesRead.toFloat() / contentLength),
+                contentLength = contentLength,
+                downloadURL = downloadIdentifier,
+                bytesRead = bytesRead,
+                progressAvailable = contentLength > 0,
+            )
 }

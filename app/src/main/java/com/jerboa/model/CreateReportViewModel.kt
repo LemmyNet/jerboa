@@ -43,7 +43,11 @@ class CreateReportViewModel : ViewModel() {
 
             val message =
                 when (val res = commentReportRes) {
-                    is ApiState.Failure -> ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                    is ApiState.Failure -> ctx.getString(
+                        R.string.create_report_view_model_report_fail,
+                        res.msg.message
+                    )
+
                     is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
                     else -> {
                         null
@@ -75,7 +79,11 @@ class CreateReportViewModel : ViewModel() {
 
             val message =
                 when (val res = postReportRes) {
-                    is ApiState.Failure -> ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                    is ApiState.Failure -> ctx.getString(
+                        R.string.create_report_view_model_report_fail,
+                        res.msg.message
+                    )
+
                     is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
                     else -> {
                         null

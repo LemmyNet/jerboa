@@ -51,7 +51,11 @@ fun CreatePrivateMessageActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
-    var textBody by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
+    var textBody by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue("")
+        )
+    }
 
     var loading by remember {
         mutableStateOf(false)
@@ -82,13 +86,21 @@ fun CreatePrivateMessageActivity(
                                         ).toApiState()
                                     }
                                 if (res is ApiState.Failure) {
-                                    Toast.makeText(ctx, R.string.private_message_failed, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        ctx,
+                                        R.string.private_message_failed,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
 
                             loading = false
                             focusManager.clearFocus()
-                            Toast.makeText(ctx, R.string.private_message_success, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                ctx,
+                                R.string.private_message_success,
+                                Toast.LENGTH_SHORT
+                            ).show()
                             onBack()
                         }
                     }
@@ -102,10 +114,10 @@ fun CreatePrivateMessageActivity(
 
             Column(
                 modifier =
-                    Modifier
-                        .verticalScroll(scrollState)
-                        .padding(padding)
-                        .imePadding(),
+                Modifier
+                    .verticalScroll(scrollState)
+                    .padding(padding)
+                    .imePadding(),
             ) {
                 MarkdownTextField(
                     text = textBody,

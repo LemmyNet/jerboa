@@ -375,8 +375,8 @@ fun DrawerHeader(
 
     Box(
         modifier =
-            sizeMod
-                .clickable(onClick = onClickShowAccountAddMode),
+        sizeMod
+            .clickable(onClick = onClickShowAccountAddMode),
     ) {
         myPerson?.banner?.also {
             PictrsBannerImage(
@@ -388,15 +388,15 @@ fun DrawerHeader(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-                sizeMod
-                    .padding(XL_PADDING),
+            sizeMod
+                .padding(XL_PADDING),
         ) {
             if (showWarningIcon) {
                 Icon(
                     modifier =
-                        Modifier
-                            .weight(0.1f)
-                            .padding(end = SMALL_PADDING),
+                    Modifier
+                        .weight(0.1f)
+                        .padding(end = SMALL_PADDING),
                     imageVector = Icons.Outlined.WarningAmber,
                     contentDescription = stringResource(R.string.warning),
                     tint = MaterialTheme.colorScheme.error,
@@ -408,17 +408,17 @@ fun DrawerHeader(
             Icon(
                 modifier = Modifier.weight(0.1f),
                 imageVector =
-                    if (showAccountAddMode) {
-                        Icons.Outlined.ExpandLess
-                    } else {
-                        Icons.Outlined.ExpandMore
-                    },
+                if (showAccountAddMode) {
+                    Icons.Outlined.ExpandLess
+                } else {
+                    Icons.Outlined.ExpandMore
+                },
                 contentDescription =
-                    if (showAccountAddMode) {
-                        stringResource(R.string.moreOptions)
-                    } else {
-                        stringResource(R.string.lessOptions)
-                    },
+                if (showAccountAddMode) {
+                    stringResource(R.string.moreOptions)
+                } else {
+                    stringResource(R.string.lessOptions)
+                },
             )
         }
     }

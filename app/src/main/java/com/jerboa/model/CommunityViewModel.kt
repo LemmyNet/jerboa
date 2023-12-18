@@ -41,7 +41,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -50,7 +50,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
@@ -118,10 +118,10 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                         ApiState.Success(
                             GetPostsResponse(
                                 posts =
-                                    mergePosts(
-                                        oldRes.data.posts,
-                                        newRes.data.posts,
-                                    ),
+                                mergePosts(
+                                    oldRes.data.posts,
+                                    newRes.data.posts,
+                                ),
                                 next_page = newRes.data.next_page,
                             ),
                         )
@@ -239,7 +239,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
                                 ApiState.Success(
                                     existing.data.copy(
                                         community_view =
-                                            blockCommunity.data.community_view,
+                                        blockCommunity.data.community_view,
                                     ),
                                 )
                             communityRes = newRes
@@ -293,10 +293,10 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : ViewModel(
 
         this.getCommunity(
             form =
-                GetCommunity(
-                    id = communityId,
-                    name = communityName,
-                ),
+            GetCommunity(
+                id = communityId,
+                name = communityName,
+            ),
         )
         this.getPosts(
             getForm(),

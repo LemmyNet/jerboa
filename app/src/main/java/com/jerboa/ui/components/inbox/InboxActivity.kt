@@ -94,7 +94,8 @@ fun InboxActivity(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val inboxViewModel: InboxViewModel = viewModel(factory = InboxViewModel.Companion.Factory(account, siteViewModel))
+    val inboxViewModel: InboxViewModel =
+        viewModel(factory = InboxViewModel.Companion.Factory(account, siteViewModel))
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -329,9 +330,9 @@ fun InboxTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         replies,
@@ -351,7 +352,10 @@ fun InboxTabs(
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Upvote),
+                                                            score = newVote(
+                                                                cr.my_vote,
+                                                                VoteType.Upvote
+                                                            ),
                                                         ),
                                                     )
                                                 }
@@ -367,7 +371,10 @@ fun InboxTabs(
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Downvote),
+                                                            score = newVote(
+                                                                cr.my_vote,
+                                                                VoteType.Downvote
+                                                            ),
                                                         ),
                                                     )
                                                 }
@@ -443,6 +450,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+
                             else -> {}
                         }
                     }
@@ -499,9 +507,9 @@ fun InboxTabs(
                         )
                     Box(
                         modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                        Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -522,9 +530,9 @@ fun InboxTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         mentions,
@@ -544,7 +552,10 @@ fun InboxTabs(
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Upvote),
+                                                            score = newVote(
+                                                                pm.my_vote,
+                                                                VoteType.Upvote
+                                                            ),
                                                         ),
                                                     )
                                                 }
@@ -560,7 +571,10 @@ fun InboxTabs(
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Downvote),
+                                                            score = newVote(
+                                                                pm.my_vote,
+                                                                VoteType.Downvote
+                                                            ),
                                                         ),
                                                     )
                                                 }
@@ -650,6 +664,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+
                             else -> {}
                         }
                     }
@@ -705,9 +720,9 @@ fun InboxTabs(
                         )
                     Box(
                         modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                        Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -728,9 +743,9 @@ fun InboxTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         messages,
@@ -763,6 +778,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+
                             else -> {}
                         }
                     }

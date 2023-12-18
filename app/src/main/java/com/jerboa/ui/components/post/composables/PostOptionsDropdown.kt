@@ -68,7 +68,10 @@ fun PostOptionsDropdown(
         onDismissRequest = onDismissRequest,
     ) {
         PopupMenuItem(
-            text = stringResource(R.string.post_listing_go_to, communityNameShown(postView.community)),
+            text = stringResource(
+                R.string.post_listing_go_to,
+                communityNameShown(postView.community)
+            ),
             icon = Icons.Outlined.Forum,
             onClick = {
                 onDismissRequest()
@@ -287,11 +290,11 @@ fun PostOptionsDropdown(
             postView.post.body?.also {
                 PopupMenuItem(
                     text =
-                        if (viewSource) {
-                            stringResource(R.string.post_listing_view_original)
-                        } else {
-                            stringResource(R.string.post_listing_view_source)
-                        },
+                    if (viewSource) {
+                        stringResource(R.string.post_listing_view_original)
+                    } else {
+                        stringResource(R.string.post_listing_view_source)
+                    },
                     icon = Icons.Outlined.Description,
                     onClick = {
                         onDismissRequest()
@@ -380,7 +383,12 @@ fun PostOptionsDropdown(
                         onClick = {
                             onDismissRequest()
                             scope.launch(Dispatchers.IO) {
-                                val resp = api.blockInstance(BlockInstance(postView.community.instance_id, true))
+                                val resp = api.blockInstance(
+                                    BlockInstance(
+                                        postView.community.instance_id,
+                                        true
+                                    )
+                                )
                                 withContext(Dispatchers.Main) {
                                     showBlockCommunityToast(resp, instance, ctx)
                                 }

@@ -56,10 +56,10 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     private var markAllAsReadRes: ApiState<GetRepliesResponse> by mutableStateOf(ApiState.Empty)
 
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
 
     private var blockPersonRes: ApiState<BlockPersonResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
 
     private var pageReplies by mutableIntStateOf(1)
     private var pageMentions by mutableIntStateOf(1)
@@ -391,7 +391,8 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                                     existing.data.mentions,
                                     readRes.data.person_mention_view,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(mentions = newMentions))
+                            val newRes =
+                                ApiState.Success(existing.data.copy(mentions = newMentions))
                             mentionsRes = newRes
                             onSuccess()
                         }
@@ -422,7 +423,8 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                                     existing.data.private_messages,
                                     readRes.data.private_message_view,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(private_messages = newMessages))
+                            val newRes =
+                                ApiState.Success(existing.data.copy(private_messages = newMessages))
                             messagesRes = newRes
                             onSuccess()
                         }
@@ -487,7 +489,8 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                 is ApiState.Success -> {
                     val mutable = messages.data.private_messages.toMutableList()
                     mutable.replaceAll { it.copy(private_message = it.private_message.copy(read = true)) }
-                    messagesRes = ApiState.Success(messages.data.copy(private_messages = mutable.toList()))
+                    messagesRes =
+                        ApiState.Success(messages.data.copy(private_messages = mutable.toList()))
                 }
 
                 else -> {}

@@ -19,7 +19,11 @@ import io.noties.markwon.image.ImageProps
 import io.noties.markwon.image.ImageSpanFactory
 import org.commonmark.node.Image
 
-class ClickableCoilImagesPlugin(coil: CoilStore, imageLoader: ImageLoader, private val appState: JerboaAppState) : CoilImagesPlugin(
+class ClickableCoilImagesPlugin(
+    coil: CoilStore,
+    imageLoader: ImageLoader,
+    private val appState: JerboaAppState
+) : CoilImagesPlugin(
     coil,
     imageLoader,
 ) {

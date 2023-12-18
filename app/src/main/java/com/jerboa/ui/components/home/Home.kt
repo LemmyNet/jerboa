@@ -224,11 +224,11 @@ fun HomeMoreDropdown(
                             onClickPostViewMode(it)
                         },
                         modifier =
-                            if (selectedPostViewMode == it) {
-                                Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                            } else {
-                                Modifier
-                            }.testTag("jerboa:postviewmode_${it.name}"),
+                        if (selectedPostViewMode == it) {
+                            Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                        } else {
+                            Modifier
+                        }.testTag("jerboa:postviewmode_${it.name}"),
                     )
                 }
             },

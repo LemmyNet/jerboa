@@ -115,11 +115,11 @@ fun MarkdownTextField(
                 label = { Text(text = placeholder) },
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Text,
-                        // autoCorrect = true,
-                    ),
+                KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text,
+                    // autoCorrect = true,
+                ),
             )
         } else {
             TextField(
@@ -128,20 +128,20 @@ fun MarkdownTextField(
                 placeholder = { Text(text = placeholder) },
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Text,
-                        // autoCorrect = true,
-                    ),
+                KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text,
+                    // autoCorrect = true,
+                ),
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
             )
         }
 
@@ -185,9 +185,9 @@ fun CreateLinkDialog(
         text = {
             Column(
                 modifier =
-                    Modifier
-                        .padding(MEDIUM_PADDING)
-                        .fillMaxWidth(),
+                Modifier
+                    .padding(MEDIUM_PADDING)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(

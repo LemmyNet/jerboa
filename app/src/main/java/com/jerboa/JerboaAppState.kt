@@ -202,7 +202,12 @@ class JerboaAppState(
         id: Int,
         name: String,
     ) {
-        navController.navigate(Route.CreatePrivateMessageArgs.makeRoute(personId = "$id", personName = name))
+        navController.navigate(
+            Route.CreatePrivateMessageArgs.makeRoute(
+                personId = "$id",
+                personName = name
+            )
+        )
     }
 
     fun hideLinkPopup() {

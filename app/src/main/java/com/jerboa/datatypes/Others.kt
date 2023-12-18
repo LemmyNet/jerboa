@@ -29,11 +29,18 @@ data class CommentSortData(
 
 val CommentSortType.data: CommentSortData
     get() = when (this) {
-        CommentSortType.Hot -> CommentSortData(R.string.dialogs_hot, Icons.Outlined.LocalFireDepartment)
+        CommentSortType.Hot -> CommentSortData(
+            R.string.dialogs_hot,
+            Icons.Outlined.LocalFireDepartment
+        )
+
         CommentSortType.New -> CommentSortData(R.string.dialogs_new, Icons.Outlined.BrightnessLow)
         CommentSortType.Old -> CommentSortData(R.string.dialogs_old, Icons.Outlined.History)
         CommentSortType.Top -> CommentSortData(R.string.dialogs_top, Icons.Outlined.BarChart)
-        CommentSortType.Controversial -> CommentSortData(R.string.sorttype_controversial, Icons.Outlined.ThumbsUpDown)
+        CommentSortType.Controversial -> CommentSortData(
+            R.string.sorttype_controversial,
+            Icons.Outlined.ThumbsUpDown
+        )
     }
 
 data class SortData(
@@ -44,21 +51,66 @@ data class SortData(
 
 val SortType.data: SortData
     get() = when (this) {
-        SortType.Active -> SortData(R.string.sorttype_active, R.string.sorttype_active, Icons.Outlined.Moving)
-        SortType.Hot -> SortData(R.string.sorttype_hot, R.string.sorttype_hot, Icons.Outlined.LocalFireDepartment)
-        SortType.New -> SortData(R.string.sorttype_new, R.string.sorttype_new, Icons.Outlined.BrightnessLow)
-        SortType.Old -> SortData(R.string.sorttype_old, R.string.sorttype_old, Icons.Outlined.History)
+        SortType.Active -> SortData(
+            R.string.sorttype_active,
+            R.string.sorttype_active,
+            Icons.Outlined.Moving
+        )
+
+        SortType.Hot -> SortData(
+            R.string.sorttype_hot,
+            R.string.sorttype_hot,
+            Icons.Outlined.LocalFireDepartment
+        )
+
+        SortType.New -> SortData(
+            R.string.sorttype_new,
+            R.string.sorttype_new,
+            Icons.Outlined.BrightnessLow
+        )
+
+        SortType.Old -> SortData(
+            R.string.sorttype_old,
+            R.string.sorttype_old,
+            Icons.Outlined.History
+        )
+
         SortType.Controversial -> SortData(
             R.string.sorttype_controversial,
             R.string.sorttype_controversial,
             Icons.Outlined.ThumbsUpDown
         )
 
-        SortType.TopDay -> SortData(R.string.sorttype_topday, R.string.dialogs_top_day, Icons.Outlined.BarChart)
-        SortType.TopWeek -> SortData(R.string.sorttype_topweek, R.string.dialogs_top_week, Icons.Outlined.BarChart)
-        SortType.TopMonth -> SortData(R.string.sorttype_topmonth, R.string.dialogs_top_month, Icons.Outlined.BarChart)
-        SortType.TopYear -> SortData(R.string.sorttype_topyear, R.string.dialogs_top_year, Icons.Outlined.BarChart)
-        SortType.TopAll -> SortData(R.string.sorttype_topall, R.string.dialogs_top_all, Icons.Outlined.BarChart)
+        SortType.TopDay -> SortData(
+            R.string.sorttype_topday,
+            R.string.dialogs_top_day,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopWeek -> SortData(
+            R.string.sorttype_topweek,
+            R.string.dialogs_top_week,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopMonth -> SortData(
+            R.string.sorttype_topmonth,
+            R.string.dialogs_top_month,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopYear -> SortData(
+            R.string.sorttype_topyear,
+            R.string.dialogs_top_year,
+            Icons.Outlined.BarChart
+        )
+
+        SortType.TopAll -> SortData(
+            R.string.sorttype_topall,
+            R.string.dialogs_top_all,
+            Icons.Outlined.BarChart
+        )
+
         SortType.MostComments -> SortData(
             R.string.sorttype_mostcomments,
             R.string.sorttype_mostcomments,
@@ -71,7 +123,12 @@ val SortType.data: SortData
             Icons.Outlined.NewReleases
         )
 
-        SortType.TopHour -> SortData(R.string.sorttype_tophour, R.string.dialogs_top_hour, Icons.Outlined.BarChart)
+        SortType.TopHour -> SortData(
+            R.string.sorttype_tophour,
+            R.string.dialogs_top_hour,
+            Icons.Outlined.BarChart
+        )
+
         SortType.TopSixHour -> SortData(
             R.string.sorttype_topsixhour,
             R.string.dialogs_top_six_hour,
@@ -102,7 +159,11 @@ val SortType.data: SortData
             Icons.Outlined.BarChart
         )
 
-        SortType.Scaled -> SortData(R.string.sorttype_scaled, R.string.sorttype_scaled, Icons.Outlined.Scale)
+        SortType.Scaled -> SortData(
+            R.string.sorttype_scaled,
+            R.string.sorttype_scaled,
+            Icons.Outlined.Scale
+        )
     }
 
 

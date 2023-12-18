@@ -47,7 +47,7 @@ object Route {
 
     class CommunityFromIdArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -83,7 +83,7 @@ object Route {
 
     class CommunityListArgs(val select: Boolean) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(navBackStackEntry.arguments?.getBoolean(SELECT)!!)
+                this(navBackStackEntry.arguments?.getBoolean(SELECT)!!)
 
         companion object {
             const val SELECT = "select"
@@ -143,7 +143,7 @@ object Route {
 
     class PostArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -157,7 +157,7 @@ object Route {
 
     class CommentArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -171,7 +171,7 @@ object Route {
 
     class CommentReportArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -185,7 +185,7 @@ object Route {
 
     class PostReportArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -199,7 +199,7 @@ object Route {
 
     class ViewArgs(val url: String) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(url = navBackStackEntry.arguments?.getString(URL)!!)
+                this(url = navBackStackEntry.arguments?.getString(URL)!!)
 
         companion object {
             const val URL = "url"
@@ -213,10 +213,10 @@ object Route {
 
     class CreatePrivateMessageArgs(val personId: Int, val personName: String) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(
-                personId = navBackStackEntry.arguments?.getInt(PERSON_ID)!!,
-                personName = navBackStackEntry.arguments?.getString(PERSON_NAME)!!,
-            )
+                this(
+                    personId = navBackStackEntry.arguments?.getInt(PERSON_ID)!!,
+                    personName = navBackStackEntry.arguments?.getString(PERSON_NAME)!!,
+                )
 
         companion object {
             const val PERSON_ID = "person_id"
@@ -230,7 +230,12 @@ object Route {
                 personName: String,
             ) = "createPrivateMessage/$personId/$personName"
 
-            internal val route by lazy { makeRoute(personId = "{$PERSON_ID}", personName = "{$PERSON_NAME}") }
+            internal val route by lazy {
+                makeRoute(
+                    personId = "{$PERSON_ID}",
+                    personName = "{$PERSON_NAME}"
+                )
+            }
         }
     }
 }

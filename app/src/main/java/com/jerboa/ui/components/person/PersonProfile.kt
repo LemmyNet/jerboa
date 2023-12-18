@@ -10,7 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,11 +74,11 @@ fun PersonProfileTopSection(
                     url = it,
                     contentDescription = stringResource(R.string.personProfile_viewBanner),
                     modifier =
-                        Modifier
-                            .height(PROFILE_BANNER_SIZE)
-                            .clickable {
-                                openImageViewer(it)
-                            },
+                    Modifier
+                        .height(PROFILE_BANNER_SIZE)
+                        .clickable {
+                            openImageViewer(it)
+                        },
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -82,9 +88,9 @@ fun PersonProfileTopSection(
                             icon = it,
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier =
-                                Modifier.clickable {
-                                    openImageViewer(it)
-                                },
+                            Modifier.clickable {
+                                openImageViewer(it)
+                            },
                         )
                     }
                 }
@@ -125,7 +131,10 @@ fun CommentsAndPosts(personView: PersonView) {
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.person_profile_comments, personView.counts.comment_count),
+            text = stringResource(
+                R.string.person_profile_comments,
+                personView.counts.comment_count
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
@@ -241,11 +250,11 @@ fun PersonProfileHeader(
                             onMessagePersonClick()
                         },
                         openMatrix =
-                            matrixId?.let {
-                                {
-                                    openMatrix(matrixId, ctx)
-                                }
-                            },
+                        matrixId?.let {
+                            {
+                                openMatrix(matrixId, ctx)
+                            }
+                        },
                     )
                 }
             }

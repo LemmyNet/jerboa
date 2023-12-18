@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -115,9 +114,13 @@ class MainActivity : AppCompatActivity() {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(appState.navController, ctx)
                         }
+
                         BackConfirmationMode.Dialog -> {
-                            this@MainActivity.addConfirmationDialog(appState.navController) { showConfirmationDialog.value = true }
+                            this@MainActivity.addConfirmationDialog(appState.navController) {
+                                showConfirmationDialog.value = true
+                            }
                         }
+
                         BackConfirmationMode.None -> {}
                     }
 
@@ -161,14 +164,14 @@ class MainActivity : AppCompatActivity() {
                         slideInHorizontally { it }
                     },
                     exitTransition =
-                        {
-                            // No animation for image viewer
-                            if (this.targetState.destination.route == Route.VIEW) {
-                                ExitTransition.None
-                            } else {
-                                slideOutHorizontally { -it }
-                            }
-                        },
+                    {
+                        // No animation for image viewer
+                        if (this.targetState.destination.route == Route.VIEW) {
+                            ExitTransition.None
+                        } else {
+                            slideOutHorizontally { -it }
+                        }
+                    },
                     popEnterTransition = {
                         // No animation for image viewer
                         if (this.initialState.destination.route == Route.VIEW) {
@@ -186,9 +189,9 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.LOGIN,
                         deepLinks =
-                            DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/login" }
-                            },
+                        DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/login" }
+                        },
                     ) {
                         LoginActivity(
                             appState = appState,
@@ -211,11 +214,11 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMUNITY_FROM_ID,
                         arguments =
-                            listOf(
-                                navArgument(Route.CommunityFromIdArgs.ID) {
-                                    type = Route.CommunityFromIdArgs.ID_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.CommunityFromIdArgs.ID) {
+                                type = Route.CommunityFromIdArgs.ID_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.CommunityFromIdArgs(it)
 
@@ -239,18 +242,18 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMUNITY_FROM_URL,
                         deepLinks =
-                            listOf(
-                                navDeepLink { uriPattern = Route.COMMUNITY_FROM_URL },
-                            ),
+                        listOf(
+                            navDeepLink { uriPattern = Route.COMMUNITY_FROM_URL },
+                        ),
                         arguments =
-                            listOf(
-                                navArgument(Route.CommunityFromUrlArgs.NAME) {
-                                    type = Route.CommunityFromUrlArgs.NAME_TYPE
-                                },
-                                navArgument(Route.CommunityFromUrlArgs.INSTANCE) {
-                                    type = Route.CommunityFromUrlArgs.INSTANCE_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.CommunityFromUrlArgs.NAME) {
+                                type = Route.CommunityFromUrlArgs.NAME_TYPE
+                            },
+                            navArgument(Route.CommunityFromUrlArgs.INSTANCE) {
+                                type = Route.CommunityFromUrlArgs.INSTANCE_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.CommunityFromUrlArgs(it)
                         // Could be instance/c/community@otherinstance ({instance}/c/{name})
@@ -288,15 +291,15 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.PROFILE_FROM_ID,
                         arguments =
-                            listOf(
-                                navArgument(Route.ProfileFromIdArgs.ID) {
-                                    type = Route.ProfileFromIdArgs.ID_TYPE
-                                },
-                                navArgument(Route.ProfileFromIdArgs.SAVED) {
-                                    defaultValue = Route.ProfileFromIdArgs.SAVED_DEFAULT
-                                    type = Route.ProfileFromIdArgs.SAVED_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.ProfileFromIdArgs.ID) {
+                                type = Route.ProfileFromIdArgs.ID_TYPE
+                            },
+                            navArgument(Route.ProfileFromIdArgs.SAVED) {
+                                defaultValue = Route.ProfileFromIdArgs.SAVED_DEFAULT
+                                type = Route.ProfileFromIdArgs.SAVED_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.ProfileFromIdArgs(it)
                         PersonProfileActivity(
@@ -322,18 +325,18 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.PROFILE_FROM_URL,
                         deepLinks =
-                            listOf(
-                                navDeepLink { uriPattern = Route.PROFILE_FROM_URL },
-                            ),
+                        listOf(
+                            navDeepLink { uriPattern = Route.PROFILE_FROM_URL },
+                        ),
                         arguments =
-                            listOf(
-                                navArgument(Route.ProfileFromUrlArgs.NAME) {
-                                    type = Route.ProfileFromUrlArgs.NAME_TYPE
-                                },
-                                navArgument(Route.ProfileFromUrlArgs.INSTANCE) {
-                                    type = Route.ProfileFromUrlArgs.INSTANCE_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.ProfileFromUrlArgs.NAME) {
+                                type = Route.ProfileFromUrlArgs.NAME_TYPE
+                            },
+                            navArgument(Route.ProfileFromUrlArgs.INSTANCE) {
+                                type = Route.ProfileFromUrlArgs.INSTANCE_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.ProfileFromUrlArgs(it)
                         val qualifiedName = "${args.name}@${args.instance}"
@@ -358,12 +361,12 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMUNITY_LIST,
                         arguments =
-                            listOf(
-                                navArgument(Route.CommunityListArgs.SELECT) {
-                                    defaultValue = Route.CommunityListArgs.SELECT_DEFAULT
-                                    type = Route.CommunityListArgs.SELECT_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.CommunityListArgs.SELECT) {
+                                defaultValue = Route.CommunityListArgs.SELECT_DEFAULT
+                                type = Route.CommunityListArgs.SELECT_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
@@ -378,10 +381,10 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.CREATE_POST,
                         deepLinks =
-                            listOf(
-                                navDeepLink { mimeType = "text/plain" },
-                                navDeepLink { mimeType = "image/*" },
-                            ),
+                        listOf(
+                            navDeepLink { mimeType = "text/plain" },
+                            navDeepLink { mimeType = "image/*" },
+                        ),
                     ) {
                         val activity = ctx.findActivity()
                         val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
@@ -416,9 +419,9 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.INBOX,
                         deepLinks =
-                            DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/inbox" }
-                            },
+                        DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/inbox" }
+                        },
                     ) {
                         InboxActivity(
                             appState = appState,
@@ -432,15 +435,15 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.POST,
                         deepLinks =
-                            DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
-                            },
+                        DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
+                        },
                         arguments =
-                            listOf(
-                                navArgument(Route.PostArgs.ID) {
-                                    type = Route.PostArgs.ID_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.PostArgs.ID) {
+                                type = Route.PostArgs.ID_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.PostArgs(it)
 
@@ -470,15 +473,17 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMENT,
                         deepLinks =
-                            DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/comment/{${Route.CommentArgs.ID}}" }
-                            },
+                        DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink {
+                                uriPattern = "$instance/comment/{${Route.CommentArgs.ID}}"
+                            }
+                        },
                         arguments =
-                            listOf(
-                                navArgument(Route.CommentArgs.ID) {
-                                    type = Route.CommentArgs.ID_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.CommentArgs.ID) {
+                                type = Route.CommentArgs.ID_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.CommentArgs(it)
                         PostActivity(
@@ -543,11 +548,11 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMENT_REPORT,
                         arguments =
-                            listOf(
-                                navArgument(Route.CommentReportArgs.ID) {
-                                    type = Route.CommentReportArgs.ID_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.CommentReportArgs.ID) {
+                                type = Route.CommentReportArgs.ID_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.CommentReportArgs(it)
                         CreateCommentReportActivity(
@@ -560,11 +565,11 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.POST_REPORT,
                         arguments =
-                            listOf(
-                                navArgument(Route.PostReportArgs.ID) {
-                                    type = Route.PostReportArgs.ID_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.PostReportArgs.ID) {
+                                type = Route.PostReportArgs.ID_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.PostReportArgs(it)
                         CreatePostReportActivity(
@@ -594,9 +599,9 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.ACCOUNT_SETTINGS,
                         deepLinks =
-                            DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/settings" }
-                            },
+                        DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/settings" }
+                        },
                     ) {
                         AccountSettingsActivity(
                             accountViewModel = accountViewModel,
@@ -625,11 +630,11 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.VIEW,
                         arguments =
-                            listOf(
-                                navArgument(Route.ViewArgs.URL) {
-                                    type = Route.ViewArgs.URL_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.ViewArgs.URL) {
+                                type = Route.ViewArgs.URL_TYPE
+                            },
+                        ),
                         enterTransition = { EnterTransition.None },
                         exitTransition = { ExitTransition.None },
                         popEnterTransition = { EnterTransition.None },
@@ -643,14 +648,14 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.CREATE_PRIVATE_MESSAGE,
                         arguments =
-                            listOf(
-                                navArgument(Route.CreatePrivateMessageArgs.PERSON_ID) {
-                                    type = Route.CreatePrivateMessageArgs.PERSON_ID_TYPE
-                                },
-                                navArgument(Route.CreatePrivateMessageArgs.PERSON_NAME) {
-                                    type = Route.CreatePrivateMessageArgs.PERSON_NAME_TYPE
-                                },
-                            ),
+                        listOf(
+                            navArgument(Route.CreatePrivateMessageArgs.PERSON_ID) {
+                                type = Route.CreatePrivateMessageArgs.PERSON_ID_TYPE
+                            },
+                            navArgument(Route.CreatePrivateMessageArgs.PERSON_NAME) {
+                                type = Route.CreatePrivateMessageArgs.PERSON_NAME_TYPE
+                            },
+                        ),
                     ) {
                         val args = Route.CreatePrivateMessageArgs(it)
 
