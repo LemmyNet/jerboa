@@ -1,3 +1,17 @@
+# Jerboa v0.0.55-alpha Release (2023-12-17)
+
+## What's Changed
+
+- Improve Russian translations by @mittwerk in https://github.com/dessalines/jerboa/pull/1300
+- Fix Posts failed loading, retry by @MV-GH in https://github.com/dessalines/jerboa/pull/1302
+- Fix image upload by @MV-GH in https://github.com/dessalines/jerboa/pull/1305
+
+## New Contributors
+
+- @mittwerk made their first contribution in https://github.com/dessalines/jerboa/pull/1300
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.54...0.0.55
+
 # Jerboa v0.0.54-alpha Release (2023-12-15)
 
 ## What's Changed
