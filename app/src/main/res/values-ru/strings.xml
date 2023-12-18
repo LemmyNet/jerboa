@@ -56,8 +56,8 @@
     <string name="dialogs_top_all">Лучшее за все время</string>
     <string name="dialogs_old">Старое</string>
     <string name="dialogs_unread">Непрочитанные</string>
-    <string name="dialogs_server_version_outdated">Версия сервера (%1s) ниже минимальной поддерживаемой версии (%2s). Сообщите об этом своему администратору и войдите в другой экземпляр или выйдите и используйте экземпляр по умолчанию.</string>
-    <string name="dialogs_server_version_outdated_short">Версия сервера (%1s) слишком низкая</string>
+    <string name="dialogs_server_version_outdated">Версия сервера (%1$s) ниже минимальной поддерживаемой версии (%2$s). Сообщите об этом своему администратору и войдите в другой экземпляр или выйдите и используйте экземпляр по умолчанию.</string>
+    <string name="dialogs_server_version_outdated_short">Версия сервера (%1$s) слишком низкая</string>
     <string name="floating_createPost">Создать пост</string>
     <string name="form_submit">Отправить</string>
     <string name="homeHeader_filter">Выберите ленту</string>
@@ -336,7 +336,7 @@
     <string name="home_switch_anon">Перейти в анонимный режим</string>
     <string name="login_already_logged_in">Вы уже вошли в систему под этой учетной записью</string>
     <string name="mark_as_read_on_scroll">Отмечать как прочитанное при пролистывании</string>
-    <string name="actionbar_info_header">%1s@%2s Информация</string>
+    <string name="actionbar_info_header">%1$s@%2$s Информация</string>
     <string name="person_profile_dm_person">Отправить сообщение</string>
     <string name="private_message_failed">Не удалось отправить сообщение, повторная попытка…</string>
     <string name="private_message_placeholder">Пишите ваше сообщение здесь</string>
