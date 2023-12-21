@@ -76,6 +76,14 @@ class JerboaAppState(
 
     fun toAbout() = navController.navigate(Route.ABOUT)
 
+    fun toInterface() = navController.navigate(Route.LOOK_AND_FEEL_INTERFACE)
+
+    fun toTheme() = navController.navigate(Route.LOOK_AND_FEEL_THEME)
+
+    fun toSecurity() = navController.navigate(Route.LOOK_AND_FEEL_SECURITY)
+
+    fun toAccessibility() = navController.navigate(Route.LOOK_AND_FEEL_ACCESSIBILITY)
+
     fun toCrashLogs() = navController.navigate(Route.CRASH_LOGS)
 
     fun openImageViewer(url: String) {

@@ -39,6 +39,10 @@ object Route {
 
     const val SETTINGS = "settings"
     const val LOOK_AND_FEEL = "lookAndFeel"
+    const val LOOK_AND_FEEL_INTERFACE = "interface"
+    const val LOOK_AND_FEEL_THEME = "theme"
+    const val LOOK_AND_FEEL_SECURITY = "security"
+    const val LOOK_AND_FEEL_ACCESSIBILITY = "accessibility"
     const val ACCOUNT_SETTINGS = "accountSettings"
     const val ABOUT = "about"
     const val CRASH_LOGS = "crashLogs"

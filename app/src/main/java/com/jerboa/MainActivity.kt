@@ -68,7 +68,11 @@ import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
+import com.jerboa.ui.components.settings.lookandfeel.AccessibilityActivity
+import com.jerboa.ui.components.settings.lookandfeel.InterfaceActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
+import com.jerboa.ui.components.settings.lookandfeel.SecurityActivity
+import com.jerboa.ui.components.settings.lookandfeel.ThemeActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 
@@ -586,8 +590,44 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.LOOK_AND_FEEL) {
                         LookAndFeelActivity(
+                            onBack = appState::popBackStack,
+                            onClickInterface = appState::toInterface,
+                            onClickTheme = appState::toTheme,
+                            onClickSecurity = appState::toSecurity,
+                            onClickAccessibility = appState::toAccessibility,
+                        )
+                    }
+
+                    composable(route = Route.LOOK_AND_FEEL_INTERFACE) {
+                        InterfaceActivity(
                             appSettingsViewModel = appSettingsViewModel,
                             onBack = appState::popBackStack,
+                        )
+                    }
+
+                    composable(route = Route.LOOK_AND_FEEL_THEME) {
+                        ThemeActivity(
+                            onBack = appState::popBackStack,
+                            onClickCrashLogs = appState::toCrashLogs,
+                            appSettingsViewModel = appSettingsViewModel,
+                        )
+                    }
+
+                    composable(route = Route.LOOK_AND_FEEL_SECURITY) {
+                        SecurityActivity(
+                            onBack = appState::popBackStack,
+                            onClickCrashLogs = appState::toCrashLogs,
+                            appSettingsViewModel = appSettingsViewModel,
+                        )
+                    }
+
+                    composable(route = Route.LOOK_AND_FEEL_ACCESSIBILITY) {
+                        AccessibilityActivity(
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            onBack = appState::popBackStack,
+                            onClickCrashLogs = appState::toCrashLogs,
+                            openLinkRaw = appState::openLinkRaw,
                         )
                     }
 
