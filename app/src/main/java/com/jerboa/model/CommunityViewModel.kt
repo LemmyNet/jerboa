@@ -12,6 +12,8 @@ import arrow.core.Either
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.db.repository.AccountRepository
+import com.jerboa.jerboaApplication
 import com.jerboa.showBlockCommunityToast
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
@@ -23,7 +25,10 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import kotlinx.coroutines.launch
 
-class CommunityViewModel(communityArg: Either<CommunityId, String>) : PostsViewModel() {
+class CommunityViewModel(
+    communityArg: Either<CommunityId, String>,
+    accountRepository: AccountRepository,
+) : PostsViewModel(accountRepository) {
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -41,7 +46,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : PostsViewM
 
     fun followCommunity(
         form: FollowCommunity,
-        onSuccess: () -> Unit = {},
+        onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             followCommunityRes = ApiState.Loading
@@ -113,9 +118,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : PostsViewM
                     name = communityName,
                 ),
         )
-        this.getPosts(
-            getForm(),
-        )
+        init()
     }
 
     override fun getForm(): GetPosts {
@@ -136,7 +139,7 @@ class CommunityViewModel(communityArg: Either<CommunityId, String>) : PostsViewM
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return CommunityViewModel(id) as T
+                return CommunityViewModel(id, extras.jerboaApplication().container.accountRepository) as T
             }
         }
     }

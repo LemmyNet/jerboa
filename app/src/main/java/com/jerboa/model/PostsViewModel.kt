@@ -1,17 +1,22 @@
 package com.jerboa.model
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
+import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
@@ -22,9 +27,10 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-open class PostsViewModel : ViewModel() {
+open class PostsViewModel(protected val accountRepository: AccountRepository) : ViewModel() {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
     private var page by mutableIntStateOf(1)
@@ -34,6 +40,20 @@ open class PostsViewModel : ViewModel() {
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
+
+    protected fun init() {
+        viewModelScope.launch {
+            accountRepository.currentAccount
+                .asFlow()
+                .map { it ?: AnonAccount }
+                .collect { account ->
+                    updateSortType(account.defaultSortType.toEnumSafe())
+                    updateListingType(account.defaultListingType.toEnumSafe())
+                    Log.d("PostsViewModel", "Fetching posts")
+                    resetPosts()
+                }
+        }
+    }
 
     protected fun nextPage() {
         page += 1
