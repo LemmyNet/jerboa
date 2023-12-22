@@ -22,7 +22,7 @@ steps:
       path-style: true
       backend_operation_timeout: 30m
       compression_level: 0
-      exit_code: true
+      #exit_code: true
       mount:
         - ".gradle"
     secrets:
