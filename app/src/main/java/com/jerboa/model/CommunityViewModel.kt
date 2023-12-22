@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
-import arrow.core.right
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
@@ -91,7 +90,7 @@ class CommunityViewModel(
                                 ApiState.Success(
                                     existing.data.copy(
                                         community_view =
-                                        blockCommunity.data.community_view,
+                                            blockCommunity.data.community_view,
                                     ),
                                 )
                             communityRes = newRes
