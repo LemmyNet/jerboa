@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -623,11 +622,8 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.LOOK_AND_FEEL_ACCESSIBILITY) {
                         AccessibilityActivity(
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
                             onBack = appState::popBackStack,
                             onClickCrashLogs = appState::toCrashLogs,
-                            openLinkRaw = appState::openLinkRaw,
                         )
                     }
 
