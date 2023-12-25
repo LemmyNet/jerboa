@@ -14,7 +14,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdateComment
+import com.jerboa.findAndUpdatePost
 import com.jerboa.model.helper.CommentsHelper
+import com.jerboa.model.helper.PostsHelper
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SearchType
@@ -24,6 +26,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Search
 import it.vercruysse.lemmyapi.v0x19.datatypes.SearchResponse
 import kotlinx.collections.immutable.ImmutableList
@@ -34,7 +37,7 @@ import kotlinx.coroutines.launch
 class SearchListViewModel(
     communities: ImmutableList<CommunityFollowerView>,
     selectCommunityMode: Boolean,
-) : ViewModel(), CommentsHelper {
+) : ViewModel(), CommentsHelper, PostsHelper {
     private var fetchSearchJob: Job? = null
     var q by mutableStateOf("")
 
@@ -43,11 +46,27 @@ class SearchListViewModel(
 
     var currentSearchType by mutableStateOf(SearchType.All)
     var currentListing by mutableStateOf(ListingType.All)
-    var currentSort by mutableStateOf(SortType.New)
+    var currentSort by mutableStateOf(SortType.TopAll)
+    var loading by mutableStateOf(false)
 
     var page by mutableIntStateOf(1)
 
     override val scope = viewModelScope
+
+    override fun updatePost(postView: PostView) {
+        when (val existing = searchRes) {
+            is ApiState.Success -> {
+                val newPosts =
+                    findAndUpdatePost(
+                        existing.data.posts,
+                        postView,
+                    )
+                searchRes = ApiState.Success(existing.data.copy(posts = newPosts))
+            }
+
+            else -> {}
+        }
+    }
 
     override fun updateComment(commentView: CommentView) {
         when (val existing = searchRes) {
@@ -143,6 +162,7 @@ class SearchListViewModel(
     fun searchNextPage(ctx: Context) {
         viewModelScope.launch {
             page++
+            loading = true
             val res = API.getInstance().search(getForm())
 
             res.onSuccess {
@@ -165,6 +185,7 @@ class SearchListViewModel(
                 page--
                 apiErrorToast(ctx, it)
             }
+            loading = false
         }
     }
 

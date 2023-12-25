@@ -16,13 +16,16 @@ import com.jerboa.api.toApiState
 import com.jerboa.appendData
 import com.jerboa.findAndUpdateComment
 import com.jerboa.model.helper.CommentsHelper
+import com.jerboa.model.helper.PostsHelper
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel(), CommentsHelper {
+class PostViewModel(
+    val id: Either<PostId, CommentId>,
+) : ViewModel(), CommentsHelper, PostsHelper {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -30,10 +33,6 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel(), CommentsHe
         private set
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
-
-    private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
@@ -122,49 +121,6 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel(), CommentsHe
         }
     }
 
-    fun likePost(form: CreatePostLike) {
-        viewModelScope.launch {
-            likePostRes = ApiState.Loading
-            likePostRes = API.getInstance().createPostLike(form).toApiState()
-
-            when (val likeRes = likePostRes) {
-                is ApiState.Success -> {
-                    updatePost(likeRes.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun savePost(form: SavePost) {
-        viewModelScope.launch {
-            savePostRes = ApiState.Loading
-            savePostRes = API.getInstance().savePost(form).toApiState()
-            when (val saveRes = savePostRes) {
-                is ApiState.Success -> {
-                    updatePost(saveRes.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun deletePost(form: DeletePost) {
-        viewModelScope.launch {
-            deletePostRes = ApiState.Loading
-            deletePostRes = API.getInstance().deletePost(form).toApiState()
-            when (val deletePost = deletePostRes) {
-                is ApiState.Success -> {
-                    updatePost(deletePost.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
     override fun updateComment(commentView: CommentView) {
         when (val existing = commentsRes) {
             is ApiState.Success -> {
@@ -194,7 +150,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel(), CommentsHe
         }
     }
 
-    fun updatePost(postView: PostView) {
+    override fun updatePost(postView: PostView) {
         when (val existing = postRes) {
             is ApiState.Success -> {
                 val newRes = ApiState.Success(existing.data.copy(post_view = postView))

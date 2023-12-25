@@ -45,7 +45,7 @@ fun SearchParametersField(
 
     Column(
         modifier = Modifier.padding(16.dp, 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box {
             ClickableOutlinedTextField(

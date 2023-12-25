@@ -224,7 +224,7 @@ fun BottomNavActivity(
                             appState = appState,
                             selectCommunityMode = false,
                             followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW,
+                            appSettings = appSettings,
                             drawerState = drawerState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,

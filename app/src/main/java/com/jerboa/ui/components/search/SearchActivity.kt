@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,9 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
+import com.jerboa.PostViewMode
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -46,11 +50,15 @@ import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.post.PostListing
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
@@ -63,7 +71,7 @@ fun SearchActivity(
     appState: JerboaAppState,
     selectCommunityMode: Boolean = false,
     followList: ImmutableList<CommunityFollowerView>,
-    blurNSFW: Int,
+    appSettings: AppSettings,
     drawerState: DrawerState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
@@ -98,8 +106,14 @@ fun SearchActivity(
             content = { padding ->
 
                 Column(
-                    Modifier.padding(padding).imePadding(),
+                    Modifier
+                        .padding(padding)
+                        .imePadding(),
                 ) {
+                    if (searchListViewModel.loading || searchListViewModel.searchRes is ApiState.Loading) {
+                        LoadingBar()
+                    }
+
                     AnimatedVisibility(
                         visible = showSearchOptions,
                         enter = expandVertically(),
@@ -131,10 +145,6 @@ fun SearchActivity(
 
                     when (val communitiesRes = searchListViewModel.searchRes) {
                         is ApiState.Failure -> ApiErrorText(communitiesRes.msg)
-                        ApiState.Loading -> {
-                            LoadingBar()
-                        }
-
                         is ApiState.Success -> {
                             val listState = rememberLazyListState()
 
@@ -196,7 +206,7 @@ fun SearchActivity(
                                             appState.toCommunity(id = cs.id)
                                         }
                                     },
-                                    blurNSFW = blurNSFW,
+                                    blurNSFW = appSettings.blurNSFW,
                                 )
 
                                 commentNodeItems(
@@ -335,8 +345,123 @@ fun SearchActivity(
                                     enableDownVotes = siteViewModel.enableDownvotes(),
                                     showAvatar = siteViewModel.showAvatar(),
                                     showScores = siteViewModel.showScores(),
-                                    blurNSFW = blurNSFW,
+                                    blurNSFW = appSettings.blurNSFW,
                                 )
+                                items(communitiesRes.data.posts) { postView ->
+                                    PostListing(
+                                        postView = postView,
+                                        onUpvoteClick = { pv ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
+                                                searchListViewModel.likePost(
+                                                    CreatePostLike(
+                                                        post_id = pv.post.id,
+                                                        score =
+                                                            newVote(
+                                                                postView.my_vote,
+                                                                VoteType.Upvote,
+                                                            ),
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        onDownvoteClick = { pv ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
+                                                searchListViewModel.likePost(
+                                                    CreatePostLike(
+                                                        post_id = pv.post.id,
+                                                        score =
+                                                            newVote(
+                                                                postView.my_vote,
+                                                                VoteType.Downvote,
+                                                            ),
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        onReplyClick = { pv ->
+                                            appState.toCommentReply(
+                                                replyItem = ReplyItem.PostItem(pv),
+                                            )
+                                        },
+                                        onPostClick = {},
+                                        onSaveClick = { pv ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
+                                                searchListViewModel.savePost(
+                                                    SavePost(
+                                                        post_id = pv.post.id,
+                                                        save = !pv.saved,
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        onCommunityClick = { community ->
+                                            appState.toCommunity(id = community.id)
+                                        },
+                                        onEditPostClick = { pv ->
+                                            appState.toPostEdit(
+                                                postView = pv,
+                                            )
+                                        },
+                                        onDeletePostClick = { pv ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
+                                                searchListViewModel.deletePost(
+                                                    DeletePost(
+                                                        post_id = pv.post.id,
+                                                        deleted = !pv.post.deleted,
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        onReportClick = { pv ->
+                                            appState.toPostReport(id = pv.post.id)
+                                        },
+                                        onPersonClick = appState::toProfile,
+                                        showReply = true, // Do nothing
+                                        fullBody = true,
+                                        account = account,
+                                        postViewMode = PostViewMode.List,
+                                        enableDownVotes = siteViewModel.enableDownvotes(),
+                                        showAvatar = siteViewModel.showAvatar(),
+                                        showScores = siteViewModel.showScores(),
+                                        appState = appState,
+                                        showIfRead = false,
+                                        blurNSFW = appSettings.blurNSFW,
+                                        showPostLinkPreview = appSettings.showPostLinkPreviews,
+                                        postActionbarMode = appSettings.postActionbarMode,
+                                        showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                        useCustomTabs = appSettings.useCustomTabs,
+                                        usePrivateTabs = appSettings.usePrivateTabs,
+                                    )
+                                    Divider()
+                                }
                             }
                         }
 

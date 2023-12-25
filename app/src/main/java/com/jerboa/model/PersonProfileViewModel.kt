@@ -17,17 +17,17 @@ import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.getDeduplicateMerge
 import com.jerboa.model.helper.CommentsHelper
+import com.jerboa.model.helper.PostsHelper
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) : ViewModel(), CommentsHelper {
+class PersonProfileViewModel(
+    personArg: Either<PersonId, String>,
+    savedMode: Boolean,
+) : ViewModel(), CommentsHelper, PostsHelper {
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
-
-    private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     override val scope = viewModelScope
 
@@ -89,12 +89,11 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     fun appendData(profileId: PersonId) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
-            personDetailsRes =
-                when (oldRes) {
-                    is ApiState.Appending -> return@launch
-                    is ApiState.Holder -> ApiState.Appending(oldRes.data)
-                    else -> return@launch
-                }
+            personDetailsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                else -> return@launch
+            }
 
             nextPage()
             val form =
@@ -131,56 +130,11 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-    fun likePost(form: CreatePostLike) {
-        viewModelScope.launch {
-            likePostRes = ApiState.Loading
-            likePostRes = API.getInstance().createPostLike(form).toApiState()
-
-            when (val likeRes = likePostRes) {
-                is ApiState.Success -> {
-                    updatePost(likeRes.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun savePost(form: SavePost) {
-        viewModelScope.launch {
-            savePostRes = ApiState.Loading
-            savePostRes = API.getInstance().savePost(form).toApiState()
-            when (val saveRes = savePostRes) {
-                is ApiState.Success -> {
-                    updatePost(saveRes.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun deletePost(form: DeletePost) {
-        viewModelScope.launch {
-            deletePostRes = ApiState.Loading
-            deletePostRes = API.getInstance().deletePost(form).toApiState()
-            when (val deletePost = deletePostRes) {
-                is ApiState.Success -> {
-                    updatePost(deletePost.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun updatePost(postView: PostView) {
+    override fun updatePost(postView: PostView) {
         when (val existing = personDetailsRes) {
             is ApiState.Success -> {
-                val newPosts =
-                    findAndUpdatePost(existing.data.posts, postView)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
-                personDetailsRes = newRes
+                val newPosts = findAndUpdatePost(existing.data.posts, postView)
+                personDetailsRes = ApiState.Success(existing.data.copy(posts = newPosts))
             }
 
             else -> {}
@@ -190,14 +144,11 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     override fun updateComment(commentView: CommentView) {
         when (val existing = personDetailsRes) {
             is ApiState.Success -> {
-                val newComments =
-                    findAndUpdateComment(
-                        existing.data.comments,
-                        commentView,
-                    )
-                val newRes =
-                    ApiState.Success(existing.data.copy(comments = newComments))
-                personDetailsRes = newRes
+                val newComments = findAndUpdateComment(
+                    existing.data.comments,
+                    commentView,
+                )
+                personDetailsRes = ApiState.Success(existing.data.copy(comments = newComments))
             }
 
             else -> {}
@@ -209,9 +160,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             is ApiState.Success -> {
                 val mutable = existing.data.comments.toMutableList()
                 mutable.add(0, commentView)
-                val newRes =
-                    ApiState.Success(existing.data.copy(comments = mutable.toList()))
-                personDetailsRes = newRes
+                personDetailsRes = ApiState.Success(existing.data.copy(comments = mutable.toList()))
             }
 
             else -> {}

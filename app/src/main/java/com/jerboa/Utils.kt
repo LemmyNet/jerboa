@@ -1234,10 +1234,9 @@ fun findAndUpdatePost(
     posts: List<PostView>,
     updatedPostView: PostView,
 ): List<PostView> {
-    val foundIndex =
-        posts.indexOfFirst {
-            it.post.id == updatedPostView.post.id
-        }
+    val foundIndex = posts.indexOfFirst {
+        it.post.id == updatedPostView.post.id
+    }
     return if (foundIndex != -1) {
         val mutable = posts.toMutableList()
         mutable[foundIndex] = updatedPostView

@@ -368,7 +368,7 @@ class MainActivity : AppCompatActivity() {
                         SearchActivity(
                             appState = appState,
                             selectCommunityMode = args.select,
-                            blurNSFW = appSettings.blurNSFW,
+                            appSettings = appSettings,
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
                             accountViewModel = accountViewModel,
