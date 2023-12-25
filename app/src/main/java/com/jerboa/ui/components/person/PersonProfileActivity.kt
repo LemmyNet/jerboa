@@ -179,11 +179,11 @@ fun PersonProfileActivity(
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =
-                        if (savedMode) {
-                            ctx.getString(R.string.bookmarks_activity_saved)
-                        } else {
-                            person.name
-                        },
+                            if (savedMode) {
+                                ctx.getString(R.string.bookmarks_activity_saved)
+                            } else {
+                                person.name
+                            },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
@@ -387,9 +387,9 @@ fun UserTabs(
                             LazyColumn(
                                 state = listState,
                                 modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                             ) {
                                 item(contentType = "topSection") {
                                     PersonProfileTopSection(
@@ -433,9 +433,9 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     Box(
                         modifier =
-                        Modifier
-                            .pullRefresh(pullRefreshState)
-                            .fillMaxSize(),
+                            Modifier
+                                .pullRefresh(pullRefreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -467,10 +467,10 @@ fun UserTabs(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                    newVote(
-                                                        pv.my_vote,
-                                                        VoteType.Upvote,
-                                                    ),
+                                                        newVote(
+                                                            pv.my_vote,
+                                                            VoteType.Upvote,
+                                                        ),
                                                 ),
                                             )
                                         }
@@ -487,10 +487,10 @@ fun UserTabs(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                    newVote(
-                                                        pv.my_vote,
-                                                        VoteType.Downvote,
-                                                    ),
+                                                        newVote(
+                                                            pv.my_vote,
+                                                            VoteType.Downvote,
+                                                        ),
                                                 ),
                                             )
                                         }

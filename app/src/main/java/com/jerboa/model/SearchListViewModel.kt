@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,15 +27,14 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Search
 import it.vercruysse.lemmyapi.v0x19.datatypes.SearchResponse
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchListViewModel(
-    communities: ImmutableList<CommunityFollowerView>, selectCommunityMode: Boolean
+    communities: ImmutableList<CommunityFollowerView>,
+    selectCommunityMode: Boolean,
 ) : ViewModel(), CommentsHelper {
-
     private var fetchSearchJob: Job? = null
     var q by mutableStateOf("")
 
@@ -50,6 +48,7 @@ class SearchListViewModel(
     var page by mutableIntStateOf(1)
 
     override val scope = viewModelScope
+
     override fun updateComment(commentView: CommentView) {
         when (val existing = searchRes) {
             is ApiState.Success -> {
@@ -76,10 +75,11 @@ class SearchListViewModel(
 
     fun updateSearch() {
         fetchSearchJob?.cancel()
-        fetchSearchJob = viewModelScope.launch {
-            delay(DEBOUNCE_DELAY)
-            search()
-        }
+        fetchSearchJob =
+            viewModelScope.launch {
+                delay(DEBOUNCE_DELAY)
+                search()
+            }
     }
 
     fun onSearchChange(q: String) {
@@ -105,37 +105,39 @@ class SearchListViewModel(
         )
     }
 
-
     private fun setCommunityListFromFollowed(myFollows: ImmutableList<CommunityFollowerView>) {
         // A hack to convert communityFollowerView into CommunityView
-        val followsIntoCommunityViews = myFollows.map { cfv ->
-            CommunityView(
-                community = cfv.community,
-                subscribed = SubscribedType.Subscribed,
-                blocked = false,
-                counts = CommunityAggregates(
-                    community_id = cfv.community.id,
-                    subscribers = 0,
-                    posts = 0,
-                    comments = 0,
-                    published = "",
-                    users_active_day = 0,
-                    users_active_week = 0,
-                    users_active_month = 0,
-                    users_active_half_year = 0,
+        val followsIntoCommunityViews =
+            myFollows.map { cfv ->
+                CommunityView(
+                    community = cfv.community,
+                    subscribed = SubscribedType.Subscribed,
+                    blocked = false,
+                    counts =
+                        CommunityAggregates(
+                            community_id = cfv.community.id,
+                            subscribers = 0,
+                            posts = 0,
+                            comments = 0,
+                            published = "",
+                            users_active_day = 0,
+                            users_active_week = 0,
+                            users_active_month = 0,
+                            users_active_half_year = 0,
+                        ),
+                )
+            }
+
+        searchRes =
+            ApiState.Success(
+                SearchResponse(
+                    type_ = SearchType.Communities,
+                    communities = followsIntoCommunityViews,
+                    comments = emptyList(),
+                    posts = emptyList(),
+                    users = emptyList(),
                 ),
             )
-        }
-
-        searchRes = ApiState.Success(
-            SearchResponse(
-                type_ = SearchType.Communities,
-                communities = followsIntoCommunityViews,
-                comments = emptyList(),
-                posts = emptyList(),
-                users = emptyList(),
-            ),
-        )
     }
 
     fun searchNextPage(ctx: Context) {

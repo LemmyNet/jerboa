@@ -19,8 +19,6 @@ import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import com.jerboa.util.blockPerson
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
@@ -55,7 +53,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     private var markMessageAsReadRes: ApiState<PrivateMessageResponse> by mutableStateOf(ApiState.Empty)
 
     private var markAllAsReadRes: ApiState<GetRepliesResponse> by mutableStateOf(ApiState.Empty)
-
 
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
@@ -438,7 +435,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     fun blockPerson(
         form: BlockPerson,
         ctx: Context,
-    )  = blockPerson(viewModelScope, form, ctx)
+    ) = blockPerson(viewModelScope, form, ctx)
 
     fun markAllAsRead(onComplete: () -> Unit) {
         viewModelScope.launch {

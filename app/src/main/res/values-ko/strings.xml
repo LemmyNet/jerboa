@@ -80,7 +80,6 @@
     <string name="community_link_users_month">%1$s 사용자 / 월</string>
     <string name="community_list_search">검색…</string>
     <string name="community_pending">보류 중</string>
-    <string name="community_sortBy">정렬</string>
     <string name="community_subscribe">구독</string>
     <string name="community_users_month">%1$s 사용자 / 월</string>
     <string name="crash_logs">크래시 기록</string>

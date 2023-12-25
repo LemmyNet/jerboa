@@ -172,7 +172,7 @@ fun CommunityHeader(
                 }) {
                     Icon(
                         Icons.Outlined.Sort,
-                        contentDescription = stringResource(R.string.community_sortBy),
+                        contentDescription = stringResource(R.string.selectSort),
                     )
                 }
 

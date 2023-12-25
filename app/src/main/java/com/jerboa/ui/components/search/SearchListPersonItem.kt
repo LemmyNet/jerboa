@@ -23,14 +23,10 @@ import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.person.CommentsAndPosts
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
-import com.jerboa.ui.theme.ICON_SIZE
-import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
-import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
-
 
 @Composable
 fun SearchListPersonItem(
@@ -43,10 +39,11 @@ fun SearchListPersonItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        modifier = Modifier
-            .clickable { onClickPerson(personView) }
-            .padding(LARGE_PADDING)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .clickable { onClickPerson(personView) }
+                .padding(LARGE_PADDING)
+                .fillMaxWidth(),
     ) {
         val avatar = personView.person.avatar
 

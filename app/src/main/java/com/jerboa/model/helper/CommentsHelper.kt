@@ -1,7 +1,6 @@
 package com.jerboa.model.helper
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.toApiState
 import com.jerboa.showBlockPersonToast
@@ -16,9 +15,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 interface CommentsHelper {
-
     val scope: CoroutineScope
+
     fun updateComment(commentView: CommentView)
+
     fun likeComment(form: CreateCommentLike) {
         scope.launch {
             val res = API.getInstance().createCommentLike(form)

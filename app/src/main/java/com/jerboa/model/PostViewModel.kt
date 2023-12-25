@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +16,6 @@ import com.jerboa.api.toApiState
 import com.jerboa.appendData
 import com.jerboa.findAndUpdateComment
 import com.jerboa.model.helper.CommentsHelper
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
@@ -41,6 +39,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel(), CommentsHe
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
 
     override val scope: CoroutineScope = viewModelScope
+
     init {
         this.getData()
     }
@@ -174,7 +173,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel(), CommentsHe
                         existing.data.comments,
                         commentView,
                     )
-                commentsRes =  ApiState.Success(existing.data.copy(comments = newComments))
+                commentsRes = ApiState.Success(existing.data.copy(comments = newComments))
             }
 
             else -> {}

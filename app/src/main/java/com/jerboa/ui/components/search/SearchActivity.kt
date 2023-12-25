@@ -127,7 +127,6 @@ fun SearchActivity(
                                 },
                             )
                         }
-
                     }
 
                     when (val communitiesRes = searchListViewModel.searchRes) {
@@ -137,7 +136,6 @@ fun SearchActivity(
                         }
 
                         is ApiState.Success -> {
-
                             val listState = rememberLazyListState()
 
                             val endOfListReached by remember {
@@ -153,7 +151,6 @@ fun SearchActivity(
                             }
 
                             val nodes by remember { mutableStateOf(commentsToFlatNodes(communitiesRes.data.comments)) }
-
 
                             // Holds the un-expanded comment ids
                             val unExpandedComments = remember { mutableStateListOf<Int>() }
@@ -176,8 +173,6 @@ fun SearchActivity(
                             }
 
                             val showActionBarByDefault = true
-
-
 
                             LazyColumn(
                                 state = listState,
@@ -343,15 +338,11 @@ fun SearchActivity(
                                     blurNSFW = blurNSFW,
                                 )
                             }
-
-
                         }
 
                         else -> {}
                     }
                 }
-
-
             },
         )
     }

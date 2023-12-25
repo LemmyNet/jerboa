@@ -176,7 +176,6 @@
     <string name="dialog_moreOptions">追加オプションを表示</string>
     <string name="comment_edit_save">コメント編集を保存</string>
     <string name="commentReply_send">返信を送る</string>
-    <string name="community_sortBy">並び替え</string>
     <string name="floating_createPost">投稿を作成</string>
     <string name="community_icon">コミュニティアイコン</string>
     <string name="form_submit">確定</string>

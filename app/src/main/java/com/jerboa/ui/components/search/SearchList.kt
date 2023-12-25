@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.ui.components.community.CommunityLinkLarger
-import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +61,7 @@ fun SearchListHeader(
     )
 }
 
-fun LazyListScope. searchCommunityListings(
+fun LazyListScope.searchCommunityListings(
     communities: List<CommunityView>,
     onClickCommunity: (community: Community) -> Unit,
     blurNSFW: Int,
@@ -77,8 +76,12 @@ fun LazyListScope. searchCommunityListings(
             showDefaultIcon = true,
             blurNSFW = blurNSFW,
             // A hack for the community follower views that were coerced into community views without counts
-            usersPerMonth = if (item.counts.users_active_month == 0) null
-            else item.counts.users_active_month,
+            usersPerMonth =
+                if (item.counts.users_active_month == 0) {
+                    null
+                } else {
+                    item.counts.users_active_month
+                },
         )
     }
 }
@@ -109,15 +112,16 @@ fun TopBarSearchField(
             }
         },
         singleLine = true,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            errorContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-        ),
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                errorContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+            ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
     )
 }

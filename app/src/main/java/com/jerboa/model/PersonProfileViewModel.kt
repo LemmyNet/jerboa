@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,8 +17,6 @@ import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.getDeduplicateMerge
 import com.jerboa.model.helper.CommentsHelper
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
@@ -190,7 +187,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-   override fun updateComment(commentView: CommentView) {
+    override fun updateComment(commentView: CommentView) {
         when (val existing = personDetailsRes) {
             is ApiState.Success -> {
                 val newComments =

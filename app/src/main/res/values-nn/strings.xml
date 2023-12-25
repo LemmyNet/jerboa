@@ -81,8 +81,7 @@
   <string name="community_link_users_month">%1$s brukarar/månad</string>
   <string name="community_list_search">Søk …</string>
   <string name="community_pending">Ventar</string>
-    <string name="community_sortBy">Sorter etter</string>
-  <string name="community_subscribe">Abonner</string>
+    <string name="community_subscribe">Abonner</string>
   <string name="community_users_month">%1$s brukarar/månad</string>
   <string name="crash_logs">Krasjloggar</string>
   <string name="crash_logs_all_deleted">Alle krasjloggar vart sletta</string>
