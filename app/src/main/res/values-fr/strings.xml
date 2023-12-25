@@ -191,7 +191,6 @@
     <string name="dialog_moreOptions">Plus d’options</string>
     <string name="comment_edit_save">Enregistrer les modifications</string>
     <string name="commentReply_send">Envoyer la réponse</string>
-    <string name="community_sortBy">Trier par</string>
     <string name="dialogs_server_version_outdated">La version du serveur (%1$s) est inférieure à la version minimale prise en charge (%2$s). Veuillez informer l’administrateur de l’instance et vous connecter à une autre instance, ou vous déconnecter et utiliser l’instance par défaut.</string>
     <string name="floating_createPost">Créer publication</string>
     <string name="community_icon">Icône de la communauté</string>

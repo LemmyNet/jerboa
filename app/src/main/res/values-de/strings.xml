@@ -183,7 +183,6 @@
     <string name="dialog_moreOptions">Zeige mehr Optionen</string>
     <string name="comment_edit_save">Kommentarbearbeitung speichern</string>
     <string name="commentReply_send">Antwort senden</string>
-    <string name="community_sortBy">Sortieren nach</string>
     <string name="floating_createPost">Beitrag erstellen</string>
     <string name="community_icon">Community Symbol</string>
     <string name="form_submit">Abschicken</string>

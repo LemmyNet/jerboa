@@ -83,7 +83,7 @@ fun CommunityLink(
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier =
             if (clickable) {
-                modifier.clickable { onClick(community) }
+                Modifier.clickable { onClick(community) }.then(modifier)
             } else {
                 modifier
             },
@@ -123,6 +123,7 @@ fun CommunityLinkLarger(
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
     blurNSFW: Int,
+    usersPerMonth: Int? = null,
 ) {
     CommunityLink(
         community = community,
@@ -138,6 +139,7 @@ fun CommunityLinkLarger(
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
+        usersPerMonth = usersPerMonth,
     )
 }
 
@@ -159,7 +161,6 @@ fun CommunityLinkLargerWithUserCount(
             Modifier
                 .padding(LARGE_PADDING)
                 .fillMaxWidth(),
-        style = MaterialTheme.typography.titleLarge,
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,

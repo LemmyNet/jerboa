@@ -51,6 +51,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
@@ -1098,7 +1099,7 @@ fun showBlockPersonToast(
         is ApiState.Success -> {
             Toast.makeText(
                 ctx,
-                "${blockPersonRes.data.person_view.person.name} Blocked",
+                "${blockPersonRes.data.person_view.person.getDisplayName()} Blocked",
                 Toast.LENGTH_SHORT,
             )
                 .show()
@@ -1233,10 +1234,9 @@ fun findAndUpdatePost(
     posts: List<PostView>,
     updatedPostView: PostView,
 ): List<PostView> {
-    val foundIndex =
-        posts.indexOfFirst {
-            it.post.id == updatedPostView.post.id
-        }
+    val foundIndex = posts.indexOfFirst {
+        it.post.id == updatedPostView.post.id
+    }
     return if (foundIndex != -1) {
         val mutable = posts.toMutableList()
         mutable[foundIndex] = updatedPostView

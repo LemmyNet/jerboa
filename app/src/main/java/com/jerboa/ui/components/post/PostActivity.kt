@@ -480,7 +480,6 @@ fun PostActivity(
                                         },
                                         toggleExpanded = toggleExpanded,
                                         toggleActionBar = toggleActionBar,
-                                        onMarkAsReadClick = {},
                                         onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
                                             account.doIfReadyElseDisplayInfo(
@@ -607,6 +606,7 @@ fun PostActivity(
                                         account = account,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),
+                                        showScores = siteViewModel.showScores(),
                                         isCollapsedByParent = false,
                                         showCollapsedCommentContent = showCollapsedCommentContent,
                                         showActionBar = { commentId ->
@@ -616,7 +616,6 @@ fun PostActivity(
                                                 )
                                         },
                                         blurNSFW = blurNSFW,
-                                        showScores = siteViewModel.showScores(),
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

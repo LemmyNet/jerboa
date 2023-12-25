@@ -82,7 +82,6 @@
     <string name="community_link_users_month">%1$s users / month</string>
     <string name="community_list_search">Search…</string>
     <string name="community_pending">Pending</string>
-    <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
     <string name="community_users_month">%1$s users / month</string>
     <string name="crash_logs">Crash Logs</string>
@@ -403,4 +402,6 @@
     <string name="time_ago_failed_to_parse">Failed to parse datetime</string>
     <string name="comment_gone">There is no record of this comment</string>
     <string name="server_version_not_supported">The version (%s) is not supported</string>
+    <string name="search_in">Search in</string>
+    <string name="limit_to">Limit to</string>
 </resources>

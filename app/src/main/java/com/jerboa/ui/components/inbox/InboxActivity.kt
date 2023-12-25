@@ -244,15 +244,7 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.appendReplies()
-                            }
+                            inboxViewModel.appendReplies()
                         }
                     }
 
@@ -461,15 +453,7 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.appendMentions()
-                            }
+                            inboxViewModel.appendMentions()
                         }
                     }
 
@@ -668,15 +652,7 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.appendMessages()
-                            }
+                            inboxViewModel.appendMessages()
                         }
                     }
 

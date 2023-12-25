@@ -58,6 +58,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Login
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MyTextField(
     modifier: Modifier = Modifier,

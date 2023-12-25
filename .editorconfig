@@ -6,9 +6,8 @@ ktlint_standard_if-else-wrapping = disabled
 ktlint_standard_no-wildcard-imports = disabled
 ktlint_standard_comment-wrapping = disabled
 ktlint_function_naming_ignore_when_annotated_with=Composable
-
-[app/src/main/java/com/jerboa/datatypes/**.{kt,kts}]
-ktlint = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_string-template-indent = disabled
 
 [app/src/main/java/com/jerboa/DefaultInstances.kt]
 ktlint = disabled

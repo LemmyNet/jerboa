@@ -65,7 +65,6 @@
     <string name="community_users_month">%1$s gebruikers / maand</string>
     <string name="community_icon">Community icoon</string>
     <string name="community_joined">Lid geworden</string>
-    <string name="community_sortBy">Sorteer op</string>
     <string name="community_subscribe">Abonneren</string>
     <string name="community_pending">In behandeling</string>
     <string name="comment_save">Bewaar reactie</string>

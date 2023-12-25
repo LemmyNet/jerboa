@@ -50,10 +50,10 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.search.SearchActivity
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -220,12 +220,14 @@ fun BottomNavActivity(
                     }
 
                     composable(route = NavTab.Search.name) {
-                        CommunityListActivity(
+                        SearchActivity(
                             appState = appState,
-                            selectMode = false,
+                            selectCommunityMode = false,
                             followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW,
+                            appSettings = appSettings,
                             drawerState = drawerState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                         )
                     }
 

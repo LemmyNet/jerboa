@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +48,6 @@ import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityActivity
-import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
@@ -64,6 +62,7 @@ import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
+import com.jerboa.ui.components.search.SearchActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
@@ -366,12 +365,14 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.CommunityListArgs(it)
-                        CommunityListActivity(
+                        SearchActivity(
                             appState = appState,
-                            selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW,
+                            selectCommunityMode = args.select,
+                            appSettings = appSettings,
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                         )
                     }
 

@@ -46,10 +46,12 @@ fun SortOptionsDropdown(
     onDismissRequest: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
+    fixedWidth: Dp = 196.dp,
 ) {
     CascadeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
+        fixedWidth = fixedWidth,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
         getSupportedEntries<SortType>(API.version).filter { !isTopSort(it) }.forEach {

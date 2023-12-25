@@ -193,7 +193,6 @@
     <string name="dialog_moreOptions">Mostrar más opciones</string>
     <string name="comment_edit_save">Guardar ediciones del comentario</string>
     <string name="commentReply_send">Enviar respuesta</string>
-    <string name="community_sortBy">Ordenar por</string>
     <string name="dialogs_server_version_outdated">La versión del servidor (%1$s) se encuentra por debajo de la versión mínima soportada (%2$s).</string>
     <string name="dialogs_server_version_outdated_short">La versión del servidor (%1$s) es muy baja.</string>
     <string name="floating_createPost">Crear post</string>

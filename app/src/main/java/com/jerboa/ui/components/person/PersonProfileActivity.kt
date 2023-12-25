@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -138,6 +139,7 @@ fun PersonProfileActivity(
                     personProfileViewModel.insertComment(cv)
                 }
             }
+
             else -> {}
         }
     }
@@ -171,6 +173,7 @@ fun PersonProfileActivity(
                         matrixId = null,
                     )
                 }
+
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
@@ -235,6 +238,7 @@ fun PersonProfileActivity(
                         matrixId = person.matrix_user_id,
                     )
                 }
+
                 else -> {}
             }
         },
@@ -327,6 +331,7 @@ fun UserTabs(
                             ApiState.Refreshing,
                         )
                     }
+
                     else -> {}
                 }
             },
@@ -420,6 +425,7 @@ fun UserTabs(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -571,6 +577,7 @@ fun UserTabs(
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                 )
                             }
+
                             else -> {}
                         }
                     }
@@ -583,7 +590,7 @@ fun UserTabs(
                         ApiState.Loading -> LoadingBar()
                         ApiState.Refreshing -> LoadingBar()
                         is ApiState.Holder -> {
-                            val nodes = commentsToFlatNodes(profileRes.data.comments)
+                            val nodes by remember { mutableStateOf(commentsToFlatNodes(profileRes.data.comments)) }
 
                             val listState = rememberLazyListState()
 
@@ -651,7 +658,6 @@ fun UserTabs(
                                     listState = listState,
                                     toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
-                                    onMarkAsReadClick = {},
                                     onCommentClick = { cv ->
                                         appState.toComment(id = cv.comment.id)
                                     },

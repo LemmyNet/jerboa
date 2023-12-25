@@ -80,7 +80,6 @@
     <string name="community_link_users_month">%1$s χρήστες / μήνα</string>
     <string name="community_list_search">Αναζήτηση…</string>
     <string name="community_pending">Εκκρεμεί</string>
-    <string name="community_sortBy">Ταξινόμηση κατά</string>
     <string name="community_subscribe">Εγγραφή</string>
     <string name="community_users_month">%1$s χρήστες / μήνα</string>
     <string name="createPost_selectCommunity">Επιλογή κοινότητας από τη λίστα</string>

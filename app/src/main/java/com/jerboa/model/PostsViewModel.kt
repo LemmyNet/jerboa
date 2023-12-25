@@ -12,19 +12,17 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
+import com.jerboa.model.helper.PostsHelper
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.launch
 
-open class PostsViewModel : ViewModel() {
+open class PostsViewModel : ViewModel(), PostsHelper {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
     private var page by mutableIntStateOf(1)
@@ -34,6 +32,8 @@ open class PostsViewModel : ViewModel() {
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
+
+    override val scope = viewModelScope
 
     protected fun nextPage() {
         page += 1
@@ -98,7 +98,7 @@ open class PostsViewModel : ViewModel() {
         }
     }
 
-    fun updatePost(postView: PostView) {
+    override fun updatePost(postView: PostView) {
         when (val existing = postsRes) {
             is ApiState.Success -> {
                 val newPosts = findAndUpdatePost(existing.data.posts, postView)
@@ -152,29 +152,5 @@ open class PostsViewModel : ViewModel() {
 
     fun updateListingType(listingType: ListingType) {
         this.listingType = listingType
-    }
-
-    fun likePost(form: CreatePostLike) {
-        viewModelScope.launch {
-            API.getInstance().createPostLike(form).onSuccess {
-                updatePost(it.post_view)
-            }
-        }
-    }
-
-    fun savePost(form: SavePost) {
-        viewModelScope.launch {
-            API.getInstance().savePost(form).onSuccess {
-                updatePost(it.post_view)
-            }
-        }
-    }
-
-    fun deletePost(form: DeletePost) {
-        viewModelScope.launch {
-            API.getInstance().deletePost(form).onSuccess {
-                updatePost(it.post_view)
-            }
-        }
     }
 }
