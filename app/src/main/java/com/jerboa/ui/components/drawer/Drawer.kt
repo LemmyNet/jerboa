@@ -362,7 +362,7 @@ fun DrawerHeader(
     accountViewModel: AccountViewModel,
     myPerson: Person?,
     onClickShowAccountAddMode: () -> Unit,
-    showAccountAddMode: Boolean = false,
+    showAccountAddMode: Boolean,
     showAvatar: Boolean,
 ) {
     val account = getCurrentAccount(accountViewModel)
@@ -470,5 +470,6 @@ fun DrawerHeaderPreview() {
         onClickShowAccountAddMode = {},
         showAvatar = true,
         accountViewModel = accountViewModel,
+        showAccountAddMode = false,
     )
 }

@@ -113,13 +113,11 @@ fun getLocalizedStringForUserTab(
     ctx: Context,
     tab: UserTab,
 ): String {
-    val returnString =
-        when (tab) {
-            UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
-            UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
-            UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-        }
-    return returnString
+    return when (tab) {
+        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+    }
 }
 
 /**
@@ -129,14 +127,12 @@ fun getLocalizedListingTypeName(
     ctx: Context,
     listingType: ListingType,
 ): String {
-    val returnString =
-        when (listingType) {
-            ListingType.All -> ctx.getString(R.string.home_all)
-            ListingType.Local -> ctx.getString(R.string.home_local)
-            ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
-            ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
-        }
-    return returnString
+    return when (listingType) {
+        ListingType.All -> ctx.getString(R.string.home_all)
+        ListingType.Local -> ctx.getString(R.string.home_local)
+        ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+        ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
+    }
 }
 
 /**
@@ -146,15 +142,13 @@ fun getLocalizedCommentSortTypeName(
     ctx: Context,
     commentSortType: CommentSortType,
 ): String {
-    val returnString =
-        when (commentSortType) {
-            CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-            CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-            CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-            CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-            CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
-        }
-    return returnString
+    return when (commentSortType) {
+        CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+        CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+        CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+        CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+    }
 }
 
 /**
@@ -164,12 +158,10 @@ fun getLocalizedUnreadOrAllName(
     ctx: Context,
     unreadOrAll: UnreadOrAll,
 ): String {
-    val returnString =
-        when (unreadOrAll) {
-            UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
-            UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
-        }
-    return returnString
+    return when (unreadOrAll) {
+        UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
+        UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+    }
 }
 
 /**
@@ -179,11 +171,9 @@ fun getLocalizedStringForInboxTab(
     ctx: Context,
     tab: InboxTab,
 ): String {
-    val returnString =
-        when (tab) {
-            InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
-            InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
-            InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
-        }
-    return returnString
+    return when (tab) {
+        InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
+        InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
+        InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
+    }
 }

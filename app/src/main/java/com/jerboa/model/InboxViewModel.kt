@@ -21,6 +21,7 @@ import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.getDeduplicateMerge
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.util.blockPerson
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
@@ -55,8 +56,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
 
     private var markAllAsReadRes: ApiState<GetRepliesResponse> by mutableStateOf(ApiState.Empty)
 
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
 
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
@@ -436,27 +435,10 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun blockCommunity(
-        form: BlockCommunity,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockCommunityRes = ApiState.Loading
-            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
-            showBlockCommunityToast(blockCommunityRes, ctx)
-        }
-    }
-
     fun blockPerson(
         form: BlockPerson,
         ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
-        }
-    }
+    )  = blockPerson(viewModelScope, form, ctx)
 
     fun markAllAsRead(onComplete: () -> Unit) {
         viewModelScope.launch {

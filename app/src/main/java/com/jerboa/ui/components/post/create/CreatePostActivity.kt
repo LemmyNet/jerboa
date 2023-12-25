@@ -35,7 +35,7 @@ import com.jerboa.padUrlWithHttps
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.list.CommunityListReturn
+import com.jerboa.ui.components.search.SearchListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
 import com.jerboa.validatePostName
@@ -77,7 +77,7 @@ fun CreatePostActivity(
     }
 
     // On return from the community picker
-    appState.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
+    appState.ConsumeReturn<Community>(SearchListReturn.COMMUNITY) { community ->
         selectedCommunity = community
     }
 

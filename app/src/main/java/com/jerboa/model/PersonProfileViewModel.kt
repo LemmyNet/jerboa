@@ -17,25 +17,22 @@ import com.jerboa.api.toApiState
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.getDeduplicateMerge
+import com.jerboa.model.helper.CommentsHelper
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) : ViewModel() {
+class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) : ViewModel(), CommentsHelper {
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
-    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
-    private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
-    private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
-    private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+    override val scope = viewModelScope
 
     private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
@@ -180,73 +177,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-    fun blockCommunity(
-        form: BlockCommunity,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockCommunityRes = ApiState.Loading
-            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
-            showBlockCommunityToast(blockCommunityRes, ctx)
-        }
-    }
-
-    fun blockPerson(
-        form: BlockPerson,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
-        }
-    }
-
-    fun likeComment(form: CreateCommentLike) {
-        viewModelScope.launch {
-            likeCommentRes = ApiState.Loading
-            likeCommentRes = API.getInstance().createCommentLike(form).toApiState()
-
-            when (val likeRes = likeCommentRes) {
-                is ApiState.Success -> {
-                    updateComment(likeRes.data.comment_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun deleteComment(form: DeleteComment) {
-        viewModelScope.launch {
-            deleteCommentRes = ApiState.Loading
-            deleteCommentRes = API.getInstance().deleteComment(form).toApiState()
-
-            when (val deleteRes = deleteCommentRes) {
-                is ApiState.Success -> {
-                    updateComment(deleteRes.data.comment_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun saveComment(form: SaveComment) {
-        viewModelScope.launch {
-            saveCommentRes = ApiState.Loading
-            saveCommentRes = API.getInstance().saveComment(form).toApiState()
-
-            when (val saveRes = saveCommentRes) {
-                is ApiState.Success -> {
-                    updateComment(saveRes.data.comment_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
     fun updatePost(postView: PostView) {
         when (val existing = personDetailsRes) {
             is ApiState.Success -> {
@@ -260,7 +190,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-    fun updateComment(commentView: CommentView) {
+   override fun updateComment(commentView: CommentView) {
         when (val existing = personDetailsRes) {
             is ApiState.Success -> {
                 val newComments =
