@@ -397,7 +397,9 @@ fun SearchActivity(
                                                 replyItem = ReplyItem.PostItem(pv),
                                             )
                                         },
-                                        onPostClick = {},
+                                        onPostClick = {
+                                            appState.toPost(id = it.post.id)
+                                        },
                                         onSaveClick = { pv ->
                                             account.doIfReadyElseDisplayInfo(
                                                 appState,
