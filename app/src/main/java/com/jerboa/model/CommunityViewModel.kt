@@ -120,11 +120,9 @@ class CommunityViewModel(
     }
 
     override fun getForm(): GetPosts {
-        return GetPosts(
+        return super.getForm().copy(
             community_id = communityId,
             community_name = communityName,
-            page_cursor = pageCursor,
-            sort = sortType,
         )
     }
 
