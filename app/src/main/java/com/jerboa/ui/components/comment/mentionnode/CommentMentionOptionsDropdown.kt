@@ -33,6 +33,7 @@ fun CommentMentionsOptionsDropdown(
     onViewSourceClick: () -> Unit,
     onBlockCreatorClick: (Person) -> Unit,
     onReportClick: (PersonMentionView) -> Unit,
+    onRemoveClick: (PersonMentionView) -> Unit,
     isCreator: Boolean,
     viewSource: Boolean,
 ) {

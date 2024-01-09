@@ -32,6 +32,7 @@ object Route {
     const val COMMENT_EDIT = "commentEdit"
     const val POST_EDIT = "postEdit"
     const val PRIVATE_MESSAGE_REPLY = "privateMessageReply"
+    const val COMMENT_REMOVE = "commentRemove"
     val CREATE_PRIVATE_MESSAGE = CreatePrivateMessageArgs.route
 
     val COMMENT_REPORT = CommentReportArgs.route

@@ -610,6 +610,11 @@ fun InboxTabs(
                                             onReportClick = { pm ->
                                                 appState.toCommentReport(id = pm.comment.id)
                                             },
+                                            onRemoveClick = { pm ->
+                                                appState.toCommentRemove(
+                                                    comment = pm.comment,
+                                                )
+                                            },
                                             onLinkClick = { pm ->
                                                 // Go to the parent comment or post instead for context
                                                 val parent = getCommentParentId(pm.comment)

@@ -22,6 +22,7 @@ import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -161,6 +162,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun getFollowList(): ImmutableList<CommunityFollowerView> {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.follows?.toImmutableList() ?: persistentListOf()
+            else -> persistentListOf()
+        }
+    }
+
+    fun admins(): ImmutableList<PersonView> {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.admins.toImmutableList()
             else -> persistentListOf()
         }
     }

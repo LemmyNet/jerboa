@@ -459,10 +459,15 @@ suspend fun openLink(
     val communityUrl = looksLikeCommunityUrl(parsedUrl)
 
     if (userUrl != null && (formatted || API.checkIfLemmyInstance(url))) {
-        val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
+        val route =
+            Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
         navController.navigate(route)
     } else if (communityUrl != null && (formatted || API.checkIfLemmyInstance(url))) {
-        val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
+        val route =
+            Route.CommunityFromUrlArgs.makeRoute(
+                instance = communityUrl.first,
+                name = communityUrl.second,
+            )
         navController.navigate(route)
     } else {
         openLinkRaw(url, navController, useCustomTab, usePrivateTab)
@@ -1070,7 +1075,11 @@ fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
 ): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.resources.displayMetrics).toInt()
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        sp.value,
+        ctx.resources.displayMetrics,
+    ).toInt()
 }
 
 fun findAndUpdatePrivateMessage(
@@ -1288,7 +1297,8 @@ fun copyToClipboard(
 ): Boolean {
     val activity = context.findActivity()
     activity?.let {
-        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard: ClipboardManager =
+            it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(clipLabel, textToCopy)
         clipboard.setPrimaryClip(clip)
         return true
@@ -1524,5 +1534,37 @@ fun String.padUrlWithHttps(): String {
         this
     } else {
         "https://$this"
+    }
+}
+
+/**
+ * Determines whether someone can moderate an item. Uses a hierarchy of admins then mods.
+ */
+fun canMod(
+    creatorId: PersonId,
+    admins: List<PersonView>?,
+    moderators: List<CommunityModeratorView>?,
+    myId: PersonId?,
+    onSelf: Boolean = false,
+): Boolean {
+    return if (myId !== null) {
+        // You can do moderator actions only on the mods added after you.
+        val adminIds = admins?.map { a -> a.person.id }.orEmpty()
+        val modIds = moderators?.map { m -> m.moderator.id }.orEmpty()
+
+        val adminsThenMods = adminIds.toMutableList()
+        adminsThenMods.addAll(modIds)
+
+        val myIndex = adminsThenMods.indexOf(myId)
+        if (myIndex == -1) {
+            false
+        } else {
+            // onSelf +1 on mod actions not for yourself, IE ban, remove, etc
+            val subList = adminsThenMods.subList(0, myIndex.plus(if (onSelf) 0 else 1))
+
+            !subList.contains(creatorId)
+        }
+    } else {
+        false
     }
 }

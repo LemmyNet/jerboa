@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -62,6 +61,7 @@ import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
+import com.jerboa.ui.components.remove.comment.CommentRemoveActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
@@ -554,6 +554,15 @@ class MainActivity : AppCompatActivity() {
                             commentId = args.id,
                             accountViewModel = accountViewModel,
                             onBack = appState::navigateUp,
+                        )
+                    }
+
+                    composable(
+                        route = Route.COMMENT_REMOVE,
+                    ) {
+                        CommentRemoveActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
                         )
                     }
 
