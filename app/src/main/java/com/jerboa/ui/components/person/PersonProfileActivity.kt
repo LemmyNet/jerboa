@@ -649,7 +649,7 @@ fun UserTabs(
                                 CommentNodes(
                                     nodes = nodes,
                                     admins = siteViewModel.admins(),
-// No community moderators available here
+                                    // No community moderators available here
                                     moderators = null,
                                     increaseLazyListIndexTracker = {},
                                     addToParentIndexes = {},
