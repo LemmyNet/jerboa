@@ -56,6 +56,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.dto.SubscribedType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
@@ -96,6 +97,7 @@ fun CommunityActivity(
         viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
 
     val pullRefreshState =
@@ -105,6 +107,14 @@ fun CommunityActivity(
                 communityViewModel.refreshPosts()
             },
         )
+
+    val moderators =
+        when (val communityRes = communityViewModel.communityRes) {
+            is ApiState.Success -> communityRes.data.moderators.toImmutableList()
+            else -> {
+                null
+            }
+        }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -192,6 +202,8 @@ fun CommunityActivity(
                     is ApiState.Holder -> {
                         PostListings(
                             posts = postsRes.data.posts.toImmutableList(),
+                            admins = siteViewModel.admins(),
+                            moderators = moderators,
                             contentAboveListings = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
@@ -314,6 +326,9 @@ fun CommunityActivity(
                             },
                             onReportClick = { postView ->
                                 appState.toPostReport(id = postView.post.id)
+                            },
+                            onRemoveClick = { pv ->
+                                appState.toPostRemove(post = pv.post)
                             },
                             onCommunityClick = { community ->
                                 appState.toCommunity(id = community.id)

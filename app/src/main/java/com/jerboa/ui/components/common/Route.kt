@@ -31,6 +31,7 @@ object Route {
     const val SITE_SIDEBAR = "siteSidebar"
     const val COMMENT_EDIT = "commentEdit"
     const val POST_EDIT = "postEdit"
+    const val POST_REMOVE = "postRemove"
     const val PRIVATE_MESSAGE_REPLY = "privateMessageReply"
     const val COMMENT_REMOVE = "commentRemove"
     val CREATE_PRIVATE_MESSAGE = CreatePrivateMessageArgs.route

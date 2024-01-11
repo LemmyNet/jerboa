@@ -20,10 +20,12 @@ import com.jerboa.ui.components.post.create.CreatePostReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
+import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +70,11 @@ class JerboaAppState(
 
     fun toPostReport(id: Int) {
         navController.navigate(Route.PostReportArgs.makeRoute(id = "$id"))
+    }
+
+    fun toPostRemove(post: Post) {
+        sendReturnForwards(PostRemoveReturn.POST_SEND, post)
+        navController.navigate(Route.POST_REMOVE)
     }
 
     fun toCommentRemove(comment: Comment) {

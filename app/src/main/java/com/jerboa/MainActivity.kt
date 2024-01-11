@@ -62,6 +62,7 @@ import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
 import com.jerboa.ui.components.remove.comment.CommentRemoveActivity
+import com.jerboa.ui.components.remove.post.PostRemoveActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
@@ -561,6 +562,15 @@ class MainActivity : AppCompatActivity() {
                         route = Route.COMMENT_REMOVE,
                     ) {
                         CommentRemoveActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                        )
+                    }
+
+                    composable(
+                        route = Route.POST_REMOVE,
+                    ) {
+                        PostRemoveActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )

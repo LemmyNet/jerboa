@@ -14,52 +14,53 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.ui.components.common.apiErrorToast
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.RemoveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.RemovePost
 import kotlinx.coroutines.launch
 
-class RemoveViewModel : ViewModel() {
-    var commentRemoveRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+class PostRemoveViewModel : ViewModel() {
+    var postRemoveRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    fun removeOrRestoreComment(
-        commentId: Int,
+    fun removeOrRestorePost(
+        postId: PostId,
         removed: Boolean,
         reason: String,
         ctx: Context,
         focusManager: FocusManager,
-        onSuccess: (CommentView) -> Unit,
+        onSuccess: (PostView) -> Unit,
     ) {
         viewModelScope.launch {
             val form =
-                RemoveComment(
-                    comment_id = commentId,
+                RemovePost(
+                    post_id = postId,
                     removed = removed,
                     reason = reason,
                 )
 
-            commentRemoveRes = ApiState.Loading
-            commentRemoveRes = API.getInstance().removeComment(form).toApiState()
+            postRemoveRes = ApiState.Loading
+            postRemoveRes = API.getInstance().removePost(form).toApiState()
 
-            when (val res = commentRemoveRes) {
+            when (val res = postRemoveRes) {
                 is ApiState.Failure -> {
-                    Log.d("removeComment", "failed", res.msg)
+                    Log.d("removePost", "failed", res.msg)
                     apiErrorToast(msg = res.msg, ctx = ctx)
                 }
 
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.remove_view_model_comment_removed)
+                            ctx.getString(R.string.remove_view_model_post_removed)
                         } else {
-                            ctx.getString(R.string.remove_view_model_comment_restored)
+                            ctx.getString(R.string.remove_view_model_post_restored)
                         }
-                    val commentView = res.data.comment_view
+                    val postView = res.data.post_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
 
                     focusManager.clearFocus()
-                    onSuccess(commentView)
+                    onSuccess(postView)
                 }
                 else -> {}
             }

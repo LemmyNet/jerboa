@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
@@ -54,8 +55,10 @@ fun PostOptionsDropdown(
     onEditPostClick: (PostView) -> Unit,
     onDeletePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
+    onRemoveClick: (PostView) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
+    canMod: Boolean,
     viewSource: Boolean,
     showViewSource: Boolean,
     scope: CoroutineScope,
@@ -398,6 +401,25 @@ fun PostOptionsDropdown(
                     onReportClick(postView)
                 },
             )
+
+            if (canMod) {
+                Divider()
+                val (removeText, removeIcon) =
+                    if (postView.post.removed) {
+                        Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
+                    } else {
+                        Pair(stringResource(R.string.remove_post), Icons.Outlined.Gavel)
+                    }
+
+                PopupMenuItem(
+                    text = removeText,
+                    icon = removeIcon,
+                    onClick = {
+                        onDismissRequest()
+                        onRemoveClick(postView)
+                    },
+                )
+            }
         }
     }
 }

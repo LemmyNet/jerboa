@@ -26,6 +26,7 @@ import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PushPin
@@ -62,6 +63,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
+import com.jerboa.canMod
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -113,6 +115,8 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -205,6 +209,13 @@ fun PostHeaderLine(
                     Icon(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = stringResource(R.string.postListing_deleted),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+                if (postView.post.removed) {
+                    Icon(
+                        imageVector = Icons.Outlined.Gavel,
+                        contentDescription = stringResource(R.string.postListing_removed),
                         tint = MaterialTheme.colorScheme.error,
                     )
                 }
@@ -532,6 +543,8 @@ fun PreviewSourcePost() {
 @Composable
 fun PostFooterLine(
     postView: PostView,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -540,6 +553,7 @@ fun PostFooterLine(
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
+    onRemoveClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -555,6 +569,16 @@ fun PostFooterLine(
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
+    val canMod =
+        remember {
+            canMod(
+                creatorId = postView.creator.id,
+                admins = admins,
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
+
     if (showMoreOptions) {
         PostOptionsDropdown(
             postView = postView,
@@ -564,8 +588,10 @@ fun PostFooterLine(
             onEditPostClick = onEditPostClick,
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
+            onRemoveClick = onRemoveClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
+            canMod = canMod,
             viewSource = viewSource,
             showViewSource = fromPostActivity,
             scope = scope,
@@ -745,6 +771,8 @@ fun PostFooterLinePreview() {
         )
     PostFooterLine(
         postView = postView,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         instantScores = instantScores,
         onUpvoteClick = {},
         onDownvoteClick = {},
@@ -753,6 +781,7 @@ fun PostFooterLinePreview() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -771,6 +800,8 @@ fun PostFooterLinePreview() {
 fun PreviewPostListingCard() {
     PostListing(
         postView = samplePostView,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -782,6 +813,7 @@ fun PreviewPostListingCard() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -803,6 +835,8 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -814,6 +848,7 @@ fun PreviewLinkPostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -835,6 +870,8 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListing(
         postView = sampleImagePostView,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -846,6 +883,7 @@ fun PreviewImagePostListingCard() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -867,6 +905,8 @@ fun PreviewImagePostListingCard() {
 fun PreviewImagePostListingSmallCard() {
     PostListing(
         postView = sampleImagePostView,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -878,6 +918,7 @@ fun PreviewImagePostListingSmallCard() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -899,6 +940,8 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -910,6 +953,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -929,6 +973,8 @@ fun PreviewLinkNoThumbnailPostListing() {
 @Composable
 fun PostListing(
     postView: PostView,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
@@ -940,6 +986,7 @@ fun PostListing(
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
+    onRemoveClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
@@ -975,6 +1022,8 @@ fun PostListing(
         PostViewMode.Card ->
             PostListingCard(
                 postView = postView,
+                admins = admins,
+                moderators = moderators,
                 instantScores = instantScores.value,
                 onUpvoteClick = {
                     instantScores.value =
@@ -999,6 +1048,7 @@ fun PostListing(
                 onEditPostClick = onEditPostClick,
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
+                onRemoveClick = onRemoveClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1024,6 +1074,8 @@ fun PostListing(
         PostViewMode.SmallCard ->
             PostListingCard(
                 postView = postView,
+                admins = admins,
+                moderators = moderators,
                 instantScores = instantScores.value,
                 onUpvoteClick = {
                     instantScores.value =
@@ -1048,6 +1100,7 @@ fun PostListing(
                 onEditPostClick = onEditPostClick,
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
+                onRemoveClick = onRemoveClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1430,6 +1483,8 @@ fun PostListingListWithThumbPreview() {
 @Composable
 fun PostListingCard(
     postView: PostView,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -1440,6 +1495,7 @@ fun PostListingCard(
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
+    onRemoveClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
@@ -1505,6 +1561,8 @@ fun PostListingCard(
         // Footer bar
         PostFooterLine(
             postView = postView,
+            admins = admins,
+            moderators = moderators,
             instantScores = instantScores,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
@@ -1513,6 +1571,7 @@ fun PostListingCard(
             onEditPostClick = onEditPostClick,
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
+            onRemoveClick = onRemoveClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,

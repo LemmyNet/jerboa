@@ -218,6 +218,7 @@
     <string name="person_profile_report_person">Report Person</string>
     <string name="pictrs_image_upload_image">Upload Image</string>
     <string name="postListing_deleted">Deleted</string>
+    <string name="postListing_removed">Removed</string>
     <string name="postListing_featuredCommunity">Featured in community</string>
     <string name="postListing_featuredLocal">Featured locally</string>
     <string name="postListing_goToCommunity">Go to community</string>
@@ -409,5 +410,7 @@
     <string name="remove_view_model_post_restored">Post restored</string>
     <string name="remove_comment">Remove Comment</string>
     <string name="restore_comment">Restore Comment</string>
+    <string name="remove_post">Remove Post</string>
+    <string name="restore_post">Restore Post</string>
     <string name="type_your_reason">Type your reason</string>
 </resources>
