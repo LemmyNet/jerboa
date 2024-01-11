@@ -73,6 +73,8 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -172,8 +174,8 @@ fun CommentBodyPreview() {
 
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
-    admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -429,8 +431,8 @@ fun LazyListScope.commentNodeItem(
 
 fun LazyListScope.missingCommentNodeItem(
     node: MissingCommentNode,
-    admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -665,8 +667,8 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
-    admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
@@ -799,8 +801,8 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, null)
     CommentNodes(
         nodes = tree,
-        admins = listOf(),
-        moderators = listOf(),
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         increaseLazyListIndexTracker = {},
         addToParentIndexes = {},
         isFlat = false,

@@ -88,6 +88,7 @@ import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import kotlinx.collections.immutable.toImmutableList
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -280,7 +281,7 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val moderators = postRes.data.moderators
+                        val moderators = postRes.data.moderators.toImmutableList()
 
                         if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(

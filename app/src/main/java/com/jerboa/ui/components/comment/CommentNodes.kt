@@ -22,8 +22,8 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun CommentNodes(
     nodes: ImmutableList<CommentNodeData>,
-    admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -106,8 +106,8 @@ fun CommentNodes(
 
 fun LazyListScope.commentNodeItems(
     nodes: ImmutableList<CommentNodeData>,
-    admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,

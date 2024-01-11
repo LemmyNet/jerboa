@@ -1542,8 +1542,8 @@ fun String.padUrlWithHttps(): String {
  */
 fun canMod(
     creatorId: PersonId,
-    admins: List<PersonView>?,
-    moderators: List<CommunityModeratorView>?,
+    admins: ImmutableList<PersonView>?,
+    moderators: ImmutableList<CommunityModeratorView>?,
     myId: PersonId?,
     onSelf: Boolean = false,
 ): Boolean {
