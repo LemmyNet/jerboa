@@ -691,14 +691,15 @@ fun CommentFooterLine(
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
-    val canMod = remember {
-        canMod(
-            creatorId = commentView.comment.creator_id,
-            admins = admins,
-            moderators = moderators,
-            myId = account.id,
-        )
-    }
+    val canMod =
+        remember {
+            canMod(
+                creatorId = commentView.comment.creator_id,
+                admins = admins,
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
 
     if (showMoreOptions) {
         CommentOptionsDropdown(
