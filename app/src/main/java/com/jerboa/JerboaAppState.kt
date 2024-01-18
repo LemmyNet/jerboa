@@ -19,9 +19,15 @@ import com.jerboa.ui.components.community.sidebar.CommunityViewSidebar
 import com.jerboa.ui.components.post.create.CreatePostReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.privatemessage.PrivateMessage
+<<<<<<< HEAD
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+||||||| 21e2222a
+=======
+import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
+import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+>>>>>>> main
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView

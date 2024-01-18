@@ -19,7 +19,7 @@ import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
-import com.jerboa.model.CommentRemoveViewModel
+import com.jerboa.model.RemoveViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.remove.RemoveItemBody
@@ -40,7 +40,7 @@ fun CommentRemoveActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val commentRemoveViewModel: CommentRemoveViewModel = viewModel()
+    val removeViewModel: RemoveViewModel = viewModel()
     val comment = appState.getPrevReturn<Comment>(key = CommentRemoveReturn.COMMENT_SEND)
 
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -49,7 +49,7 @@ fun CommentRemoveActivity(
         )
     }
     val loading =
-        when (commentRemoveViewModel.commentRemoveRes) {
+        when (removeViewModel.commentRemoveRes) {
             ApiState.Loading -> true
             else -> false
         }
@@ -64,7 +64,7 @@ fun CommentRemoveActivity(
                 loading = loading,
                 onActionClick = {
                     if (!account.isAnon()) {
-                        commentRemoveViewModel.removeOrRestoreComment(
+                        removeViewModel.removeOrRestoreComment(
                             commentId = comment.id,
                             reason = reason.text,
                             removed = !comment.removed,

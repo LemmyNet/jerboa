@@ -3,6 +3,7 @@ package com.jerboa.ui.components.comment
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
@@ -10,7 +11,6 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
@@ -178,7 +178,7 @@ fun CommentOptionsDropdown(
                     if (commentView.comment.removed) {
                         Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
                     } else {
-                        Pair(stringResource(R.string.remove_comment), Icons.Outlined.Gavel)
+                        Pair(stringResource(R.string.remove_comment), Icons.Outlined.Close)
                     }
 
                 PopupMenuItem(
