@@ -3,6 +3,7 @@ package com.jerboa.ui.components.comment
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
@@ -38,7 +39,9 @@ fun CommentOptionsDropdown(
     onDeleteCommentClick: (CommentView) -> Unit,
     onBlockCreatorClick: (Person) -> Unit,
     onReportClick: (CommentView) -> Unit,
+    onRemoveClick: (CommentView) -> Unit,
     isCreator: Boolean,
+    canMod: Boolean,
     viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
@@ -90,9 +93,17 @@ fun CommentOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
-                        Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_node_comment_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     } else {
-                        Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.generic_error),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
                 },
             )
@@ -160,6 +171,25 @@ fun CommentOptionsDropdown(
                     onReportClick(commentView)
                 },
             )
+
+            if (canMod) {
+                Divider()
+                val (removeText, removeIcon) =
+                    if (commentView.comment.removed) {
+                        Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
+                    } else {
+                        Pair(stringResource(R.string.remove_comment), Icons.Outlined.Close)
+                    }
+
+                PopupMenuItem(
+                    text = removeText,
+                    icon = removeIcon,
+                    onClick = {
+                        onDismissRequest()
+                        onRemoveClick(commentView)
+                    },
+                )
+            }
         }
     }
 }

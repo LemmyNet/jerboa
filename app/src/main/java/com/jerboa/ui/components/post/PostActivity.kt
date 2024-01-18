@@ -85,8 +85,10 @@ import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import kotlinx.collections.immutable.toImmutableList
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -140,6 +142,7 @@ fun PostActivity(
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
+    appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -278,6 +281,7 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
+                        val moderators = postRes.data.moderators.toImmutableList()
 
                         if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
@@ -466,6 +470,8 @@ fun PostActivity(
 
                                     commentNodeItems(
                                         nodes = commentTree,
+                                        admins = siteViewModel.admins(),
+                                        moderators = moderators,
                                         increaseLazyListIndexTracker = {
                                             lazyListIndexTracker++
                                         },
@@ -573,6 +579,9 @@ fun PostActivity(
                                         },
                                         onReportClick = { cv ->
                                             appState.toCommentReport(id = cv.comment.id)
+                                        },
+                                        onRemoveClick = { cv ->
+                                            appState.toCommentRemove(comment = cv.comment)
                                         },
                                         onCommentLinkClick = { cv ->
                                             appState.toComment(id = cv.comment.id)

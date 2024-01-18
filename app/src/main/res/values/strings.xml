@@ -403,4 +403,11 @@
     <string name="time_ago_failed_to_parse">Failed to parse datetime</string>
     <string name="comment_gone">There is no record of this comment</string>
     <string name="server_version_not_supported">The version (%s) is not supported</string>
+    <string name="remove_view_model_comment_removed">Comment removed</string>
+    <string name="remove_view_model_comment_restored">Comment restored</string>
+    <string name="remove_view_model_post_removed">Post removed</string>
+    <string name="remove_view_model_post_restored">Post restored</string>
+    <string name="remove_comment">Remove Comment</string>
+    <string name="restore_comment">Restore Comment</string>
+    <string name="type_your_reason">Type your reason</string>
 </resources>

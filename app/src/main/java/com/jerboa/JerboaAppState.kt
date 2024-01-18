@@ -19,6 +19,8 @@ import com.jerboa.ui.components.community.sidebar.CommunityViewSidebar
 import com.jerboa.ui.components.post.create.CreatePostReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.privatemessage.PrivateMessage
+import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
+import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
@@ -66,6 +68,11 @@ class JerboaAppState(
 
     fun toPostReport(id: Int) {
         navController.navigate(Route.PostReportArgs.makeRoute(id = "$id"))
+    }
+
+    fun toCommentRemove(comment: Comment) {
+        sendReturnForwards(CommentRemoveReturn.COMMENT_SEND, comment)
+        navController.navigate(Route.COMMENT_REMOVE)
     }
 
     fun toSettings() = navController.navigate(Route.SETTINGS)

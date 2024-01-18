@@ -14,12 +14,16 @@ import com.jerboa.MissingCommentNode
 import com.jerboa.db.entity.Account
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
     nodes: ImmutableList<CommentNodeData>,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -36,6 +40,7 @@ fun CommentNodes(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onRemoveClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -57,6 +62,8 @@ fun CommentNodes(
     LazyColumn(state = listState) {
         commentNodeItems(
             nodes = nodes,
+            admins = admins,
+            moderators = moderators,
             increaseLazyListIndexTracker = increaseLazyListIndexTracker,
             addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
@@ -67,20 +74,21 @@ fun CommentNodes(
             onDownvoteClick = onDownvoteClick,
             onReplyClick = onReplyClick,
             onSaveClick = onSaveClick,
-            account = account,
             onMarkAsReadClick = onMarkAsReadClick,
             onCommentClick = onCommentClick,
+            onEditCommentClick = onEditCommentClick,
+            onDeleteCommentClick = onDeleteCommentClick,
+            onReportClick = onReportClick,
+            onRemoveClick = onRemoveClick,
+            onCommentLinkClick = onCommentLinkClick,
+            onFetchChildrenClick = onFetchChildrenClick,
             onPersonClick = onPersonClick,
             onHeaderClick = onHeaderClick,
             onHeaderLongClick = onHeaderLongClick,
             onCommunityClick = onCommunityClick,
-            onPostClick = onPostClick,
-            onEditCommentClick = onEditCommentClick,
-            onDeleteCommentClick = onDeleteCommentClick,
-            onReportClick = onReportClick,
-            onCommentLinkClick = onCommentLinkClick,
-            onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onPostClick = onPostClick,
+            account = account,
             showPostAndCommunityContext = showPostAndCommunityContext,
             showCollapsedCommentContent = showCollapsedCommentContent,
             isCollapsedByParent = isCollapsedByParent,
@@ -98,6 +106,8 @@ fun CommentNodes(
 
 fun LazyListScope.commentNodeItems(
     nodes: ImmutableList<CommentNodeData>,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -113,6 +123,7 @@ fun LazyListScope.commentNodeItems(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onRemoveClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -136,6 +147,8 @@ fun LazyListScope.commentNodeItems(
             is CommentNode ->
                 commentNodeItem(
                     node = node,
+                    admins = admins,
+                    moderators = moderators,
                     increaseLazyListIndexTracker = increaseLazyListIndexTracker,
                     addToParentIndexes = addToParentIndexes,
                     isFlat = isFlat,
@@ -157,6 +170,7 @@ fun LazyListScope.commentNodeItems(
                     onEditCommentClick = onEditCommentClick,
                     onDeleteCommentClick = onDeleteCommentClick,
                     onReportClick = onReportClick,
+                    onRemoveClick = onRemoveClick,
                     onCommentLinkClick = onCommentLinkClick,
                     onFetchChildrenClick = onFetchChildrenClick,
                     onBlockCreatorClick = onBlockCreatorClick,
@@ -173,6 +187,8 @@ fun LazyListScope.commentNodeItems(
             is MissingCommentNode ->
                 missingCommentNodeItem(
                     node = node,
+                    admins = admins,
+                    moderators = moderators,
                     increaseLazyListIndexTracker = increaseLazyListIndexTracker,
                     addToParentIndexes = addToParentIndexes,
                     isFlat = isFlat,
@@ -194,6 +210,7 @@ fun LazyListScope.commentNodeItems(
                     onEditCommentClick = onEditCommentClick,
                     onDeleteCommentClick = onDeleteCommentClick,
                     onReportClick = onReportClick,
+                    onRemoveClick = onRemoveClick,
                     onCommentLinkClick = onCommentLinkClick,
                     onFetchChildrenClick = onFetchChildrenClick,
                     onBlockCreatorClick = onBlockCreatorClick,

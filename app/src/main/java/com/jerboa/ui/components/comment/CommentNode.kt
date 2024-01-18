@@ -51,6 +51,7 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
+import com.jerboa.canMod
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -72,6 +73,8 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -171,6 +174,8 @@ fun CommentBodyPreview() {
 
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -191,6 +196,7 @@ fun LazyListScope.commentNodeItem(
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onRemoveClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
@@ -321,6 +327,8 @@ fun LazyListScope.commentNodeItem(
                                 ) {
                                     CommentFooterLine(
                                         commentView = commentView,
+                                        admins = admins,
+                                        moderators = moderators,
                                         instantScores = instantScores.value,
                                         onUpvoteClick = {
                                             instantScores.value =
@@ -346,6 +354,7 @@ fun LazyListScope.commentNodeItem(
                                         onReplyClick = onReplyClick,
                                         onSaveClick = onSaveClick,
                                         onReportClick = onReportClick,
+                                        onRemoveClick = onRemoveClick,
                                         onCommentLinkClick = onCommentLinkClick,
                                         onPersonClick = onPersonClick,
                                         onBlockCreatorClick = onBlockCreatorClick,
@@ -385,40 +394,45 @@ fun LazyListScope.commentNodeItem(
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
+        isExpanded = isExpanded,
         toggleExpanded = toggleExpanded,
         toggleActionBar = toggleActionBar,
-        isExpanded = isExpanded,
         onUpvoteClick = onUpvoteClick,
         onDownvoteClick = onDownvoteClick,
+        onReplyClick = onReplyClick,
         onSaveClick = onSaveClick,
         onMarkAsReadClick = onMarkAsReadClick,
         onCommentClick = onCommentClick,
         onEditCommentClick = onEditCommentClick,
         onDeleteCommentClick = onDeleteCommentClick,
+        onReportClick = onReportClick,
+        onRemoveClick = onRemoveClick,
+        onCommentLinkClick = onCommentLinkClick,
+        onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
-        onPostClick = onPostClick,
-        showPostAndCommunityContext = showPostAndCommunityContext,
-        onReportClick = onReportClick,
-        onCommentLinkClick = onCommentLinkClick,
-        onFetchChildrenClick = onFetchChildrenClick,
-        onReplyClick = onReplyClick,
         onBlockCreatorClick = onBlockCreatorClick,
+        onPostClick = onPostClick,
         account = account,
-        isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+        showPostAndCommunityContext = showPostAndCommunityContext,
         showCollapsedCommentContent = showCollapsedCommentContent,
+        isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
         showActionBar = showActionBar,
         enableDownVotes = enableDownVotes,
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
         showScores = showScores,
+        admins = admins,
+        moderators = moderators,
     )
 }
 
 fun LazyListScope.missingCommentNodeItem(
     node: MissingCommentNode,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -439,6 +453,7 @@ fun LazyListScope.missingCommentNodeItem(
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onRemoveClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
@@ -518,33 +533,36 @@ fun LazyListScope.missingCommentNodeItem(
 
     commentNodeItems(
         nodes = node.children.toImmutableList(),
+        admins = admins,
+        moderators = moderators,
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
+        isExpanded = isExpanded,
         toggleExpanded = toggleExpanded,
         toggleActionBar = toggleActionBar,
-        isExpanded = isExpanded,
         onUpvoteClick = onUpvoteClick,
         onDownvoteClick = onDownvoteClick,
+        onReplyClick = onReplyClick,
         onSaveClick = onSaveClick,
         onMarkAsReadClick = onMarkAsReadClick,
         onCommentClick = onCommentClick,
         onEditCommentClick = onEditCommentClick,
         onDeleteCommentClick = onDeleteCommentClick,
+        onReportClick = onReportClick,
+        onRemoveClick = onRemoveClick,
+        onCommentLinkClick = onCommentLinkClick,
+        onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
-        onPostClick = onPostClick,
-        showPostAndCommunityContext = showPostAndCommunityContext,
-        onReportClick = onReportClick,
-        onCommentLinkClick = onCommentLinkClick,
-        onFetchChildrenClick = onFetchChildrenClick,
-        onReplyClick = onReplyClick,
         onBlockCreatorClick = onBlockCreatorClick,
+        onPostClick = onPostClick,
         account = account,
-        isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+        showPostAndCommunityContext = showPostAndCommunityContext,
         showCollapsedCommentContent = showCollapsedCommentContent,
+        isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
         showActionBar = showActionBar,
         enableDownVotes = enableDownVotes,
         showAvatar = showAvatar,
@@ -649,6 +667,8 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
@@ -659,6 +679,7 @@ fun CommentFooterLine(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onRemoveClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -670,6 +691,16 @@ fun CommentFooterLine(
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
+    val canMod =
+        remember {
+            canMod(
+                creatorId = commentView.comment.creator_id,
+                admins = admins,
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
+
     if (showMoreOptions) {
         CommentOptionsDropdown(
             commentView = commentView,
@@ -678,10 +709,12 @@ fun CommentFooterLine(
             onEditCommentClick = onEditCommentClick,
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
+            onRemoveClick = onRemoveClick,
             onBlockCreatorClick = onBlockCreatorClick,
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
             isCreator = account.id == commentView.creator.id,
+            canMod = canMod,
             viewSource = viewSource,
         )
     }
@@ -772,6 +805,8 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, null)
     CommentNodes(
         nodes = tree,
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         increaseLazyListIndexTracker = {},
         addToParentIndexes = {},
         isFlat = false,
@@ -788,6 +823,7 @@ fun CommentNodesPreview() {
         onEditCommentClick = {},
         onDeleteCommentClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
         onHeaderClick = {},

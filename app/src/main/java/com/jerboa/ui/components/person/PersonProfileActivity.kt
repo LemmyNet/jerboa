@@ -80,6 +80,7 @@ import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
@@ -130,6 +131,7 @@ fun PersonProfileActivity(
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
+    appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         when (val res = personProfileViewModel.personDetailsRes) {
@@ -244,6 +246,7 @@ fun PersonProfileActivity(
                 padding = it,
                 appState = appState,
                 personProfileViewModel = personProfileViewModel,
+                siteViewModel = siteViewModel,
                 ctx = ctx,
                 account = account,
                 scope = scope,
@@ -277,6 +280,7 @@ fun UserTabs(
     appState: JerboaAppState,
     savedMode: Boolean,
     personProfileViewModel: PersonProfileViewModel,
+    siteViewModel: SiteViewModel,
     ctx: Context,
     account: Account,
     scope: CoroutineScope,
@@ -644,6 +648,9 @@ fun UserTabs(
                                 }
                                 CommentNodes(
                                     nodes = nodes,
+                                    admins = siteViewModel.admins(),
+                                    // No community moderators available here
+                                    moderators = null,
                                     increaseLazyListIndexTracker = {},
                                     addToParentIndexes = {},
                                     isFlat = true,
@@ -740,6 +747,9 @@ fun UserTabs(
                                     },
                                     onReportClick = { cv ->
                                         appState.toCommentReport(id = cv.comment.id)
+                                    },
+                                    onRemoveClick = { cv ->
+                                        appState.toCommentRemove(comment = cv.comment)
                                     },
                                     onCommentLinkClick = { cv ->
                                         appState.toComment(id = cv.comment.id)
