@@ -215,7 +215,7 @@ fun PostHeaderLine(
                 if (postView.post.removed) {
                     Icon(
                         imageVector = Icons.Outlined.Gavel,
-                        contentDescription = stringResource(R.string.postListing_removed),
+                        contentDescription = stringResource(R.string.removed),
                         tint = MaterialTheme.colorScheme.error,
                     )
                 }

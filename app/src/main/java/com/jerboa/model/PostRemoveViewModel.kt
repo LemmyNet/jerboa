@@ -52,9 +52,9 @@ class PostRemoveViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.remove_view_model_post_removed)
+                            ctx.getString(R.string.post_removed)
                         } else {
-                            ctx.getString(R.string.remove_view_model_post_restored)
+                            ctx.getString(R.string.post_restored)
                         }
                     val postView = res.data.post_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()

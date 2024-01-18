@@ -52,9 +52,9 @@ class CommentRemoveViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.remove_view_model_comment_removed)
+                            ctx.getString(R.string.comment_removed)
                         } else {
-                            ctx.getString(R.string.remove_view_model_comment_restored)
+                            ctx.getString(R.string.comment_restored)
                         }
                     val commentView = res.data.comment_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
