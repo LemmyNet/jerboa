@@ -373,6 +373,10 @@ fun crimson(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_dark_scrim = Color(0xFF000000)
     val jerboa_image_highlight = Color(0xCCD1D1D1)
     val jerboa_video_highlight = Color(0xCCC20000)
+    val jerboa_upvote_swipe = Color(0xff4caf50)
+    val jerboa_downvote_swipe = Color(0xfff44336)
+    val jerboa_save_swipe = Color(0xff448aff)
+    val jerboa_reply_swipe = Color(0xffffa000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -447,6 +451,10 @@ fun crimson(): Pair<JerboaColorScheme, JerboaColorScheme> {
             material = light,
             imageHighlight = jerboa_image_highlight,
             videoHighlight = jerboa_video_highlight,
+            upvoteSwipe = jerboa_upvote_swipe,
+            downvoteSwipe = jerboa_downvote_swipe,
+            saveSwipe = jerboa_save_swipe,
+            replySwipe = jerboa_reply_swipe,
         )
 
     val jerboaDark =
@@ -454,6 +462,10 @@ fun crimson(): Pair<JerboaColorScheme, JerboaColorScheme> {
             material = dark,
             imageHighlight = jerboa_image_highlight,
             videoHighlight = jerboa_video_highlight,
+            upvoteSwipe = jerboa_upvote_swipe,
+            downvoteSwipe = jerboa_downvote_swipe,
+            saveSwipe = jerboa_save_swipe,
+            replySwipe = jerboa_reply_swipe,
         )
 
     return Pair(jerboaLight, jerboaDark)
