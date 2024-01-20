@@ -4,30 +4,6 @@ steps:
     commands:
       - prettier -c "*.md" "*.yml"
 
-  restore-cache:
-    image: meltwater/drone-cache:v1
-    pull: true
-    settings:
-      restore: true
-      endpoint:
-        from_secret: MINIO_ENDPOINT
-      access-key:
-        from_secret: MINIO_WRITE_USER
-      secret-key:
-        from_secret: MINIO_WRITE_PASSWORD
-      bucket:
-        from_secret: MINIO_BUCKET
-      region: us-east-1
-      cache_key: "jerboa-cache"
-      path-style: true
-      backend_operation_timeout: 15m
-      compression_level: 0
-      exit_code: true
-      mount:
-        - ".gradle"
-    secrets:
-      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
-
   check_formatting:
     image: cimg/android:2023.12
     commands:
@@ -51,33 +27,6 @@ steps:
       - ./gradlew testDebug
     environment:
       GRADLE_USER_HOME: ".gradle"
-
-  rebuild-cache:
-    image: meltwater/drone-cache:v1
-    pull: true
-    settings:
-      rebuild: true
-      endpoint:
-        from_secret: MINIO_ENDPOINT
-      access-key:
-        from_secret: MINIO_WRITE_USER
-      secret-key:
-        from_secret: MINIO_WRITE_PASSWORD
-      bucket:
-        from_secret: MINIO_BUCKET
-      cache_key: "jerboa-cache"
-      region: us-east-1
-      path-style: true
-      backend_operation_timeout: 60m
-      compression_level: 0
-      exit_code: true
-      mount:
-        - ".gradle"
-    secrets:
-      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
-    when:
-      - path:
-          include: ["app/build.gradle.kts"]
 
   notify:
     image: alpine:3
