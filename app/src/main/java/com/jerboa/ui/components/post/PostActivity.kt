@@ -407,7 +407,8 @@ fun PostActivity(
                                         appState.toBanFromCommunity(banData = d)
                                     },
                                     onPersonClick = appState::toProfile,
-                                    showReply = true, // Do nothing
+                                    // Do nothing
+                                    showReply = true,
                                     fullBody = true,
                                     account = account,
                                     postViewMode = PostViewMode.Card,
@@ -636,7 +637,8 @@ fun PostActivity(
                                         onCommunityClick = { community ->
                                             appState.toCommunity(id = community.id)
                                         },
-                                        onPostClick = {}, // Do nothing
+                                        // Do nothing
+                                        onPostClick = {},
                                         account = account,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),

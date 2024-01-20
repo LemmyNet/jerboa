@@ -170,7 +170,8 @@ fun PostHeaderLine(
                             person = postView.creator,
                             onClick = onPersonClick,
                             showTags = true,
-                            isPostCreator = false, // Set this to false, we already know this
+                            // Set this to false, we already know this
+                            isPostCreator = false,
                             isModerator = postView.creator_is_moderator,
                             isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,

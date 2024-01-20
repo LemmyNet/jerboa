@@ -284,7 +284,8 @@ fun commentsToFlatNodes(comments: List<CommentView>): ImmutableList<CommentNode>
  */
 fun buildCommentsTree(
     comments: List<CommentView>,
-    rootCommentId: Int?, // If it's in CommentView, then we need to know the root comment id
+    // If it's in CommentView, then we need to know the root comment id
+    rootCommentId: Int?,
 ): ImmutableList<CommentNodeData> {
     val isCommentView = rootCommentId != null
 
@@ -1053,7 +1054,8 @@ fun saveMediaP(
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
-    mediaType: PostType, // Link is here more like other media (think of PDF, doc, txt)
+    // Link is here more like other media (think of PDF, doc, txt)
+    mediaType: PostType,
 ) {
     val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
     val mediaDir = File(dir, "Jerboa")
