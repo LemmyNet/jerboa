@@ -14,7 +14,10 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.appendData
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.findAndUpdateComment
+import com.jerboa.findAndUpdateCommentCreator
+import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
 import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
@@ -106,9 +109,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
                     type_ = ListingType.All,
                 )
 
-            val moreComments = API.getInstance().getComments(commentsForm).toApiState()
-
-            when (moreComments) {
+            when (val moreComments = API.getInstance().getComments(commentsForm).toApiState()) {
                 is ApiState.Success -> {
                     // Remove the first comment, since it is a parent
                     // Actually since a bug in 18.3 that is no longer a guarantee
@@ -263,6 +264,62 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
                 postRes = newRes
             }
 
+            else -> {}
+        }
+    }
+
+    fun updateBanned(personView: PersonView) {
+        when (val existing = postRes) {
+            is ApiState.Success -> {
+                val data = existing.data
+                // Only update the creator if it matches
+                val newPostView =
+                    if (data.post_view.creator.id == personView.person.id) {
+                        data.post_view.copy(creator = personView.person)
+                    } else {
+                        data.post_view
+                    }
+                val newRes = ApiState.Success(data.copy(post_view = newPostView))
+                postRes = newRes
+            }
+            else -> {}
+        }
+
+        // Also do all the comments
+        when (val existing = commentsRes) {
+            is ApiState.Success -> {
+                val comments = findAndUpdateCommentCreator(existing.data.comments, personView.person)
+                val newRes = ApiState.Success(existing.data.copy(comments = comments))
+                commentsRes = newRes
+            }
+            else -> {}
+        }
+    }
+
+    fun updateBannedFromCommunity(banData: BanFromCommunityData) {
+        when (val existing = postRes) {
+            is ApiState.Success -> {
+                val data = existing.data
+                // Only update the creator if it matches
+                val newPostView =
+                    if (data.post_view.creator.id == banData.person.id && data.post_view.community.id == banData.community.id) {
+                        data.post_view.copy(creator_banned_from_community = banData.banned)
+                    } else {
+                        data.post_view
+                    }
+                val newRes = ApiState.Success(data.copy(post_view = newPostView))
+                postRes = newRes
+            }
+            else -> {}
+        }
+
+        // Also do all the comments
+        when (val existing = commentsRes) {
+            is ApiState.Success -> {
+                val comments = findAndUpdateCommentCreatorBannedFromCommunity(existing.data.comments, banData)
+                val newRes = ApiState.Success(existing.data.copy(comments = comments))
+                commentsRes = newRes
+            }
             else -> {}
         }
     }

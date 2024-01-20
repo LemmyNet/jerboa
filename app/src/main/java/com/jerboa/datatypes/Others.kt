@@ -20,6 +20,9 @@ import com.jerboa.ui.components.person.UserTab
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import kotlinx.serialization.Serializable
 
 
 data class CommentSortData(
@@ -187,3 +190,13 @@ fun getLocalizedStringForInboxTab(
         }
     return returnString
 }
+
+/**
+ * A wrapper to store extra community ban info
+ */
+@Serializable
+data class BanFromCommunityData(
+    val person: Person,
+    val community: Community,
+    val banned: Boolean,
+)

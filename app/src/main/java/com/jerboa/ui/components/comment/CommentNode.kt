@@ -52,6 +52,7 @@ import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -197,6 +198,8 @@ fun LazyListScope.commentNodeItem(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
@@ -355,6 +358,8 @@ fun LazyListScope.commentNodeItem(
                                         onSaveClick = onSaveClick,
                                         onReportClick = onReportClick,
                                         onRemoveClick = onRemoveClick,
+                                        onBanPersonClick = onBanPersonClick,
+                                        onBanFromCommunityClick = onBanFromCommunityClick,
                                         onCommentLinkClick = onCommentLinkClick,
                                         onPersonClick = onPersonClick,
                                         onBlockCreatorClick = onBlockCreatorClick,
@@ -407,6 +412,8 @@ fun LazyListScope.commentNodeItem(
         onDeleteCommentClick = onDeleteCommentClick,
         onReportClick = onReportClick,
         onRemoveClick = onRemoveClick,
+        onBanPersonClick = onBanPersonClick,
+        onBanFromCommunityClick = onBanFromCommunityClick,
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
@@ -454,6 +461,8 @@ fun LazyListScope.missingCommentNodeItem(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
@@ -551,6 +560,8 @@ fun LazyListScope.missingCommentNodeItem(
         onDeleteCommentClick = onDeleteCommentClick,
         onReportClick = onReportClick,
         onRemoveClick = onRemoveClick,
+        onBanPersonClick = onBanPersonClick,
+        onBanFromCommunityClick = onBanFromCommunityClick,
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
@@ -680,6 +691,8 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -692,14 +705,12 @@ fun CommentFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
-            canMod(
-                creatorId = commentView.comment.creator_id,
-                admins = admins,
-                moderators = moderators,
-                myId = account.id,
-            )
-        }
+        canMod(
+            creatorId = commentView.comment.creator_id,
+            admins = admins,
+            moderators = moderators,
+            myId = account.id,
+        )
 
     if (showMoreOptions) {
         CommentOptionsDropdown(
@@ -710,6 +721,8 @@ fun CommentFooterLine(
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
@@ -824,6 +837,8 @@ fun CommentNodesPreview() {
         onDeleteCommentClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
         onHeaderClick = {},

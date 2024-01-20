@@ -51,6 +51,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
@@ -70,6 +71,8 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
+import java.time.Duration
+import java.time.Instant
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
@@ -1204,6 +1207,66 @@ fun findAndUpdateComment(
     }
 }
 
+fun findAndUpdatePostCreator(
+    posts: List<PostView>,
+    person: Person,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.creator.id == person.id) {
+            it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdatePostCreatorBannedFromCommunity(
+    posts: List<PostView>,
+    banData: BanFromCommunityData,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+            it.copy(creator_banned_from_community = banData.banned)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdateCommentCreator(
+    comments: List<CommentView>,
+    person: Person,
+): List<CommentView> {
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.creator.id == person.id) {
+            it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newComments
+}
+
+fun findAndUpdateCommentCreatorBannedFromCommunity(
+    comments: List<CommentView>,
+    banData: BanFromCommunityData,
+): List<CommentView> {
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+            it.copy(creator_banned_from_community = banData.banned)
+        } else {
+            it
+        }
+    }
+    return newComments
+}
+
 fun findAndUpdateCommentReply(
     replies: List<CommentReplyView>,
     updatedCommentView: CommentView,
@@ -1566,5 +1629,11 @@ fun canMod(
         }
     } else {
         false
+    }
+}
+
+fun futureDaysToUnixTime(days: Int?): Int? {
+    return days?.let {
+        (Date.from(Instant.now().plus(Duration.ofDays(it.toLong()))).time / 1000L).toInt()
     }
 }

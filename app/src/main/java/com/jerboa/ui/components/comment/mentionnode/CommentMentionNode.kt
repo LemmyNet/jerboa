@@ -119,14 +119,12 @@ fun CommentMentionNodeFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
-            canMod(
-                creatorId = personMentionView.comment.creator_id,
-                admins = admins,
-                moderators = moderators,
-                myId = account.id,
-            )
-        }
+        canMod(
+            creatorId = personMentionView.comment.creator_id,
+            admins = admins,
+            moderators = moderators,
+            myId = account.id,
+        )
 
     if (showMoreOptions) {
         CommentMentionsOptionsDropdown(

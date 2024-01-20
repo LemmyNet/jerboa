@@ -64,6 +64,7 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -554,6 +555,8 @@ fun PostFooterLine(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -570,14 +573,12 @@ fun PostFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
-            canMod(
-                creatorId = postView.creator.id,
-                admins = admins,
-                moderators = moderators,
-                myId = account.id,
-            )
-        }
+        canMod(
+            creatorId = postView.creator.id,
+            admins = admins,
+            moderators = moderators,
+            myId = account.id,
+        )
 
     if (showMoreOptions) {
         PostOptionsDropdown(
@@ -589,6 +590,8 @@ fun PostFooterLine(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
@@ -782,6 +785,8 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -814,6 +819,8 @@ fun PreviewPostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -849,6 +856,8 @@ fun PreviewLinkPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -884,6 +893,8 @@ fun PreviewImagePostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -919,6 +930,8 @@ fun PreviewImagePostListingSmallCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -954,6 +967,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -987,6 +1002,8 @@ fun PostListing(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
@@ -1049,6 +1066,8 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1101,6 +1120,8 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1496,6 +1517,8 @@ fun PostListingCard(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
@@ -1572,6 +1595,8 @@ fun PostListingCard(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,

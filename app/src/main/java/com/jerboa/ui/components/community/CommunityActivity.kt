@@ -33,6 +33,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -44,6 +45,8 @@ import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.ui.components.ban.BanFromCommunityReturn
+import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
@@ -64,6 +67,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.collections.immutable.toImmutableList
@@ -99,6 +103,8 @@ fun CommunityActivity(
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
+    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, communityViewModel::updateBanned)
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, communityViewModel::updateBannedFromCommunity)
 
     val pullRefreshState =
         rememberPullRefreshState(
@@ -329,6 +335,12 @@ fun CommunityActivity(
                             },
                             onRemoveClick = { pv ->
                                 appState.toPostRemove(post = pv.post)
+                            },
+                            onBanPersonClick = { p ->
+                                appState.toBanPerson(p)
+                            },
+                            onBanFromCommunityClick = { d ->
+                                appState.toBanFromCommunity(banData = d)
                             },
                             onCommunityClick = { community ->
                                 appState.toCommunity(id = community.id)

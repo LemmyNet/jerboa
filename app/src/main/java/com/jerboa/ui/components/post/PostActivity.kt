@@ -57,6 +57,7 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -69,6 +70,8 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
+import com.jerboa.ui.components.ban.BanFromCommunityReturn
+import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
@@ -145,6 +148,8 @@ fun PostActivity(
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
+    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, postViewModel::updateBanned)
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, postViewModel::updateBannedFromCommunity)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -395,6 +400,12 @@ fun PostActivity(
                                     onRemoveClick = { pv ->
                                         appState.toPostRemove(post = pv.post)
                                     },
+                                    onBanPersonClick = { p ->
+                                        appState.toBanPerson(person = p)
+                                    },
+                                    onBanFromCommunityClick = { d ->
+                                        appState.toBanFromCommunity(banData = d)
+                                    },
                                     onPersonClick = appState::toProfile,
                                     showReply = true, // Do nothing
                                     fullBody = true,
@@ -589,6 +600,12 @@ fun PostActivity(
                                         },
                                         onRemoveClick = { cv ->
                                             appState.toCommentRemove(comment = cv.comment)
+                                        },
+                                        onBanPersonClick = { p ->
+                                            appState.toBanPerson(p)
+                                        },
+                                        onBanFromCommunityClick = { d ->
+                                            appState.toBanFromCommunity(banData = d)
                                         },
                                         onCommentLinkClick = { cv ->
                                             appState.toComment(id = cv.comment.id)
