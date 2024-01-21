@@ -533,6 +533,9 @@ fun InboxTabs(
                                     ) { pmv ->
                                         CommentMentionNode(
                                             personMentionView = pmv,
+                                            admins = siteViewModel.admins(),
+                                            // No community moderators available here
+                                            moderators = null,
                                             onUpvoteClick = { pm ->
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
