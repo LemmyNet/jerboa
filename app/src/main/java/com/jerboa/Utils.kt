@@ -1500,7 +1500,7 @@ fun Context.getInputStream(url: String): InputStream {
             Request.Builder()
                 .url(url)
                 .build(),
-        ).execute().body?.byteStream() ?: throw IOException("Failed to get input stream")
+        ).execute().body.byteStream()
     }
 }
 

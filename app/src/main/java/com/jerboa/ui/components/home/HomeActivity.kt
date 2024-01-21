@@ -62,6 +62,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
@@ -104,6 +105,7 @@ fun HomeActivity(
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
 
     LaunchedEffect(account) {
@@ -251,6 +253,9 @@ fun MainPostListingsContent(
 
         PostListings(
             posts = posts,
+            admins = siteViewModel.admins(),
+            // No community moderators available here
+            moderators = null,
             contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
@@ -334,6 +339,9 @@ fun MainPostListingsContent(
             },
             onReportClick = { postView ->
                 appState.toPostReport(id = postView.post.id)
+            },
+            onRemoveClick = { pv ->
+                appState.toPostRemove(post = pv.post)
             },
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)

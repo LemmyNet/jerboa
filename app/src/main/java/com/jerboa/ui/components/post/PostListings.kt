@@ -30,6 +30,8 @@ import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -37,6 +39,8 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun PostListings(
     posts: ImmutableList<PostView>,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -45,6 +49,7 @@ fun PostListings(
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
+    onRemoveClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     loadMorePosts: () -> Unit,
@@ -87,6 +92,8 @@ fun PostListings(
         ) { index, postView ->
             PostListing(
                 postView = postView,
+                admins = admins,
+                moderators = moderators,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 onUpvoteClick = onUpvoteClick,
@@ -97,6 +104,7 @@ fun PostListings(
                 onEditPostClick = onEditPostClick,
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
+                onRemoveClick = onRemoveClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -152,6 +160,8 @@ fun PostListings(
 fun PreviewPostListings() {
     PostListings(
         posts = persistentListOf(samplePostView, sampleLinkPostView),
+        admins = persistentListOf(),
+        moderators = persistentListOf(),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -159,6 +169,7 @@ fun PreviewPostListings() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onReportClick = {},
+        onRemoveClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         loadMorePosts = {},

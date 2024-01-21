@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.VoteType
+import com.jerboa.canMod
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
@@ -40,8 +41,11 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentMentionNodeHeader(
@@ -91,6 +95,8 @@ fun CommentMentionNodeHeaderPreview() {
 @Composable
 fun CommentMentionNodeFooterLine(
     personMentionView: PersonMentionView,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
@@ -112,6 +118,16 @@ fun CommentMentionNodeFooterLine(
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
+    val canMod =
+        remember {
+            canMod(
+                creatorId = personMentionView.comment.creator_id,
+                admins = admins,
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
+
     if (showMoreOptions) {
         CommentMentionsOptionsDropdown(
             personMentionView = personMentionView,
@@ -123,6 +139,7 @@ fun CommentMentionNodeFooterLine(
             onBlockCreatorClick = onBlockCreatorClick,
             isCreator = account.id == personMentionView.creator.id,
             onCommentLinkClick = onLinkClick,
+            canMod = canMod,
             viewSource = viewSource,
         )
     }
@@ -228,6 +245,8 @@ fun CommentMentionNodeFooterLine(
 @Composable
 fun CommentMentionNode(
     personMentionView: PersonMentionView,
+    admins: ImmutableList<PersonView>,
+    moderators: ImmutableList<CommunityModeratorView>?,
     onUpvoteClick: (personMentionView: PersonMentionView) -> Unit,
     onDownvoteClick: (personMentionView: PersonMentionView) -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
@@ -303,6 +322,8 @@ fun CommentMentionNode(
                 ) {
                     CommentMentionNodeFooterLine(
                         personMentionView = personMentionView,
+                        admins = admins,
+                        moderators = moderators,
                         onUpvoteClick = {
                             onUpvoteClick(personMentionView)
                         },

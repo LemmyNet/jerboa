@@ -8,8 +8,10 @@ import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -35,6 +37,7 @@ fun CommentMentionsOptionsDropdown(
     onReportClick: (PersonMentionView) -> Unit,
     onRemoveClick: (PersonMentionView) -> Unit,
     isCreator: Boolean,
+    canMod: Boolean,
     viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
@@ -125,6 +128,25 @@ fun CommentMentionsOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     onReportClick(personMentionView)
+                },
+            )
+        }
+
+        if (canMod) {
+            Divider()
+            val (removeText, removeIcon) =
+                if (personMentionView.comment.removed) {
+                    Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
+                } else {
+                    Pair(stringResource(R.string.remove_comment), Icons.Outlined.Gavel)
+                }
+
+            PopupMenuItem(
+                text = removeText,
+                icon = removeIcon,
+                onClick = {
+                    onDismissRequest()
+                    onRemoveClick(personMentionView)
                 },
             )
         }
