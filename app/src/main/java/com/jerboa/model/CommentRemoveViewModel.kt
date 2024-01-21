@@ -14,17 +14,18 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.ui.components.common.apiErrorToast
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.RemoveComment
 import kotlinx.coroutines.launch
 
-class RemoveViewModel : ViewModel() {
+class CommentRemoveViewModel : ViewModel() {
     var commentRemoveRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun removeOrRestoreComment(
-        commentId: Int,
+        commentId: CommentId,
         removed: Boolean,
         reason: String,
         ctx: Context,
@@ -51,9 +52,9 @@ class RemoveViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.remove_view_model_comment_removed)
+                            ctx.getString(R.string.comment_removed)
                         } else {
-                            ctx.getString(R.string.remove_view_model_comment_restored)
+                            ctx.getString(R.string.comment_restored)
                         }
                     val commentView = res.data.comment_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()

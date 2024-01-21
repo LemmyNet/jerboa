@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.remove.comment
+package com.jerboa.ui.components.remove.post
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
@@ -19,29 +19,29 @@ import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
-import com.jerboa.model.CommentRemoveViewModel
+import com.jerboa.model.PostRemoveViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.remove.RemoveItemBody
-import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 
-object CommentRemoveReturn {
-    const val COMMENT_VIEW = "comment-remove::return(comment-view)"
-    const val COMMENT_SEND = "comment-remove::send(comment-view)"
+object PostRemoveReturn {
+    const val POST_VIEW = "post-edit::return(post-view)"
+    const val POST_SEND = "post-edit::send(post-view)"
 }
 
 @Composable
-fun CommentRemoveActivity(
+fun PostRemoveActivity(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
-    Log.d("jerboa", "got to create comment remove activity")
+    Log.d("jerboa", "got to create post remove activity")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val commentRemoveViewModel: CommentRemoveViewModel = viewModel()
-    val comment = appState.getPrevReturn<Comment>(key = CommentRemoveReturn.COMMENT_SEND)
+    val postRemoveViewModel: PostRemoveViewModel = viewModel()
+    val post = appState.getPrevReturn<Post>(key = PostRemoveReturn.POST_SEND)
 
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
@@ -49,13 +49,13 @@ fun CommentRemoveActivity(
         )
     }
     val loading =
-        when (commentRemoveViewModel.commentRemoveRes) {
+        when (postRemoveViewModel.postRemoveRes) {
             ApiState.Loading -> true
             else -> false
         }
 
     val focusManager = LocalFocusManager.current
-    val title = stringResource(if (comment.removed) R.string.restore_comment else R.string.remove_comment)
+    val title = stringResource(if (post.removed) R.string.restore_post else R.string.remove_post)
 
     Scaffold(
         topBar = {
@@ -64,15 +64,15 @@ fun CommentRemoveActivity(
                 loading = loading,
                 onActionClick = {
                     if (!account.isAnon()) {
-                        commentRemoveViewModel.removeOrRestoreComment(
-                            commentId = comment.id,
+                        postRemoveViewModel.removeOrRestorePost(
+                            postId = post.id,
                             reason = reason.text,
-                            removed = !comment.removed,
+                            removed = !post.removed,
                             ctx = ctx,
                             focusManager = focusManager,
-                        ) { commentView ->
+                        ) { postView ->
                             appState.apply {
-                                addReturn(CommentRemoveReturn.COMMENT_VIEW, commentView)
+                                addReturn(PostRemoveReturn.POST_VIEW, postView)
                                 navigateUp()
                             }
                         }

@@ -86,6 +86,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
+import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.collections.immutable.toImmutableList
@@ -140,6 +141,7 @@ fun PostActivity(
     val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
@@ -295,6 +297,8 @@ fun PostActivity(
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
                                     postView = postView,
+                                    admins = siteViewModel.admins(),
+                                    moderators = moderators,
                                     onUpvoteClick = { pv ->
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
@@ -387,6 +391,9 @@ fun PostActivity(
                                     },
                                     onReportClick = { pv ->
                                         appState.toPostReport(id = pv.post.id)
+                                    },
+                                    onRemoveClick = { pv ->
+                                        appState.toPostRemove(post = pv.post)
                                     },
                                     onPersonClick = appState::toProfile,
                                     showReply = true, // Do nothing

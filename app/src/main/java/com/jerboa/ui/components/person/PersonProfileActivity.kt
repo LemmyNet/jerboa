@@ -81,6 +81,7 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
+import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
@@ -130,6 +131,7 @@ fun PersonProfileActivity(
         viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, personProfileViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
 
@@ -453,6 +455,9 @@ fun UserTabs(
                             is ApiState.Holder -> {
                                 PostListings(
                                     posts = profileRes.data.posts.toImmutableList(),
+                                    admins = siteViewModel.admins(),
+                                    // No community moderators available here
+                                    moderators = null,
                                     onUpvoteClick = { pv ->
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
@@ -535,6 +540,9 @@ fun UserTabs(
                                     },
                                     onReportClick = { pv ->
                                         appState.toPostReport(id = pv.post.id)
+                                    },
+                                    onRemoveClick = { pv ->
+                                        appState.toPostRemove(post = pv.post)
                                     },
                                     onCommunityClick = { community ->
                                         appState.toCommunity(id = community.id)
