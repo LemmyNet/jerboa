@@ -553,6 +553,15 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
+                        route = Route.POST_REMOVE,
+                    ) {
+                        PostRemoveActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                        )
+                    }
+
+                    composable(
                         route = Route.COMMENT_REMOVE,
                     ) {
                         CommentRemoveActivity(

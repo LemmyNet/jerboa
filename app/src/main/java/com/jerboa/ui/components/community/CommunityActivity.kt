@@ -206,12 +206,23 @@ fun CommunityActivity(
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(postsRes.msg)
                     is ApiState.Holder -> {
+                        val communityRes = communityViewModel.communityRes
+                        val moderators =
+                            remember(communityRes) {
+                                when (communityRes) {
+                                    is ApiState.Success -> communityRes.data.moderators.toImmutableList()
+                                    else -> {
+                                        null
+                                    }
+                                }
+                            }
+
                         PostListings(
                             posts = postsRes.data.posts.toImmutableList(),
                             admins = siteViewModel.admins(),
                             moderators = moderators,
                             contentAboveListings = {
-                                when (val communityRes = communityViewModel.communityRes) {
+                                when (communityRes) {
                                     is ApiState.Success -> {
                                         CommunityTopSection(
                                             communityView = communityRes.data.community_view,
