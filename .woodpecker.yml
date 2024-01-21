@@ -1,3 +1,6 @@
+variables:
+  - &android_image "cimg/android:2024.01"
+
 steps:
   prettier_markdown_check:
     image: tmknom/prettier
@@ -5,7 +8,7 @@ steps:
       - prettier -c "*.md" "*.yml"
 
   check_formatting:
-    image: cimg/android:2023.12
+    image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew lintKotlin
@@ -13,7 +16,7 @@ steps:
       GRADLE_USER_HOME: ".gradle"
 
   build_project:
-    image: cimg/android:2023.12
+    image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleDebug
@@ -21,7 +24,7 @@ steps:
       GRADLE_USER_HOME: ".gradle"
 
   run_tests:
-    image: cimg/android:2023.12
+    image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew testDebug
