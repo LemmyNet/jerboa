@@ -574,12 +574,14 @@ fun PostFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        canMod(
-            creatorId = postView.creator.id,
-            admins = admins,
-            moderators = moderators,
-            myId = account.id,
-        )
+        remember(admins) {
+            canMod(
+                creatorId = postView.creator.id,
+                admins = admins,
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
 
     if (showMoreOptions) {
         PostOptionsDropdown(
