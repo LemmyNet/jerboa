@@ -117,6 +117,7 @@ fun PersonProfileActivity(
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: Int,
     onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -266,6 +267,7 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset
             )
         },
     )
@@ -301,6 +303,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: Int
 ) {
     val tabTitles =
         if (savedMode) {
@@ -598,6 +601,7 @@ fun UserTabs(
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
+                                    swipeToActionPreset = swipeToActionPreset
                                 )
                             }
                             else -> {}
@@ -808,6 +812,7 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
+                                    swipeToActionPreset = swipeToActionPreset
                                 )
                             }
                         }

@@ -51,12 +51,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
+import com.jerboa.InstantScores
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
+import com.jerboa.calculateNewInstantScores
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -131,6 +133,7 @@ fun PostActivity(
     blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: Int
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -295,6 +298,17 @@ fun PostActivity(
                                     .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
+                                val instantScores =
+                                    remember {
+                                        mutableStateOf(
+                                            InstantScores(
+                                                myVote = postView.my_vote,
+                                                score = postView.counts.score,
+                                                upvotes = postView.counts.upvotes,
+                                                downvotes = postView.counts.downvotes,
+                                            ),
+                                        )
+                                    }
                                 PostListing(
                                     postView = postView,
                                     admins = siteViewModel.admins(),
@@ -319,6 +333,11 @@ fun PostActivity(
                                                 ),
                                             )
                                         }
+                                        instantScores.value =
+                                            calculateNewInstantScores(
+                                                instantScores.value,
+                                                voteType = VoteType.Upvote,
+                                            )
                                     },
                                     onDownvoteClick = { pv ->
                                         account.doIfReadyElseDisplayInfo(
@@ -340,6 +359,11 @@ fun PostActivity(
                                                 ),
                                             )
                                         }
+                                        instantScores.value =
+                                            calculateNewInstantScores(
+                                                instantScores.value,
+                                                voteType = VoteType.Downvote,
+                                            )
                                     },
                                     onReplyClick = { pv ->
                                         appState.toCommentReply(
@@ -428,6 +452,7 @@ fun PostActivity(
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
                                     postActionbarMode = postActionbarMode,
+                                    instantScores = instantScores.value
                                 )
                             }
 
@@ -650,6 +675,7 @@ fun PostActivity(
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),
+                                        swipeToActionPreset = swipeToActionPreset
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

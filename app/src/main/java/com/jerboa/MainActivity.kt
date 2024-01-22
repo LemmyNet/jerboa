@@ -233,6 +233,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset
                         )
                     }
 
@@ -276,6 +277,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset
                         )
                     }
 
@@ -316,6 +318,7 @@ class MainActivity : AppCompatActivity() {
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset
                         )
                     }
 
@@ -353,6 +356,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset
                         )
                     }
 
@@ -464,6 +468,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionbarMode = appSettings.postActionbarMode,
+                                swipeToActionPreset = appSettings.swipeToActionPreset
                             )
                         }
                     }
@@ -497,6 +502,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset
                         )
                     }
 

@@ -27,14 +27,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bookmark
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -43,8 +38,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -62,7 +55,6 @@ import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.jerboaColorScheme
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -958,43 +950,6 @@ enum class PostType {
             Image -> Environment.DIRECTORY_PICTURES
             Video -> Environment.DIRECTORY_MOVIES
             Link -> Environment.DIRECTORY_DOCUMENTS
-        }
-    }
-}
-
-enum class SwipeActionType() {
-    Upvote,
-    Downvote,
-    Reply,
-    Save,
-    ;
-
-    companion object {
-        fun getActionToRangeList(actions: List<SwipeActionType>): List<Pair<OpenEndRange<Float>, SwipeActionType>> {
-            return actions.mapIndexed { index, it ->
-                (0.1f + 0.12f * index)
-                    .rangeUntil(if (index == actions.size - 1) 1f else (0.1f + 0.12f * (index + 1))) to it
-            }
-        }
-    }
-
-    @Composable
-    fun getImageVector(): ImageVector {
-        return when (this) {
-            Upvote -> ImageVector.vectorResource(id = R.drawable.up_outline)
-            Downvote -> ImageVector.vectorResource(id = R.drawable.down_outline)
-            Reply -> Icons.Outlined.Comment
-            Save -> Icons.Outlined.Bookmark
-        }
-    }
-
-    @Composable
-    fun getActionColor(): Color {
-        return when (this) {
-            Upvote -> MaterialTheme.jerboaColorScheme.upvoteSwipe
-            Downvote -> MaterialTheme.jerboaColorScheme.downvoteSwipe
-            Reply -> MaterialTheme.jerboaColorScheme.replySwipe
-            Save -> MaterialTheme.jerboaColorScheme.saveSwipe
         }
     }
 }

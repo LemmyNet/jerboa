@@ -90,6 +90,7 @@ fun HomeActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: Int
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -154,6 +155,7 @@ fun HomeActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -202,6 +204,7 @@ fun MainPostListingsContent(
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: Int
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -396,6 +399,7 @@ fun MainPostListingsContent(
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
+            swipeToActionPreset = swipeToActionPreset
         )
     }
 }

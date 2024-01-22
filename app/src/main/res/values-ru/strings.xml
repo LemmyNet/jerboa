@@ -158,6 +158,7 @@
     <string name="person_profile_report_person">Пожаловаться на пользователя</string>
     <string name="pictrs_image_upload_image">Загрузить изображение</string>
     <string name="postListing_deleted">Удалено</string>
+    <string name="removed">Удалено</string>
     <string name="postListing_featuredCommunity">Выделено в сообществе</string>
     <string name="postListing_featuredLocal">Выделено локально</string>
     <string name="postListing_goToCommunity">Перейти в сообщество</string>
@@ -203,7 +204,7 @@
     <string name="settings_about_join_c_jerboa">Присоединяйтесь к c/jerboa</string>
     <string name="settings_about_open_source">Открытый исходный код</string>
     <string name="settings_about_source_code">Исходный код</string>
-    <string name="settings_about_source_code_subtitle_part1">Jerboa — это свободное программное обеспечение с открытым исходным кодом, распространяемое под лицензией</string>
+    <string name="settings_about_source_code_subtitle_part1">"Jerboa — это свободное программное обеспечение с открытым исходным кодом, распространяемое под лицензией "</string>
     <string name="settings_about_source_code_subtitle_part2">GNU Affero General Public License v3.0</string>
     <string name="settings_about_support">Поддержка</string>
     <string name="settings_about_version">Версия %1$s</string>
@@ -235,8 +236,8 @@
     <string name="utils_login_first">Сначала авторизуйтесь</string>
     <string name="upvote">Поддержать</string>
     <string name="downvote">Опустить</string>
-    <string name="upvoted">Вы повысили пост</string>
-    <string name="downvoted">Вы понизили пост</string>
+    <string name="upvoted">Вы поддержали пост</string>
+    <string name="downvoted">Вы снизили оценку поста</string>
     <string name="saved_image">Сохраненное изображение</string>
     <string name="saving_image">Сохранение изображения…</string>
     <string name="permission_denied">Доступ запрещен</string>
@@ -269,7 +270,6 @@
     <string name="account_settings_show_scores">Показывать рейтинги</string>
     <string name="account_settings_subscribed">Подписки</string>
     <string name="addBookmark">Добавить в закладки</string>
-    <string name="app_bars_dot_spacer">.</string>
     <string name="bottomBar_bookmarks">Перейти в закладки</string>
     <string name="bottomBar_home">Перейти на главный экран</string>
     <string name="bottomBar_inbox">Перейти во входящее</string>
@@ -369,6 +369,10 @@
     <string name="share">Поделится</string>
     <string name="settings_enable_2fa">Включить 2FA</string>
     <string name="settings_2fa_link">Запустить ссылку 2FA</string>
+    <string name="post_actionbar_mode_long">Длинная панель</string>
+    <string name="post_actionbar_mode_short_left">Короткая панель для левшей</string>
+    <string name="post_actionbar_mode_short_right">Короткая панель для правшей</string>
+    <string name="post_actionbar">Режим панели действий поста</string>
     <string name="settings_autoplaygifs">Автоматическое воспроизведение GIF</string>
     <string name="community_unblock_community">Разблокировать сообщество</string>
     <string name="blocked_community_toast">%1s заблокирован</string>
@@ -397,5 +401,22 @@
     <string name="time_ago_failed_to_parse">Не удалось разобрать дату</string>
     <string name="comment_gone">Запись об этом комментарии отсутствует</string>
     <string name="server_version_not_supported">Версия (%s) не поддерживается</string>
+    <string name="comment_removed">Комментарий удалён</string>
+    <string name="comment_restored">Комментарий восстановлен</string>
+    <string name="post_removed">Пост удалён</string>
+    <string name="post_restored">Пост восстановлен</string>
+    <string name="remove_comment">Удалить комментарий</string>
+    <string name="restore_comment">Вернуть комментарий</string>
+    <string name="remove_post">Удалить пост</string>
+    <string name="restore_post">Вернуть пост</string>
+    <string name="lock_post">Заморозить пост</string>
+    <string name="unlock_post">Разморозить бост</string>
+    <string name="type_your_reason">Введите причину</string>
+    <string name="swipe_to_action_presets">Преднастройки для смахивающего жеста</string>
+    <string name="disabled_swipe_action_preset">Отключить</string>
+    <string name="default_swipe_action_preset">По умолчанию</string>
+    <string name="downvote_on_left_upvote_on_right_swipe_action_preset">Отриц. - слева, положит. - справа</string>
+    <string name="only_right_swipe_action_preset">Только справа</string>
+    <string name="only_left_swipe_action_preset">Только слева</string>
 
 </resources>

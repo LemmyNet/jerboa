@@ -29,25 +29,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import com.jerboa.SwipeActionType
+import com.jerboa.feat.SwipeToActionType
 
 @Composable
 @ExperimentalMaterial3Api
 fun SwipeToAction(
-    leftActions: List<SwipeActionType>,
-    rightActions: List<SwipeActionType>,
+    leftActions: List<SwipeToActionType>,
+    rightActions: List<SwipeToActionType>,
     swipeableContent: @Composable RowScope.() -> Unit,
     swipeState: DismissState,
 ) {
     val haptic = LocalHapticFeedback.current
 
     val leftActionsRanges =
-        remember(leftActions) { SwipeActionType.getActionToRangeList(leftActions) }
+        remember(leftActions) { SwipeToActionType.getActionToRangeList(leftActions) }
     val rightActionsRanges =
-        remember(rightActions) { SwipeActionType.getActionToRangeList(rightActions) }
+        remember(rightActions) { SwipeToActionType.getActionToRangeList(rightActions) }
 
-    fun actionByState(state: DismissState): Pair<OpenEndRange<Float>, SwipeActionType>? {
-        return when (state.currentValue) {
+    fun actionByState(state: DismissState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
+        return when (state.targetValue) {
             DismissValue.DismissedToEnd -> {
                 leftActionsRanges.findLast { swipeState.progress in it.first }
             }
@@ -60,49 +60,50 @@ fun SwipeToAction(
         }
     }
 
-    val swipeAction = remember(swipeState) { actionByState(swipeState) }
+    val swipeAction =
+        remember(swipeState.progress, swipeState.targetValue) { actionByState(swipeState) }
 
     SwipeToDismiss(
         directions =
-            remember(leftActions, rightActions) {
-                setOfNotNull(
-                    if (leftActions.isNotEmpty()) DismissDirection.StartToEnd else null,
-                    if (rightActions.isNotEmpty()) DismissDirection.EndToStart else null,
-                )
-            },
+        remember(leftActions, rightActions) {
+            setOfNotNull(
+                if (leftActions.isNotEmpty()) DismissDirection.StartToEnd else null,
+                if (rightActions.isNotEmpty()) DismissDirection.EndToStart else null,
+            )
+        },
         state = swipeState,
         background = {
-            val lastSwipeAction = remember { mutableStateOf<SwipeActionType?>(null) }
+            val lastSwipeAction = remember { mutableStateOf<SwipeToActionType?>(null) }
             val transition = updateTransition(swipeState, label = "swipe state")
             val color by transition.animateColor(
                 transitionSpec = {
-                    val currentAction = remember(swipeState) { actionByState(swipeState) }
+                    val currentAction = actionByState(this.targetState)
                     // vibrates when icon changes
                     if (lastSwipeAction.value != currentAction?.second) {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         lastSwipeAction.value = currentAction?.second
                     }
-                    spring(stiffness = 50f)
+                    spring(stiffness = 1000f)
                 },
                 label = "swipe color animation",
                 targetValueByState = { state ->
-                    val currentAction = remember(state) { actionByState(swipeState) }
+                    val currentAction = actionByState(state)
                     currentAction?.second?.getActionColor() ?: Color.Transparent
                 },
             )
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxSize(),
+                Modifier
+                    .fillMaxSize(),
             ) {
                 Box(
                     modifier =
-                        Modifier
-                            .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
-                            .fillMaxHeight()
-                            .background(color = color)
-                            .align(if (swipeState.currentValue == DismissValue.DismissedToStart) Alignment.TopEnd else Alignment.TopStart),
-                    contentAlignment = Alignment.CenterStart,
+                    Modifier
+                        .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
+                        .fillMaxHeight()
+                        .background(color = color)
+                        .align(if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.TopEnd else Alignment.TopStart),
+                    contentAlignment = if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.CenterStart else Alignment.CenterEnd,
                 ) {
                     val tint = Color.White
                     val modifier =
@@ -129,17 +130,17 @@ fun SwipeToAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun rememberSwipeActionState(
-    leftActions: List<SwipeActionType>,
-    rightActions: List<SwipeActionType>,
-    onAction: (action: SwipeActionType) -> Unit,
+    leftActions: List<SwipeToActionType>,
+    rightActions: List<SwipeToActionType>,
+    onAction: (action: SwipeToActionType) -> Unit,
 ): DismissState {
     /*
     This hacky solution is required because confirmValueChange lambda doesn't pass progress state
      */
     val leftActionsRanges =
-        remember(leftActions) { SwipeActionType.getActionToRangeList(leftActions) }
+        remember(leftActions) { SwipeToActionType.getActionToRangeList(leftActions) }
     val rightActionsRanges =
-        remember(rightActions) { SwipeActionType.getActionToRangeList(rightActions) }
+        remember(rightActions) { SwipeToActionType.getActionToRangeList(rightActions) }
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =
         rememberDismissState(
