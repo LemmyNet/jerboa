@@ -68,6 +68,7 @@ import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -368,6 +369,23 @@ fun MainPostListingsContent(
                         LockPost(
                             post_id = pv.post.id,
                             locked = !pv.post.locked,
+                        ),
+                    )
+                }
+            },
+            onFeaturePostClick = { data ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.featurePost(
+                        FeaturePost(
+                            post_id = data.post.id,
+                            featured = !data.featured,
+                            feature_type = data.type,
                         ),
                     )
                 }

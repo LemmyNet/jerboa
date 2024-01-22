@@ -67,6 +67,7 @@ import com.jerboa.amMod
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -561,6 +562,7 @@ fun PostFooterLine(
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -615,6 +617,7 @@ fun PostFooterLine(
             onBanPersonClick = onBanPersonClick,
             onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
+            onFeaturePostClick = onFeaturePostClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
@@ -813,6 +816,7 @@ fun PostFooterLinePreview() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -848,6 +852,7 @@ fun PreviewPostListingCard() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -886,6 +891,7 @@ fun PreviewLinkPostListing() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -924,6 +930,7 @@ fun PreviewImagePostListingCard() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -962,6 +969,7 @@ fun PreviewImagePostListingSmallCard() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -1000,6 +1008,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -1036,6 +1045,7 @@ fun PostListing(
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
@@ -1101,6 +1111,7 @@ fun PostListing(
                 onBanPersonClick = onBanPersonClick,
                 onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
+                onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1156,6 +1167,7 @@ fun PostListing(
                 onBanPersonClick = onBanPersonClick,
                 onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
+                onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1554,6 +1566,7 @@ fun PostListingCard(
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
@@ -1633,6 +1646,7 @@ fun PostListingCard(
             onBanPersonClick = onBanPersonClick,
             onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
+            onFeaturePostClick = onFeaturePostClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,

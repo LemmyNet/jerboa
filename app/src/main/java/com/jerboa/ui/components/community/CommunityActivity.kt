@@ -65,6 +65,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
@@ -359,6 +360,24 @@ fun CommunityActivity(
                                         LockPost(
                                             post_id = pv.post.id,
                                             locked = !pv.post.locked,
+                                        ),
+                                    )
+                                }
+                            },
+                            onFeaturePostClick = { data ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
+                                    communityViewModel.featurePost(
+                                        FeaturePost(
+                                            post_id = data.post.id,
+                                            featured = !data.featured,
+                                            feature_type = data.type,
                                         ),
                                     )
                                 }

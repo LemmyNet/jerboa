@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
@@ -55,6 +56,7 @@ fun PostListings(
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     loadMorePosts: () -> Unit,
@@ -113,6 +115,7 @@ fun PostListings(
                 onBanPersonClick = onBanPersonClick,
                 onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
+                onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -181,6 +184,7 @@ fun PreviewPostListings() {
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         loadMorePosts = {},

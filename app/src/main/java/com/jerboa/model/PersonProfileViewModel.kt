@@ -36,6 +36,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
@@ -194,6 +195,20 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             when (val lockPost = lockPostRes) {
                 is ApiState.Success -> {
                     updatePost(lockPost.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun featurePost(form: FeaturePost) {
+        viewModelScope.launch {
+            featurePostRes = ApiState.Loading
+            featurePostRes = API.getInstance().featurePost(form).toApiState()
+            when (val featurePost = featurePostRes) {
+                is ApiState.Success -> {
+                    updatePost(featurePost.data.post_view)
                 }
 
                 else -> {}
