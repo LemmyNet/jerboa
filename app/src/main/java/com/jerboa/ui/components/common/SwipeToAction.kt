@@ -149,7 +149,7 @@ fun rememberSwipeActionState(
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =
         rememberDismissState(
-            positionalThreshold = { 0f },
+            positionalThreshold = { 48.dp.toPx() },
             confirmValueChange = { dismissValue ->
                 val action =
                     when (dismissValue) {
