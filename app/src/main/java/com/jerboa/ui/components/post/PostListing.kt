@@ -62,6 +62,8 @@ import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
+import com.jerboa.amAdmin
+import com.jerboa.amMod
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
 import com.jerboa.datatypes.sampleImagePostView
@@ -580,6 +582,22 @@ fun PostFooterLine(
             )
         }
 
+    val amAdmin =
+        remember(admins) {
+            amAdmin(
+                admins = admins,
+                myId = account.id,
+            )
+        }
+
+    val amMod =
+        remember {
+            amMod(
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
+
     if (showMoreOptions) {
         PostOptionsDropdown(
             postView = postView,
@@ -594,6 +612,8 @@ fun PostFooterLine(
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
+            amAdmin = amAdmin,
+            amMod = amMod,
             viewSource = viewSource,
             showViewSource = fromPostActivity,
             scope = scope,

@@ -62,6 +62,8 @@ fun PostOptionsDropdown(
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
+    amMod: Boolean,
+    amAdmin: Boolean,
     viewSource: Boolean,
     showViewSource: Boolean,
     scope: CoroutineScope,
@@ -408,22 +410,6 @@ fun PostOptionsDropdown(
             if (canMod) {
                 Divider()
 
-                val (lockText, lockIcon) =
-                    if (postView.post.locked) {
-                        Pair(stringResource(R.string.unlock_post), Icons.Outlined.LockOpen)
-                    } else {
-                        Pair(stringResource(R.string.lock_post), Icons.Outlined.CommentsDisabled)
-                    }
-
-                PopupMenuItem(
-                    text = lockText,
-                    icon = lockIcon,
-                    onClick = {
-                        onDismissRequest()
-                        onLockPostClick(postView)
-                    },
-                )
-
                 val (removeText, removeIcon) =
                     if (postView.post.removed) {
                         Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
@@ -437,6 +423,25 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         onRemoveClick(postView)
+                    },
+                )
+            }
+
+            // You can do these actions on mods above you
+            if (amMod || amAdmin) {
+                val (lockText, lockIcon) =
+                    if (postView.post.locked) {
+                        Pair(stringResource(R.string.unlock_post), Icons.Outlined.LockOpen)
+                    } else {
+                        Pair(stringResource(R.string.lock_post), Icons.Outlined.CommentsDisabled)
+                    }
+
+                PopupMenuItem(
+                    text = lockText,
+                    icon = lockIcon,
+                    onClick = {
+                        onDismissRequest()
+                        onLockPostClick(postView)
                     },
                 )
             }
