@@ -26,6 +26,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -221,6 +222,14 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
     fun deletePost(form: DeletePost) {
         viewModelScope.launch {
             API.getInstance().deletePost(form).onSuccess {
+                updatePost(it.post_view)
+            }
+        }
+    }
+
+    fun lockPost(form: LockPost) {
+        viewModelScope.launch {
+            API.getInstance().lockPost(form).onSuccess {
                 updatePost(it.post_view)
             }
         }

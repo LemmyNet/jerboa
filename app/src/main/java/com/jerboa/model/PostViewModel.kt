@@ -42,6 +42,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
@@ -208,6 +209,20 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun lockPost(form: LockPost) {
+        viewModelScope.launch {
+            lockPostRes = ApiState.Loading
+            lockPostRes = API.getInstance().lockPost(form).toApiState()
+            when (val lockPost = lockPostRes) {
+                is ApiState.Success -> {
+                    updatePost(lockPost.data.post_view)
                 }
 
                 else -> {}

@@ -1639,3 +1639,17 @@ fun futureDaysToUnixTime(days: Int?): Int? {
         (Date.from(Instant.now().plus(Duration.ofDays(it.toLong()))).time / 1000L).toInt()
     }
 }
+
+fun amMod(
+    moderators: ImmutableList<CommunityModeratorView>?,
+    myId: PersonId?,
+): Boolean {
+    return moderators?.map { it.moderator.id }?.contains(myId) ?: false
+}
+
+fun amAdmin(
+    admins: ImmutableList<PersonView>?,
+    myId: PersonId?,
+): Boolean {
+    return admins?.map { it.person.id }?.contains(myId) ?: false
+}

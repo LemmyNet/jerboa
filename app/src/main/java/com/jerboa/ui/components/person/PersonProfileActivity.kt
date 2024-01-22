@@ -93,6 +93,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -555,6 +556,22 @@ fun UserTabs(
                                     },
                                     onBanFromCommunityClick = { d ->
                                         appState.toBanFromCommunity(banData = d)
+                                    },
+                                    onLockPostClick = { pv ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
+                                            personProfileViewModel.lockPost(
+                                                LockPost(
+                                                    post_id = pv.post.id,
+                                                    locked = !pv.post.locked,
+                                                ),
+                                            )
+                                        }
                                     },
                                     onCommunityClick = { community ->
                                         appState.toCommunity(id = community.id)

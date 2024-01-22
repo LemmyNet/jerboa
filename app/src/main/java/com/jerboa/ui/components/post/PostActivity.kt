@@ -406,6 +406,23 @@ fun PostActivity(
                                     onBanFromCommunityClick = { d ->
                                         appState.toBanFromCommunity(banData = d)
                                     },
+                                    onLockPostClick = { pv ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
+                                            postViewModel.lockPost(
+                                                LockPost(
+                                                    post_id = pv.post.id,
+                                                    locked = !pv.post.locked,
+                                                ),
+                                            )
+                                        }
+                                    },
                                     onPersonClick = appState::toProfile,
                                     // Do nothing
                                     showReply = true,

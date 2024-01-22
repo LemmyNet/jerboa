@@ -66,6 +66,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
@@ -113,14 +114,6 @@ fun CommunityActivity(
                 communityViewModel.refreshPosts()
             },
         )
-
-    val moderators =
-        when (val communityRes = communityViewModel.communityRes) {
-            is ApiState.Success -> communityRes.data.moderators.toImmutableList()
-            else -> {
-                null
-            }
-        }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -352,6 +345,23 @@ fun CommunityActivity(
                             },
                             onBanFromCommunityClick = { d ->
                                 appState.toBanFromCommunity(banData = d)
+                            },
+                            onLockPostClick = { pv ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
+                                    communityViewModel.lockPost(
+                                        LockPost(
+                                            post_id = pv.post.id,
+                                            locked = !pv.post.locked,
+                                        ),
+                                    )
+                                }
                             },
                             onCommunityClick = { community ->
                                 appState.toCommunity(id = community.id)
