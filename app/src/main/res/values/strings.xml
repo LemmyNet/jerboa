@@ -416,7 +416,7 @@
     <string name="unlock_post">Unlock Post</string>
     <string name="type_your_reason">Type your reason</string>
     <string name="disabled_swipe_action_preset">Disabled</string>
-    <string name="default_swipe_action_preset">Default (votes on right, share/reply on left)</string>
+    <string name="default_swipe_action_preset">Two sides</string>
     <string name="downvote_on_left_upvote_on_right_swipe_action_preset">Left-right votes</string>
     <string name="only_right_swipe_action_preset">Only right swipe</string>
     <string name="only_left_swipe_action_preset">Only left swipe</string>
@@ -424,4 +424,5 @@
     <string name="unfeature_in_community">Unfeature in Community</string>
     <string name="feature_in_local">Feature in Local</string>
     <string name="unfeature_in_local">Unfeature in Local</string>
+    <string name="swipe_to_action_presets">Preset for swipe gesture</string>
 </resources>
