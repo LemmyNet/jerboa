@@ -415,4 +415,8 @@
     <string name="lock_post">Lock Post</string>
     <string name="unlock_post">Unlock Post</string>
     <string name="type_your_reason">Type your reason</string>
+    <string name="feature_in_community">Feature in Community</string>
+    <string name="unfeature_in_community">Unfeature in Community</string>
+    <string name="feature_in_local">Feature in Local</string>
+    <string name="unfeature_in_local">Unfeature in Local</string>
 </resources>

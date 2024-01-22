@@ -21,6 +21,7 @@ import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
@@ -202,6 +203,14 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
     fun lockPost(form: LockPost) {
         viewModelScope.launch {
             API.getInstance().lockPost(form).onSuccess {
+                updatePost(it.post_view)
+            }
+        }
+    }
+
+    fun featurePost(form: FeaturePost) {
+        viewModelScope.launch {
+            API.getInstance().featurePost(form).onSuccess {
                 updatePost(it.post_view)
             }
         }
