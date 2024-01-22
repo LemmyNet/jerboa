@@ -593,6 +593,38 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
+                    composable(
+                        route = Route.POST_LIKES,
+                        arguments =
+                        listOf(
+                            navArgument(Route.PostLikesArgs.ID) {
+                                type = Route.PostLikesArgs.ID_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.PostLikesArgs(it)
+                        PostLikesActivity(
+                            postId = args.id,
+                            onBack = appState::navigateUp,
+                        )
+                    }
+
+                    composable(
+                        route = Route.COMMENT_LIKES,
+                        arguments =
+                        listOf(
+                            navArgument(Route.CommentLikesArgs.ID) {
+                                type = Route.CommentLikesArgs.ID_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.CommentLikesArgs(it)
+                        CommentLikesActivity(
+                            commentId = args.id,
+                            onBack = appState::navigateUp,
+                        )
+                    }
+
                     composable(route = Route.SETTINGS) {
                         SettingsActivity(
                             accountViewModel = accountViewModel,

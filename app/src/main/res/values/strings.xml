@@ -419,4 +419,5 @@
     <string name="unfeature_in_community">Unfeature in Community</string>
     <string name="feature_in_local">Feature in Local</string>
     <string name="unfeature_in_local">Unfeature in Local</string>
+    <string name="votes">Votes</string>
 </resources>
