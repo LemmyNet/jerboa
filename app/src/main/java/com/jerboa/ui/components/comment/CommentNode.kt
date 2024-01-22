@@ -297,7 +297,7 @@ fun LazyListScope.commentNodeItem(
                 },
             )
 
-        val content: @Composable RowScope.() -> Unit = {
+        val swipeableContent: @Composable RowScope.() -> Unit = {
             AnimatedVisibility(
                 visible = !isCollapsedByParent,
                 enter = expandVertically(),
@@ -425,12 +425,18 @@ fun LazyListScope.commentNodeItem(
             }
         }
 
-        SwipeToAction(
-            leftActions = leftActions,
-            rightActions = rightActions,
-            swipeableContent = content,
-            swipeState = swipeState,
-        )
+        if (leftActions.size + rightActions.size > 0) {
+            SwipeToAction(
+                leftActions = leftActions,
+                rightActions = rightActions,
+                swipeableContent = swipeableContent,
+                swipeState = swipeState,
+            )
+        } else {
+            Row {
+                swipeableContent()
+            }
+        }
     }
 
     increaseLazyListIndexTracker()

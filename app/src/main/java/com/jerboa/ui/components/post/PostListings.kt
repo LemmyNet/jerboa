@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -153,7 +154,7 @@ fun PostListings(
                     },
                 )
 
-            val content: @Composable RowScope.() -> Unit = {
+            val swipeableContent: @Composable RowScope.() -> Unit = {
                 PostListing(
                     postView = postView,
                     admins = admins,
@@ -212,12 +213,18 @@ fun PostListings(
                     }
                 }
             }
-            SwipeToAction(
-                leftActions = leftActions,
-                rightActions = rightActions,
-                swipeableContent = content,
-                swipeState = swipeState,
-            )
+            if (leftActions.size + rightActions.size > 0) {
+                SwipeToAction(
+                    leftActions = leftActions,
+                    rightActions = rightActions,
+                    swipeableContent = swipeableContent,
+                    swipeState = swipeState,
+                )
+            } else {
+                Row {
+                    swipeableContent()
+                }
+            }
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
 

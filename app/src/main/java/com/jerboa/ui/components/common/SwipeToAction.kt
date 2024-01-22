@@ -103,7 +103,12 @@ fun SwipeToAction(
                             .fillMaxHeight()
                             .background(color = color)
                             .align(if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.TopEnd else Alignment.TopStart),
-                    contentAlignment = if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.CenterStart else Alignment.CenterEnd,
+                    contentAlignment =
+                        if (swipeState.targetValue == DismissValue.DismissedToStart) {
+                            Alignment.CenterStart
+                        } else {
+                            Alignment.CenterEnd
+                        },
                 ) {
                     val tint = Color.White
                     val modifier =
