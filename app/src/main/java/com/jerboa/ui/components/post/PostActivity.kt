@@ -412,6 +412,24 @@ fun PostActivity(
                                             )
                                         }
                                     },
+                                    onFeaturePostClick = { data ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
+                                            postViewModel.featurePost(
+                                                FeaturePost(
+                                                    post_id = data.post.id,
+                                                    featured = !data.featured,
+                                                    feature_type = data.type,
+                                                ),
+                                            )
+                                        }
+                                    },
                                     onPersonClick = appState::toProfile,
                                     showReply = true, // Do nothing
                                     fullBody = true,

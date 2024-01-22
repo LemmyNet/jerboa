@@ -3,6 +3,7 @@ package com.jerboa.ui.components.post.composables
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.CancelPresentation
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Divider
@@ -28,6 +30,7 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
+import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.isMedia
@@ -37,6 +40,7 @@ import com.jerboa.util.blockPerson
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import com.jerboa.util.getInstanceFromCommunityUrl
 import com.jerboa.util.showBlockCommunityToast
+import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
@@ -59,6 +63,7 @@ fun PostOptionsDropdown(
     onReportClick: (PostView) -> Unit,
     onRemoveClick: (PostView) -> Unit,
     onLockPostClick: (PostView) -> Unit,
+    onFeaturePostClick: (PostFeatureData) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
@@ -70,6 +75,7 @@ fun PostOptionsDropdown(
 ) {
     val ctx = LocalContext.current
     val localClipboardManager = LocalClipboardManager.current
+    val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
 
     CascadeCenteredDropdownMenu(
         expanded = true,
@@ -442,6 +448,51 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         onLockPostClick(postView)
+                    },
+                )
+                val (featureInCommunityText, featureIconUsed) =
+                    if (postView.post.featured_community) {
+                        Pair(stringResource(R.string.unfeature_in_community), unFeatureIcon)
+                    } else {
+                        Pair(stringResource(R.string.feature_in_community), featureIcon)
+                    }
+
+                PopupMenuItem(
+                    text = featureInCommunityText,
+                    icon = featureIconUsed,
+                    onClick = {
+                        onDismissRequest()
+                        onFeaturePostClick(
+                            PostFeatureData(
+                                post = postView.post,
+                                featured = postView.post.featured_community,
+                                type = PostFeatureType.Community,
+                            ),
+                        )
+                    },
+                )
+            }
+
+            if (amAdmin) {
+                val (featureInLocalText, featureIconUsed) =
+                    if (postView.post.featured_local) {
+                        Pair(stringResource(R.string.unfeature_in_local), unFeatureIcon)
+                    } else {
+                        Pair(stringResource(R.string.feature_in_local), featureIcon)
+                    }
+
+                PopupMenuItem(
+                    text = featureInLocalText,
+                    icon = featureIconUsed,
+                    onClick = {
+                        onDismissRequest()
+                        onFeaturePostClick(
+                            PostFeatureData(
+                                post = postView.post,
+                                featured = postView.post.featured_local,
+                                type = PostFeatureType.Local,
+                            ),
+                        )
                     },
                 )
             }

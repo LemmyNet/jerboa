@@ -89,6 +89,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
@@ -557,6 +558,23 @@ fun UserTabs(
                                                 LockPost(
                                                     post_id = pv.post.id,
                                                     locked = !pv.post.locked,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onFeaturePostClick = { data ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
+                                            personProfileViewModel.featurePost(
+                                                FeaturePost(
+                                                    post_id = data.post.id,
+                                                    featured = !data.featured,
+                                                    feature_type = data.type,
                                                 ),
                                             )
                                         }

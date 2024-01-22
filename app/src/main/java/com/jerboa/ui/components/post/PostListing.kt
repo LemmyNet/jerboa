@@ -66,6 +66,7 @@ import com.jerboa.amAdmin
 import com.jerboa.amMod
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
+import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -557,6 +558,7 @@ fun PostFooterLine(
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -609,6 +611,7 @@ fun PostFooterLine(
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
             onLockPostClick = onLockPostClick,
+            onFeaturePostClick = onFeaturePostClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
@@ -805,6 +808,7 @@ fun PostFooterLinePreview() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -838,6 +842,7 @@ fun PreviewPostListingCard() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -874,6 +879,7 @@ fun PreviewLinkPostListing() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -910,6 +916,7 @@ fun PreviewImagePostListingCard() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -946,6 +953,7 @@ fun PreviewImagePostListingSmallCard() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -982,6 +990,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -1016,6 +1025,7 @@ fun PostListing(
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
@@ -1079,6 +1089,7 @@ fun PostListing(
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
                 onLockPostClick = onLockPostClick,
+                onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1132,6 +1143,7 @@ fun PostListing(
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
                 onLockPostClick = onLockPostClick,
+                onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1528,6 +1540,7 @@ fun PostListingCard(
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
@@ -1605,6 +1618,7 @@ fun PostListingCard(
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
             onLockPostClick = onLockPostClick,
+            onFeaturePostClick = onFeaturePostClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,
