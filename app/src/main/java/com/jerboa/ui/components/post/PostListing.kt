@@ -62,6 +62,8 @@ import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
+import com.jerboa.amAdmin
+import com.jerboa.amMod
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
 import com.jerboa.datatypes.sampleImagePostView
@@ -554,6 +556,7 @@ fun PostFooterLine(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onLockPostClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -579,6 +582,22 @@ fun PostFooterLine(
             )
         }
 
+    val amAdmin =
+        remember(admins) {
+            amAdmin(
+                admins = admins,
+                myId = account.id,
+            )
+        }
+
+    val amMod =
+        remember {
+            amMod(
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
+
     if (showMoreOptions) {
         PostOptionsDropdown(
             postView = postView,
@@ -589,9 +608,12 @@ fun PostFooterLine(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onLockPostClick = onLockPostClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
+            amAdmin = amAdmin,
+            amMod = amMod,
             viewSource = viewSource,
             showViewSource = fromPostActivity,
             scope = scope,
@@ -782,6 +804,7 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onLockPostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -814,6 +837,7 @@ fun PreviewPostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onLockPostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -849,6 +873,7 @@ fun PreviewLinkPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onLockPostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -884,6 +909,7 @@ fun PreviewImagePostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onLockPostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -919,6 +945,7 @@ fun PreviewImagePostListingSmallCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onLockPostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -954,6 +981,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onLockPostClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -987,6 +1015,7 @@ fun PostListing(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onLockPostClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
@@ -1049,6 +1078,7 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onLockPostClick = onLockPostClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1101,6 +1131,7 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onLockPostClick = onLockPostClick,
                 onPersonClick = onPersonClick,
                 onViewSourceClick = {
                     viewSource = !viewSource
@@ -1496,6 +1527,7 @@ fun PostListingCard(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onLockPostClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
@@ -1572,6 +1604,7 @@ fun PostListingCard(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onLockPostClick = onLockPostClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,

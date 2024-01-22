@@ -412,5 +412,7 @@
     <string name="restore_comment">Restore Comment</string>
     <string name="remove_post">Remove Post</string>
     <string name="restore_post">Restore Post</string>
+    <string name="lock_post">Lock Post</string>
+    <string name="unlock_post">Unlock Post</string>
     <string name="type_your_reason">Type your reason</string>
 </resources>
