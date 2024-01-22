@@ -418,5 +418,6 @@
     <string name="downvote_on_left_upvote_on_right_swipe_action_preset">Отриц. - слева, положит. - справа</string>
     <string name="only_right_swipe_action_preset">Только справа</string>
     <string name="only_left_swipe_action_preset">Только слева</string>
+    <string name="only_votes_swipe_action_preset">Только оценки</string>
 
 </resources>

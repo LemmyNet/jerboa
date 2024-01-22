@@ -92,4 +92,9 @@ enum class SwipeToActionPreset(
         emptyList(),
         R.string.only_left_swipe_action_preset,
     ),
+    ONLY_VOTES(
+        listOf(SwipeToActionType.Downvote),
+        listOf(SwipeToActionType.Upvote),
+        R.string.only_votes_swipe_action_preset,
+    ),
 }

@@ -425,4 +425,5 @@
     <string name="feature_in_local">Feature in Local</string>
     <string name="unfeature_in_local">Unfeature in Local</string>
     <string name="swipe_to_action_presets">Preset for swipe gesture</string>
+    <string name="only_votes_swipe_action_preset">Only votes</string>
 </resources>
