@@ -437,5 +437,5 @@ val MIGRATIONS_LIST =
         MIGRATION_25_26,
         MIGRATION_26_25,
         MIGRATION_26_27,
-        MIGRATION_27_26
+        MIGRATION_27_26,
     )

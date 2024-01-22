@@ -19,7 +19,7 @@ enum class SwipeToActionType() {
 
     companion object {
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {
-            val delta = if(actions.size > 2) 0.14f else 0.18f
+            val delta = if (actions.size > 2) 0.14f else 0.18f
             return actions.mapIndexed { index, it ->
                 (0.1f + delta * index)
                     .rangeUntil(if (index == actions.size - 1) 1f else (0.1f + delta * (index + 1))) to it
@@ -59,18 +59,18 @@ enum class SwipeToActionType() {
 enum class SwipeToActionPreset(
     val leftActions: List<SwipeToActionType>,
     val rightActions: List<SwipeToActionType>,
-    val resId: Int
+    val resId: Int,
 ) {
     DISABLED(emptyList(), emptyList(), R.string.disabled_swipe_action_preset),
     DEFAULT(
         listOf(SwipeToActionType.Reply, SwipeToActionType.Save),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Downvote),
-        R.string.default_swipe_action_preset
+        R.string.default_swipe_action_preset,
     ),
     LEFT_DOWNVOTE_RIGHT_UPVOTE(
         listOf(SwipeToActionType.Downvote, SwipeToActionType.Reply),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Save),
-        R.string.downvote_on_left_upvote_on_right_swipe_action_preset
+        R.string.downvote_on_left_upvote_on_right_swipe_action_preset,
     ),
     ONLY_RIGHT(
         emptyList(),
@@ -78,18 +78,18 @@ enum class SwipeToActionPreset(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
             SwipeToActionType.Reply,
-            SwipeToActionType.Save
+            SwipeToActionType.Save,
         ),
-       R.string.only_right_swipe_action_preset
+        R.string.only_right_swipe_action_preset,
     ),
     ONLY_LEFT(
         listOf(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
             SwipeToActionType.Reply,
-            SwipeToActionType.Save
+            SwipeToActionType.Save,
         ),
         emptyList(),
-        R.string.only_left_swipe_action_preset
-    )
+        R.string.only_left_swipe_action_preset,
+    ),
 }

@@ -453,7 +453,7 @@ fun crimson(): Pair<JerboaColorScheme, JerboaColorScheme> {
         JerboaColorScheme(
             material = dark,
             imageHighlight = jerboa_image_highlight,
-            videoHighlight = jerboa_video_highlight
+            videoHighlight = jerboa_video_highlight,
         )
 
     return Pair(jerboaLight, jerboaDark)

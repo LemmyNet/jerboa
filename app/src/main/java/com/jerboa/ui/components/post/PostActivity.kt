@@ -133,7 +133,7 @@ fun PostActivity(
     blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int
+    swipeToActionPreset: Int,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -470,7 +470,7 @@ fun PostActivity(
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
                                     postActionbarMode = postActionbarMode,
-                                    instantScores = instantScores.value
+                                    instantScores = instantScores.value,
                                 )
                             }
 
@@ -693,7 +693,7 @@ fun PostActivity(
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),
-                                        swipeToActionPreset = swipeToActionPreset
+                                        swipeToActionPreset = swipeToActionPreset,
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

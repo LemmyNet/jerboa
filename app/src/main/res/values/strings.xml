@@ -415,7 +415,6 @@
     <string name="lock_post">Lock Post</string>
     <string name="unlock_post">Unlock Post</string>
     <string name="type_your_reason">Type your reason</string>
-    <string name="swipe_to_action_presets">Swipe gesture presets</string>
     <string name="disabled_swipe_action_preset">Disabled</string>
     <string name="default_swipe_action_preset">Default (votes on right, share/reply on left)</string>
     <string name="downvote_on_left_upvote_on_right_swipe_action_preset">Left-right votes</string>

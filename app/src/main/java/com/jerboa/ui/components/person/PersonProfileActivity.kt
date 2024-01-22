@@ -268,7 +268,7 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
-                swipeToActionPreset = swipeToActionPreset
+                swipeToActionPreset = swipeToActionPreset,
             )
         },
     )
@@ -304,7 +304,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int
+    swipeToActionPreset: Int,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -619,7 +619,7 @@ fun UserTabs(
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
-                                    swipeToActionPreset = swipeToActionPreset
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                             else -> {}
@@ -830,7 +830,7 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
-                                    swipeToActionPreset = swipeToActionPreset
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                         }

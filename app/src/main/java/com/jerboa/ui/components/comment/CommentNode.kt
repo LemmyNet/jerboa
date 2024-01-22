@@ -216,7 +216,7 @@ fun LazyListScope.commentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: Int
+    swipeToActionPreset: Int,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -262,38 +262,40 @@ fun LazyListScope.commentNodeItem(
                 )
             }
 
-        val swipeState = rememberSwipeActionState(
-            leftActions = leftActions,
-            rightActions = rightActions,
-            onAction = { action ->
-                when (action) {
-                    SwipeToActionType.Upvote -> {
-                        instantScores.value =
-                            calculateNewInstantScores(
-                                instantScores.value,
-                                voteType = VoteType.Upvote,
-                            )
-                        onUpvoteClick(commentView)
-                    }
+        val swipeState =
+            rememberSwipeActionState(
+                leftActions = leftActions,
+                rightActions = rightActions,
+                onAction = { action ->
+                    when (action) {
+                        SwipeToActionType.Upvote -> {
+                            instantScores.value =
+                                calculateNewInstantScores(
+                                    instantScores.value,
+                                    voteType = VoteType.Upvote,
+                                )
+                            onUpvoteClick(commentView)
+                        }
 
-                    SwipeToActionType.Downvote -> {
-                        instantScores.value =
-                            calculateNewInstantScores(
-                                instantScores.value,
-                                voteType = VoteType.Downvote,
-                            )
-                        onDownvoteClick(commentView)
-                    }
+                        SwipeToActionType.Downvote -> {
+                            instantScores.value =
+                                calculateNewInstantScores(
+                                    instantScores.value,
+                                    voteType = VoteType.Downvote,
+                                )
+                            onDownvoteClick(commentView)
+                        }
 
-                    SwipeToActionType.Save -> {
-                        onSaveClick(commentView)
-                    }
+                        SwipeToActionType.Save -> {
+                            onSaveClick(commentView)
+                        }
 
-                    SwipeToActionType.Reply -> {
-                        onReplyClick(commentView)
+                        SwipeToActionType.Reply -> {
+                            onReplyClick(commentView)
+                        }
                     }
-                }
-            })
+                },
+            )
 
         val content: @Composable RowScope.() -> Unit = {
             AnimatedVisibility(
@@ -303,10 +305,10 @@ fun LazyListScope.commentNodeItem(
             ) {
                 Column(
                     modifier =
-                    Modifier
-                        .padding(
-                            start = offset,
-                        ),
+                        Modifier
+                            .padding(
+                                start = offset,
+                            ),
                 ) {
                     Column(
                         modifier = Modifier.border(start = border),
@@ -314,10 +316,10 @@ fun LazyListScope.commentNodeItem(
                         Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                         Column(
                             modifier =
-                            Modifier.padding(
-                                start = offset2,
-                                end = MEDIUM_PADDING,
-                            ),
+                                Modifier.padding(
+                                    start = offset2,
+                                    end = MEDIUM_PADDING,
+                                ),
                         ) {
                             if (showPostAndCommunityContext) {
                                 PostAndCommunityContextHeader(
@@ -427,7 +429,7 @@ fun LazyListScope.commentNodeItem(
             leftActions = leftActions,
             rightActions = rightActions,
             swipeableContent = content,
-            swipeState = swipeState
+            swipeState = swipeState,
         )
     }
 
@@ -479,7 +481,7 @@ fun LazyListScope.commentNodeItem(
         showScores = showScores,
         admins = admins,
         moderators = moderators,
-        swipeToActionPreset = swipeToActionPreset
+        swipeToActionPreset = swipeToActionPreset,
     )
 }
 
@@ -520,7 +522,7 @@ fun LazyListScope.missingCommentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: Int
+    swipeToActionPreset: Int,
 ) {
     val commentId = node.missingCommentView.commentId
 
@@ -623,7 +625,7 @@ fun LazyListScope.missingCommentNodeItem(
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
         showScores = showScores,
-        swipeToActionPreset = swipeToActionPreset
+        swipeToActionPreset = swipeToActionPreset,
     )
 }
 
@@ -896,7 +898,7 @@ fun CommentNodesPreview() {
         blurNSFW = 1,
         account = AnonAccount,
         showScores = true,
-        swipeToActionPreset = 0
+        swipeToActionPreset = 0,
     )
 }
 

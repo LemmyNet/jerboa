@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.InstantScores
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
-import com.jerboa.feat.SwipeToActionType
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.datatypes.PostFeatureData
@@ -33,6 +32,7 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.feat.SwipeToActionType
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
@@ -86,18 +86,18 @@ fun PostListings(
     showScores: Boolean,
     postActionbarMode: Int,
     showPostAppendRetry: Boolean,
-    swipeToActionPreset: Int
+    swipeToActionPreset: Int,
 ) {
     val leftActions = SwipeToActionPreset.entries[swipeToActionPreset].leftActions
     val rightActions = SwipeToActionPreset.entries[swipeToActionPreset].rightActions
     LazyColumn(
         state = listState,
         modifier =
-        Modifier
-            .padding(padding)
-            .fillMaxSize()
-            .simpleVerticalScrollbar(listState)
-            .testTag("jerboa:posts"),
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .simpleVerticalScrollbar(listState)
+                .testTag("jerboa:posts"),
     ) {
         item(contentType = "aboveContent") {
             contentAboveListings()
@@ -118,38 +118,40 @@ fun PostListings(
                         ),
                     )
                 }
-            val swipeState = rememberSwipeActionState(
-                leftActions = leftActions,
-                rightActions = rightActions,
-                onAction = { action ->
-                    when (action) {
-                        SwipeToActionType.Upvote -> {
-                            onUpvoteClick(postView)
-                            instantScores.value =
-                                calculateNewInstantScores(
-                                    instantScores.value,
-                                    voteType = VoteType.Upvote,
-                                )
-                        }
+            val swipeState =
+                rememberSwipeActionState(
+                    leftActions = leftActions,
+                    rightActions = rightActions,
+                    onAction = { action ->
+                        when (action) {
+                            SwipeToActionType.Upvote -> {
+                                onUpvoteClick(postView)
+                                instantScores.value =
+                                    calculateNewInstantScores(
+                                        instantScores.value,
+                                        voteType = VoteType.Upvote,
+                                    )
+                            }
 
-                        SwipeToActionType.Downvote -> {
-                            onDownvoteClick(postView)
-                            instantScores.value =
-                                calculateNewInstantScores(
-                                    instantScores.value,
-                                    voteType = VoteType.Downvote,
-                                )
-                        }
+                            SwipeToActionType.Downvote -> {
+                                onDownvoteClick(postView)
+                                instantScores.value =
+                                    calculateNewInstantScores(
+                                        instantScores.value,
+                                        voteType = VoteType.Downvote,
+                                    )
+                            }
 
-                        SwipeToActionType.Save -> {
-                            onSaveClick(postView)
-                        }
+                            SwipeToActionType.Save -> {
+                                onSaveClick(postView)
+                            }
 
-                        SwipeToActionType.Reply -> {
-                            onPostClick(postView)
+                            SwipeToActionType.Reply -> {
+                                onPostClick(postView)
+                            }
                         }
-                    }
-                })
+                    },
+                )
 
             val content: @Composable RowScope.() -> Unit = {
                 PostListing(
@@ -197,7 +199,7 @@ fun PostListings(
                     showIfRead = showIfRead,
                     showScores = showScores,
                     postActionbarMode = postActionbarMode,
-                    instantScores = instantScores.value
+                    instantScores = instantScores.value,
                 ).let {
                     if (!postView.read && markAsReadOnScroll) {
                         DisposableEffect(key1 = postView.post.id) {
@@ -214,7 +216,7 @@ fun PostListings(
                 leftActions = leftActions,
                 rightActions = rightActions,
                 swipeableContent = content,
-                swipeState = swipeState
+                swipeState = swipeState,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -278,6 +280,6 @@ fun PreviewPostListings() {
         showScores = true,
         postActionbarMode = 0,
         showPostAppendRetry = false,
-        swipeToActionPreset = 0
+        swipeToActionPreset = 0,
     )
 }

@@ -85,7 +85,7 @@ fun CommunityActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int
+    swipeToActionPreset: Int,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -410,7 +410,7 @@ fun CommunityActivity(
                             showScores = siteViewModel.showScores(),
                             postActionbarMode = postActionbarMode,
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
-                            swipeToActionPreset = swipeToActionPreset
+                            swipeToActionPreset = swipeToActionPreset,
                         )
                     }
 

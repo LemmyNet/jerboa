@@ -65,12 +65,12 @@ fun SwipeToAction(
 
     SwipeToDismiss(
         directions =
-        remember(leftActions, rightActions) {
-            setOfNotNull(
-                if (leftActions.isNotEmpty()) DismissDirection.StartToEnd else null,
-                if (rightActions.isNotEmpty()) DismissDirection.EndToStart else null,
-            )
-        },
+            remember(leftActions, rightActions) {
+                setOfNotNull(
+                    if (leftActions.isNotEmpty()) DismissDirection.StartToEnd else null,
+                    if (rightActions.isNotEmpty()) DismissDirection.EndToStart else null,
+                )
+            },
         state = swipeState,
         background = {
             val lastSwipeAction = remember { mutableStateOf<SwipeToActionType?>(null) }
@@ -93,16 +93,16 @@ fun SwipeToAction(
             )
             Box(
                 modifier =
-                Modifier
-                    .fillMaxSize(),
+                    Modifier
+                        .fillMaxSize(),
             ) {
                 Box(
                     modifier =
-                    Modifier
-                        .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
-                        .fillMaxHeight()
-                        .background(color = color)
-                        .align(if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.TopEnd else Alignment.TopStart),
+                        Modifier
+                            .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
+                            .fillMaxHeight()
+                            .background(color = color)
+                            .align(if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.TopEnd else Alignment.TopStart),
                     contentAlignment = if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.CenterStart else Alignment.CenterEnd,
                 ) {
                     val tint = Color.White

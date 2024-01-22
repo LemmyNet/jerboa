@@ -136,7 +136,7 @@ fun LookAndFeelActivity(
                 postActionbarMode = postActionbarMode.value,
                 autoPlayGifs = autoPlayGifs.value,
                 postNavigationGestureMode = postNavigationGestureModeState.value,
-                swipeToActionPreset = swipeToActionPreset.value
+                swipeToActionPreset = swipeToActionPreset.value,
             ),
         )
     }
@@ -149,9 +149,9 @@ fun LookAndFeelActivity(
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .verticalScroll(scrollState)
-                    .padding(padding),
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .padding(padding),
             ) {
                 SettingsListDropdown(
                     title = {
