@@ -3,6 +3,7 @@ package com.jerboa.ui.components.post.composables
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.Delete
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
@@ -56,9 +58,12 @@ fun PostOptionsDropdown(
     onDeletePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
     onRemoveClick: (PostView) -> Unit,
+    onLockPostClick: (PostView) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
+    amMod: Boolean,
+    amAdmin: Boolean,
     viewSource: Boolean,
     showViewSource: Boolean,
     scope: CoroutineScope,
@@ -404,6 +409,7 @@ fun PostOptionsDropdown(
 
             if (canMod) {
                 Divider()
+
                 val (removeText, removeIcon) =
                     if (postView.post.removed) {
                         Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
@@ -417,6 +423,25 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         onRemoveClick(postView)
+                    },
+                )
+            }
+
+            // You can do these actions on mods above you
+            if (amMod || amAdmin) {
+                val (lockText, lockIcon) =
+                    if (postView.post.locked) {
+                        Pair(stringResource(R.string.unlock_post), Icons.Outlined.LockOpen)
+                    } else {
+                        Pair(stringResource(R.string.lock_post), Icons.Outlined.CommentsDisabled)
+                    }
+
+                PopupMenuItem(
+                    text = lockText,
+                    icon = lockIcon,
+                    onClick = {
+                        onDismissRequest()
+                        onLockPostClick(postView)
                     },
                 )
             }

@@ -63,6 +63,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -332,6 +333,23 @@ fun CommunityActivity(
                             },
                             onRemoveClick = { pv ->
                                 appState.toPostRemove(post = pv.post)
+                            },
+                            onLockPostClick = { pv ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
+                                    communityViewModel.lockPost(
+                                        LockPost(
+                                            post_id = pv.post.id,
+                                            locked = !pv.post.locked,
+                                        ),
+                                    )
+                                }
                             },
                             onCommunityClick = { community ->
                                 appState.toCommunity(id = community.id)

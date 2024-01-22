@@ -30,6 +30,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
@@ -173,6 +174,20 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun lockPost(form: LockPost) {
+        viewModelScope.launch {
+            lockPostRes = ApiState.Loading
+            lockPostRes = API.getInstance().lockPost(form).toApiState()
+            when (val lockPost = lockPostRes) {
+                is ApiState.Success -> {
+                    updatePost(lockPost.data.post_view)
                 }
 
                 else -> {}

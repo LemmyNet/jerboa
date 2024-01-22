@@ -120,7 +120,11 @@ fun BottomAppBarAll(
         }
     }
 
-    NavigationBar {
+    // If descriptions are hidden, make the bar shorter
+    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.height(56.dp)
+    NavigationBar(
+        modifier = modifier,
+    ) {
         for (tab in NavTab.entries) {
             val selected = tab == selectedTab
             NavigationBarItem(
@@ -163,6 +167,17 @@ fun BottomAppBarAllPreview() {
         onSelect = {},
         unreadCounts = 30,
         showTextDescriptionsInNavbar = true,
+    )
+}
+
+@Preview
+@Composable
+fun BottomAppBarAllNoDescriptionsPreview() {
+    BottomAppBarAll(
+        selectedTab = NavTab.Home,
+        onSelect = {},
+        unreadCounts = 30,
+        showTextDescriptionsInNavbar = false,
     )
 }
 

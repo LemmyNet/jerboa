@@ -65,6 +65,7 @@ import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -342,6 +343,22 @@ fun MainPostListingsContent(
             },
             onRemoveClick = { pv ->
                 appState.toPostRemove(post = pv.post)
+            },
+            onLockPostClick = { pv ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.lockPost(
+                        LockPost(
+                            post_id = pv.post.id,
+                            locked = !pv.post.locked,
+                        ),
+                    )
+                }
             },
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)

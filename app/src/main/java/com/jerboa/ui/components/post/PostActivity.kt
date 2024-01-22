@@ -395,6 +395,23 @@ fun PostActivity(
                                     onRemoveClick = { pv ->
                                         appState.toPostRemove(post = pv.post)
                                     },
+                                    onLockPostClick = { pv ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
+                                            postViewModel.lockPost(
+                                                LockPost(
+                                                    post_id = pv.post.id,
+                                                    locked = !pv.post.locked,
+                                                ),
+                                            )
+                                        }
+                                    },
                                     onPersonClick = appState::toProfile,
                                     showReply = true, // Do nothing
                                     fullBody = true,
