@@ -421,4 +421,8 @@
     <string name="downvote_on_left_upvote_on_right_swipe_action_preset">Left-right votes</string>
     <string name="only_right_swipe_action_preset">Only right swipe</string>
     <string name="only_left_swipe_action_preset">Only left swipe</string>
+    <string name="feature_in_community">Feature in Community</string>
+    <string name="unfeature_in_community">Unfeature in Community</string>
+    <string name="feature_in_local">Feature in Local</string>
+    <string name="unfeature_in_local">Unfeature in Local</string>
 </resources>

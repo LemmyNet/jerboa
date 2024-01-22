@@ -27,6 +27,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
+import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
@@ -62,6 +63,7 @@ fun PostListings(
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
+    onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     loadMorePosts: () -> Unit,
@@ -180,6 +182,7 @@ fun PostListings(
                     onReportClick = onReportClick,
                     onRemoveClick = onRemoveClick,
                     onLockPostClick = onLockPostClick,
+                    onFeaturePostClick = onFeaturePostClick,
                     onPersonClick = onPersonClick,
                     showCommunityName = showCommunityName,
                     fullBody = false,
@@ -254,6 +257,7 @@ fun PreviewPostListings() {
         onReportClick = {},
         onRemoveClick = {},
         onLockPostClick = {},
+        onFeaturePostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         loadMorePosts = {},

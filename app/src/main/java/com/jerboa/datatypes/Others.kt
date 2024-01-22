@@ -19,7 +19,9 @@ import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 
 
 data class CommentSortData(
@@ -187,3 +189,9 @@ fun getLocalizedStringForInboxTab(
         }
     return returnString
 }
+
+data class PostFeatureData(
+    val post: Post,
+    val type: PostFeatureType,
+    val featured: Boolean,
+)
