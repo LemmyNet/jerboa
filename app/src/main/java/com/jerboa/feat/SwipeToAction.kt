@@ -21,8 +21,8 @@ enum class SwipeToActionType() {
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {
             val delta = if (actions.size > 2) 0.14f else 0.18f
             return actions.mapIndexed { index, it ->
-                (0.02f + delta * index)
-                    .rangeUntil(if (index == actions.size - 1) 1f else (0.1f + delta * (index + 1))) to it
+                (0.09f + delta * index)
+                    .rangeUntil(if (index == actions.size - 1) 1f else (0.09f + delta * (index + 1))) to it
             }
         }
 
