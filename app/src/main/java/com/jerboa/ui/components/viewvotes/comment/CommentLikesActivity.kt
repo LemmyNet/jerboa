@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.view_votes.comment
+package com.jerboa.ui.components.viewvotes.comment
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,7 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
-import com.jerboa.ui.components.view_votes.ViewVotesBody
+import com.jerboa.ui.components.viewvotes.ViewVotesBody
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)

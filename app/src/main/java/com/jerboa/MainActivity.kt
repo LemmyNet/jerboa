@@ -70,8 +70,8 @@ import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
-import com.jerboa.ui.components.view_votes.comment.CommentLikesActivity
-import com.jerboa.ui.components.view_votes.post.PostLikesActivity
+import com.jerboa.ui.components.viewvotes.comment.CommentLikesActivity
+import com.jerboa.ui.components.viewvotes.post.PostLikesActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 

@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.view_votes
+package com.jerboa.ui.components.viewvotes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
