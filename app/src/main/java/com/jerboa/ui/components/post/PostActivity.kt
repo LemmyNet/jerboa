@@ -430,6 +430,7 @@ fun PostActivity(
                                             )
                                         }
                                     },
+                                    onViewVotesClick = appState::toPostLikes,
                                     onPersonClick = appState::toProfile,
                                     showReply = true, // Do nothing
                                     fullBody = true,
@@ -595,6 +596,7 @@ fun PostActivity(
                                             }
                                         },
                                         onPersonClick = appState::toProfile,
+                                        onViewVotesClick = appState::toCommentLikes,
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->

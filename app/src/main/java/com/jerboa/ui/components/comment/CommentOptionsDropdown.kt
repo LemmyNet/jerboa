@@ -16,14 +16,17 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
 import com.jerboa.copyToClipboard
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -40,8 +43,11 @@ fun CommentOptionsDropdown(
     onBlockCreatorClick: (Person) -> Unit,
     onReportClick: (CommentView) -> Unit,
     onRemoveClick: (CommentView) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
+    amMod: Boolean,
+    amAdmin: Boolean,
     viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
@@ -171,25 +177,37 @@ fun CommentOptionsDropdown(
                     onReportClick(commentView)
                 },
             )
+        }
 
-            if (canMod) {
-                Divider()
-                val (removeText, removeIcon) =
-                    if (commentView.comment.removed) {
-                        Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
-                    } else {
-                        Pair(stringResource(R.string.remove_comment), Icons.Outlined.Gavel)
-                    }
+        // You can do these actions on mods above you
+        if (amMod || amAdmin) {
+            PopupMenuItem(
+                text = stringResource(R.string.view_votes),
+                icon = ImageVector.vectorResource(R.drawable.up_filled),
+                onClick = {
+                    onDismissRequest()
+                    onViewVotesClick(commentView.comment.id)
+                },
+            )
+        }
 
-                PopupMenuItem(
-                    text = removeText,
-                    icon = removeIcon,
-                    onClick = {
-                        onDismissRequest()
-                        onRemoveClick(commentView)
-                    },
-                )
-            }
+        if (canMod) {
+            Divider()
+            val (removeText, removeIcon) =
+                if (commentView.comment.removed) {
+                    Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
+                } else {
+                    Pair(stringResource(R.string.remove_comment), Icons.Outlined.Gavel)
+                }
+
+            PopupMenuItem(
+                text = removeText,
+                icon = removeIcon,
+                onClick = {
+                    onDismissRequest()
+                    onRemoveClick(commentView)
+                },
+            )
         }
     }
 }

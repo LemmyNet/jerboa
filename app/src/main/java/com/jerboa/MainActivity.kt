@@ -70,6 +70,8 @@ import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
+import com.jerboa.ui.components.view_votes.comment.CommentLikesActivity
+import com.jerboa.ui.components.view_votes.post.PostLikesActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 
@@ -596,14 +598,15 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.POST_LIKES,
                         arguments =
-                        listOf(
-                            navArgument(Route.PostLikesArgs.ID) {
-                                type = Route.PostLikesArgs.ID_TYPE
-                            },
-                        ),
+                            listOf(
+                                navArgument(Route.PostLikesArgs.ID) {
+                                    type = Route.PostLikesArgs.ID_TYPE
+                                },
+                            ),
                     ) {
                         val args = Route.PostLikesArgs(it)
                         PostLikesActivity(
+                            appState = appState,
                             postId = args.id,
                             onBack = appState::navigateUp,
                         )
@@ -612,14 +615,15 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMENT_LIKES,
                         arguments =
-                        listOf(
-                            navArgument(Route.CommentLikesArgs.ID) {
-                                type = Route.CommentLikesArgs.ID_TYPE
-                            },
-                        ),
+                            listOf(
+                                navArgument(Route.CommentLikesArgs.ID) {
+                                    type = Route.CommentLikesArgs.ID_TYPE
+                                },
+                            ),
                     ) {
                         val args = Route.CommentLikesArgs(it)
                         CommentLikesActivity(
+                            appState = appState,
                             commentId = args.id,
                             onBack = appState::navigateUp,
                         )

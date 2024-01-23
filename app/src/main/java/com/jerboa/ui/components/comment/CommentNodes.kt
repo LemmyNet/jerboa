@@ -12,6 +12,7 @@ import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.db.entity.Account
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
@@ -44,6 +45,7 @@ fun CommentNodes(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -83,6 +85,7 @@ fun CommentNodes(
             onCommentLinkClick = onCommentLinkClick,
             onFetchChildrenClick = onFetchChildrenClick,
             onPersonClick = onPersonClick,
+            onViewVotesClick = onViewVotesClick,
             onHeaderClick = onHeaderClick,
             onHeaderLongClick = onHeaderLongClick,
             onCommunityClick = onCommunityClick,
@@ -127,6 +130,7 @@ fun LazyListScope.commentNodeItems(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -163,6 +167,7 @@ fun LazyListScope.commentNodeItems(
                     onMarkAsReadClick = onMarkAsReadClick,
                     onCommentClick = onCommentClick,
                     onPersonClick = onPersonClick,
+                    onViewVotesClick = onViewVotesClick,
                     onHeaderClick = onHeaderClick,
                     onHeaderLongClick = onHeaderLongClick,
                     onCommunityClick = onCommunityClick,
@@ -203,6 +208,7 @@ fun LazyListScope.commentNodeItems(
                     onMarkAsReadClick = onMarkAsReadClick,
                     onCommentClick = onCommentClick,
                     onPersonClick = onPersonClick,
+                    onViewVotesClick = onViewVotesClick,
                     onHeaderClick = onHeaderClick,
                     onHeaderLongClick = onHeaderLongClick,
                     onCommunityClick = onCommunityClick,

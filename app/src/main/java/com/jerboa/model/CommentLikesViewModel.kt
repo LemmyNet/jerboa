@@ -12,13 +12,13 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.appendData
-import it.vercruysse.lemmyapi.v0x19.datatypes.ListPostLikes
-import it.vercruysse.lemmyapi.v0x19.datatypes.ListPostLikesResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.ListCommentLikes
+import it.vercruysse.lemmyapi.v0x19.datatypes.ListCommentLikesResponse
 import kotlinx.coroutines.launch
 
-class PostLikesViewModel(val id: PostId) : ViewModel() {
-    var likesRes: ApiState<ListPostLikesResponse> by mutableStateOf(ApiState.Empty)
+class CommentLikesViewModel(val id: CommentId) : ViewModel() {
+    var likesRes: ApiState<ListCommentLikesResponse> by mutableStateOf(ApiState.Empty)
         private set
     private var page by mutableIntStateOf(1)
 
@@ -30,16 +30,16 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
         page = 1
     }
 
-    fun getLikes(state: ApiState<ListPostLikesResponse> = ApiState.Loading) {
+    fun getLikes(state: ApiState<ListCommentLikesResponse> = ApiState.Loading) {
         viewModelScope.launch {
             likesRes = state
-            likesRes = API.getInstance().listPostLikes(getForm()).toApiState()
+            likesRes = API.getInstance().listCommentLikes(getForm()).toApiState()
         }
     }
 
-    private fun getForm(): ListPostLikes {
-        return ListPostLikes(
-            post_id = id,
+    private fun getForm(): ListCommentLikes {
+        return ListCommentLikes(
+            comment_id = id,
             page = page,
         )
     }
@@ -53,14 +53,14 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
             }
 
             page += 1
-            val newRes = API.getInstance().listPostLikes(getForm()).toApiState()
+            val newRes = API.getInstance().listCommentLikes(getForm()).toApiState()
 
             likesRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        val appended = appendData(oldRes.data.post_likes, newRes.data.post_likes)
+                        val appended = appendData(oldRes.data.comment_likes, newRes.data.comment_likes)
 
-                        ApiState.Success(oldRes.data.copy(post_likes = appended))
+                        ApiState.Success(oldRes.data.copy(comment_likes = appended))
                     }
 
                     else -> {
@@ -72,14 +72,14 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
 
     companion object {
         class Factory(
-            private val id: PostId,
+            private val id: CommentId,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                return PostLikesViewModel(id) as T
+                return CommentLikesViewModel(id) as T
             }
         }
     }

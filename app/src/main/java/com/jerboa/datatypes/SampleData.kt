@@ -472,6 +472,7 @@ val sampleCommunityAggregates =
         published = "2022-01-02T04:02:44.592929",
         community_id = 834,
         subscribers = 52,
+        subscribers_local = 21,
         posts = 82,
         comments = 987,
         users_active_day = 28,

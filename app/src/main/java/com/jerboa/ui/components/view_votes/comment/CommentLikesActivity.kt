@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.view_votes.post
+package com.jerboa.ui.components.view_votes.comment
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.isScrolledToEnd
-import com.jerboa.model.PostLikesViewModel
+import com.jerboa.model.CommentLikesViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
@@ -31,23 +31,23 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.view_votes.ViewVotesBody
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun PostLikesActivity(
+fun CommentLikesActivity(
     appState: JerboaAppState,
-    postId: PostId,
+    commentId: CommentId,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to post likes activity")
+    Log.d("jerboa", "got to comment likes activity")
 
-    val postLikesViewModel: PostLikesViewModel = viewModel(factory = PostLikesViewModel.Companion.Factory(postId))
+    val commentLikesViewModel: CommentLikesViewModel = viewModel(factory = CommentLikesViewModel.Companion.Factory(commentId))
 
     Scaffold(
         topBar = {
             SimpleTopAppBar(
-                text = stringResource(R.string.post_votes),
+                text = stringResource(R.string.comment_votes),
                 onClickBack = onBack,
             )
         },
@@ -65,18 +65,18 @@ fun PostLikesActivity(
             // act when end of list reached
             if (endOfListReached) {
                 LaunchedEffect(Unit) {
-                    postLikesViewModel.appendLikes()
+                    commentLikesViewModel.appendLikes()
                 }
             }
 
-            val refreshing = postLikesViewModel.likesRes.isRefreshing()
+            val refreshing = commentLikesViewModel.likesRes.isRefreshing()
 
             val refreshState =
                 rememberPullRefreshState(
                     refreshing = refreshing,
                     onRefresh = {
-                        postLikesViewModel.resetPage()
-                        postLikesViewModel.getLikes(ApiState.Refreshing)
+                        commentLikesViewModel.resetPage()
+                        commentLikesViewModel.getLikes(ApiState.Refreshing)
                     },
                 )
 
@@ -89,15 +89,15 @@ fun PostLikesActivity(
                         .zIndex(100F),
                 )
 
-                if (postLikesViewModel.likesRes.isLoading()) {
+                if (commentLikesViewModel.likesRes.isLoading()) {
                     LoadingBar()
                 }
 
-                when (val likesRes = postLikesViewModel.likesRes) {
+                when (val likesRes = commentLikesViewModel.likesRes) {
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(likesRes.msg)
                     is ApiState.Holder -> {
-                        val likes = likesRes.data.post_likes
+                        val likes = likesRes.data.comment_likes
                         ViewVotesBody(
                             likes = likes,
                             listState = listState,

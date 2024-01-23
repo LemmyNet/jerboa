@@ -47,6 +47,8 @@ import com.jerboa.InstantScores
 import com.jerboa.MissingCommentNode
 import com.jerboa.R
 import com.jerboa.VoteType
+import com.jerboa.amAdmin
+import com.jerboa.amMod
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
@@ -191,6 +193,7 @@ fun LazyListScope.commentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -357,6 +360,7 @@ fun LazyListScope.commentNodeItem(
                                         onRemoveClick = onRemoveClick,
                                         onCommentLinkClick = onCommentLinkClick,
                                         onPersonClick = onPersonClick,
+                                        onViewVotesClick = onViewVotesClick,
                                         onBlockCreatorClick = onBlockCreatorClick,
                                         onClick = {
                                             toggleExpanded(commentId)
@@ -410,6 +414,7 @@ fun LazyListScope.commentNodeItem(
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
+        onViewVotesClick = onViewVotesClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
@@ -448,6 +453,7 @@ fun LazyListScope.missingCommentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -554,6 +560,7 @@ fun LazyListScope.missingCommentNodeItem(
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
+        onViewVotesClick = onViewVotesClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
@@ -683,6 +690,7 @@ fun CommentFooterLine(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     account: Account,
@@ -690,6 +698,22 @@ fun CommentFooterLine(
     viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
+
+    val amAdmin =
+        remember(admins) {
+            amAdmin(
+                admins = admins,
+                myId = account.id,
+            )
+        }
+
+    val amMod =
+        remember {
+            amMod(
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
 
     val canMod =
         remember {
@@ -713,8 +737,11 @@ fun CommentFooterLine(
             onBlockCreatorClick = onBlockCreatorClick,
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
+            onViewVotesClick = onViewVotesClick,
             isCreator = account.id == commentView.creator.id,
             canMod = canMod,
+            amMod = amMod,
+            amAdmin = amAdmin,
             viewSource = viewSource,
         )
     }
@@ -826,6 +853,7 @@ fun CommentNodesPreview() {
         onRemoveClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
+        onViewVotesClick = {},
         onHeaderClick = {},
         onHeaderLongClick = {},
         onCommunityClick = {},

@@ -184,7 +184,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.3-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.4-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     // Ktor uses SLF4J
     implementation("org.slf4j:slf4j-api:2.0.9")

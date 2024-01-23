@@ -21,9 +21,11 @@ import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.PostType
 import com.jerboa.R
@@ -46,6 +48,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,6 +67,7 @@ fun PostOptionsDropdown(
     onRemoveClick: (PostView) -> Unit,
     onLockPostClick: (PostView) -> Unit,
     onFeaturePostClick: (PostFeatureData) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
@@ -394,7 +398,13 @@ fun PostOptionsDropdown(
                         onClick = {
                             onDismissRequest()
                             scope.launch(Dispatchers.IO) {
-                                val resp = api.blockInstance(BlockInstance(postView.community.instance_id, true))
+                                val resp =
+                                    api.blockInstance(
+                                        BlockInstance(
+                                            postView.community.instance_id,
+                                            true,
+                                        ),
+                                    )
                                 withContext(Dispatchers.Main) {
                                     showBlockCommunityToast(resp, instance, ctx)
                                 }
@@ -412,90 +422,100 @@ fun PostOptionsDropdown(
                     onReportClick(postView)
                 },
             )
+        }
 
-            if (canMod) {
-                Divider()
+        if (canMod) {
+            Divider()
 
-                val (removeText, removeIcon) =
-                    if (postView.post.removed) {
-                        Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
-                    } else {
-                        Pair(stringResource(R.string.remove_post), Icons.Outlined.Gavel)
-                    }
+            val (removeText, removeIcon) =
+                if (postView.post.removed) {
+                    Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
+                } else {
+                    Pair(stringResource(R.string.remove_post), Icons.Outlined.Gavel)
+                }
 
-                PopupMenuItem(
-                    text = removeText,
-                    icon = removeIcon,
-                    onClick = {
-                        onDismissRequest()
-                        onRemoveClick(postView)
-                    },
-                )
-            }
+            PopupMenuItem(
+                text = removeText,
+                icon = removeIcon,
+                onClick = {
+                    onDismissRequest()
+                    onRemoveClick(postView)
+                },
+            )
+        }
 
-            // You can do these actions on mods above you
-            if (amMod || amAdmin) {
-                val (lockText, lockIcon) =
-                    if (postView.post.locked) {
-                        Pair(stringResource(R.string.unlock_post), Icons.Outlined.LockOpen)
-                    } else {
-                        Pair(stringResource(R.string.lock_post), Icons.Outlined.CommentsDisabled)
-                    }
+        // You can do these actions on mods above you
+        if (amMod || amAdmin) {
+            PopupMenuItem(
+                text = stringResource(R.string.view_votes),
+                icon = ImageVector.vectorResource(R.drawable.up_filled),
+                onClick = {
+                    onDismissRequest()
+                    onViewVotesClick(postView.post.id)
+                },
+            )
 
-                PopupMenuItem(
-                    text = lockText,
-                    icon = lockIcon,
-                    onClick = {
-                        onDismissRequest()
-                        onLockPostClick(postView)
-                    },
-                )
-                val (featureInCommunityText, featureIconUsed) =
-                    if (postView.post.featured_community) {
-                        Pair(stringResource(R.string.unfeature_in_community), unFeatureIcon)
-                    } else {
-                        Pair(stringResource(R.string.feature_in_community), featureIcon)
-                    }
+            val (lockText, lockIcon) =
+                if (postView.post.locked) {
+                    Pair(stringResource(R.string.unlock_post), Icons.Outlined.LockOpen)
+                } else {
+                    Pair(stringResource(R.string.lock_post), Icons.Outlined.CommentsDisabled)
+                }
 
-                PopupMenuItem(
-                    text = featureInCommunityText,
-                    icon = featureIconUsed,
-                    onClick = {
-                        onDismissRequest()
-                        onFeaturePostClick(
-                            PostFeatureData(
-                                post = postView.post,
-                                featured = postView.post.featured_community,
-                                type = PostFeatureType.Community,
-                            ),
-                        )
-                    },
-                )
-            }
+            PopupMenuItem(
+                text = lockText,
+                icon = lockIcon,
+                onClick = {
+                    onDismissRequest()
+                    onLockPostClick(postView)
+                },
+            )
 
-            if (amAdmin) {
-                val (featureInLocalText, featureIconUsed) =
-                    if (postView.post.featured_local) {
-                        Pair(stringResource(R.string.unfeature_in_local), unFeatureIcon)
-                    } else {
-                        Pair(stringResource(R.string.feature_in_local), featureIcon)
-                    }
+            val (featureInCommunityText, featureIconUsed) =
+                if (postView.post.featured_community) {
+                    Pair(stringResource(R.string.unfeature_in_community), unFeatureIcon)
+                } else {
+                    Pair(stringResource(R.string.feature_in_community), featureIcon)
+                }
 
-                PopupMenuItem(
-                    text = featureInLocalText,
-                    icon = featureIconUsed,
-                    onClick = {
-                        onDismissRequest()
-                        onFeaturePostClick(
-                            PostFeatureData(
-                                post = postView.post,
-                                featured = postView.post.featured_local,
-                                type = PostFeatureType.Local,
-                            ),
-                        )
-                    },
-                )
-            }
+            PopupMenuItem(
+                text = featureInCommunityText,
+                icon = featureIconUsed,
+                onClick = {
+                    onDismissRequest()
+                    onFeaturePostClick(
+                        PostFeatureData(
+                            post = postView.post,
+                            featured = postView.post.featured_community,
+                            type = PostFeatureType.Community,
+                        ),
+                    )
+                },
+            )
+        }
+
+        if (amAdmin) {
+            val (featureInLocalText, featureIconUsed) =
+                if (postView.post.featured_local) {
+                    Pair(stringResource(R.string.unfeature_in_local), unFeatureIcon)
+                } else {
+                    Pair(stringResource(R.string.feature_in_local), featureIcon)
+                }
+
+            PopupMenuItem(
+                text = featureInLocalText,
+                icon = featureIconUsed,
+                onClick = {
+                    onDismissRequest()
+                    onFeaturePostClick(
+                        PostFeatureData(
+                            post = postView.post,
+                            featured = postView.post.featured_local,
+                            type = PostFeatureType.Local,
+                        ),
+                    )
+                },
+            )
         }
     }
 }

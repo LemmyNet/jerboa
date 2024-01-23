@@ -204,7 +204,7 @@ object Route {
 
     class CommentLikesArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -218,7 +218,7 @@ object Route {
 
     class PostLikesArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-                this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
 
         companion object {
             const val ID = "id"

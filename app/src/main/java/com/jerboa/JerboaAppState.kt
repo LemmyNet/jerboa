@@ -22,10 +22,12 @@ import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 import kotlinx.coroutines.CoroutineScope
@@ -147,6 +149,14 @@ class JerboaAppState(
         saved: Boolean = false,
     ) {
         navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
+    }
+
+    fun toPostLikes(postId: PostId) {
+        navController.navigate(Route.PostLikesArgs.makeRoute(id = "$postId"))
+    }
+
+    fun toCommentLikes(commentId: CommentId) {
+        navController.navigate(Route.CommentLikesArgs.makeRoute(id = "$commentId"))
     }
 
     fun toCommunityList(select: Boolean = Route.CommunityListArgs.SELECT_DEFAULT) {

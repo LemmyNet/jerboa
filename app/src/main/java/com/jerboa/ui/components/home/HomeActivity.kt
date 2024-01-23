@@ -378,6 +378,8 @@ fun MainPostListingsContent(
                     )
                 }
             },
+            onViewPostVotesClick = appState::toPostLikes,
+            onViewCommentVotesClick = appState::toCommentLikes,
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)
             },

@@ -30,9 +30,11 @@ import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -53,6 +55,8 @@ fun PostListings(
     onRemoveClick: (postView: PostView) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
+    onViewPostVotesClick: (PostId) -> Unit,
+    onViewCommentVotesClick: (CommentId) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     loadMorePosts: () -> Unit,
@@ -110,6 +114,7 @@ fun PostListings(
                 onRemoveClick = onRemoveClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
+                onViewVotesClick = onViewPostVotesClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -177,6 +182,8 @@ fun PreviewPostListings() {
         onRemoveClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewPostVotesClick = {},
+        onViewCommentVotesClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         loadMorePosts = {},

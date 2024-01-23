@@ -47,6 +47,7 @@ class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) 
                         CommunityAggregates(
                             community_id = cfv.community.id,
                             subscribers = 0,
+                            subscribers_local = 0,
                             posts = 0,
                             comments = 0,
                             published = "",
