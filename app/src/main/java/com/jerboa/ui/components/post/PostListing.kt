@@ -66,6 +66,7 @@ import com.jerboa.amAdmin
 import com.jerboa.amMod
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
@@ -172,7 +173,8 @@ fun PostHeaderLine(
                             person = postView.creator,
                             onClick = onPersonClick,
                             showTags = true,
-                            isPostCreator = false, // Set this to false, we already know this
+                            // Set this to false, we already know this
+                            isPostCreator = false,
                             isModerator = postView.creator_is_moderator,
                             isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,
@@ -557,6 +559,8 @@ fun PostFooterLine(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -575,7 +579,7 @@ fun PostFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
+        remember(admins) {
             canMod(
                 creatorId = postView.creator.id,
                 admins = admins,
@@ -610,6 +614,8 @@ fun PostFooterLine(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
             onViewSourceClick = onViewSourceClick,
@@ -807,6 +813,8 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onCommunityClick = {},
@@ -841,6 +849,8 @@ fun PreviewPostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onPersonClick = {},
@@ -878,6 +888,8 @@ fun PreviewLinkPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onPersonClick = {},
@@ -915,6 +927,8 @@ fun PreviewImagePostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onPersonClick = {},
@@ -952,6 +966,8 @@ fun PreviewImagePostListingSmallCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onPersonClick = {},
@@ -989,6 +1005,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onPersonClick = {},
@@ -1024,6 +1042,8 @@ fun PostListing(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -1088,6 +1108,8 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
@@ -1142,6 +1164,8 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
                 onPersonClick = onPersonClick,
@@ -1539,6 +1563,8 @@ fun PostListingCard(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -1617,6 +1643,8 @@ fun PostListingCard(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
             onCommunityClick = onCommunityClick,

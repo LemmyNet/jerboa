@@ -10,7 +10,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
@@ -22,6 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
 import com.jerboa.copyToClipboard
+import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
+import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
@@ -40,6 +43,8 @@ fun CommentOptionsDropdown(
     onBlockCreatorClick: (Person) -> Unit,
     onReportClick: (CommentView) -> Unit,
     onRemoveClick: (CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
     viewSource: Boolean,
@@ -178,7 +183,7 @@ fun CommentOptionsDropdown(
                     if (commentView.comment.removed) {
                         Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
                     } else {
-                        Pair(stringResource(R.string.remove_comment), Icons.Outlined.Gavel)
+                        Pair(stringResource(R.string.remove_comment), Icons.Outlined.GppBad)
                     }
 
                 PopupMenuItem(
@@ -189,6 +194,20 @@ fun CommentOptionsDropdown(
                         onRemoveClick(commentView)
                     },
                 )
+                BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
+
+                // Only show ban from community button if its a local community
+                if (commentView.community.local) {
+                    BanFromCommunityPopupMenuItem(
+                        BanFromCommunityData(
+                            person = commentView.creator,
+                            community = commentView.community,
+                            banned = commentView.creator_banned_from_community,
+                        ),
+                        onDismissRequest,
+                        onBanFromCommunityClick,
+                    )
+                }
             }
         }
     }

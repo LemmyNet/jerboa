@@ -107,7 +107,8 @@ fun PrivateMessage(
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    myPersonId: Int, // Required so we know the from / to
+    // Required so we know the from / to
+    myPersonId: Int,
     account: Account,
     showAvatar: Boolean,
 ) {

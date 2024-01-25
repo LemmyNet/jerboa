@@ -48,6 +48,7 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
@@ -61,6 +62,8 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.ui.components.ban.BanFromCommunityReturn
+import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -94,6 +97,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -136,6 +140,8 @@ fun PersonProfileActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, personProfileViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
+    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, personProfileViewModel::updateBanned)
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, personProfileViewModel::updateBannedFromCommunity)
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         when (val res = personProfileViewModel.personDetailsRes) {
@@ -546,6 +552,12 @@ fun UserTabs(
                                     onRemoveClick = { pv ->
                                         appState.toPostRemove(post = pv.post)
                                     },
+                                    onBanPersonClick = { p ->
+                                        appState.toBanPerson(p)
+                                    },
+                                    onBanFromCommunityClick = { d ->
+                                        appState.toBanFromCommunity(banData = d)
+                                    },
                                     onLockPostClick = { pv ->
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
@@ -793,6 +805,12 @@ fun UserTabs(
                                     },
                                     onRemoveClick = { cv ->
                                         appState.toCommentRemove(comment = cv.comment)
+                                    },
+                                    onBanPersonClick = { p ->
+                                        appState.toBanPerson(p)
+                                    },
+                                    onBanFromCommunityClick = { d ->
+                                        appState.toBanFromCommunity(banData = d)
                                     },
                                     onCommentLinkClick = { cv ->
                                         appState.toComment(id = cv.comment.id)

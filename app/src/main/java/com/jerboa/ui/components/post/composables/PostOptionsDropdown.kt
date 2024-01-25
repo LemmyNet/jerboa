@@ -12,7 +12,7 @@ import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
-import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Person
@@ -30,10 +30,13 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.isMedia
+import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
+import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.blockCommunity
 import com.jerboa.util.blockPerson
@@ -45,6 +48,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +66,8 @@ fun PostOptionsDropdown(
     onDeletePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
     onRemoveClick: (PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (PostView) -> Unit,
     onFeaturePostClick: (PostFeatureData) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -420,7 +426,7 @@ fun PostOptionsDropdown(
                     if (postView.post.removed) {
                         Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
                     } else {
-                        Pair(stringResource(R.string.remove_post), Icons.Outlined.Gavel)
+                        Pair(stringResource(R.string.remove_post), Icons.Outlined.GppBad)
                     }
 
                 PopupMenuItem(
@@ -431,6 +437,20 @@ fun PostOptionsDropdown(
                         onRemoveClick(postView)
                     },
                 )
+                BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+
+                // Only show ban from community button if its a local community
+                if (postView.community.local) {
+                    BanFromCommunityPopupMenuItem(
+                        BanFromCommunityData(
+                            person = postView.creator,
+                            community = postView.community,
+                            banned = postView.creator_banned_from_community,
+                        ),
+                        onDismissRequest,
+                        onBanFromCommunityClick,
+                    )
+                }
             }
 
             // You can do these actions on mods above you

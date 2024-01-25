@@ -119,7 +119,7 @@ fun CommentMentionNodeFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
+        remember(admins) {
             canMod(
                 creatorId = personMentionView.comment.creator_id,
                 admins = admins,

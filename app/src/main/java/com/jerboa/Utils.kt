@@ -51,6 +51,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
@@ -70,6 +71,8 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
@@ -281,7 +284,8 @@ fun commentsToFlatNodes(comments: List<CommentView>): ImmutableList<CommentNode>
  */
 fun buildCommentsTree(
     comments: List<CommentView>,
-    rootCommentId: Int?, // If it's in CommentView, then we need to know the root comment id
+    // If it's in CommentView, then we need to know the root comment id
+    rootCommentId: Int?,
 ): ImmutableList<CommentNodeData> {
     val isCommentView = rootCommentId != null
 
@@ -1050,7 +1054,8 @@ fun saveMediaP(
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
-    mediaType: PostType, // Link is here more like other media (think of PDF, doc, txt)
+    // Link is here more like other media (think of PDF, doc, txt)
+    mediaType: PostType,
 ) {
     val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
     val mediaDir = File(dir, "Jerboa")
@@ -1202,6 +1207,66 @@ fun findAndUpdateComment(
     } else {
         comments
     }
+}
+
+fun findAndUpdatePostCreator(
+    posts: List<PostView>,
+    person: Person,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.creator.id == person.id) {
+            it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdatePostCreatorBannedFromCommunity(
+    posts: List<PostView>,
+    banData: BanFromCommunityData,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+            it.copy(creator_banned_from_community = banData.banned)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdateCommentCreator(
+    comments: List<CommentView>,
+    person: Person,
+): List<CommentView> {
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.creator.id == person.id) {
+            it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newComments
+}
+
+fun findAndUpdateCommentCreatorBannedFromCommunity(
+    comments: List<CommentView>,
+    banData: BanFromCommunityData,
+): List<CommentView> {
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+            it.copy(creator_banned_from_community = banData.banned)
+        } else {
+            it
+        }
+    }
+    return newComments
 }
 
 fun findAndUpdateCommentReply(
@@ -1566,6 +1631,12 @@ fun canMod(
         }
     } else {
         false
+    }
+}
+
+fun futureDaysToUnixTime(days: Int?): Int? {
+    return days?.let {
+        Instant.now().plus(it.toLong(), ChronoUnit.DAYS).epochSecond.toInt()
     }
 }
 
