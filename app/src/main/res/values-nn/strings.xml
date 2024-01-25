@@ -282,7 +282,6 @@
   <string name="title_min_3_chars">Tittelen må ha minst tre teikn</string>
   <string name="title_required">Tittel er obligatorisk</string>
   <string name="topAppBar_back">Tilbake</string>
-  <string name="url">Nettadresse</string>
   <string name="url_invalid">Ugyldig nettadresse</string>
   <string name="utils_login_first">Logg inn først</string>
   <string name="upvote">Røyst opp</string>
