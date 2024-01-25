@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
@@ -33,6 +34,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
@@ -53,6 +55,8 @@ fun PostListings(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onViewPostVotesClick: (PostId) -> Unit,
@@ -112,6 +116,8 @@ fun PostListings(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
                 onViewVotesClick = onViewPostVotesClick,
@@ -140,7 +146,7 @@ fun PostListings(
                     }
                 }
             }
-            Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
+            HorizontalDivider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
 
         if (showPostAppendRetry) {
@@ -180,6 +186,8 @@ fun PreviewPostListings() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewPostVotesClick = {},

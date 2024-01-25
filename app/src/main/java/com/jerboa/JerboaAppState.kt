@@ -11,7 +11,10 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.model.ReplyItem
+import com.jerboa.ui.components.ban.BanFromCommunityReturn
+import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.Route
@@ -26,6 +29,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
@@ -82,6 +86,16 @@ class JerboaAppState(
     fun toCommentRemove(comment: Comment) {
         sendReturnForwards(CommentRemoveReturn.COMMENT_SEND, comment)
         navController.navigate(Route.COMMENT_REMOVE)
+    }
+
+    fun toBanPerson(person: Person) {
+        sendReturnForwards(BanPersonReturn.PERSON_SEND, person)
+        navController.navigate(Route.BAN_PERSON)
+    }
+
+    fun toBanFromCommunity(banData: BanFromCommunityData) {
+        sendReturnForwards(BanFromCommunityReturn.BAN_DATA_SEND, banData)
+        navController.navigate(Route.BAN_FROM_COMMUNITY)
     }
 
     fun toSettings() = navController.navigate(Route.SETTINGS)

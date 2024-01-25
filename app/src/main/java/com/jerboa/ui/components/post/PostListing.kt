@@ -20,9 +20,9 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Forum
@@ -31,8 +31,8 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -66,6 +66,7 @@ import com.jerboa.amAdmin
 import com.jerboa.amMod
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
@@ -172,7 +173,8 @@ fun PostHeaderLine(
                             person = postView.creator,
                             onClick = onPersonClick,
                             showTags = true,
-                            isPostCreator = false, // Set this to false, we already know this
+                            // Set this to false, we already know this
+                            isPostCreator = false,
                             isModerator = postView.creator_is_moderator,
                             isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,
@@ -557,6 +559,8 @@ fun PostFooterLine(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onViewVotesClick: (PostId) -> Unit,
@@ -576,7 +580,7 @@ fun PostFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
+        remember(admins) {
             canMod(
                 creatorId = postView.creator.id,
                 admins = admins,
@@ -611,6 +615,8 @@ fun PostFooterLine(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
             onViewVotesClick = onViewVotesClick,
@@ -682,7 +688,7 @@ fun PostFooterLine(
 
         if (showReply) {
             ActionBarButton(
-                icon = Icons.Outlined.Comment,
+                icon = Icons.AutoMirrored.Outlined.Comment,
                 contentDescription = stringResource(R.string.postListing_reply),
                 onClick = { onReplyClick(postView) },
                 account = account,
@@ -809,6 +815,8 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewVotesClick = {},
@@ -844,6 +852,8 @@ fun PreviewPostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewVotesClick = {},
@@ -882,6 +892,8 @@ fun PreviewLinkPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewVotesClick = {},
@@ -920,6 +932,8 @@ fun PreviewImagePostListingCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewVotesClick = {},
@@ -958,6 +972,8 @@ fun PreviewImagePostListingSmallCard() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewVotesClick = {},
@@ -996,6 +1012,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         onDeletePostClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
         onViewVotesClick = {},
@@ -1032,6 +1050,8 @@ fun PostListing(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onViewVotesClick: (PostId) -> Unit,
@@ -1097,6 +1117,8 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
                 onViewVotesClick = onViewVotesClick,
@@ -1152,6 +1174,8 @@ fun PostListing(
                 onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onRemoveClick = onRemoveClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
                 onViewVotesClick = onViewVotesClick,
@@ -1550,6 +1574,8 @@ fun PostListingCard(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onViewVotesClick: (PostId) -> Unit,
@@ -1629,6 +1655,8 @@ fun PostListingCard(
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
             onViewVotesClick = onViewVotesClick,
@@ -1672,7 +1700,7 @@ fun MetadataCard(post: Post) {
                     style = MaterialTheme.typography.titleLarge,
                 )
                 post.embed_description?.also {
-                    Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
                     // This is actually html, but markdown can render it
                     MyMarkdownText(
                         markdown = it,

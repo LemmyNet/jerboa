@@ -10,7 +10,8 @@ data class AppSettings(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
         name = "font_size",
-        defaultValue = DEFAULT_FONT_SIZE.toString(), // This is changed to 16
+        // This is changed to 16
+        defaultValue = DEFAULT_FONT_SIZE.toString(),
     )
     val fontSize: Int,
     @ColumnInfo(

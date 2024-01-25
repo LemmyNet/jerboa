@@ -2,19 +2,19 @@ package com.jerboa.ui.components.comment
 
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -24,6 +24,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
 import com.jerboa.copyToClipboard
+import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
+import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
@@ -44,6 +47,8 @@ fun CommentOptionsDropdown(
     onReportClick: (CommentView) -> Unit,
     onRemoveClick: (CommentView) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
     amMod: Boolean,
@@ -59,7 +64,7 @@ fun CommentOptionsDropdown(
     ) {
         PopupMenuItem(
             text = stringResource(R.string.comment_node_goto_comment),
-            icon = Icons.Outlined.Comment,
+            icon = Icons.AutoMirrored.Outlined.Comment,
             onClick = {
                 onDismissRequest()
                 onCommentLinkClick(commentView)
@@ -129,7 +134,7 @@ fun CommentOptionsDropdown(
             },
         )
 
-        Divider()
+        HorizontalDivider()
 
         if (isCreator) {
             PopupMenuItem(
@@ -192,12 +197,12 @@ fun CommentOptionsDropdown(
         }
 
         if (canMod) {
-            Divider()
+            HorizontalDivider()
             val (removeText, removeIcon) =
                 if (commentView.comment.removed) {
                     Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
                 } else {
-                    Pair(stringResource(R.string.remove_comment), Icons.Outlined.Gavel)
+                    Pair(stringResource(R.string.remove_comment), Icons.Outlined.GppBad)
                 }
 
             PopupMenuItem(
@@ -208,6 +213,20 @@ fun CommentOptionsDropdown(
                     onRemoveClick(commentView)
                 },
             )
+            BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
+
+            // Only show ban from community button if its a local community
+            if (commentView.community.local) {
+                BanFromCommunityPopupMenuItem(
+                    BanFromCommunityData(
+                        person = commentView.creator,
+                        community = commentView.community,
+                        banned = commentView.creator_banned_from_community,
+                    ),
+                    onDismissRequest,
+                    onBanFromCommunityClick,
+                )
+            }
         }
     }
 }

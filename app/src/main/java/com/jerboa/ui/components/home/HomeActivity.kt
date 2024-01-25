@@ -39,6 +39,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -49,6 +50,8 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.ui.components.ban.BanFromCommunityReturn
+import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
@@ -68,6 +71,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
@@ -109,6 +113,8 @@ fun HomeActivity(
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
+    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -344,6 +350,12 @@ fun MainPostListingsContent(
             },
             onRemoveClick = { pv ->
                 appState.toPostRemove(post = pv.post)
+            },
+            onBanPersonClick = { p ->
+                appState.toBanPerson(p)
+            },
+            onBanFromCommunityClick = { d ->
+                appState.toBanFromCommunity(banData = d)
             },
             onLockPostClick = { pv ->
                 account.doIfReadyElseDisplayInfo(

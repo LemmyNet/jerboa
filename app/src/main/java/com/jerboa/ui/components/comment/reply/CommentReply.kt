@@ -158,7 +158,7 @@ fun CommentReply(
             showAvatar = showAvatar,
             showScores = showScores,
         )
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
             text = reply,
             onTextChange = onReplyChange,
@@ -190,7 +190,7 @@ fun CommentReplyReply(
             showAvatar = showAvatar,
             showScores = showScores,
         )
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
             text = reply,
             onTextChange = onReplyChange,
@@ -222,7 +222,7 @@ fun MentionReply(
             showAvatar = showAvatar,
             showScores = showScores,
         )
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
             text = reply,
             onTextChange = onReplyChange,
@@ -254,7 +254,7 @@ fun PostReply(
             showAvatar = showAvatar,
             showScores = showScores,
         )
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
             text = reply,
             onTextChange = onReplyChange,

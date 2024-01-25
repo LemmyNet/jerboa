@@ -34,6 +34,8 @@ object Route {
     const val POST_REMOVE = "postRemove"
     const val PRIVATE_MESSAGE_REPLY = "privateMessageReply"
     const val COMMENT_REMOVE = "commentRemove"
+    const val BAN_PERSON = "banPerson"
+    const val BAN_FROM_COMMUNITY = "banFromCommunity"
     val CREATE_PRIVATE_MESSAGE = CreatePrivateMessageArgs.route
 
     val COMMENT_REPORT = CommentReportArgs.route

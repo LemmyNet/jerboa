@@ -21,6 +21,9 @@ import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import kotlinx.serialization.Serializable
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 
 
@@ -190,6 +193,19 @@ fun getLocalizedStringForInboxTab(
     return returnString
 }
 
+/**
+ * A container to store extra community ban info
+ */
+@Serializable
+data class BanFromCommunityData(
+    val person: Person,
+    val community: Community,
+    val banned: Boolean,
+)
+
+/**
+ * A container to store extra post feature info
+ */
 data class PostFeatureData(
     val post: Post,
     val type: PostFeatureType,

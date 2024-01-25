@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
@@ -42,6 +43,8 @@ fun CommentNodes(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -82,6 +85,8 @@ fun CommentNodes(
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onCommentLinkClick = onCommentLinkClick,
             onFetchChildrenClick = onFetchChildrenClick,
             onPersonClick = onPersonClick,
@@ -127,6 +132,8 @@ fun LazyListScope.commentNodeItems(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -176,6 +183,8 @@ fun LazyListScope.commentNodeItems(
                     onDeleteCommentClick = onDeleteCommentClick,
                     onReportClick = onReportClick,
                     onRemoveClick = onRemoveClick,
+                    onBanPersonClick = onBanPersonClick,
+                    onBanFromCommunityClick = onBanFromCommunityClick,
                     onCommentLinkClick = onCommentLinkClick,
                     onFetchChildrenClick = onFetchChildrenClick,
                     onBlockCreatorClick = onBlockCreatorClick,
@@ -217,6 +226,8 @@ fun LazyListScope.commentNodeItems(
                     onDeleteCommentClick = onDeleteCommentClick,
                     onReportClick = onReportClick,
                     onRemoveClick = onRemoveClick,
+                    onBanPersonClick = onBanPersonClick,
+                    onBanFromCommunityClick = onBanFromCommunityClick,
                     onCommentLinkClick = onCommentLinkClick,
                     onFetchChildrenClick = onFetchChildrenClick,
                     onBlockCreatorClick = onBlockCreatorClick,

@@ -18,11 +18,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -54,6 +54,7 @@ import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.canMod
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -200,6 +201,8 @@ fun LazyListScope.commentNodeItem(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
@@ -269,7 +272,7 @@ fun LazyListScope.commentNodeItem(
                 Column(
                     modifier = Modifier.border(start = border),
                 ) {
-                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
+                    HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
                             Modifier.padding(
@@ -358,6 +361,8 @@ fun LazyListScope.commentNodeItem(
                                         onSaveClick = onSaveClick,
                                         onReportClick = onReportClick,
                                         onRemoveClick = onRemoveClick,
+                                        onBanPersonClick = onBanPersonClick,
+                                        onBanFromCommunityClick = onBanFromCommunityClick,
                                         onCommentLinkClick = onCommentLinkClick,
                                         onPersonClick = onPersonClick,
                                         onViewVotesClick = onViewVotesClick,
@@ -411,6 +416,8 @@ fun LazyListScope.commentNodeItem(
         onDeleteCommentClick = onDeleteCommentClick,
         onReportClick = onReportClick,
         onRemoveClick = onRemoveClick,
+        onBanPersonClick = onBanPersonClick,
+        onBanFromCommunityClick = onBanFromCommunityClick,
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
@@ -460,6 +467,8 @@ fun LazyListScope.missingCommentNodeItem(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
@@ -510,7 +519,7 @@ fun LazyListScope.missingCommentNodeItem(
                 Column(
                     modifier = Modifier.border(start = border),
                 ) {
-                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
+                    HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
                             Modifier.padding(
@@ -557,6 +566,8 @@ fun LazyListScope.missingCommentNodeItem(
         onDeleteCommentClick = onDeleteCommentClick,
         onReportClick = onReportClick,
         onRemoveClick = onRemoveClick,
+        onBanPersonClick = onBanPersonClick,
+        onBanFromCommunityClick = onBanFromCommunityClick,
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
@@ -611,7 +622,7 @@ private fun ShowMoreChildrenNode(
                         start = offset,
                     ),
         ) {
-            Divider()
+            HorizontalDivider()
             Column(
                 modifier = Modifier.border(start = border),
             ) {
@@ -687,6 +698,8 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onBanPersonClick: (person: Person) -> Unit,
+    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -716,7 +729,7 @@ fun CommentFooterLine(
         }
 
     val canMod =
-        remember {
+        remember(admins) {
             canMod(
                 creatorId = commentView.comment.creator_id,
                 admins = admins,
@@ -734,6 +747,8 @@ fun CommentFooterLine(
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onBanPersonClick = onBanPersonClick,
+            onBanFromCommunityClick = onBanFromCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
@@ -781,7 +796,7 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
-                icon = Icons.Outlined.Comment,
+                icon = Icons.AutoMirrored.Outlined.Comment,
                 onClick = { onReplyClick(commentView) },
                 contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,
@@ -851,6 +866,8 @@ fun CommentNodesPreview() {
         onDeleteCommentClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onBanPersonClick = {},
+        onBanFromCommunityClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
         onViewVotesClick = {},

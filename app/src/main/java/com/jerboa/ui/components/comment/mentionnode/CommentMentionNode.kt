@@ -9,14 +9,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -119,7 +119,7 @@ fun CommentMentionNodeFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     val canMod =
-        remember {
+        remember(admins) {
             canMod(
                 creatorId = personMentionView.comment.creator_id,
                 admins = admins,
@@ -203,7 +203,7 @@ fun CommentMentionNodeFooterLine(
             // Don't let you respond to your own comment.
             if (personMentionView.creator.id != account.id) {
                 ActionBarButton(
-                    icon = Icons.Outlined.Comment,
+                    icon = Icons.AutoMirrored.Outlined.Comment,
                     contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(personMentionView) },
                     account = account,
@@ -278,7 +278,7 @@ fun CommentMentionNode(
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
     ) {
-        Divider()
+        HorizontalDivider()
         PostAndCommunityContextHeader(
             post = personMentionView.post,
             community = personMentionView.community,
