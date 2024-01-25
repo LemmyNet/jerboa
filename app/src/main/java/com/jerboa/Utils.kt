@@ -71,8 +71,8 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
-import java.time.Duration
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
@@ -1636,7 +1636,7 @@ fun canMod(
 
 fun futureDaysToUnixTime(days: Int?): Int? {
     return days?.let {
-        (Date.from(Instant.now().plus(Duration.ofDays(it.toLong()))).time / 1000L).toInt()
+        Instant.now().plus(it.toLong(), ChronoUnit.DAYS).epochSecond.toInt()
     }
 }
 
