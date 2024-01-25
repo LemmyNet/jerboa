@@ -15,7 +15,6 @@ import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
@@ -115,11 +114,12 @@ val SortType.data: SortData
 fun getLocalizedStringForUserTab(
     ctx: Context,
     tab: UserTab,
-): String = when (tab) {
-    UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
-    UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
-    UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-}
+): String =
+    when (tab) {
+        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+    }
 
 /**
  * Returns localized Strings for ListingType Enum
@@ -127,12 +127,13 @@ fun getLocalizedStringForUserTab(
 fun getLocalizedListingTypeName(
     ctx: Context,
     listingType: ListingType,
-): String = when (listingType) {
-    ListingType.All -> ctx.getString(R.string.home_all)
-    ListingType.Local -> ctx.getString(R.string.home_local)
-    ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
-    ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
-}
+): String =
+    when (listingType) {
+        ListingType.All -> ctx.getString(R.string.home_all)
+        ListingType.Local -> ctx.getString(R.string.home_local)
+        ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+        ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
+    }
 
 /**
  * Returns localized Strings for CommentSortType Enum
@@ -140,13 +141,14 @@ fun getLocalizedListingTypeName(
 fun getLocalizedCommentSortTypeName(
     ctx: Context,
     commentSortType: CommentSortType,
-): String = when (commentSortType) {
-    CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-    CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-    CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-    CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-    CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
-}
+): String =
+    when (commentSortType) {
+        CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+        CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+        CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+        CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+    }
 
 /**
  * Returns localized Strings for UnreadOrAll Enum
@@ -154,10 +156,11 @@ fun getLocalizedCommentSortTypeName(
 fun getLocalizedUnreadOrAllName(
     ctx: Context,
     unreadOrAll: UnreadOrAll,
-): String = when (unreadOrAll) {
-    UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
-    UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
-}
+): String =
+    when (unreadOrAll) {
+        UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
+        UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+    }
 
 /**
  * A container to store extra community ban info
