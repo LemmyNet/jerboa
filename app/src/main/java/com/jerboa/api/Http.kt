@@ -103,7 +103,7 @@ object API {
 
     fun setLemmyInstance(api: LemmyApiV19) {
         Log.d("setLemmyInstance", "Setting lemmy instance to ${api.baseUrl}")
-        API.version = api.version.toString()
+        version = api.version.toString()
         newApi = api
         initialized.complete(Unit)
     }

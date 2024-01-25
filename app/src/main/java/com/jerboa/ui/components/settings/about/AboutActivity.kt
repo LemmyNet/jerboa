@@ -1,4 +1,3 @@
-
 package com.jerboa.ui.components.settings.about
 
 import android.util.Log
@@ -8,9 +7,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -60,7 +60,10 @@ fun AboutActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), onClickBack = onBack)
+            SimpleTopAppBar(
+                text = stringResource(R.string.settings_about_about),
+                onClickBack = onBack,
+            )
         },
         content = { padding ->
             Column(
@@ -71,7 +74,14 @@ fun AboutActivity(
             ) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
-                    subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
+                    subtitle = {
+                        Text(
+                            stringResource(
+                                R.string.settings_about_version,
+                                version ?: "",
+                            ),
+                        )
+                    },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
@@ -110,7 +120,7 @@ fun AboutActivity(
                     title = { Text(stringResource(R.string.settings_about_developer_matrix_chatroom)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.Outlined.Chat,
+                            imageVector = Icons.AutoMirrored.Outlined.Chat,
                             contentDescription = null,
                         )
                     },
@@ -185,7 +195,7 @@ fun AboutActivity(
 
 @Composable
 fun SettingsDivider() {
-    Divider(modifier = Modifier.padding(vertical = 10.dp))
+    HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
 }
 
 @Composable

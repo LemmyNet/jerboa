@@ -2,8 +2,8 @@ package com.jerboa.ui.components.comment
 
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.Delete
@@ -14,7 +14,7 @@ import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -58,7 +58,7 @@ fun CommentOptionsDropdown(
     ) {
         PopupMenuItem(
             text = stringResource(R.string.comment_node_goto_comment),
-            icon = Icons.Outlined.Comment,
+            icon = Icons.AutoMirrored.Outlined.Comment,
             onClick = {
                 onDismissRequest()
                 onCommentLinkClick(commentView)
@@ -128,7 +128,7 @@ fun CommentOptionsDropdown(
             },
         )
 
-        Divider()
+        HorizontalDivider()
 
         if (isCreator) {
             PopupMenuItem(
@@ -178,7 +178,7 @@ fun CommentOptionsDropdown(
             )
 
             if (canMod) {
-                Divider()
+                HorizontalDivider()
                 val (removeText, removeIcon) =
                     if (commentView.comment.removed) {
                         Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)

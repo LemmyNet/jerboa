@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Share
@@ -170,10 +170,11 @@ fun ImageViewer(
 
                         if (currentProgress.value.progressAvailable) {
                             LinearProgressIndicator(
-                                currentProgress.value.progress,
-                                Modifier
-                                    .padding(it)
-                                    .fillMaxWidth(),
+                                progress = { currentProgress.value.progress },
+                                modifier =
+                                    Modifier
+                                        .padding(it)
+                                        .fillMaxWidth(),
                             )
                         } else {
                             LoadingBar(it)
@@ -228,7 +229,7 @@ fun ViewerHeader(
                 onClick = appState::navigateUp,
             ) {
                 Icon(
-                    Icons.Outlined.ArrowBack,
+                    Icons.AutoMirrored.Outlined.ArrowBack,
                     tint = Color.White,
                     contentDescription = stringResource(R.string.topAppBar_back),
                 )

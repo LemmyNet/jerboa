@@ -20,9 +20,9 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Forum
@@ -31,8 +31,8 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -686,7 +686,7 @@ fun PostFooterLine(
 
         if (showReply) {
             ActionBarButton(
-                icon = Icons.Outlined.Comment,
+                icon = Icons.AutoMirrored.Outlined.Comment,
                 contentDescription = stringResource(R.string.postListing_reply),
                 onClick = { onReplyClick(postView) },
                 account = account,
@@ -1687,7 +1687,7 @@ fun MetadataCard(post: Post) {
                     style = MaterialTheme.typography.titleLarge,
                 )
                 post.embed_description?.also {
-                    Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
                     // This is actually html, but markdown can render it
                     MyMarkdownText(
                         markdown = it,

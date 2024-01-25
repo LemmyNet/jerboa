@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -94,7 +94,7 @@ fun CreatePrivateMessageActivity(
                     }
                 },
                 actionText = R.string.form_submit,
-                actionIcon = Icons.Outlined.Send,
+                actionIcon = Icons.AutoMirrored.Outlined.Send,
             )
         },
         content = { padding ->

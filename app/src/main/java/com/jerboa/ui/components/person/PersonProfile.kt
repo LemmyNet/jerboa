@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Message
+import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -187,7 +190,7 @@ fun PersonProfileHeader(
             } else {
                 IconButton(onClick = onBack, modifier = Modifier.testTag("jerboa:back")) {
                     Icon(
-                        Icons.Outlined.ArrowBack,
+                        Icons.AutoMirrored.Outlined.ArrowBack,
                         contentDescription = stringResource(R.string.topAppBar_back),
                     )
                 }
@@ -199,7 +202,7 @@ fun PersonProfileHeader(
                     showSortOptions = !showSortOptions
                 }) {
                     Icon(
-                        Icons.Outlined.Sort,
+                        Icons.AutoMirrored.Outlined.Sort,
                         contentDescription = stringResource(R.string.community_sortBy),
                     )
                 }
@@ -286,7 +289,7 @@ fun PersonProfileMoreDropdown(
         MenuItem(
             text = stringResource(R.string.person_profile_dm_person),
             onClick = onMessagePersonClick,
-            icon = Icons.Outlined.Message,
+            icon = Icons.AutoMirrored.Outlined.Message,
         )
 
         if (openMatrix != null) {
@@ -303,7 +306,7 @@ fun PersonProfileMoreDropdown(
             )
         }
 
-        Divider()
+        HorizontalDivider()
         MenuItem(
             text = stringResource(R.string.person_profile_block_person),
             onClick = onBlockPersonClick,

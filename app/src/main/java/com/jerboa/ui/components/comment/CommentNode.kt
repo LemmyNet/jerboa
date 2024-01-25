@@ -18,11 +18,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -269,7 +269,7 @@ fun LazyListScope.commentNodeItem(
                 Column(
                     modifier = Modifier.border(start = border),
                 ) {
-                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
+                    HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
                             Modifier.padding(
@@ -513,7 +513,7 @@ fun LazyListScope.missingCommentNodeItem(
                 Column(
                     modifier = Modifier.border(start = border),
                 ) {
-                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
+                    HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
                             Modifier.padding(
@@ -615,7 +615,7 @@ private fun ShowMoreChildrenNode(
                         start = offset,
                     ),
         ) {
-            Divider()
+            HorizontalDivider()
             Column(
                 modifier = Modifier.border(start = border),
             ) {
@@ -769,7 +769,7 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
-                icon = Icons.Outlined.Comment,
+                icon = Icons.AutoMirrored.Outlined.Comment,
                 onClick = { onReplyClick(commentView) },
                 contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,

@@ -12,8 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Sort
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -236,7 +236,7 @@ fun PostActivity(
                             onClick = appState::navigateUp,
                         ) {
                             Icon(
-                                Icons.Outlined.ArrowBack,
+                                Icons.AutoMirrored.Outlined.ArrowBack,
                                 contentDescription = stringResource(R.string.topAppBar_back),
                             )
                         }
@@ -247,7 +247,7 @@ fun PostActivity(
                                 showSortOptions = true
                             }) {
                                 Icon(
-                                    Icons.Outlined.Sort,
+                                    Icons.AutoMirrored.Outlined.Sort,
                                     contentDescription = stringResource(R.string.selectSort),
                                 )
                             }

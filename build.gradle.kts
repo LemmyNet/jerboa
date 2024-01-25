@@ -1,13 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.android.application") version "8.2.1" apply false
-    id("com.android.library") version "8.2.1" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.21" apply false
+    id("com.android.application") version "8.2.2" apply false
+    id("com.android.library") version "8.2.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     id("com.github.ben-manes.versions") version "0.42.0"
     id("org.jmailen.kotlinter") version "4.2.0" apply false
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
-    id("com.android.test") version "8.2.1" apply false
+    id("com.google.devtools.ksp") version "1.9.22-1.0.16" apply false
+    id("com.android.test") version "8.2.2" apply false
     id("androidx.baselineprofile") version "1.2.2" apply false
 }
 

@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.FormatBold
 import androidx.compose.material.icons.outlined.FormatItalic
@@ -513,7 +514,7 @@ fun MarkdownHelperBar(
             },
         ) {
             Icon(
-                imageVector = Icons.Outlined.FormatListBulleted,
+                imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
                 contentDescription = stringResource(R.string.markdownHelper_insertList),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
