@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.*
@@ -82,7 +83,7 @@ fun SimpleTopAppBar(
         navigationIcon = {
             IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
                 Icon(
-                    Icons.Outlined.ArrowBack,
+                    Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
@@ -445,7 +446,6 @@ fun scoreColor(myVote: Int?): Color {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxIconAndBadge(
     iconBadgeCount: Int?,
@@ -555,7 +555,7 @@ fun Sidebar(
             }
         }
         item {
-            Divider()
+            HorizontalDivider()
         }
         item {
             content?.also {
@@ -733,7 +733,7 @@ fun ActionTopBar(
                 onClick = onBackClick,
             ) {
                 Icon(
-                    Icons.Outlined.ArrowBack,
+                    Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }

@@ -19,7 +19,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -88,7 +88,11 @@ fun PostOptionsDropdown(
         onDismissRequest = onDismissRequest,
     ) {
         PopupMenuItem(
-            text = stringResource(R.string.post_listing_go_to, communityNameShown(postView.community)),
+            text =
+                stringResource(
+                    R.string.post_listing_go_to,
+                    communityNameShown(postView.community),
+                ),
             icon = Icons.Outlined.Forum,
             onClick = {
                 onDismissRequest()
@@ -321,7 +325,7 @@ fun PostOptionsDropdown(
             }
         }
 
-        Divider()
+        HorizontalDivider()
 
         if (isCreator) {
             PopupMenuItem(
@@ -400,7 +404,13 @@ fun PostOptionsDropdown(
                         onClick = {
                             onDismissRequest()
                             scope.launch(Dispatchers.IO) {
-                                val resp = api.blockInstance(BlockInstance(postView.community.instance_id, true))
+                                val resp =
+                                    api.blockInstance(
+                                        BlockInstance(
+                                            postView.community.instance_id,
+                                            true,
+                                        ),
+                                    )
                                 withContext(Dispatchers.Main) {
                                     showBlockCommunityToast(resp, instance, ctx)
                                 }
@@ -420,7 +430,7 @@ fun PostOptionsDropdown(
             )
 
             if (canMod) {
-                Divider()
+                HorizontalDivider()
 
                 val (removeText, removeIcon) =
                     if (postView.post.removed) {

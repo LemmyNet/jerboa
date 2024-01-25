@@ -2,15 +2,15 @@ package com.jerboa.ui.components.comment.replynode
 
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -45,7 +45,7 @@ fun CommentReplyOptionsDropdown(
     ) {
         PopupMenuItem(
             text = stringResource(R.string.comment_node_goto_comment),
-            icon = Icons.Outlined.Comment,
+            icon = Icons.AutoMirrored.Outlined.Comment,
             onClick = {
                 onDismissRequest()
                 onCommentLinkClick(commentReplyView)
@@ -108,7 +108,7 @@ fun CommentReplyOptionsDropdown(
         )
 
         if (!isCreator) {
-            Divider()
+            HorizontalDivider()
             PopupMenuItem(
                 text = stringResource(R.string.comment_node_block, commentReplyView.creator.name),
                 icon = Icons.Outlined.Block,

@@ -2,8 +2,8 @@ package com.jerboa.ui.components.comment.mentionnode
 
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.Description
@@ -12,7 +12,7 @@ import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +49,7 @@ fun CommentMentionsOptionsDropdown(
     ) {
         PopupMenuItem(
             text = stringResource(R.string.comment_node_goto_comment),
-            icon = Icons.Outlined.Comment,
+            icon = Icons.AutoMirrored.Outlined.Comment,
             onClick = {
                 onDismissRequest()
                 onCommentLinkClick(personMentionView)
@@ -112,7 +112,7 @@ fun CommentMentionsOptionsDropdown(
         )
 
         if (!isCreator) {
-            Divider()
+            HorizontalDivider()
             PopupMenuItem(
                 text = stringResource(R.string.comment_node_block, personMentionView.creator.name),
                 icon = Icons.Outlined.Block,
@@ -133,7 +133,7 @@ fun CommentMentionsOptionsDropdown(
         }
 
         if (canMod) {
-            Divider()
+            HorizontalDivider()
             val (removeText, removeIcon) =
                 if (personMentionView.comment.removed) {
                     Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)

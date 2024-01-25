@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Comment
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material3.MaterialTheme
@@ -179,7 +179,7 @@ fun PrivateMessageFooterLine(
                     account = account,
                 )
                 ActionBarButton(
-                    icon = Icons.Outlined.Comment,
+                    icon = Icons.AutoMirrored.Outlined.Comment,
                     contentDescription = stringResource(R.string.privateMessage_reply),
                     onClick = { onReplyClick(privateMessageView) },
                     account = account,
