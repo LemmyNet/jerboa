@@ -15,7 +15,6 @@ import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
@@ -23,9 +22,8 @@ import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import kotlinx.serialization.Serializable
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
-
+import kotlinx.serialization.Serializable
 
 data class CommentSortData(
     @StringRes val text: Int,
@@ -56,7 +54,7 @@ val SortType.data: SortData
         SortType.Controversial -> SortData(
             R.string.sorttype_controversial,
             R.string.sorttype_controversial,
-            Icons.Outlined.ThumbsUpDown
+            Icons.Outlined.ThumbsUpDown,
         )
 
         SortType.TopDay -> SortData(R.string.sorttype_topday, R.string.dialogs_top_day, Icons.Outlined.BarChart)
@@ -67,49 +65,48 @@ val SortType.data: SortData
         SortType.MostComments -> SortData(
             R.string.sorttype_mostcomments,
             R.string.sorttype_mostcomments,
-            Icons.Outlined.FormatListNumbered
+            Icons.Outlined.FormatListNumbered,
         )
 
         SortType.NewComments -> SortData(
             R.string.sorttype_newcomments,
             R.string.sorttype_newcomments,
-            Icons.Outlined.NewReleases
+            Icons.Outlined.NewReleases,
         )
 
         SortType.TopHour -> SortData(R.string.sorttype_tophour, R.string.dialogs_top_hour, Icons.Outlined.BarChart)
         SortType.TopSixHour -> SortData(
             R.string.sorttype_topsixhour,
             R.string.dialogs_top_six_hour,
-            Icons.Outlined.BarChart
+            Icons.Outlined.BarChart,
         )
 
         SortType.TopTwelveHour -> SortData(
             R.string.sorttype_toptwelvehour,
             R.string.dialogs_top_twelve_hour,
-            Icons.Outlined.BarChart
+            Icons.Outlined.BarChart,
         )
 
         SortType.TopThreeMonths -> SortData(
             R.string.sorttype_topthreemonths,
             R.string.dialogs_top_three_month,
-            Icons.Outlined.BarChart
+            Icons.Outlined.BarChart,
         )
 
         SortType.TopSixMonths -> SortData(
             R.string.sorttype_topsixmonths,
             R.string.dialogs_top_six_month,
-            Icons.Outlined.BarChart
+            Icons.Outlined.BarChart,
         )
 
         SortType.TopNineMonths -> SortData(
             R.string.sorttype_topninemonths,
             R.string.dialogs_top_nine_month,
-            Icons.Outlined.BarChart
+            Icons.Outlined.BarChart,
         )
 
         SortType.Scaled -> SortData(R.string.sorttype_scaled, R.string.sorttype_scaled, Icons.Outlined.Scale)
     }
-
 
 /**
  * Returns localized Strings for UserTab Enum
@@ -117,15 +114,12 @@ val SortType.data: SortData
 fun getLocalizedStringForUserTab(
     ctx: Context,
     tab: UserTab,
-): String {
-    val returnString =
-        when (tab) {
-            UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
-            UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
-            UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-        }
-    return returnString
-}
+): String =
+    when (tab) {
+        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+    }
 
 /**
  * Returns localized Strings for ListingType Enum
@@ -133,16 +127,13 @@ fun getLocalizedStringForUserTab(
 fun getLocalizedListingTypeName(
     ctx: Context,
     listingType: ListingType,
-): String {
-    val returnString =
-        when (listingType) {
-            ListingType.All -> ctx.getString(R.string.home_all)
-            ListingType.Local -> ctx.getString(R.string.home_local)
-            ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
-            ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
-        }
-    return returnString
-}
+): String =
+    when (listingType) {
+        ListingType.All -> ctx.getString(R.string.home_all)
+        ListingType.Local -> ctx.getString(R.string.home_local)
+        ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+        ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
+    }
 
 /**
  * Returns localized Strings for CommentSortType Enum
@@ -150,17 +141,14 @@ fun getLocalizedListingTypeName(
 fun getLocalizedCommentSortTypeName(
     ctx: Context,
     commentSortType: CommentSortType,
-): String {
-    val returnString =
-        when (commentSortType) {
-            CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-            CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-            CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-            CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-            CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
-        }
-    return returnString
-}
+): String =
+    when (commentSortType) {
+        CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+        CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+        CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+        CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+    }
 
 /**
  * Returns localized Strings for UnreadOrAll Enum
@@ -168,30 +156,11 @@ fun getLocalizedCommentSortTypeName(
 fun getLocalizedUnreadOrAllName(
     ctx: Context,
     unreadOrAll: UnreadOrAll,
-): String {
-    val returnString =
-        when (unreadOrAll) {
-            UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
-            UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
-        }
-    return returnString
-}
-
-/**
- * Returns localized Strings for InboxTab Enum
- */
-fun getLocalizedStringForInboxTab(
-    ctx: Context,
-    tab: InboxTab,
-): String {
-    val returnString =
-        when (tab) {
-            InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
-            InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
-            InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
-        }
-    return returnString
-}
+): String =
+    when (unreadOrAll) {
+        UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
+        UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+    }
 
 /**
  * A container to store extra community ban info

@@ -2,6 +2,7 @@ package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -36,13 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
+import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.getLocalizedStringForInboxTab
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
@@ -62,7 +63,6 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
-import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
@@ -176,10 +176,12 @@ fun InboxActivity(
     )
 }
 
-enum class InboxTab {
-    Replies,
-    Mentions,
-    Messages,
+enum class InboxTab(
+    @StringRes val textId: Int,
+) {
+    Replies(R.string.inbox_activity_replies),
+    Mentions(R.string.inbox_activity_mentions),
+    Messages(R.string.inbox_activity_messages),
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -195,24 +197,15 @@ fun InboxTabs(
     padding: PaddingValues,
     blurNSFW: Int,
 ) {
-    val tabTitles = InboxTab.entries.map { getLocalizedStringForInboxTab(ctx, it) }
-    val pagerState = rememberPagerState { tabTitles.size }
+    val pagerState = rememberPagerState { InboxTab.entries.size }
 
     Column(
         modifier = Modifier.padding(padding),
     ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset2(
-                        pagerState,
-                        tabPositions,
-                    ),
-                )
-            },
             tabs = {
-                tabTitles.forEachIndexed { index, title ->
+                InboxTab.entries.forEachIndexed { index, tab ->
                     Tab(
                         selected = pagerState.currentPage == index,
                         onClick = {
@@ -220,7 +213,7 @@ fun InboxTabs(
                                 pagerState.animateScrollToPage(index)
                             }
                         },
-                        text = { Text(text = title) },
+                        text = { Text(text = stringResource(id = tab.textId)) },
                     )
                 }
             },

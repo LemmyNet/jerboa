@@ -30,8 +30,6 @@
     <string name="account_settings_show_scores">Показване на точки</string>
     <string name="account_settings_subscribed">Абонаменти</string>
     <string name="addBookmark">Добавяне към отметките</string>
-    <string name="app_bars_dot_spacer" translatable="false">·</string>
-    <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Към моите отметки</string>
     <string name="bottomBar_home">Към началото</string>
     <string name="bottomBar_inbox">Към входящи</string>
@@ -289,7 +287,6 @@
     <string name="title_min_3_chars">Заглавието трябва да е дълго поне 3 знака</string>
     <string name="title_required">Заглавието е задължително</string>
     <string name="topAppBar_back">Назад</string>
-    <string name="url">URL</string>
     <string name="url_invalid">Невалиден URL</string>
     <string name="utils_login_first">Първо влезте</string>
     <string name="upvote">Глас нагоре</string>

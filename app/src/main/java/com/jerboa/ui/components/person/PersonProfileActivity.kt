@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -77,7 +76,6 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
-import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
@@ -351,14 +349,6 @@ fun UserTabs(
     ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset2(
-                        pagerState,
-                        tabPositions,
-                    ),
-                )
-            },
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(

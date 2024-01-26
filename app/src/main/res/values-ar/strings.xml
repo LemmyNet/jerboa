@@ -30,8 +30,6 @@
     <string name="account_settings_show_scores">أظهر الحصيلة</string>
     <string name="account_settings_subscribed">مشترك فيه</string>
     <string name="addBookmark">علِّمه</string>
-    <string name="app_bars_dot_spacer" translatable="false">·</string>
-    <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">اذهب لعلاماتي</string>
     <string name="bottomBar_home">اذهب للقائمة الرئيسة</string>
     <string name="bottomBar_inbox">اذهب لواردي</string>
@@ -289,7 +287,6 @@
     <string name="title_min_3_chars">لا يقلُّ العنوان عن ٣ أحرف</string>
     <string name="title_required">يجب وجود العنوان</string>
     <string name="topAppBar_back">عُد</string>
-    <string name="url">رابط</string>
     <string name="url_invalid">رابط غير صالح</string>
     <string name="utils_login_first">لُج أوَّلًا</string>
     <string name="upvote">أيِّد</string>
