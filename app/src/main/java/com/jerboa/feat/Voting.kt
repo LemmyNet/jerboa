@@ -35,4 +35,3 @@ fun newVote(
     oldVote: Int,
     voteAction: VoteType,
 ): Int = if (voteAction.value == oldVote) 0 else voteAction.value
-

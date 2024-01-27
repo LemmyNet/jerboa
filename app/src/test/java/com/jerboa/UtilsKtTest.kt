@@ -41,7 +41,7 @@ class UtilsKtTest {
     }
 
     @Test
-    fun testInstantScores()  {
+    fun testInstantScores() {
         val initial = InstantScores(0, 0, 0, 0)
         val upvoted = initial.update(VoteType.Upvote)
         assertEquals(1, upvoted.myVote)
