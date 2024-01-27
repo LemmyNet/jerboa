@@ -44,7 +44,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.BanFromCommunityData
@@ -52,14 +51,15 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.newVote
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
@@ -85,6 +85,7 @@ import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
@@ -471,7 +472,7 @@ fun UserTabs(
                                                         newVote(
                                                             pv.my_vote,
                                                             VoteType.Upvote,
-                                                        ),
+                                                        ).toLong(),
                                                 ),
                                             )
                                         }
@@ -487,11 +488,10 @@ fun UserTabs(
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score =
-                                                        newVote(
-                                                            pv.my_vote,
-                                                            VoteType.Downvote,
-                                                        ),
+                                                    score = newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Downvote,
+                                                    ).toLong(),
                                                 ),
                                             )
                                         }
@@ -644,22 +644,26 @@ fun UserTabs(
                             }
 
                             // Holds the un-expanded comment ids
-                            val unExpandedComments = remember { mutableStateListOf<Int>() }
-                            val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+                            val unExpandedComments = remember { mutableStateListOf<Long>() }
+                            val commentsWithToggledActionBar = remember { mutableStateListOf<Long>() }
 
-                            val toggleExpanded = { commentId: Int ->
-                                if (unExpandedComments.contains(commentId)) {
-                                    unExpandedComments.remove(commentId)
-                                } else {
-                                    unExpandedComments.add(commentId)
+                            val toggleExpanded = remember {
+                                { commentId: CommentId ->
+                                    if (unExpandedComments.contains(commentId)) {
+                                        unExpandedComments.remove(commentId)
+                                    } else {
+                                        unExpandedComments.add(commentId)
+                                    }
                                 }
                             }
 
-                            val toggleActionBar = { commentId: Int ->
-                                if (commentsWithToggledActionBar.contains(commentId)) {
-                                    commentsWithToggledActionBar.remove(commentId)
-                                } else {
-                                    commentsWithToggledActionBar.add(commentId)
+                            val toggleActionBar = remember {
+                                { commentId: CommentId ->
+                                    if (commentsWithToggledActionBar.contains(commentId)) {
+                                        commentsWithToggledActionBar.remove(commentId)
+                                    } else {
+                                        commentsWithToggledActionBar.add(commentId)
+                                    }
                                 }
                             }
 
@@ -718,7 +722,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Upvote),
+                                                    score = newVote(cv.my_vote, VoteType.Upvote).toLong(),
                                                 ),
                                             )
                                         }
@@ -734,7 +738,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Downvote),
+                                                    score = newVote(cv.my_vote, VoteType.Downvote).toLong(),
                                                 ),
                                             )
                                         }

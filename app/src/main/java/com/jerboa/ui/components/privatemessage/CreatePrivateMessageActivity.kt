@@ -33,6 +33,7 @@ import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.getCurrentAccount
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun CreatePrivateMessageActivity(
-    personId: Int,
+    personId: PersonId,
     personName: String,
     accountViewModel: AccountViewModel,
     onBack: () -> Unit,

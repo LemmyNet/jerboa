@@ -29,7 +29,7 @@ fun IconAndTextDrawerItem(
     text: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    iconBadgeCount: Int? = null,
+    iconBadgeCount: Long? = null,
     onClick: () -> Unit,
     more: Boolean = false,
     highlight: Boolean = false,

@@ -43,6 +43,7 @@ import com.jerboa.validateUrl
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -215,7 +216,7 @@ fun onSubmitClick(
     isNsfw: Boolean,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
-    onSuccess: (Int) -> Unit,
+    onSuccess: (PostId) -> Unit,
 ) {
     selectedCommunity?.id?.also {
         // Clean up that data

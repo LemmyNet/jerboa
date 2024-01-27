@@ -24,7 +24,7 @@ import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-const val COMMENTS_DEPTH_MAX = 6
+const val COMMENTS_DEPTH_MAX = 6L
 
 class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
@@ -46,8 +46,8 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
-    val unExpandedComments = mutableStateListOf<Int>()
-    val commentsWithToggledActionBar = mutableStateListOf<Int>()
+    val unExpandedComments = mutableStateListOf<CommentId>()
+    val commentsWithToggledActionBar = mutableStateListOf<CommentId>()
 
     init {
         this.getData()

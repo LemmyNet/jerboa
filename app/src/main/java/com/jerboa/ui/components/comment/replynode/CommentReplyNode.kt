@@ -27,9 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.VoteType
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -42,13 +42,15 @@ import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 
 @Composable
 fun CommentReplyNodeHeader(
     commentReplyView: CommentReplyView,
-    onPersonClick: (personId: Int) -> Unit,
-    score: Int,
-    myVote: Int?,
+    onPersonClick: (personId: PersonId) -> Unit,
+    score: Long,
+    myVote: Int,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
@@ -96,14 +98,14 @@ fun CommentReplyNodeInboxFooterLine(
     onReplyClick: (commentReplyView: CommentReplyView) -> Unit,
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    myVote: Int?,
-    upvotes: Int,
-    downvotes: Int,
+    myVote: Int,
+    upvotes: Long,
+    downvotes: Long,
     account: Account,
     enableDownvotes: Boolean,
     showScores: Boolean,
@@ -140,7 +142,7 @@ fun CommentReplyNodeInboxFooterLine(
                 votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0) && showScores,
+                showNumber = (downvotes != 0L) && showScores,
                 account = account,
             )
             if (enableDownvotes) {
@@ -231,10 +233,10 @@ fun CommentReplyNodeInbox(
     onReplyClick: (commentReplyView: CommentReplyView) -> Unit,
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onCommentClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,

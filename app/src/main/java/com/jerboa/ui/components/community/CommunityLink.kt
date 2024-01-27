@@ -67,7 +67,7 @@ fun CommunityNamePreview() {
 fun CommunityLink(
     modifier: Modifier = Modifier,
     community: Community,
-    usersPerMonth: Int? = null,
+    usersPerMonth: Long? = null,
     color: Color = MaterialTheme.colorScheme.primary,
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,

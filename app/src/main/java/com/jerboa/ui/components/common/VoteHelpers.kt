@@ -7,14 +7,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.VoteType
 import com.jerboa.ui.theme.muted
 
 @Composable
 fun VoteGeneric(
-    myVote: Int?,
-    votes: Int,
+    myVote: Int,
+    votes: Long,
     type: VoteType,
     onVoteClick: () -> Unit,
     showNumber: Boolean = true,
@@ -28,7 +28,7 @@ fun VoteGeneric(
 
     val votesStr =
         if (showNumber) {
-            if (type == VoteType.Downvote && votes == 0) {
+            if (type == VoteType.Downvote && votes == 0L) {
                 null
             } else {
                 votes.toString()
@@ -41,7 +41,7 @@ fun VoteGeneric(
             if (myVote == 1) {
                 stringResource(R.string.upvoted)
             } else {
-                stringResource(R.string.upvote)
+                stringResource(R.string.downvoted)
             }
         } else {
             if (myVote == 1) {

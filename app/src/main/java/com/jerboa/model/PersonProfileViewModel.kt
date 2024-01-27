@@ -2,7 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -48,7 +48,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
 
     var sortType by mutableStateOf(SortType.New)
         private set
-    var page by mutableIntStateOf(1)
+    var page by mutableLongStateOf(1)
         private set
     var savedOnly by mutableStateOf(false)
         private set

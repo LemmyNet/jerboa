@@ -13,11 +13,14 @@ import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -28,10 +31,10 @@ fun CommentNodes(
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
-    isExpanded: (commentId: Int) -> Boolean,
+    isExpanded: (commentId: CommentId) -> Boolean,
     listState: LazyListState,
-    toggleExpanded: (commentId: Int) -> Unit,
-    toggleActionBar: (commentId: Int) -> Unit,
+    toggleExpanded: (commentId: CommentId) -> Unit,
+    toggleActionBar: (commentId: CommentId) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -46,17 +49,17 @@ fun CommentNodes(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     account: Account,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
-    showActionBar: (commentId: Int) -> Boolean,
+    showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Int,
@@ -116,9 +119,9 @@ fun LazyListScope.commentNodeItems(
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
-    isExpanded: (commentId: Int) -> Boolean,
-    toggleExpanded: (commentId: Int) -> Unit,
-    toggleActionBar: (commentId: Int) -> Unit,
+    isExpanded: (commentId: CommentId) -> Boolean,
+    toggleExpanded: (commentId: CommentId) -> Unit,
+    toggleActionBar: (commentId: CommentId) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -133,17 +136,17 @@ fun LazyListScope.commentNodeItems(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     account: Account,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
-    showActionBar: (commentId: Int) -> Boolean,
+    showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Int,

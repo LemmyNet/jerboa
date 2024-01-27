@@ -34,7 +34,7 @@ class CommunityViewModel(
 
     private var followCommunityRes: ApiState<CommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
-    private var communityId: Int? by mutableStateOf(null)
+    private var communityId: CommunityId? by mutableStateOf(null)
     private var communityName: String? by mutableStateOf(null)
 
     private fun getCommunity(form: GetCommunity) {

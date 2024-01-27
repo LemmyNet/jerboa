@@ -22,6 +22,7 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 
 @Composable
 fun PersonName(
@@ -62,7 +63,7 @@ fun PersonNamePreview() {
 @Composable
 fun PersonProfileLink(
     person: Person,
-    onClick: (personId: Int) -> Unit,
+    onClick: (personId: PersonId) -> Unit,
     clickable: Boolean = true,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,

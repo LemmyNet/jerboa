@@ -31,19 +31,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.newVote
 import com.jerboa.feat.shareLink
 import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
@@ -106,7 +106,10 @@ fun CommunityActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, communityViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, communityViewModel::updateBannedFromCommunity)
+    appState.ConsumeReturn<BanFromCommunityData>(
+        BanFromCommunityReturn.BAN_DATA_VIEW,
+        communityViewModel::updateBannedFromCommunity,
+    )
 
     val pullRefreshState =
         rememberPullRefreshState(
@@ -170,7 +173,12 @@ fun CommunityActivity(
                                 }
                             },
                             onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data.community_view) },
-                            onClickCommunityShare = { shareLink(communityRes.data.community_view.community.actor_id, ctx) },
+                            onClickCommunityShare = {
+                                shareLink(
+                                    communityRes.data.community_view.community.actor_id,
+                                    ctx,
+                                )
+                            },
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
@@ -258,15 +266,10 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.likePost(
-                                        form =
-                                            CreatePostLike(
-                                                post_id = postView.post.id,
-                                                score =
-                                                    newVote(
-                                                        currentVote = postView.my_vote,
-                                                        voteType = VoteType.Upvote,
-                                                    ),
-                                            ),
+                                        form = CreatePostLike(
+                                            post_id = postView.post.id,
+                                            score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
+                                        ),
                                     )
                                 }
                             },
@@ -280,15 +283,10 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.likePost(
-                                        form =
-                                            CreatePostLike(
-                                                post_id = postView.post.id,
-                                                score =
-                                                    newVote(
-                                                        currentVote = postView.my_vote,
-                                                        voteType = VoteType.Downvote,
-                                                    ),
-                                            ),
+                                        form = CreatePostLike(
+                                            post_id = postView.post.id,
+                                            score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
+                                        ),
                                     )
                                 }
                             },

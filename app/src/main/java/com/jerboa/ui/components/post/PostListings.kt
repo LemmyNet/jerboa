@@ -34,6 +34,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.collections.immutable.ImmutableList
@@ -58,7 +59,7 @@ fun PostListings(
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     loadMorePosts: () -> Unit,
     account: Account,
     showCommunityName: Boolean = true,

@@ -234,7 +234,7 @@ val samplePostView =
         read = false,
         creator_blocked = false,
         unread_comments = 1,
-        my_vote = null,
+        my_vote = 0,
     )
 
 val sampleLinkPostView =
@@ -251,7 +251,7 @@ val sampleLinkPostView =
         read = false,
         creator_blocked = false,
         unread_comments = 1,
-        my_vote = null,
+        my_vote = 0,
     )
 
 val sampleLinkNoThumbnailPostView =
@@ -268,7 +268,7 @@ val sampleLinkNoThumbnailPostView =
         read = false,
         creator_blocked = false,
         unread_comments = 1,
-        my_vote = null,
+        my_vote = 0,
     )
 
 val sampleImagePostView =
@@ -285,7 +285,7 @@ val sampleImagePostView =
         read = false,
         creator_blocked = false,
         unread_comments = 1,
-        my_vote = null,
+        my_vote = 0,
     )
 
 val sampleMarkdownPostView =
@@ -302,7 +302,7 @@ val sampleMarkdownPostView =
         read = false,
         creator_blocked = false,
         unread_comments = 1,
-        my_vote = null,
+        my_vote = 0,
     )
 
 val sampleComment =

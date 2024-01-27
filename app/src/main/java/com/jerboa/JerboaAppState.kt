@@ -25,11 +25,15 @@ import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 import kotlinx.coroutines.CoroutineScope
@@ -68,11 +72,11 @@ class JerboaAppState(
         navController.navigate(Route.PRIVATE_MESSAGE_REPLY)
     }
 
-    fun toCommentReport(id: Int) {
+    fun toCommentReport(id: CommentId) {
         navController.navigate(Route.CommentReportArgs.makeRoute(id = "$id"))
     }
 
-    fun toPostReport(id: Int) {
+    fun toPostReport(id: PostId) {
         navController.navigate(Route.PostReportArgs.makeRoute(id = "$id"))
     }
 
@@ -128,7 +132,7 @@ class JerboaAppState(
         navController.navigate(Route.COMMENT_REPLY)
     }
 
-    fun toComment(id: Int) {
+    fun toComment(id: CommunityId) {
         navController.navigate(Route.CommentArgs.makeRoute(id = "$id"))
     }
 
@@ -139,7 +143,7 @@ class JerboaAppState(
         navController.navigate(Route.CREATE_POST)
     }
 
-    fun toPost(id: Int) {
+    fun toPost(id: PostId) {
         navController.navigate(Route.PostArgs.makeRoute(id = "$id"))
     }
 
@@ -147,7 +151,7 @@ class JerboaAppState(
 
     fun toHome() = navController.navigate(Route.HOME) { popUpTo(navController.graph.id) }
 
-    fun toCommunity(id: Int) {
+    fun toCommunity(id: CommunityId) {
         navController.navigate(Route.CommunityFromIdArgs.makeRoute(id = "$id"))
     }
 
@@ -157,7 +161,7 @@ class JerboaAppState(
     }
 
     fun toProfile(
-        id: Int,
+        id: PersonId,
         saved: Boolean = false,
     ) {
         navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
@@ -218,7 +222,7 @@ class JerboaAppState(
         navController.currentBackStackEntry?.savedStateHandle?.set(key, Json.encodeToString(value))
     }
 
-    fun toPostWithPopUpTo(postId: Int) {
+    fun toPostWithPopUpTo(postId: PostId) {
         navController.navigate(
             Route.PostArgs.makeRoute(id = "$postId"),
         ) {
@@ -227,7 +231,7 @@ class JerboaAppState(
     }
 
     fun toCreatePrivateMessage(
-        id: Int,
+        id: PersonId,
         name: String,
     ) {
         navController.navigate(Route.CreatePrivateMessageArgs.makeRoute(personId = "$id", personName = name))

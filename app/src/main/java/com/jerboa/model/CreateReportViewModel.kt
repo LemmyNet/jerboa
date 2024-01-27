@@ -12,9 +12,11 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentReport
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportResponse
 import kotlinx.coroutines.launch
 
@@ -25,7 +27,7 @@ class CreateReportViewModel : ViewModel() {
         private set
 
     fun createCommentReport(
-        commentId: Int,
+        commentId: CommentId,
         reason: String,
         ctx: Context,
         focusManager: FocusManager,
@@ -57,7 +59,7 @@ class CreateReportViewModel : ViewModel() {
     }
 
     fun createPostReport(
-        postId: Int,
+        postId: PostId,
         reason: String,
         ctx: Context,
         focusManager: FocusManager,

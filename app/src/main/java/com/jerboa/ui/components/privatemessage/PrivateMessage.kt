@@ -29,13 +29,14 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 
 @Composable
 fun PrivateMessageHeader(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit,
-    myPersonId: Int,
+    onPersonClick: (personId: PersonId) -> Unit,
+    myPersonId: PersonId,
     showAvatar: Boolean,
 ) {
     val otherPerson: Person
@@ -76,7 +77,7 @@ fun PrivateMessageHeader(
 }
 
 fun isCreator(
-    myPersonId: Int,
+    myPersonId: PersonId,
     privateMessageView: PrivateMessageView,
 ): Boolean {
     return myPersonId == privateMessageView.creator.id
@@ -106,9 +107,9 @@ fun PrivateMessage(
     privateMessageView: PrivateMessageView,
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     // Required so we know the from / to
-    myPersonId: Int,
+    myPersonId: PersonId,
     account: Account,
     showAvatar: Boolean,
 ) {
@@ -142,7 +143,7 @@ fun PrivateMessageFooterLine(
     privateMessageView: PrivateMessageView,
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
-    myPersonId: Int,
+    myPersonId: PersonId,
     account: Account,
 ) {
     Row(
