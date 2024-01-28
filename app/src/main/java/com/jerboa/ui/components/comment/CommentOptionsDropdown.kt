@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -184,47 +185,53 @@ fun CommentOptionsDropdown(
             )
         }
 
-        // You can do these actions on mods above you
+        // The moderation subfield
         if (amMod || amAdmin) {
             PopupMenuItem(
-                text = stringResource(R.string.view_votes),
-                icon = ImageVector.vectorResource(R.drawable.up_filled),
-                onClick = {
-                    onDismissRequest()
-                    onViewVotesClick(commentView.comment.id)
-                },
-            )
-        }
+                text = stringResource(R.string.moderation),
+                icon = Icons.Outlined.Shield,
+            ) {
+                if (canMod) {
+                    HorizontalDivider()
+                    val (removeText, removeIcon) =
+                        if (commentView.comment.removed) {
+                            Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
+                        } else {
+                            Pair(stringResource(R.string.remove_comment), Icons.Outlined.GppBad)
+                        }
 
-        if (canMod) {
-            HorizontalDivider()
-            val (removeText, removeIcon) =
-                if (commentView.comment.removed) {
-                    Pair(stringResource(R.string.restore_comment), Icons.Outlined.Restore)
-                } else {
-                    Pair(stringResource(R.string.remove_comment), Icons.Outlined.GppBad)
+                    PopupMenuItem(
+                        text = removeText,
+                        icon = removeIcon,
+                        onClick = {
+                            onDismissRequest()
+                            onRemoveClick(commentView)
+                        },
+                    )
+                    BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
+
+                    // Only show ban from community button if its a local community
+                    if (commentView.community.local) {
+                        BanFromCommunityPopupMenuItem(
+                            BanFromCommunityData(
+                                person = commentView.creator,
+                                community = commentView.community,
+                                banned = commentView.creator_banned_from_community,
+                            ),
+                            onDismissRequest,
+                            onBanFromCommunityClick,
+                        )
+                    }
                 }
 
-            PopupMenuItem(
-                text = removeText,
-                icon = removeIcon,
-                onClick = {
-                    onDismissRequest()
-                    onRemoveClick(commentView)
-                },
-            )
-            BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
-
-            // Only show ban from community button if its a local community
-            if (commentView.community.local) {
-                BanFromCommunityPopupMenuItem(
-                    BanFromCommunityData(
-                        person = commentView.creator,
-                        community = commentView.community,
-                        banned = commentView.creator_banned_from_community,
-                    ),
-                    onDismissRequest,
-                    onBanFromCommunityClick,
+                // You can do these actions on mods above you
+                PopupMenuItem(
+                    text = stringResource(R.string.view_votes),
+                    icon = ImageVector.vectorResource(R.drawable.up_filled),
+                    onClick = {
+                        onDismissRequest()
+                        onViewVotesClick(commentView.comment.id)
+                    },
                 )
             }
         }

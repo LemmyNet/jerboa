@@ -435,4 +435,5 @@
     <string name="view_votes">View votes</string>
     <string name="post_votes">Post votes</string>
     <string name="comment_votes">Comment votes</string>
+    <string name="moderation">Moderation</string>
 </resources>
