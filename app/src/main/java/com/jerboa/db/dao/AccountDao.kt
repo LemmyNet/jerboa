@@ -31,19 +31,19 @@ interface AccountDao {
     suspend fun removeCurrent()
 
     @Query("UPDATE account set current = 1 where id = :accountId")
-    suspend fun setCurrent(accountId: Int)
+    suspend fun setCurrent(accountId: Long)
 
     // Important to use this instead of calling removeCurrent and setCurrent manually
     // Because the previous would cause livedata to emit null then newAccount
     @Transaction
-    suspend fun updateCurrent(accountId: Int) {
+    suspend fun updateCurrent(accountId: Long) {
         removeCurrent()
         setCurrent(accountId)
     }
 
     @Query("Update account set verification_state = :state where id = :accountId")
     suspend fun setVerificationState(
-        accountId: Int,
+        accountId: Long,
         state: Int,
     )
 

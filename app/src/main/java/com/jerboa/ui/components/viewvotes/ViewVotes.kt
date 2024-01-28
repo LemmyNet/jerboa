@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,6 +22,7 @@ import com.jerboa.R
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.VoteView
 
 @Composable
@@ -29,7 +30,7 @@ fun ViewVotesBody(
     likes: List<VoteView>,
     listState: LazyListState,
     padding: PaddingValues,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -65,7 +66,7 @@ fun ViewVotesBody(
                     contentDescription = voteInfo.description,
                 )
             }
-            Divider(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
+            HorizontalDivider(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
         }
     }
 }
@@ -77,9 +78,9 @@ private data class VoteInfo(
 )
 
 @Composable
-private fun buildVoteInfo(vote: Int): VoteInfo {
+private fun buildVoteInfo(vote: Long): VoteInfo {
     return when (vote) {
-        1 ->
+        1L ->
             VoteInfo(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 MaterialTheme.colorScheme.secondary,

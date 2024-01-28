@@ -7,7 +7,7 @@ import com.jerboa.feat.AccountVerificationState
 
 @Entity
 data class Account(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     @ColumnInfo(name = "current") val current: Boolean,
     @ColumnInfo(name = "instance") val instance: String,
     @ColumnInfo(name = "name") val name: String,
@@ -42,7 +42,7 @@ val AnonAccount =
     )
 
 fun Account.isAnon(): Boolean {
-    return this.id == -1
+    return this.id == -1L
 }
 
 fun Account.isReady(): Boolean {

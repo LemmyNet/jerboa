@@ -27,10 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.VoteType
-import com.jerboa.canMod
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.VoteType
+import com.jerboa.feat.canMod
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -43,16 +43,18 @@ import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentMentionNodeHeader(
     personMentionView: PersonMentionView,
-    onPersonClick: (personId: Int) -> Unit,
-    score: Int,
-    myVote: Int?,
+    onPersonClick: (personId: PersonId) -> Unit,
+    score: Long,
+    myVote: Int,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
@@ -102,15 +104,15 @@ fun CommentMentionNodeFooterLine(
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onRemoveClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    myVote: Int?,
-    upvotes: Int,
-    downvotes: Int,
+    myVote: Int,
+    upvotes: Long,
+    downvotes: Long,
     account: Account,
     enableDownvotes: Boolean,
     showScores: Boolean,
@@ -159,7 +161,7 @@ fun CommentMentionNodeFooterLine(
                 votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0) && showScores,
+                showNumber = (downvotes != 0L) && showScores,
                 account = account,
             )
             if (enableDownvotes) {
@@ -252,9 +254,9 @@ fun CommentMentionNode(
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onRemoveClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,

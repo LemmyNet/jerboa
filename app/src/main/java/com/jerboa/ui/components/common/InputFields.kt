@@ -21,7 +21,6 @@ import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.FormatBold
 import androidx.compose.material.icons.outlined.FormatItalic
-import androidx.compose.material.icons.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.FormatQuote
 import androidx.compose.material.icons.outlined.FormatStrikethrough
 import androidx.compose.material.icons.outlined.Image
@@ -668,8 +667,8 @@ fun CheckboxField(
 
 @Composable
 fun ExpiresField(
-    value: Int?,
-    onIntChange: (Int?) -> Unit,
+    value: Long?,
+    onIntChange: (Long?) -> Unit,
     isValid: Boolean,
 ) {
     OutlinedTextField(
@@ -679,7 +678,7 @@ fun ExpiresField(
             if (it.isEmpty()) {
                 onIntChange(null)
             } else if (it.isDigitsOnly() && it.toInt() > 0) {
-                onIntChange(it.toIntOrNull())
+                onIntChange(it.toLongOrNull())
             }
         },
         singleLine = true,

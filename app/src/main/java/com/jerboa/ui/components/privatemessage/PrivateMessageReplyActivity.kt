@@ -28,6 +28,7 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 
 object PrivateMessage {
@@ -40,7 +41,7 @@ fun PrivateMessageReplyActivity(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     onBack: () -> Unit,
-    onProfile: (Int) -> Unit,
+    onProfile: (PostId) -> Unit,
 ) {
     Log.d("jerboa", "got to private message reply activity")
     val privateMessageView = appState.getPrevReturn<PrivateMessageView>(PrivateMessage.PM_VIEW)

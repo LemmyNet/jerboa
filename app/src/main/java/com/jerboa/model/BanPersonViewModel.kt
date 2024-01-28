@@ -13,7 +13,7 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import com.jerboa.futureDaysToUnixTime
+import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.v0x19.datatypes.BanPerson
@@ -31,7 +31,7 @@ class BanPersonViewModel : ViewModel() {
         ban: Boolean,
         removeData: Boolean? = null,
         reason: String,
-        expireDays: Int? = null,
+        expireDays: Long? = null,
         ctx: Context,
         focusManager: FocusManager,
         onSuccess: (PersonView) -> Unit,

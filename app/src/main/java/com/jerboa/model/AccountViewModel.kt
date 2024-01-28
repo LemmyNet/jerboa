@@ -53,7 +53,7 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     // which can update the siteviewmodel.siteRes, if you have logic invalidating the
     // account based on siteRes changes make sure it doesn't cause a loop
     fun setVerificationState(
-        accountId: Int,
+        accountId: Long,
         state: Int,
     ) = viewModelScope.launch {
         repository.setVerificationState(accountId, state)

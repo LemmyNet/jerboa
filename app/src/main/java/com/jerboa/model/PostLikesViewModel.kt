@@ -1,7 +1,7 @@
 package com.jerboa.model
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class PostLikesViewModel(val id: PostId) : ViewModel() {
     var likesRes: ApiState<ListPostLikesResponse> by mutableStateOf(ApiState.Empty)
         private set
-    private var page by mutableIntStateOf(1)
+    private var page by mutableLongStateOf(1)
 
     init {
         getLikes()

@@ -111,12 +111,12 @@ fun TimeAgoPreview() {
 
 @Composable
 fun ScoreAndTime(
-    score: Int,
-    myVote: Int?,
+    score: Long,
+    myVote: Int,
     published: String,
     updated: String?,
     isExpanded: Boolean = true,
-    collapsedCommentsCount: Int = 0,
+    collapsedCommentsCount: Long = 0,
     isNsfw: Boolean = false,
     showScores: Boolean,
 ) {
@@ -154,7 +154,7 @@ fun ScoreAndTimePreview() {
 @Composable
 fun CollapsedIndicator(
     visible: Boolean,
-    descendants: Int,
+    descendants: Long,
 ) {
     AnimatedVisibility(
         visible = visible && descendants > 0,

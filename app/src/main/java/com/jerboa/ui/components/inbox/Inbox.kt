@@ -36,7 +36,7 @@ fun InboxHeader(
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     onClickMarkAllAsRead: () -> Unit,
-    unreadCount: Int? = null,
+    unreadCount: Long? = null,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
@@ -92,7 +92,7 @@ fun InboxHeader(
 @Composable
 fun InboxHeaderTitle(
     selectedUnreadOrAll: UnreadOrAll,
-    unreadCount: Int? = null,
+    unreadCount: Long? = null,
 ) {
     var title = stringResource(R.string.inbox_inbox)
     val ctx = LocalContext.current

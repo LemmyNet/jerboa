@@ -25,13 +25,14 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 
 @Composable
 fun RepliedComment(
     commentView: CommentView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -57,7 +58,7 @@ fun RepliedComment(
 @Composable
 fun RepliedCommentReply(
     commentReplyView: CommentReplyView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -81,7 +82,7 @@ fun RepliedCommentReply(
 @Composable
 fun RepliedMentionReply(
     personMentionView: PersonMentionView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -116,7 +117,7 @@ fun RepliedCommentPreview() {
 @Composable
 fun RepliedPost(
     postView: PostView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -141,7 +142,7 @@ fun CommentReply(
     commentView: CommentView,
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
@@ -173,7 +174,7 @@ fun CommentReplyReply(
     commentReplyView: CommentReplyView,
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
@@ -205,7 +206,7 @@ fun MentionReply(
     personMentionView: PersonMentionView,
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
@@ -237,7 +238,7 @@ fun PostReply(
     postView: PostView,
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,

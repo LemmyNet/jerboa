@@ -54,20 +54,20 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.newVote
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -149,7 +149,10 @@ fun PostActivity(
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, postViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, postViewModel::updateBannedFromCommunity)
+    appState.ConsumeReturn<BanFromCommunityData>(
+        BanFromCommunityReturn.BAN_DATA_VIEW,
+        postViewModel::updateBannedFromCommunity,
+    )
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -285,6 +288,7 @@ fun PostActivity(
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->
                         LoadingBar(padding)
+
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
@@ -320,7 +324,7 @@ fun PostActivity(
                                                         newVote(
                                                             postView.my_vote,
                                                             VoteType.Upvote,
-                                                        ),
+                                                        ).toLong(),
                                                 ),
                                             )
                                         }
@@ -337,11 +341,10 @@ fun PostActivity(
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score =
-                                                        newVote(
-                                                            postView.my_vote,
-                                                            VoteType.Downvote,
-                                                        ),
+                                                    score = newVote(
+                                                        postView.my_vote,
+                                                        VoteType.Downvote,
+                                                    ).toLong(),
                                                 ),
                                             )
                                         }
@@ -487,7 +490,7 @@ fun PostActivity(
                                             ),
                                         )
 
-                                    val toggleExpanded: (Int) -> Unit = { commentId: Int ->
+                                    val toggleExpanded: (CommentId) -> Unit = { commentId: CommentId ->
                                         if (unExpandedComments.contains(commentId)) {
                                             unExpandedComments.remove(commentId)
                                         } else {
@@ -495,7 +498,7 @@ fun PostActivity(
                                         }
                                     }
 
-                                    val toggleActionBar: (Int) -> Unit = { commentId: Int ->
+                                    val toggleActionBar: (CommentId) -> Unit = { commentId: CommentId ->
                                         if (commentsWithToggledActionBar.contains(commentId)) {
                                             commentsWithToggledActionBar.remove(commentId)
                                         } else {
@@ -509,7 +512,8 @@ fun PostActivity(
 
                                             val firstCommentPath = firstCommentNodeData?.getPath()
 
-                                            val hasParent = firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
+                                            val hasParent =
+                                                firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
 
                                             val commentParentId = firstCommentPath?.let(::getCommentParentId)
 
@@ -559,7 +563,7 @@ fun PostActivity(
                                                             newVote(
                                                                 cv.my_vote,
                                                                 VoteType.Upvote,
-                                                            ),
+                                                            ).toLong(),
                                                     ),
                                                 )
                                             }
@@ -576,11 +580,10 @@ fun PostActivity(
                                                 postViewModel.likeComment(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
-                                                        score =
-                                                            newVote(
-                                                                cv.my_vote,
-                                                                VoteType.Downvote,
-                                                            ),
+                                                        score = newVote(
+                                                            cv.my_vote,
+                                                            VoteType.Downvote,
+                                                        ).toLong(),
                                                     ),
                                                 )
                                             }

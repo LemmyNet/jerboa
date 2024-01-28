@@ -11,6 +11,7 @@ import com.jerboa.api.toApiState
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadataResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
 import kotlinx.coroutines.launch
 
@@ -22,7 +23,7 @@ class CreatePostViewModel : ViewModel() {
 
     fun createPost(
         form: CreatePost,
-        onSuccess: (postId: Int) -> Unit,
+        onSuccess: (postId: PostId) -> Unit,
     ) {
         viewModelScope.launch {
             createPostRes = ApiState.Loading

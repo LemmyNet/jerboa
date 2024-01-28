@@ -15,7 +15,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.BanFromCommunityData
-import com.jerboa.futureDaysToUnixTime
+import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.v0x19.datatypes.BanFromCommunity
@@ -34,7 +34,7 @@ class BanFromCommunityViewModel : ViewModel() {
         ban: Boolean,
         removeData: Boolean? = null,
         reason: String,
-        expireDays: Int? = null,
+        expireDays: Long? = null,
         ctx: Context,
         focusManager: FocusManager,
         onSuccess: (BanFromCommunityData) -> Unit,

@@ -10,6 +10,7 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.launch
 
@@ -18,7 +19,7 @@ class PrivateMessageReplyViewModel : ViewModel() {
         private set
 
     fun createPrivateMessage(
-        recipientId: Int,
+        recipientId: PersonId,
         content: String,
         onGoBack: () -> Unit,
         focusManager: FocusManager,

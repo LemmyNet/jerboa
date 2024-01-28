@@ -2,6 +2,10 @@ package com.jerboa.ui.components.common
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 
 object Route {
     object Graph {
@@ -52,9 +56,9 @@ object Route {
 
     val VIEW = ViewArgs.route
 
-    class CommunityFromIdArgs(val id: Int) {
+    class CommunityFromIdArgs(val id: CommunityId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
@@ -103,15 +107,15 @@ object Route {
         }
     }
 
-    class ProfileFromIdArgs(val id: Int, val saved: Boolean) {
+    class ProfileFromIdArgs(val id: PostId, val saved: Boolean) {
         constructor(navBackStackEntry: NavBackStackEntry) : this(
-            id = navBackStackEntry.arguments?.getInt(ID)!!,
+            id = navBackStackEntry.arguments?.getLong(ID)!!,
             saved = navBackStackEntry.arguments?.getBoolean(SAVED)!!,
         )
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             const val SAVED = "saved"
             val SAVED_TYPE = NavType.BoolType
@@ -148,13 +152,13 @@ object Route {
         }
     }
 
-    class PostArgs(val id: Int) {
+    class PostArgs(val id: PostId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "post/$id"
 
@@ -162,13 +166,13 @@ object Route {
         }
     }
 
-    class CommentArgs(val id: Int) {
+    class CommentArgs(val id: CommentId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "comment/$id"
 
@@ -176,13 +180,13 @@ object Route {
         }
     }
 
-    class CommentReportArgs(val id: Int) {
+    class CommentReportArgs(val id: CommentId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "commentReport/$id"
 
@@ -190,13 +194,13 @@ object Route {
         }
     }
 
-    class PostReportArgs(val id: Int) {
+    class PostReportArgs(val id: PostId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "postReport/$id"
 
@@ -204,13 +208,13 @@ object Route {
         }
     }
 
-    class CommentLikesArgs(val id: Int) {
+    class CommentLikesArgs(val id: CommentId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "commentLikes/$id"
 
@@ -218,13 +222,13 @@ object Route {
         }
     }
 
-    class PostLikesArgs(val id: Int) {
+    class PostLikesArgs(val id: PostId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "postLikes/$id"
 
@@ -246,16 +250,16 @@ object Route {
         }
     }
 
-    class CreatePrivateMessageArgs(val personId: Int, val personName: String) {
+    class CreatePrivateMessageArgs(val personId: PersonId, val personName: String) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(
-                personId = navBackStackEntry.arguments?.getInt(PERSON_ID)!!,
+                personId = navBackStackEntry.arguments?.getLong(PERSON_ID)!!,
                 personName = navBackStackEntry.arguments?.getString(PERSON_NAME)!!,
             )
 
         companion object {
             const val PERSON_ID = "person_id"
-            val PERSON_ID_TYPE = NavType.IntType
+            val PERSON_ID_TYPE = NavType.LongType
 
             const val PERSON_NAME = "person_name"
             val PERSON_NAME_TYPE = NavType.StringType

@@ -43,17 +43,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.Border
 import com.jerboa.CommentNode
-import com.jerboa.InstantScores
 import com.jerboa.MissingCommentNode
 import com.jerboa.R
-import com.jerboa.VoteType
-import com.jerboa.amAdmin
-import com.jerboa.amMod
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
-import com.jerboa.calculateNewInstantScores
-import com.jerboa.canMod
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
@@ -62,6 +56,11 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.InstantScores
+import com.jerboa.feat.VoteType
+import com.jerboa.feat.amAdmin
+import com.jerboa.feat.amMod
+import com.jerboa.feat.canMod
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -83,10 +82,10 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun CommentNodeHeader(
     commentView: CommentView,
-    onPersonClick: (personId: Int) -> Unit,
-    score: Int,
-    myVote: Int?,
-    collapsedCommentsCount: Int,
+    onPersonClick: (personId: PersonId) -> Unit,
+    score: Long,
+    myVote: Int,
+    collapsedCommentsCount: Long,
     isExpanded: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -182,9 +181,9 @@ fun LazyListScope.commentNodeItem(
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
-    isExpanded: (commentId: Int) -> Boolean,
-    toggleExpanded: (commentId: Int) -> Unit,
-    toggleActionBar: (commentId: Int) -> Unit,
+    isExpanded: (commentId: CommentId) -> Boolean,
+    toggleExpanded: (commentId: CommentId) -> Unit,
+    toggleActionBar: (commentId: CommentId) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -193,12 +192,12 @@ fun LazyListScope.commentNodeItem(
     onCommentClick: (commentView: CommentView) -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
@@ -210,7 +209,7 @@ fun LazyListScope.commentNodeItem(
     showPostAndCommunityContext: Boolean = false,
     account: Account,
     isCollapsedByParent: Boolean,
-    showActionBar: (commentId: Int) -> Boolean,
+    showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Int,
@@ -245,7 +244,7 @@ fun LazyListScope.commentNodeItem(
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
         val border = Border(SMALL_PADDING, borderColor)
 
-        val instantScores =
+        var instantScores by
             remember {
                 mutableStateOf(
                     InstantScores(
@@ -292,8 +291,8 @@ fun LazyListScope.commentNodeItem(
                         CommentNodeHeader(
                             commentView = commentView,
                             onPersonClick = onPersonClick,
-                            score = instantScores.value.score,
-                            myVote = instantScores.value.myVote,
+                            score = instantScores.score,
+                            myVote = instantScores.myVote,
                             onClick = {
                                 onHeaderClick(commentView)
                             },
@@ -335,21 +334,13 @@ fun LazyListScope.commentNodeItem(
                                         commentView = commentView,
                                         admins = admins,
                                         moderators = moderators,
-                                        instantScores = instantScores.value,
+                                        instantScores = instantScores,
                                         onUpvoteClick = {
-                                            instantScores.value =
-                                                calculateNewInstantScores(
-                                                    instantScores.value,
-                                                    voteType = VoteType.Upvote,
-                                                )
+                                            instantScores = instantScores.update(VoteType.Upvote)
                                             onUpvoteClick(commentView)
                                         },
                                         onDownvoteClick = {
-                                            instantScores.value =
-                                                calculateNewInstantScores(
-                                                    instantScores.value,
-                                                    voteType = VoteType.Downvote,
-                                                )
+                                            instantScores = instantScores.update(VoteType.Downvote)
                                             onDownvoteClick(commentView)
                                         },
                                         onViewSourceClick = {
@@ -448,9 +439,9 @@ fun LazyListScope.missingCommentNodeItem(
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
-    isExpanded: (commentId: Int) -> Boolean,
-    toggleExpanded: (commentId: Int) -> Unit,
-    toggleActionBar: (commentId: Int) -> Unit,
+    isExpanded: (commentId: CommentId) -> Boolean,
+    toggleExpanded: (commentId: CommentId) -> Unit,
+    toggleActionBar: (commentId: CommentId) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -459,12 +450,12 @@ fun LazyListScope.missingCommentNodeItem(
     onCommentClick: (commentView: CommentView) -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
@@ -476,7 +467,7 @@ fun LazyListScope.missingCommentNodeItem(
     showPostAndCommunityContext: Boolean = false,
     account: Account,
     isCollapsedByParent: Boolean,
-    showActionBar: (commentId: Int) -> Boolean,
+    showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Int,
@@ -644,7 +635,7 @@ fun PostAndCommunityContextHeader(
     post: Post,
     community: Community,
     onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
     blurNSFW: Int,
 ) {
     Column(
@@ -702,7 +693,7 @@ fun CommentFooterLine(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -782,7 +773,7 @@ fun CommentFooterLine(
                 votes = instantScores.upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (instantScores.downvotes != 0) && showScores,
+                showNumber = (instantScores.downvotes != 0L) && showScores,
                 account = account,
             )
             if (enableDownVotes) {
@@ -923,11 +914,11 @@ fun calculateBorderColor(
 
 @Composable
 fun ShowCommentContextButtons(
-    postId: Int,
-    commentParentId: Int?,
+    postId: PostId,
+    commentParentId: CommentId?,
     showContextButton: Boolean,
-    onPostClick: (postId: Int) -> Unit,
-    onCommentClick: (commentId: Int) -> Unit,
+    onPostClick: (postId: PostId) -> Unit,
+    onCommentClick: (commentId: CommentId) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
