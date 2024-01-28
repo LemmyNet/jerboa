@@ -61,6 +61,7 @@ import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -104,7 +105,7 @@ fun SimpleTopAppBarPreview() {
 fun BottomAppBarAll(
     selectedTab: NavTab,
     onSelect: (NavTab) -> Unit,
-    unreadCounts: Int,
+    unreadCounts: Long,
     showTextDescriptionsInNavbar: Boolean,
 ) {
     // Check for preview mode
@@ -218,12 +219,12 @@ fun CommentNavigationBottomAppBar(
 @Composable
 fun CommentOrPostNodeHeader(
     creator: Person,
-    score: Int,
-    myVote: Int?,
+    score: Long,
+    myVote: Int,
     published: String,
     updated: String?,
     deleted: Boolean,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     isPostCreator: Boolean,
     isModerator: Boolean,
     isAdmin: Boolean,
@@ -231,7 +232,7 @@ fun CommentOrPostNodeHeader(
     onClick: () -> Unit,
     onLongCLick: () -> Unit,
     isExpanded: Boolean = true,
-    collapsedCommentsCount: Int = 0,
+    collapsedCommentsCount: Long = 0,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -448,7 +449,7 @@ fun scoreColor(myVote: Int?): Color {
 
 @Composable
 fun InboxIconAndBadge(
-    iconBadgeCount: Int?,
+    iconBadgeCount: Long?,
     icon: ImageVector,
     contentDescription: String?,
     modifier: Modifier = Modifier,
@@ -492,12 +493,12 @@ fun Sidebar(
     icon: String?,
     content: String?,
     published: String,
-    postCount: Int,
-    commentCount: Int,
-    usersActiveDay: Int,
-    usersActiveWeek: Int,
-    usersActiveMonth: Int,
-    usersActiveHalfYear: Int,
+    postCount: Long,
+    commentCount: Long,
+    usersActiveDay: Long,
+    usersActiveWeek: Long,
+    usersActiveMonth: Long,
+    usersActiveHalfYear: Long,
     padding: PaddingValues,
 ) {
     val listState = rememberLazyListState()
@@ -576,12 +577,12 @@ fun Sidebar(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommentsAndPosts(
-    usersActiveDay: Int,
-    usersActiveWeek: Int,
-    usersActiveMonth: Int,
-    usersActiveHalfYear: Int,
-    postCount: Int,
-    commentCount: Int,
+    usersActiveDay: Long,
+    usersActiveWeek: Long,
+    usersActiveMonth: Long,
+    usersActiveHalfYear: Long,
+    postCount: Long,
+    commentCount: Long,
 ) {
     FlowRow {
         Text(

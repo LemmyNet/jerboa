@@ -106,7 +106,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Int {
+    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Long {
         return when (val res = unreadCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data

@@ -20,12 +20,13 @@ import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 
 @Composable
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -56,7 +57,7 @@ fun PrivateMessageReply(
     privateMessageView: PrivateMessageView,
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,

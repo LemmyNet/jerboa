@@ -56,16 +56,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.jerboa.InstantScores
 import com.jerboa.JerboaAppState
 import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.VoteType
-import com.jerboa.amAdmin
-import com.jerboa.amMod
-import com.jerboa.calculateNewInstantScores
-import com.jerboa.canMod
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleImagePostView
@@ -76,7 +70,12 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.VoteType
+import com.jerboa.feat.amAdmin
+import com.jerboa.feat.amMod
+import com.jerboa.feat.canMod
 import com.jerboa.feat.needBlur
 import com.jerboa.getPostType
 import com.jerboa.hostName
@@ -126,10 +125,10 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun PostHeaderLine(
     postView: PostView,
-    myVote: Int?,
-    score: Int,
+    myVote: Int,
+    score: Long,
     onCommunityClick: (community: Community) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
@@ -243,7 +242,7 @@ fun PostHeaderLinePreview() {
     val postView = sampleLinkPostView
     PostHeaderLine(
         postView = postView,
-        myVote = null,
+        myVote = 0,
         score = 10,
         onCommunityClick = {},
         onPersonClick = {},
@@ -256,9 +255,9 @@ fun PostHeaderLinePreview() {
 @Composable
 fun PostNodeHeader(
     postView: PostView,
-    myVote: Int?,
-    score: Int,
-    onPersonClick: (personId: Int) -> Unit,
+    myVote: Int,
+    score: Long,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -564,7 +563,7 @@ fun PostFooterLine(
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
@@ -660,7 +659,7 @@ fun PostFooterLine(
             myVote = instantScores.myVote,
             votes = instantScores.upvotes,
             type = VoteType.Upvote,
-            showNumber = (instantScores.downvotes != 0) && showScores,
+            showNumber = (instantScores.downvotes != 0L) && showScores,
             onVoteClick = onUpvoteClick,
             account = account,
         )
@@ -735,13 +734,13 @@ fun PostFooterLine(
 
 @Composable
 fun CommentNewCountRework(
-    comments: Int,
-    unreadCount: Int,
+    comments: Long,
+    unreadCount: Long,
     account: Account,
     modifier: Modifier = Modifier,
 ) {
     val unread =
-        if (unreadCount == 0 || comments == unreadCount) {
+        if (unreadCount == 0L || comments == unreadCount) {
             null
         } else {
             (if (unreadCount > 0) "+" else "") + siFormat(unreadCount)
@@ -761,13 +760,13 @@ fun CommentNewCountRework(
 
 @Composable
 fun CommentNewCount(
-    comments: Int,
-    unreadCount: Int,
+    comments: Long,
+    unreadCount: Long,
     style: TextStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
     spacing: Dp = 0.dp,
 ) {
     val unread =
-        if (unreadCount == 0 || comments == unreadCount) {
+        if (unreadCount == 0L || comments == unreadCount) {
             null
         } else {
             unreadCount
@@ -1046,7 +1045,7 @@ fun PostListing(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
@@ -1063,7 +1062,7 @@ fun PostListing(
     postActionbarMode: Int,
 ) {
     // This stores vote data
-    val instantScores =
+    var instantScores by
         remember {
             mutableStateOf(
                 InstantScores(
@@ -1083,21 +1082,13 @@ fun PostListing(
                 postView = postView,
                 admins = admins,
                 moderators = moderators,
-                instantScores = instantScores.value,
+                instantScores = instantScores,
                 onUpvoteClick = {
-                    instantScores.value =
-                        calculateNewInstantScores(
-                            instantScores.value,
-                            voteType = VoteType.Upvote,
-                        )
+                    instantScores = instantScores.update(VoteType.Upvote)
                     onUpvoteClick(postView)
                 },
                 onDownvoteClick = {
-                    instantScores.value =
-                        calculateNewInstantScores(
-                            instantScores.value,
-                            voteType = VoteType.Downvote,
-                        )
+                    instantScores = instantScores.update(VoteType.Downvote)
                     onDownvoteClick(postView)
                 },
                 onReplyClick = onReplyClick,
@@ -1139,21 +1130,13 @@ fun PostListing(
                 postView = postView,
                 admins = admins,
                 moderators = moderators,
-                instantScores = instantScores.value,
+                instantScores = instantScores,
                 onUpvoteClick = {
-                    instantScores.value =
-                        calculateNewInstantScores(
-                            instantScores.value,
-                            voteType = VoteType.Upvote,
-                        )
+                    instantScores = instantScores.update(VoteType.Upvote)
                     onUpvoteClick(postView)
                 },
                 onDownvoteClick = {
-                    instantScores.value =
-                        calculateNewInstantScores(
-                            instantScores.value,
-                            voteType = VoteType.Downvote,
-                        )
+                    instantScores = instantScores.update(VoteType.Downvote)
                     onDownvoteClick(postView)
                 },
                 onReplyClick = onReplyClick,
@@ -1192,21 +1175,13 @@ fun PostListing(
         PostViewMode.List ->
             PostListingList(
                 postView = postView,
-                instantScores = instantScores.value,
+                instantScores = instantScores,
                 onUpvoteClick = {
-                    instantScores.value =
-                        calculateNewInstantScores(
-                            instantScores.value,
-                            voteType = VoteType.Upvote,
-                        )
+                    instantScores = instantScores.update(VoteType.Upvote)
                     onUpvoteClick(postView)
                 },
                 onDownvoteClick = {
-                    instantScores.value =
-                        calculateNewInstantScores(
-                            instantScores.value,
-                            voteType = VoteType.Downvote,
-                        )
+                    instantScores = instantScores.update(VoteType.Downvote)
                     onDownvoteClick(postView)
                 },
                 onPostClick = onPostClick,
@@ -1567,7 +1542,7 @@ fun PostListingCard(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
     showReply: Boolean = false,

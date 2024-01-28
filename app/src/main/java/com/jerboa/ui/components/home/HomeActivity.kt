@@ -37,18 +37,18 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.zIndex
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
@@ -276,11 +276,7 @@ fun MainPostListingsContent(
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score =
-                                newVote(
-                                    currentVote = postView.my_vote,
-                                    voteType = VoteType.Upvote,
-                                ),
+                            score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
                         ),
                     )
                 }
@@ -296,11 +292,7 @@ fun MainPostListingsContent(
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score =
-                                newVote(
-                                    currentVote = postView.my_vote,
-                                    voteType = VoteType.Downvote,
-                                ),
+                            score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
                         ),
                     )
                 }

@@ -45,7 +45,7 @@ fun BanPersonActivity(
 
     var removeData by rememberSaveable { mutableStateOf(false) }
     var permaBan by rememberSaveable { mutableStateOf(false) }
-    var expireDays: Int? by rememberSaveable { mutableStateOf(null) }
+    var expireDays: Long? by rememberSaveable { mutableStateOf(null) }
 
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(

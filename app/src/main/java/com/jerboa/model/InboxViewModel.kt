@@ -2,7 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -61,9 +61,9 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
 
-    private var pageReplies by mutableIntStateOf(1)
-    private var pageMentions by mutableIntStateOf(1)
-    private var pageMessages by mutableIntStateOf(1)
+    private var pageReplies by mutableLongStateOf(1)
+    private var pageMentions by mutableLongStateOf(1)
+    private var pageMessages by mutableLongStateOf(1)
     var unreadOnly by mutableStateOf(true)
         private set
 

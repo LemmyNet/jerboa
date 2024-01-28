@@ -667,8 +667,8 @@ fun CheckboxField(
 
 @Composable
 fun ExpiresField(
-    value: Int?,
-    onIntChange: (Int?) -> Unit,
+    value: Long?,
+    onIntChange: (Long?) -> Unit,
     isValid: Boolean,
 ) {
     OutlinedTextField(
@@ -678,7 +678,7 @@ fun ExpiresField(
             if (it.isEmpty()) {
                 onIntChange(null)
             } else if (it.isDigitsOnly() && it.toInt() > 0) {
-                onIntChange(it.toIntOrNull())
+                onIntChange(it.toLongOrNull())
             }
         },
         singleLine = true,

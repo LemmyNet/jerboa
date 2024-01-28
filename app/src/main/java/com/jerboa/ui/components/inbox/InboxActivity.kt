@@ -42,17 +42,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.newVote
 import com.jerboa.getCommentParentId
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.InboxViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeInbox
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -344,7 +344,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Upvote),
+                                                            score = newVote(cr.my_vote, VoteType.Upvote).toLong(),
                                                         ),
                                                     )
                                                 }
@@ -360,7 +360,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Downvote),
+                                                            score = newVote(cr.my_vote, VoteType.Downvote).toLong(),
                                                         ),
                                                     )
                                                 }
@@ -540,7 +540,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Upvote),
+                                                            score = newVote(pm.my_vote, VoteType.Upvote).toLong(),
                                                         ),
                                                     )
                                                 }
@@ -556,7 +556,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Downvote),
+                                                            score = newVote(pm.my_vote, VoteType.Downvote).toLong(),
                                                         ),
                                                     )
                                                 }
