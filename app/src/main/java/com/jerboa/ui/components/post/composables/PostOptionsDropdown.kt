@@ -46,6 +46,8 @@ import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
+import io.github.z4kn4fein.semver.toVersion
+import it.vercruysse.lemmyapi.FeatureFlags
 import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
@@ -477,14 +479,16 @@ fun PostOptionsDropdown(
                 // You can do these actions on mods above you
 
                 // These are all amMod || amAdmin
-                PopupMenuItem(
-                    text = stringResource(R.string.view_votes),
-                    icon = ImageVector.vectorResource(R.drawable.up_filled),
-                    onClick = {
-                        onDismissRequest()
-                        onViewVotesClick(postView.post.id)
-                    },
-                )
+                if (FeatureFlags(version = API.version.toVersion()).listAdminVotes()) {
+                    PopupMenuItem(
+                        text = stringResource(R.string.view_votes),
+                        icon = ImageVector.vectorResource(R.drawable.up_filled),
+                        onClick = {
+                            onDismissRequest()
+                            onViewVotesClick(postView.post.id)
+                        },
+                    )
+                }
 
                 val (lockText, lockIcon) =
                     if (postView.post.locked) {
