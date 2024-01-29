@@ -123,7 +123,7 @@ fun PersonProfileActivity(
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
     onBack: (() -> Unit)? = null,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -189,11 +189,11 @@ fun PersonProfileActivity(
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =
-                        if (savedMode) {
-                            ctx.getString(R.string.bookmarks_activity_saved)
-                        } else {
-                            person.name
-                        },
+                            if (savedMode) {
+                                ctx.getString(R.string.bookmarks_activity_saved)
+                            } else {
+                                person.name
+                            },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
@@ -274,7 +274,7 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
-                swipeToActionPreset = swipeToActionPreset
+                swipeToActionPreset = swipeToActionPreset,
             )
         },
     )
@@ -310,7 +310,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -391,9 +391,9 @@ fun UserTabs(
                             LazyColumn(
                                 state = listState,
                                 modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                             ) {
                                 item(contentType = "topSection") {
                                     PersonProfileTopSection(
@@ -436,9 +436,9 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     Box(
                         modifier =
-                        Modifier
-                            .pullRefresh(pullRefreshState)
-                            .fillMaxSize(),
+                            Modifier
+                                .pullRefresh(pullRefreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -473,10 +473,10 @@ fun UserTabs(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                    newVote(
-                                                        pv.my_vote,
-                                                        VoteType.Upvote,
-                                                    ).toLong(),
+                                                        newVote(
+                                                            pv.my_vote,
+                                                            VoteType.Upvote,
+                                                        ).toLong(),
                                                 ),
                                             )
                                         }
@@ -622,7 +622,7 @@ fun UserTabs(
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
-                                    swipeToActionPreset = swipeToActionPreset
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                             else -> {}
@@ -685,9 +685,9 @@ fun UserTabs(
 
                             Box(
                                 modifier =
-                                Modifier
-                                    .pullRefresh(pullRefreshState)
-                                    .fillMaxSize(),
+                                    Modifier
+                                        .pullRefresh(pullRefreshState)
+                                        .fillMaxSize(),
                             ) {
                                 JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -843,7 +843,7 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
-                                    swipeToActionPreset = swipeToActionPreset
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                         }

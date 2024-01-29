@@ -422,7 +422,7 @@ fun MainPostListingsContent(
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
-            swipeToActionPreset = swipeToActionPreset
+            swipeToActionPreset = swipeToActionPreset,
         )
     }
 }

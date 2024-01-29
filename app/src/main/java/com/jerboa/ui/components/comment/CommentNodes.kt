@@ -65,7 +65,7 @@ fun CommentNodes(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -107,7 +107,7 @@ fun CommentNodes(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
-            swipeToActionPreset = swipeToActionPreset
+            swipeToActionPreset = swipeToActionPreset,
         )
         item {
             Spacer(modifier = Modifier.height(100.dp))
@@ -154,7 +154,7 @@ fun LazyListScope.commentNodeItems(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     nodes.forEach { node ->
         when (node) {
@@ -198,7 +198,7 @@ fun LazyListScope.commentNodeItems(
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                     showScores = showScores,
-                    swipeToActionPreset = swipeToActionPreset
+                    swipeToActionPreset = swipeToActionPreset,
                 )
 
             is MissingCommentNode ->
@@ -241,7 +241,7 @@ fun LazyListScope.commentNodeItems(
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                     showScores = showScores,
-                    swipeToActionPreset = swipeToActionPreset
+                    swipeToActionPreset = swipeToActionPreset,
                 )
         }
     }

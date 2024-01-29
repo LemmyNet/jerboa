@@ -42,13 +42,13 @@ fun SwipeToAction(
     val haptic = LocalHapticFeedback.current
 
     val leftActionsRanges =
-        remember (swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions)}
+        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions) }
     val rightActionsRanges =
-        remember (swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions)}
+        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions) }
 
     fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
         return when (state.targetValue) {
-             SwipeToDismissBoxValue.StartToEnd -> {
+            SwipeToDismissBoxValue.StartToEnd -> {
                 leftActionsRanges.findLast { swipeState.progress in it.first }
             }
 
@@ -97,7 +97,9 @@ fun SwipeToAction(
                             .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
                             .fillMaxHeight()
                             .background(color = color)
-                            .align(if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart),
+                            .align(
+                                if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart,
+                            ),
                     contentAlignment =
                         if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
                             Alignment.CenterStart
@@ -138,9 +140,9 @@ fun rememberSwipeActionState(
     They didn't fix it with new SwipeToDismissBoxState
      */
     val leftActionsRanges =
-        remember(swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions)}
+        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions) }
     val rightActionsRanges =
-        remember(swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions)}
+        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions) }
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =
         rememberSwipeToDismissBoxState(

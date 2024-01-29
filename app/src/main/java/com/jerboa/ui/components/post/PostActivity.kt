@@ -135,7 +135,7 @@ fun PostActivity(
     blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -191,33 +191,33 @@ fun PostActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier =
-        Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true }
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .focusRequester(focusRequester)
-            .focusable()
-            .onKeyEvent { keyEvent ->
-                if (navigateParentCommentsWithVolumeButtons) {
-                    when (keyEvent.key) {
-                        Key.VolumeUp -> {
-                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true }
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .focusRequester(focusRequester)
+                .focusable()
+                .onKeyEvent { keyEvent ->
+                    if (navigateParentCommentsWithVolumeButtons) {
+                        when (keyEvent.key) {
+                            Key.VolumeUp -> {
+                                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        Key.VolumeDown -> {
-                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+                            Key.VolumeDown -> {
+                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        else -> {
-                            false
+                            else -> {
+                                false
+                            }
                         }
+                    } else {
+                        false
                     }
-                } else {
-                    false
-                }
-            },
+                },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
@@ -272,9 +272,9 @@ fun PostActivity(
         content = { padding ->
             Box(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
+                    Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState),
             ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
@@ -300,10 +300,10 @@ fun PostActivity(
                         LazyColumn(
                             state = listState,
                             modifier =
-                            Modifier
-                                .padding(top = padding.calculateTopPadding())
-                                .simpleVerticalScrollbar(listState)
-                                .testTag("jerboa:comments"),
+                                Modifier
+                                    .padding(top = padding.calculateTopPadding())
+                                    .simpleVerticalScrollbar(listState)
+                                    .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
@@ -323,10 +323,10 @@ fun PostActivity(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                    newVote(
-                                                        postView.my_vote,
-                                                        VoteType.Upvote,
-                                                    ).toLong(),
+                                                        newVote(
+                                                            postView.my_vote,
+                                                            VoteType.Upvote,
+                                                        ).toLong(),
                                                 ),
                                             )
                                         }
@@ -463,7 +463,7 @@ fun PostActivity(
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
                                     postActionbarMode = postActionbarMode,
-                                    swipeToActionPreset = swipeToActionPreset
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
 
@@ -562,10 +562,10 @@ fun PostActivity(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
                                                         score =
-                                                        newVote(
-                                                            cv.my_vote,
-                                                            VoteType.Upvote,
-                                                        ).toLong(),
+                                                            newVote(
+                                                                cv.my_vote,
+                                                                VoteType.Upvote,
+                                                            ).toLong(),
                                                     ),
                                                 )
                                             }
@@ -687,13 +687,13 @@ fun PostActivity(
                                         showCollapsedCommentContent = showCollapsedCommentContent,
                                         showActionBar = { commentId ->
                                             showActionBarByDefault xor
-                                                    commentsWithToggledActionBar.contains(
-                                                        commentId,
-                                                    )
+                                                commentsWithToggledActionBar.contains(
+                                                    commentId,
+                                                )
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),
-                                        swipeToActionPreset = swipeToActionPreset
+                                        swipeToActionPreset = swipeToActionPreset,
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

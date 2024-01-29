@@ -42,7 +42,6 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -258,7 +257,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -278,7 +277,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
                 }

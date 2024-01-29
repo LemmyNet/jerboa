@@ -357,10 +357,10 @@ fun PostTitleAndImageLink(
 
     Column(
         modifier =
-        Modifier.padding(
-            vertical = MEDIUM_PADDING,
-            horizontal = MEDIUM_PADDING,
-        ),
+            Modifier.padding(
+                vertical = MEDIUM_PADDING,
+                horizontal = MEDIUM_PADDING,
+            ),
     ) {
         // Title of the post
         PostName(
@@ -373,11 +373,11 @@ fun PostTitleAndImageLink(
         url = url,
         blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
         modifier =
-        Modifier
-            .combinedClickable(
-                onClick = { appState.openImageViewer(url) },
-                onLongClick = { appState.showLinkPopup(url) },
-            ),
+            Modifier
+                .combinedClickable(
+                    onClick = { appState.openImageViewer(url) },
+                    onLongClick = { appState.showLinkPopup(url) },
+                ),
     )
 }
 
@@ -471,15 +471,15 @@ fun PostBody(
                 colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier =
-                Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                    .fillMaxWidth(),
+                    Modifier
+                        .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                        .fillMaxWidth(),
                 content = {
                     if (fullBody) {
                         Column(
                             modifier =
-                            Modifier
-                                .padding(MEDIUM_PADDING),
+                                Modifier
+                                    .padding(MEDIUM_PADDING),
                         ) {
                             if (viewSource) {
                                 SelectionContainer {
@@ -646,9 +646,9 @@ fun PostFooterLine(
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = Alignment.Bottom,
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(bottom = SMALL_PADDING),
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = SMALL_PADDING),
     ) {
         // Right handside shows the comments on the left side
         if (postActionbar == PostActionbarMode.RightHandShort) {
@@ -698,24 +698,24 @@ fun PostFooterLine(
         }
         ActionBarButton(
             icon =
-            if (postView.saved) {
-                Icons.Filled.Bookmark
-            } else {
-                Icons.Outlined.BookmarkBorder
-            },
+                if (postView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
+                    Icons.Outlined.BookmarkBorder
+                },
             contentDescription =
-            if (postView.saved) {
-                stringResource(R.string.removeBookmark)
-            } else {
-                stringResource(R.string.addBookmark)
-            },
+                if (postView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
+                },
             onClick = { onSaveClick(postView) },
             contentColor =
-            if (postView.saved) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onBackground.muted
-            },
+                if (postView.saved) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground.muted
+                },
             account = account,
         )
         ActionBarButton(
@@ -870,7 +870,7 @@ fun PreviewPostListingCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -910,7 +910,7 @@ fun PreviewLinkPostListing() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -950,7 +950,7 @@ fun PreviewImagePostListingCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -990,7 +990,7 @@ fun PreviewImagePostListingSmallCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -1030,7 +1030,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -1071,25 +1071,25 @@ fun PostListing(
     showIfRead: Boolean,
     showScores: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     // This stores vote data
     var instantScores by
-    remember {
-        mutableStateOf(
-            InstantScores(
-                myVote = postView.my_vote,
-                score = postView.counts.score,
-                upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes,
-            ),
-        )
-    }
+        remember {
+            mutableStateOf(
+                InstantScores(
+                    myVote = postView.my_vote,
+                    score = postView.counts.score,
+                    upvotes = postView.counts.upvotes,
+                    downvotes = postView.counts.downvotes,
+                ),
+            )
+        }
 
     var viewSource by remember { mutableStateOf(false) }
 
     val swipeState = rememberSwipeActionState(swipeToActionPreset) {
-        when(it) {
+        when (it) {
             SwipeToActionType.Upvote -> {
                 instantScores =
                     instantScores.update(VoteType.Upvote)
@@ -1236,18 +1236,17 @@ fun PostListing(
         }
     }
 
-    if(swipeToActionPreset != SwipeToActionPreset.DISABLED) {
+    if (swipeToActionPreset != SwipeToActionPreset.DISABLED) {
         SwipeToAction(
             swipeToActionPreset = swipeToActionPreset,
             swipeableContent = swipeableContent,
-            swipeState = swipeState
+            swipeState = swipeState,
         )
     } else {
         Row {
             swipeableContent()
         }
     }
-
 }
 
 @Composable
@@ -1262,9 +1261,9 @@ fun PostVotingTile(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier =
-        Modifier
-            .fillMaxHeight()
-            .padding(end = MEDIUM_PADDING),
+            Modifier
+                .fillMaxHeight()
+                .padding(end = MEDIUM_PADDING),
     ) {
         VoteGeneric(
             myVote = instantScores.myVote,
@@ -1322,19 +1321,19 @@ fun PostListingList(
 ) {
     Column(
         modifier =
-        Modifier
-            .padding(
-                horizontal = MEDIUM_PADDING,
-                vertical = MEDIUM_PADDING,
-            )
-            .testTag("jerboa:post"),
+            Modifier
+                .padding(
+                    horizontal = MEDIUM_PADDING,
+                    vertical = MEDIUM_PADDING,
+                )
+                .testTag("jerboa:post"),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement =
-            Arrangement.spacedBy(
-                SMALL_PADDING,
-            ),
+                Arrangement.spacedBy(
+                    SMALL_PADDING,
+                ),
         ) {
             if (showVotingArrowsInListView) {
                 PostVotingTile(
@@ -1348,9 +1347,9 @@ fun PostListingList(
             }
             Column(
                 modifier =
-                Modifier
-                    .weight(1f)
-                    .clickable { onPostClick(postView) },
+                    Modifier
+                        .weight(1f)
+                        .clickable { onPostClick(postView) },
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
                 PostName(postView = postView, showIfRead = showIfRead)
@@ -1407,10 +1406,10 @@ fun PostListingList(
                     }
                     Text(
                         text =
-                        stringResource(
-                            R.string.post_listing_comments_count,
-                            postView.counts.comments,
-                        ),
+                            stringResource(
+                                R.string.post_listing_comments_count,
+                                postView.counts.comments,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.muted,
                     )
@@ -1498,14 +1497,14 @@ private fun ThumbnailTile(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
                     modifier =
-                    Modifier
-                        .size(THUMBNAIL_CARET_SIZE)
-                        .align(Alignment.BottomEnd),
+                        Modifier
+                            .size(THUMBNAIL_CARET_SIZE)
+                            .align(Alignment.BottomEnd),
                     tint =
-                    when (postType) {
-                        PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
-                        else -> MaterialTheme.jerboaColorScheme.imageHighlight
-                    },
+                        when (postType) {
+                            PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                            else -> MaterialTheme.jerboaColorScheme.imageHighlight
+                        },
                 )
             }
         }
@@ -1613,10 +1612,10 @@ fun PostListingCard(
 ) {
     Column(
         modifier =
-        Modifier
-            .padding(vertical = MEDIUM_PADDING)
-            .clickable { onPostClick(postView) }
-            .testTag("jerboa:post"),
+            Modifier
+                .padding(vertical = MEDIUM_PADDING)
+                .clickable { onPostClick(postView) }
+                .testTag("jerboa:post"),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
@@ -1700,9 +1699,9 @@ fun MetadataCard(post: Post) {
     OutlinedCard(
         shape = MaterialTheme.shapes.medium,
         modifier =
-        Modifier
-            .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-            .fillMaxWidth(),
+            Modifier
+                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                .fillMaxWidth(),
         content = {
             Column(
                 modifier = Modifier.padding(MEDIUM_PADDING),

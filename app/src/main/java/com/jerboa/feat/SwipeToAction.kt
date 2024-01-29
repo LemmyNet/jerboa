@@ -7,9 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.dp
 import com.jerboa.R
 
 enum class SwipeToActionType {
@@ -20,7 +18,6 @@ enum class SwipeToActionType {
     ;
 
     companion object {
-
         const val START_THRESHOLD = 0.05f
 
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {

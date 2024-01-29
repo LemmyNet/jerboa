@@ -218,7 +218,7 @@ fun LazyListScope.commentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -237,7 +237,7 @@ fun LazyListScope.commentNodeItem(
 
     val showMoreChildren =
         isExpanded(commentId) && node.children.isEmpty() &&
-                commentView.counts.child_count > 0 && !isFlat
+            commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
@@ -250,19 +250,19 @@ fun LazyListScope.commentNodeItem(
         val border = Border(SMALL_PADDING, borderColor)
 
         var instantScores by
-        remember {
-            mutableStateOf(
-                InstantScores(
-                    myVote = commentView.my_vote,
-                    score = commentView.counts.score,
-                    upvotes = commentView.counts.upvotes,
-                    downvotes = commentView.counts.downvotes,
-                ),
-            )
-        }
+            remember {
+                mutableStateOf(
+                    InstantScores(
+                        myVote = commentView.my_vote,
+                        score = commentView.counts.score,
+                        upvotes = commentView.counts.upvotes,
+                        downvotes = commentView.counts.downvotes,
+                    ),
+                )
+            }
 
         val swipeState = rememberSwipeActionState(swipeToActionPreset) {
-            when(it) {
+            when (it) {
                 SwipeToActionType.Upvote -> {
                     instantScores =
                         instantScores.update(VoteType.Upvote)
@@ -290,10 +290,10 @@ fun LazyListScope.commentNodeItem(
             ) {
                 Column(
                     modifier =
-                    Modifier
-                        .padding(
-                            start = offset,
-                        ),
+                        Modifier
+                            .padding(
+                                start = offset,
+                            ),
                 ) {
                     Column(
                         modifier = Modifier.border(start = border),
@@ -301,10 +301,10 @@ fun LazyListScope.commentNodeItem(
                         HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                         Column(
                             modifier =
-                            Modifier.padding(
-                                start = offset2,
-                                end = MEDIUM_PADDING,
-                            ),
+                                Modifier.padding(
+                                    start = offset2,
+                                    end = MEDIUM_PADDING,
+                                ),
                         ) {
                             if (showPostAndCommunityContext) {
                                 PostAndCommunityContextHeader(
@@ -406,19 +406,17 @@ fun LazyListScope.commentNodeItem(
             }
         }
 
-        if(swipeToActionPreset != SwipeToActionPreset.DISABLED) {
+        if (swipeToActionPreset != SwipeToActionPreset.DISABLED) {
             SwipeToAction(
                 swipeToActionPreset = swipeToActionPreset,
                 swipeableContent = swipeableContent,
-                swipeState = swipeState
+                swipeState = swipeState,
             )
         } else {
             Row {
                 swipeableContent()
             }
         }
-
-
     }
 
     increaseLazyListIndexTracker()
@@ -471,7 +469,7 @@ fun LazyListScope.commentNodeItem(
         showScores = showScores,
         admins = admins,
         moderators = moderators,
-        swipeToActionPreset = swipeToActionPreset
+        swipeToActionPreset = swipeToActionPreset,
     )
 }
 
@@ -514,7 +512,7 @@ fun LazyListScope.missingCommentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: SwipeToActionPreset
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentId = node.missingCommentView.commentId
 
@@ -545,10 +543,10 @@ fun LazyListScope.missingCommentNodeItem(
         ) {
             Column(
                 modifier =
-                Modifier
-                    .padding(
-                        start = offset,
-                    ),
+                    Modifier
+                        .padding(
+                            start = offset,
+                        ),
             ) {
                 Column(
                     modifier = Modifier.border(start = border),
@@ -556,10 +554,10 @@ fun LazyListScope.missingCommentNodeItem(
                     HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
-                        Modifier.padding(
-                            start = offset2,
-                            end = MEDIUM_PADDING,
-                        ),
+                            Modifier.padding(
+                                start = offset2,
+                                end = MEDIUM_PADDING,
+                            ),
                     ) {
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -619,7 +617,7 @@ fun LazyListScope.missingCommentNodeItem(
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
         showScores = showScores,
-        swipeToActionPreset = swipeToActionPreset
+        swipeToActionPreset = swipeToActionPreset,
     )
 }
 
@@ -651,10 +649,10 @@ private fun ShowMoreChildrenNode(
     ) {
         Column(
             modifier =
-            Modifier
-                .padding(
-                    start = offset,
-                ),
+                Modifier
+                    .padding(
+                        start = offset,
+                    ),
         ) {
             HorizontalDivider()
             Column(
@@ -778,15 +776,15 @@ fun CommentFooterLine(
     Row(
         horizontalArrangement = Arrangement.End,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick,
-                onLongClick = onLongClick,
-            )
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                )
+                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -817,24 +815,24 @@ fun CommentFooterLine(
             )
             ActionBarButton(
                 icon =
-                if (commentView.saved) {
-                    Icons.Filled.Bookmark
-                } else {
-                    Icons.Outlined.BookmarkBorder
-                },
+                    if (commentView.saved) {
+                        Icons.Filled.Bookmark
+                    } else {
+                        Icons.Outlined.BookmarkBorder
+                    },
                 contentDescription =
-                if (commentView.saved) {
-                    stringResource(R.string.removeBookmark)
-                } else {
-                    stringResource(R.string.addBookmark)
-                },
+                    if (commentView.saved) {
+                        stringResource(R.string.removeBookmark)
+                    } else {
+                        stringResource(R.string.addBookmark)
+                    },
                 onClick = { onSaveClick(commentView) },
                 contentColor =
-                if (commentView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                    if (commentView.saved) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.muted
+                    },
                 account = account,
             )
             ActionBarButton(
@@ -898,7 +896,7 @@ fun CommentNodesPreview() {
         blurNSFW = 1,
         account = AnonAccount,
         showScores = true,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 

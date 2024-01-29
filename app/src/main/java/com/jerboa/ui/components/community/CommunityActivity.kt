@@ -421,7 +421,7 @@ fun CommunityActivity(
                             showScores = siteViewModel.showScores(),
                             postActionbarMode = postActionbarMode,
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
-                            swipeToActionPreset = swipeToActionPreset
+                            swipeToActionPreset = swipeToActionPreset,
                         )
                     }
 

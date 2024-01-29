@@ -148,9 +148,9 @@ fun LookAndFeelActivity(
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .verticalScroll(scrollState)
-                    .padding(padding),
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .padding(padding),
             ) {
                 SettingsListDropdown(
                     title = {
@@ -183,10 +183,10 @@ fun LookAndFeelActivity(
                     title = {
                         Text(
                             text =
-                            stringResource(
-                                R.string.look_and_feel_font_size,
-                                fontSizeState.value.toInt(),
-                            ),
+                                stringResource(
+                                    R.string.look_and_feel_font_size,
+                                    fontSizeState.value.toInt(),
+                                ),
                         )
                     },
                     onValueChangeFinished = { updateAppSettings() },
