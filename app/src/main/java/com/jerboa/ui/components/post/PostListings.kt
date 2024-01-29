@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
@@ -80,6 +82,7 @@ fun PostListings(
     showScores: Boolean,
     postActionbarMode: Int,
     showPostAppendRetry: Boolean,
+    swipeToActionPreset: SwipeToActionPreset
 ) {
     LazyColumn(
         state = listState,
@@ -131,6 +134,7 @@ fun PostListings(
                 showIfRead = showIfRead,
                 showScores = showScores,
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
                     DisposableEffect(key1 = postView.post.id) {
@@ -206,5 +210,6 @@ fun PreviewPostListings() {
         showScores = true,
         postActionbarMode = 0,
         showPostAppendRetry = false,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }

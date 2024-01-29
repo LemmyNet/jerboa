@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,6 +73,8 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.amAdmin
 import com.jerboa.feat.amMod
@@ -97,8 +100,10 @@ import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.common.scoreColor
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityName
@@ -865,6 +870,7 @@ fun PreviewPostListingCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 
@@ -904,6 +910,7 @@ fun PreviewLinkPostListing() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 
@@ -943,6 +950,7 @@ fun PreviewImagePostListingCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 
@@ -982,6 +990,7 @@ fun PreviewImagePostListingSmallCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 
@@ -1021,9 +1030,11 @@ fun PreviewLinkNoThumbnailPostListing() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListing(
     postView: PostView,
@@ -1060,6 +1071,7 @@ fun PostListing(
     showIfRead: Boolean,
     showScores: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset
 ) {
     // This stores vote data
     var instantScores by
@@ -1076,128 +1088,166 @@ fun PostListing(
 
     var viewSource by remember { mutableStateOf(false) }
 
-    when (postViewMode) {
-        PostViewMode.Card ->
-            PostListingCard(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                instantScores = instantScores,
-                onUpvoteClick = {
-                    instantScores = instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                },
-                onDownvoteClick = {
-                    instantScores = instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                },
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onPersonClick = onPersonClick,
-                onViewSourceClick = {
-                    viewSource = !viewSource
-                },
-                viewSource = viewSource,
-                showReply = showReply,
-                showCommunityName = showCommunityName,
-                fullBody = fullBody,
-                account = account,
-                expandedImage = true,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreview = showPostLinkPreview,
-                appState = appState,
-                showIfRead = showIfRead,
-                showScores = showScores,
-                postActionbarMode = postActionbarMode,
-            )
-
-        PostViewMode.SmallCard ->
-            PostListingCard(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                instantScores = instantScores,
-                onUpvoteClick = {
-                    instantScores = instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                },
-                onDownvoteClick = {
-                    instantScores = instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                },
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onPersonClick = onPersonClick,
-                onViewSourceClick = {
-                    viewSource = !viewSource
-                },
-                viewSource = viewSource,
-                showReply = showReply,
-                showCommunityName = showCommunityName,
-                fullBody = false,
-                account = account,
-                expandedImage = false,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreview = showPostLinkPreview,
-                appState = appState,
-                showScores = showScores,
-                postActionbarMode = postActionbarMode,
-            )
-
-        PostViewMode.List ->
-            PostListingList(
-                postView = postView,
-                instantScores = instantScores,
-                onUpvoteClick = {
-                    instantScores = instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                },
-                onDownvoteClick = {
-                    instantScores = instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                },
-                onPostClick = onPostClick,
-                showCommunityName = showCommunityName,
-                account = account,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                appState = appState,
-                showIfRead = showIfRead,
-                enableDownVotes = enableDownVotes,
-                showScores = showScores,
-            )
+    val swipeState = rememberSwipeActionState(swipeToActionPreset) {
+        when(it) {
+            SwipeToActionType.Upvote -> {
+                instantScores =
+                    instantScores.update(VoteType.Upvote)
+                onUpvoteClick(postView)
+            }
+            SwipeToActionType.Downvote -> {
+                instantScores =
+                    instantScores.update(VoteType.Downvote)
+                onDownvoteClick(postView)
+            }
+            SwipeToActionType.Reply -> {
+                onReplyClick(postView)
+            }
+            SwipeToActionType.Save -> {
+                onSaveClick(postView)
+            }
+        }
     }
+
+    val swipeableContent: @Composable RowScope.() -> Unit = {
+        Row {
+            when (postViewMode) {
+                PostViewMode.Card ->
+                    PostListingCard(
+                        postView = postView,
+                        admins = admins,
+                        moderators = moderators,
+                        instantScores = instantScores,
+                        onUpvoteClick = {
+                            instantScores = instantScores.update(VoteType.Upvote)
+                            onUpvoteClick(postView)
+                        },
+                        onDownvoteClick = {
+                            instantScores = instantScores.update(VoteType.Downvote)
+                            onDownvoteClick(postView)
+                        },
+                        onReplyClick = onReplyClick,
+                        onPostClick = onPostClick,
+                        onSaveClick = onSaveClick,
+                        onCommunityClick = onCommunityClick,
+                        onEditPostClick = onEditPostClick,
+                        onDeletePostClick = onDeletePostClick,
+                        onReportClick = onReportClick,
+                        onRemoveClick = onRemoveClick,
+                        onBanPersonClick = onBanPersonClick,
+                        onBanFromCommunityClick = onBanFromCommunityClick,
+                        onLockPostClick = onLockPostClick,
+                        onFeaturePostClick = onFeaturePostClick,
+                        onPersonClick = onPersonClick,
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        viewSource = viewSource,
+                        showReply = showReply,
+                        showCommunityName = showCommunityName,
+                        fullBody = fullBody,
+                        account = account,
+                        expandedImage = true,
+                        enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
+                        blurNSFW = blurNSFW,
+                        showPostLinkPreview = showPostLinkPreview,
+                        appState = appState,
+                        showIfRead = showIfRead,
+                        showScores = showScores,
+                        postActionbarMode = postActionbarMode,
+                    )
+
+                PostViewMode.SmallCard ->
+                    PostListingCard(
+                        postView = postView,
+                        admins = admins,
+                        moderators = moderators,
+                        instantScores = instantScores,
+                        onUpvoteClick = {
+                            instantScores = instantScores.update(VoteType.Upvote)
+                            onUpvoteClick(postView)
+                        },
+                        onDownvoteClick = {
+                            instantScores = instantScores.update(VoteType.Downvote)
+                            onDownvoteClick(postView)
+                        },
+                        onReplyClick = onReplyClick,
+                        onPostClick = onPostClick,
+                        onSaveClick = onSaveClick,
+                        onCommunityClick = onCommunityClick,
+                        onEditPostClick = onEditPostClick,
+                        onDeletePostClick = onDeletePostClick,
+                        onReportClick = onReportClick,
+                        onRemoveClick = onRemoveClick,
+                        onBanPersonClick = onBanPersonClick,
+                        onBanFromCommunityClick = onBanFromCommunityClick,
+                        onLockPostClick = onLockPostClick,
+                        onFeaturePostClick = onFeaturePostClick,
+                        onPersonClick = onPersonClick,
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        viewSource = viewSource,
+                        showReply = showReply,
+                        showCommunityName = showCommunityName,
+                        fullBody = false,
+                        account = account,
+                        expandedImage = false,
+                        enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
+                        blurNSFW = blurNSFW,
+                        showPostLinkPreview = showPostLinkPreview,
+                        appState = appState,
+                        showScores = showScores,
+                        postActionbarMode = postActionbarMode,
+                    )
+
+                PostViewMode.List ->
+                    PostListingList(
+                        postView = postView,
+                        instantScores = instantScores,
+                        onUpvoteClick = {
+                            instantScores = instantScores.update(VoteType.Upvote)
+                            onUpvoteClick(postView)
+                        },
+                        onDownvoteClick = {
+                            instantScores = instantScores.update(VoteType.Downvote)
+                            onDownvoteClick(postView)
+                        },
+                        onPostClick = onPostClick,
+                        showCommunityName = showCommunityName,
+                        account = account,
+                        showVotingArrowsInListView = showVotingArrowsInListView,
+                        showAvatar = showAvatar,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
+                        blurNSFW = blurNSFW,
+                        appState = appState,
+                        showIfRead = showIfRead,
+                        enableDownVotes = enableDownVotes,
+                        showScores = showScores,
+                    )
+            }
+        }
+    }
+
+    if(swipeToActionPreset != SwipeToActionPreset.DISABLED) {
+        SwipeToAction(
+            swipeToActionPreset = swipeToActionPreset,
+            swipeableContent = swipeableContent,
+            swipeState = swipeState
+        )
+    } else {
+        Row {
+            swipeableContent()
+        }
+    }
+
 }
 
 @Composable

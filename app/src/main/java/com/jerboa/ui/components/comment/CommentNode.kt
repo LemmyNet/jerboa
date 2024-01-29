@@ -60,6 +60,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
 import com.jerboa.isPostCreator
@@ -69,6 +70,7 @@ import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -259,6 +261,27 @@ fun LazyListScope.commentNodeItem(
             )
         }
 
+        val swipeState = rememberSwipeActionState(swipeToActionPreset) {
+            when(it) {
+                SwipeToActionType.Upvote -> {
+                    instantScores =
+                        instantScores.update(VoteType.Upvote)
+                    onUpvoteClick(commentView)
+                }
+                SwipeToActionType.Downvote -> {
+                    instantScores =
+                        instantScores.update(VoteType.Downvote)
+                    onDownvoteClick(commentView)
+                }
+                SwipeToActionType.Reply -> {
+                    onReplyClick(commentView)
+                }
+                SwipeToActionType.Save -> {
+                    onSaveClick(commentView)
+                }
+            }
+        }
+
         val swipeableContent: @Composable RowScope.() -> Unit = {
             AnimatedVisibility(
                 visible = !isCollapsedByParent,
@@ -383,8 +406,16 @@ fun LazyListScope.commentNodeItem(
             }
         }
 
-        Row {
-            swipeableContent()
+        if(swipeToActionPreset != SwipeToActionPreset.DISABLED) {
+            SwipeToAction(
+                swipeToActionPreset = swipeToActionPreset,
+                swipeableContent = swipeableContent,
+                swipeState = swipeState
+            )
+        } else {
+            Row {
+                swipeableContent()
+            }
         }
 
 
@@ -440,6 +471,7 @@ fun LazyListScope.commentNodeItem(
         showScores = showScores,
         admins = admins,
         moderators = moderators,
+        swipeToActionPreset = swipeToActionPreset
     )
 }
 
@@ -482,6 +514,7 @@ fun LazyListScope.missingCommentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
+    swipeToActionPreset: SwipeToActionPreset
 ) {
     val commentId = node.missingCommentView.commentId
 
@@ -586,6 +619,7 @@ fun LazyListScope.missingCommentNodeItem(
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
         showScores = showScores,
+        swipeToActionPreset = swipeToActionPreset
     )
 }
 
@@ -863,7 +897,8 @@ fun CommentNodesPreview() {
         showAvatar = true,
         blurNSFW = 1,
         account = AnonAccount,
-        showScores = true
+        showScores = true,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 

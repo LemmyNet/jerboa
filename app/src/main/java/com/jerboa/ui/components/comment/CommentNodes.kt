@@ -13,6 +13,7 @@ import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
@@ -64,6 +65,7 @@ fun CommentNodes(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
+    swipeToActionPreset: SwipeToActionPreset
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -105,6 +107,7 @@ fun CommentNodes(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            swipeToActionPreset = swipeToActionPreset
         )
         item {
             Spacer(modifier = Modifier.height(100.dp))
@@ -151,6 +154,7 @@ fun LazyListScope.commentNodeItems(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
+    swipeToActionPreset: SwipeToActionPreset
 ) {
     nodes.forEach { node ->
         when (node) {
@@ -194,6 +198,7 @@ fun LazyListScope.commentNodeItems(
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                     showScores = showScores,
+                    swipeToActionPreset = swipeToActionPreset
                 )
 
             is MissingCommentNode ->
@@ -236,6 +241,7 @@ fun LazyListScope.commentNodeItems(
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                     showScores = showScores,
+                    swipeToActionPreset = swipeToActionPreset
                 )
         }
     }

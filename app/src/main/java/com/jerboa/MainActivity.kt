@@ -319,7 +319,8 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode
+                            postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
                         )
                     }
 
@@ -357,6 +358,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
                         )
                     }
 
@@ -468,6 +470,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionbarMode = appSettings.postActionbarMode,
+                                swipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
                             )
                         }
                     }
@@ -501,6 +504,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
                         )
                     }
 

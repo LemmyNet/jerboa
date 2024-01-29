@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import com.jerboa.R
 
-enum class SwipeToActionType() {
+enum class SwipeToActionType {
     Upvote,
     Downvote,
     Reply,
@@ -18,11 +20,15 @@ enum class SwipeToActionType() {
     ;
 
     companion object {
+
+        const val START_THRESHOLD = 0.05f
+
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {
+            val start = START_THRESHOLD + 0.05f
             val delta = if (actions.size > 2) 0.14f else 0.2f
             return actions.mapIndexed { index, it ->
-                (0.09f + delta * index)
-                    .rangeUntil(if (index == actions.size - 1) 1f else (0.09f + delta * (index + 1))) to it
+                (start + delta * index)
+                    .rangeUntil(if (index == actions.size - 1) 1f else (start + delta * (index + 1))) to it
             }
         }
 

@@ -47,6 +47,7 @@ fun SettingsActivity(
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
+
                     title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
                     icon = {
                         Icon(

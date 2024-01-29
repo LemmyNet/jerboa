@@ -59,6 +59,7 @@ import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -134,6 +135,7 @@ fun PostActivity(
     blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -461,6 +463,7 @@ fun PostActivity(
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
                                     postActionbarMode = postActionbarMode,
+                                    swipeToActionPreset = swipeToActionPreset
                                 )
                             }
 
@@ -690,6 +693,7 @@ fun PostActivity(
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),
+                                        swipeToActionPreset = swipeToActionPreset
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

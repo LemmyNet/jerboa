@@ -421,7 +421,8 @@ fun MainPostListingsContent(
             showIfRead = true,
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
-            showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure
+            showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
+            swipeToActionPreset = swipeToActionPreset
         )
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -29,22 +28,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
+import com.jerboa.feat.SwipeToActionType.Companion.START_THRESHOLD
 
 @Composable
 @ExperimentalMaterial3Api
 fun SwipeToAction(
-    leftActions: List<SwipeToActionType>,
-    rightActions: List<SwipeToActionType>,
+    swipeToActionPreset: SwipeToActionPreset,
     swipeableContent: @Composable RowScope.() -> Unit,
     swipeState: SwipeToDismissBoxState,
 ) {
     val haptic = LocalHapticFeedback.current
 
     val leftActionsRanges =
-        remember(leftActions) { SwipeToActionType.getActionToRangeList(leftActions) }
+        remember (swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions)}
     val rightActionsRanges =
-        remember(rightActions) { SwipeToActionType.getActionToRangeList(rightActions) }
+        remember (swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions)}
 
     fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
         return when (state.targetValue) {
@@ -64,8 +64,8 @@ fun SwipeToAction(
         remember(swipeState.progress, swipeState.targetValue) { actionByState(swipeState) }
 
     SwipeToDismissBox(
-        enableDismissFromStartToEnd = leftActions.isNotEmpty(),
-        enableDismissFromEndToStart = rightActions.isNotEmpty(),
+        enableDismissFromStartToEnd = leftActionsRanges.isNotEmpty(),
+        enableDismissFromEndToStart = rightActionsRanges.isNotEmpty(),
         state = swipeState,
         backgroundContent = {
             val lastSwipeAction = remember { mutableStateOf<SwipeToActionType?>(null) }
@@ -97,7 +97,7 @@ fun SwipeToAction(
                             .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
                             .fillMaxHeight()
                             .background(color = color)
-                            .align(if (swipeState.targetValue == SwipeToDismissBoxValue.StartToEnd) Alignment.TopEnd else Alignment.TopStart),
+                            .align(if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart),
                     contentAlignment =
                         if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
                             Alignment.CenterStart
@@ -130,8 +130,7 @@ fun SwipeToAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun rememberSwipeActionState(
-    leftActions: List<SwipeToActionType>,
-    rightActions: List<SwipeToActionType>,
+    swipeToActionPreset: SwipeToActionPreset,
     onAction: (action: SwipeToActionType) -> Unit,
 ): SwipeToDismissBoxState {
     /*
@@ -139,12 +138,13 @@ fun rememberSwipeActionState(
     They didn't fix it with new SwipeToDismissBoxState
      */
     val leftActionsRanges =
-        remember(leftActions) { SwipeToActionType.getActionToRangeList(leftActions) }
+        remember(swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions)}
     val rightActionsRanges =
-        remember(rightActions) { SwipeToActionType.getActionToRangeList(rightActions) }
+        remember(swipeToActionPreset) {SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions)}
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =
         rememberSwipeToDismissBoxState(
+            positionalThreshold = { totalDistance -> totalDistance * START_THRESHOLD },
             confirmValueChange = { dismissValue ->
                 val action =
                     when (dismissValue) {
