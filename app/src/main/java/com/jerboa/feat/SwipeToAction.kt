@@ -19,7 +19,7 @@ enum class SwipeToActionType() {
 
     companion object {
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {
-            val delta = if (actions.size > 2) 0.14f else 0.18f
+            val delta = if (actions.size > 2) 0.14f else 0.2f
             return actions.mapIndexed { index, it ->
                 (0.09f + delta * index)
                     .rangeUntil(if (index == actions.size - 1) 1f else (0.09f + delta * (index + 1))) to it
@@ -61,16 +61,16 @@ enum class SwipeToActionPreset(
     val rightActions: List<SwipeToActionType>,
     val resId: Int,
 ) {
-    DISABLED(emptyList(), emptyList(), R.string.disabled_swipe_action_preset),
+    DISABLED(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
     DEFAULT(
         listOf(SwipeToActionType.Reply, SwipeToActionType.Save),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Downvote),
-        R.string.default_swipe_action_preset,
+        R.string.swipe_action_preset_default,
     ),
     LEFT_DOWNVOTE_RIGHT_UPVOTE(
         listOf(SwipeToActionType.Downvote, SwipeToActionType.Reply),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Save),
-        R.string.downvote_on_left_upvote_on_right_swipe_action_preset,
+        R.string.swipe_action_preset_downvote_on_left_upvote_on_right,
     ),
     ONLY_RIGHT(
         emptyList(),
@@ -95,6 +95,6 @@ enum class SwipeToActionPreset(
     ONLY_VOTES(
         listOf(SwipeToActionType.Downvote),
         listOf(SwipeToActionType.Upvote),
-        R.string.only_votes_swipe_action_preset,
+        R.string.swipe_action_preset_only_votes,
     ),
 }

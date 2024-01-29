@@ -133,7 +133,7 @@ fun PostActivity(
     blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to post activity")
 

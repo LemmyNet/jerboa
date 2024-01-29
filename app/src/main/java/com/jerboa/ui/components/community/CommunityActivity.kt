@@ -35,6 +35,7 @@ import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.shareLink
 import com.jerboa.hostName
@@ -85,7 +86,7 @@ fun CommunityActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to community activity")
 

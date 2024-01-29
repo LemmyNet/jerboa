@@ -12,6 +12,7 @@ import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
@@ -58,7 +59,7 @@ fun CommentNodes(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -143,7 +144,7 @@ fun LazyListScope.commentNodeItems(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     nodes.forEach { node ->
         when (node) {

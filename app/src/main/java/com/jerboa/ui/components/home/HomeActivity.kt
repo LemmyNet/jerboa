@@ -42,6 +42,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -91,7 +92,7 @@ fun HomeActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -205,7 +206,7 @@ fun MainPostListingsContent(
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()

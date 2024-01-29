@@ -216,7 +216,7 @@ fun LazyListScope.commentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -528,7 +528,7 @@ fun LazyListScope.missingCommentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentId = node.missingCommentView.commentId
 

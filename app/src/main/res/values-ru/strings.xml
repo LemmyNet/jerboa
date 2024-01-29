@@ -413,11 +413,11 @@
     <string name="unlock_post">Разморозить бост</string>
     <string name="type_your_reason">Введите причину</string>
     <string name="swipe_to_action_presets">Преднастройка для смахивающего жеста</string>
-    <string name="disabled_swipe_action_preset">Отключить</string>
-    <string name="default_swipe_action_preset">С двух сторон</string>
-    <string name="downvote_on_left_upvote_on_right_swipe_action_preset">Отриц. - слева, положит. - справа</string>
+    <string name="swipe_action_preset_disabled">Отключить</string>
+    <string name="swipe_action_preset_default">С двух сторон</string>
+    <string name="swipe_action_preset_downvote_on_left_upvote_on_right">Отриц. - слева, положит. - справа</string>
     <string name="only_right_swipe_action_preset">Только справа</string>
     <string name="only_left_swipe_action_preset">Только слева</string>
-    <string name="only_votes_swipe_action_preset">Только оценки</string>
+    <string name="swipe_action_preset_only_votes">Только оценки</string>
 
 </resources>

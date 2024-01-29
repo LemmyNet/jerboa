@@ -52,6 +52,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -118,7 +119,7 @@ fun PersonProfileActivity(
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
     onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -304,7 +305,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
         if (savedMode) {

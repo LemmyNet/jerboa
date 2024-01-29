@@ -42,11 +42,13 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
+import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -216,7 +218,7 @@ fun BottomNavActivity(
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -256,7 +258,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -276,7 +278,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
                 }

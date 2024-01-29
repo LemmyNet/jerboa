@@ -16,8 +16,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,10 +89,10 @@ fun PostListings(
     showScores: Boolean,
     postActionbarMode: Int,
     showPostAppendRetry: Boolean,
-    swipeToActionPreset: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
-    val leftActions = SwipeToActionPreset.entries[swipeToActionPreset].leftActions
-    val rightActions = SwipeToActionPreset.entries[swipeToActionPreset].rightActions
+    val leftActions = swipeToActionPreset.leftActions
+    val rightActions = swipeToActionPreset.rightActions
     LazyColumn(
         state = listState,
         modifier =
@@ -108,6 +110,7 @@ fun PostListings(
             items = posts,
             contentType = { _, _ -> "Post" },
         ) { index, postView ->
+            val myVote by remember { mutableStateOf<VoteType?>(null) }
             val instantScores =
                 remember {
                     mutableStateOf(
@@ -287,6 +290,6 @@ fun PreviewPostListings() {
         showScores = true,
         postActionbarMode = 0,
         showPostAppendRetry = false,
-        swipeToActionPreset = 0,
+        swipeToActionPreset = SwipeToActionPreset.DISABLED,
     )
 }
