@@ -12,6 +12,7 @@ import com.jerboa.db.dao.AccountDao
 import com.jerboa.db.dao.AppSettingsDao
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.SwipeToActionPreset
 import java.util.concurrent.Executors
 
 val APP_SETTINGS_DEFAULT =
@@ -39,7 +40,7 @@ val APP_SETTINGS_DEFAULT =
         showPostLinkPreviews = true,
         postActionbarMode = 0,
         autoPlayGifs = false,
-        swipeToActionPreset = 1,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT.ordinal,
     )
 
 @Database(
