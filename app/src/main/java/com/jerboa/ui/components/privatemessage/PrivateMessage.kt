@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Comment
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material3.MaterialTheme
@@ -29,13 +29,14 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 
 @Composable
 fun PrivateMessageHeader(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit,
-    myPersonId: Int,
+    onPersonClick: (personId: PersonId) -> Unit,
+    myPersonId: PersonId,
     showAvatar: Boolean,
 ) {
     val otherPerson: Person
@@ -76,7 +77,7 @@ fun PrivateMessageHeader(
 }
 
 fun isCreator(
-    myPersonId: Int,
+    myPersonId: PersonId,
     privateMessageView: PrivateMessageView,
 ): Boolean {
     return myPersonId == privateMessageView.creator.id
@@ -106,8 +107,9 @@ fun PrivateMessage(
     privateMessageView: PrivateMessageView,
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
-    myPersonId: Int, // Required so we know the from / to
+    onPersonClick: (personId: PersonId) -> Unit,
+    // Required so we know the from / to
+    myPersonId: PersonId,
     account: Account,
     showAvatar: Boolean,
 ) {
@@ -141,7 +143,7 @@ fun PrivateMessageFooterLine(
     privateMessageView: PrivateMessageView,
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
-    myPersonId: Int,
+    myPersonId: PersonId,
     account: Account,
 ) {
     Row(
@@ -178,7 +180,7 @@ fun PrivateMessageFooterLine(
                     account = account,
                 )
                 ActionBarButton(
-                    icon = Icons.Outlined.Comment,
+                    icon = Icons.AutoMirrored.Outlined.Comment,
                     contentDescription = stringResource(R.string.privateMessage_reply),
                     onClick = { onReplyClick(privateMessageView) },
                     account = account,

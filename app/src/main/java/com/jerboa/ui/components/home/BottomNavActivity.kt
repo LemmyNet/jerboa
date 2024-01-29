@@ -257,8 +257,7 @@ fun BottomNavActivity(
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            postActionbarMode = appSettings.postActionbarMode
                         )
                     }
 
@@ -278,7 +277,6 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
                 }

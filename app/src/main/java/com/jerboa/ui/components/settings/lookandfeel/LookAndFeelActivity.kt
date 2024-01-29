@@ -7,15 +7,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.Colorize
-import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LensBlur
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Swipe
-import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -231,7 +231,7 @@ fun LookAndFeelActivity(
                     items = PostViewMode.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
-                            imageVector = Icons.Outlined.ViewList,
+                            imageVector = Icons.AutoMirrored.Outlined.ViewList,
                             contentDescription = null,
                         )
                     },
@@ -272,7 +272,7 @@ fun LookAndFeelActivity(
                     },
                     icon = {
                         Icon(
-                            imageVector = Icons.Outlined.ExitToApp,
+                            imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
                             contentDescription = null,
                         )
                     },

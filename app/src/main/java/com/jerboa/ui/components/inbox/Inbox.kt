@@ -5,9 +5,9 @@ package com.jerboa.ui.components.inbox
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.MarkunreadMailbox
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.DropdownMenu
@@ -36,7 +36,7 @@ fun InboxHeader(
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     onClickMarkAllAsRead: () -> Unit,
-    unreadCount: Int? = null,
+    unreadCount: Long? = null,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
@@ -92,7 +92,7 @@ fun InboxHeader(
 @Composable
 fun InboxHeaderTitle(
     selectedUnreadOrAll: UnreadOrAll,
-    unreadCount: Int? = null,
+    unreadCount: Long? = null,
 ) {
     var title = stringResource(R.string.inbox_inbox)
     val ctx = LocalContext.current
@@ -124,7 +124,7 @@ fun UnreadOrAllOptionsDropDown(
     ) {
         MenuItem(
             text = stringResource(R.string.dialogs_all),
-            icon = Icons.Outlined.List,
+            icon = Icons.AutoMirrored.Outlined.List,
             onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
             highlight = (selectedUnreadOrAll == UnreadOrAll.All),
         )

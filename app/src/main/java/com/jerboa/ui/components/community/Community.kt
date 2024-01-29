@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -160,7 +162,7 @@ fun CommunityHeader(
         navigationIcon = {
             IconButton(onClick = onClickBack) {
                 Icon(
-                    Icons.Outlined.ArrowBack,
+                    Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
@@ -171,7 +173,7 @@ fun CommunityHeader(
                     showSortOptions = !showSortOptions
                 }) {
                     Icon(
-                        Icons.Outlined.Sort,
+                        Icons.AutoMirrored.Outlined.Sort,
                         contentDescription = stringResource(R.string.community_sortBy),
                     )
                 }
@@ -296,7 +298,7 @@ fun CommunityMoreDropdown(
                 onClickCommunityShare()
             },
         )
-        Divider()
+        HorizontalDivider()
         DropdownMenuItem(
             text = {
                 Text(

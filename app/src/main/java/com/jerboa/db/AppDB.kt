@@ -77,7 +77,8 @@ abstract class AppDB : RoomDatabase() {
                                     Executors.newSingleThreadExecutor().execute {
                                         db.insert(
                                             "AppSettings",
-                                            CONFLICT_IGNORE, // Ensures it won't overwrite the existing data
+                                            // Ensures it won't overwrite the existing data
+                                            CONFLICT_IGNORE,
                                             ContentValues(2).apply {
                                                 put("id", 1)
                                             },

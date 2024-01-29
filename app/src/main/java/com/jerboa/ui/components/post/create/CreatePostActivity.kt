@@ -5,8 +5,8 @@ import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -43,6 +43,7 @@ import com.jerboa.validateUrl
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -145,9 +146,9 @@ fun CreatePostActivity(
                         },
                         actionIcon =
                             if (formValid) {
-                                Icons.Filled.Send
+                                Icons.AutoMirrored.Filled.Send
                             } else {
-                                Icons.Outlined.Send
+                                Icons.AutoMirrored.Outlined.Send
                             },
                         actionText = R.string.form_submit,
                         title = stringResource(R.string.create_post_create_post),
@@ -215,7 +216,7 @@ fun onSubmitClick(
     isNsfw: Boolean,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
-    onSuccess: (Int) -> Unit,
+    onSuccess: (PostId) -> Unit,
 ) {
     selectedCommunity?.id?.also {
         // Clean up that data

@@ -17,17 +17,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.LocationCity
-import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.WarningAmber
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -76,7 +76,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun Drawer(
     myUserInfo: MyUserInfo?,
     follows: ImmutableList<CommunityFollowerView>,
-    unreadCount: Int,
+    unreadCount: Long,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -135,7 +135,7 @@ fun DrawerContent(
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
     myUserInfo: MyUserInfo?,
-    unreadCount: Int,
+    unreadCount: Long,
     blurNSFW: Int,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
@@ -147,7 +147,7 @@ fun DrawerContent(
         enter = expandVertically(),
         exit = shrinkVertically(),
     ) {
-        Divider()
+        HorizontalDivider()
         DrawerAddAccountMode(
             accountViewModel = accountViewModel,
             onAddAccount = onAddAccount,
@@ -157,7 +157,7 @@ fun DrawerContent(
         )
     }
 
-    Divider()
+    HorizontalDivider()
     DrawerItemsMain(
         myUserInfo = myUserInfo,
         follows = follows,
@@ -179,7 +179,7 @@ fun DrawerItemsMain(
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    unreadCount: Int,
+    unreadCount: Long,
     blurNSFW: Int,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
@@ -224,7 +224,7 @@ fun DrawerItemsMain(
             )
         }
         item {
-            Divider()
+            HorizontalDivider()
         }
 
         if (!showBottomNav) {
@@ -242,7 +242,7 @@ fun DrawerItemsMain(
             }
 
             item(contentType = "divider") {
-                Divider()
+                HorizontalDivider()
             }
         }
         item("settings") {
@@ -254,7 +254,7 @@ fun DrawerItemsMain(
         }
         myUserInfo?.also {
             item(contentType = "divider") {
-                Divider()
+                HorizontalDivider()
             }
         }
 
@@ -323,7 +323,7 @@ fun DrawerAddAccountMode(
 
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_switch_anon),
-                icon = Icons.Outlined.Login,
+                icon = Icons.AutoMirrored.Outlined.Login,
                 onClick = onSwitchAnon,
             )
         }
@@ -331,7 +331,7 @@ fun DrawerAddAccountMode(
         accountsWithoutCurrent.forEach {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_switch_to, it.name, it.instance),
-                icon = Icons.Outlined.Login,
+                icon = Icons.AutoMirrored.Outlined.Login,
                 onClick = { onSwitchAccountClick(it) },
             )
         }

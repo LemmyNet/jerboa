@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowRight
+import androidx.compose.material.icons.automirrored.outlined.ArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,7 +29,7 @@ fun IconAndTextDrawerItem(
     text: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    iconBadgeCount: Int? = null,
+    iconBadgeCount: Long? = null,
     onClick: () -> Unit,
     more: Boolean = false,
     highlight: Boolean = false,
@@ -72,7 +72,7 @@ fun IconAndTextDrawerItem(
         }
         if (more) {
             Icon(
-                imageVector = Icons.Outlined.ArrowRight,
+                imageVector = Icons.AutoMirrored.Outlined.ArrowRight,
                 contentDescription = stringResource(R.string.dialog_moreOptions),
                 tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(24.dp),

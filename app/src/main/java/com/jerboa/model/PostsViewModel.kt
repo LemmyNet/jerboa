@@ -2,7 +2,7 @@ package com.jerboa.model
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -12,9 +12,12 @@ import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
+import com.jerboa.findAndUpdatePostCreator
+import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
 import com.jerboa.mergePosts
 import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.dto.ListingType
@@ -27,6 +30,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.flow.map
@@ -35,7 +39,7 @@ import kotlinx.coroutines.launch
 open class PostsViewModel(protected val accountRepository: AccountRepository) : ViewModel() {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
-    private var page by mutableIntStateOf(1)
+    private var page by mutableLongStateOf(1)
     protected var pageCursor: PaginationCursor? by mutableStateOf(null)
         private set
     var sortType by mutableStateOf(SortType.Active)
@@ -125,6 +129,30 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
             is ApiState.Success -> {
                 val newPosts = findAndUpdatePost(existing.data.posts, postView)
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                postsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updateBanned(personView: PersonView) {
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                val posts = findAndUpdatePostCreator(existing.data.posts, personView.person)
+                val newRes = ApiState.Success(existing.data.copy(posts = posts))
+                postsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updateBannedFromCommunity(banData: BanFromCommunityData) {
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                val posts = findAndUpdatePostCreatorBannedFromCommunity(existing.data.posts, banData)
+                val newRes = ApiState.Success(existing.data.copy(posts = posts))
                 postsRes = newRes
             }
 

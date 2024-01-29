@@ -3,6 +3,8 @@ package com.jerboa
 import android.content.Context
 import androidx.compose.ui.unit.dp
 import com.jerboa.datatypes.sampleCommentView
+import com.jerboa.feat.InstantScores
+import com.jerboa.feat.VoteType
 import com.jerboa.ui.theme.SMALL_PADDING
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
@@ -39,50 +41,55 @@ class UtilsKtTest {
     }
 
     @Test
-    fun testNewVote() {
-        assertEquals(1, newVote(null, VoteType.Upvote))
-        assertEquals(1, newVote(0, VoteType.Upvote))
-        assertEquals(0, newVote(1, VoteType.Upvote))
+    fun testInstantScores() {
+        val initial = InstantScores(0, 0, 0, 0)
+        val upvoted = initial.update(VoteType.Upvote)
+        assertEquals(1, upvoted.myVote)
+        assertEquals(1, upvoted.upvotes)
+        assertEquals(0, upvoted.downvotes)
+        assertEquals(1, upvoted.score)
 
-        assertEquals(-1, newVote(null, VoteType.Downvote))
-        assertEquals(-1, newVote(0, VoteType.Downvote))
-        assertEquals(0, newVote(-1, VoteType.Downvote))
-    }
+        val downvoted = initial.update(VoteType.Downvote)
+        assertEquals(-1, downvoted.myVote)
+        assertEquals(0, downvoted.upvotes)
+        assertEquals(1, downvoted.downvotes)
+        assertEquals(-1, downvoted.score)
 
-    @Test
-    fun testNewScore() {
-        assertEquals(4, newScore(3, null, VoteType.Upvote))
-        assertEquals(2, newScore(3, 1, VoteType.Upvote))
-        assertEquals(5, newScore(3, -1, VoteType.Upvote))
+        val upvotedAgain = downvoted.update(VoteType.Upvote)
+        assertEquals(1, upvotedAgain.myVote)
+        assertEquals(1, upvotedAgain.upvotes)
+        assertEquals(0, upvotedAgain.downvotes)
+        assertEquals(1, upvotedAgain.score)
 
-        assertEquals(2, newScore(3, null, VoteType.Downvote))
-        assertEquals(1, newScore(3, 1, VoteType.Downvote))
-        assertEquals(4, newScore(3, -1, VoteType.Downvote))
-    }
+        val downvotedAgain = upvoted.update(VoteType.Downvote)
+        assertEquals(-1, downvotedAgain.myVote)
+        assertEquals(0, downvotedAgain.upvotes)
+        assertEquals(1, downvotedAgain.downvotes)
+        assertEquals(-1, downvotedAgain.score)
 
-    @Test
-    fun testNewVoteCount() {
-        assertEquals(Pair(3, 3), newVoteCount(Pair(2, 3), null, VoteType.Upvote))
-        assertEquals(Pair(3, 2), newVoteCount(Pair(2, 3), -1, VoteType.Upvote))
-        assertEquals(Pair(3, 3), newVoteCount(Pair(2, 3), 0, VoteType.Upvote))
-        assertEquals(Pair(1, 3), newVoteCount(Pair(2, 3), 1, VoteType.Upvote))
+        val unvoted = upvoted.update(VoteType.Upvote)
+        assertEquals(0, unvoted.myVote)
+        assertEquals(0, unvoted.upvotes)
+        assertEquals(0, unvoted.downvotes)
+        assertEquals(0, unvoted.score)
 
-        assertEquals(Pair(2, 4), newVoteCount(Pair(2, 3), null, VoteType.Downvote))
-        assertEquals(Pair(2, 2), newVoteCount(Pair(2, 3), -1, VoteType.Downvote))
-        assertEquals(Pair(2, 4), newVoteCount(Pair(2, 3), 0, VoteType.Downvote))
-        assertEquals(Pair(1, 4), newVoteCount(Pair(2, 3), 1, VoteType.Downvote))
-    }
+        val unvoted2 = downvoted.update(VoteType.Downvote)
+        assertEquals(0, unvoted2.myVote)
+        assertEquals(0, unvoted2.upvotes)
+        assertEquals(0, unvoted2.downvotes)
+        assertEquals(0, unvoted2.score)
 
-    @Test
-    fun testCalculateNewInstantScores() {
-        assertEquals(
-            InstantScores(1, 1, 1, 0),
-            calculateNewInstantScores(InstantScores(null, 0, 0, 0), VoteType.Upvote),
-        )
-        assertEquals(
-            InstantScores(0, 0, 0, 0),
-            calculateNewInstantScores(InstantScores(1, 1, 1, 0), VoteType.Upvote),
-        )
+        val upvotedAlr = upvoted.copy(myVote = 0).update(VoteType.Upvote)
+        assertEquals(1, upvotedAlr.myVote)
+        assertEquals(2, upvotedAlr.upvotes)
+        assertEquals(0, upvotedAlr.downvotes)
+        assertEquals(2, upvotedAlr.score)
+
+        val downvotedAlr = downvoted.copy(myVote = 0).update(VoteType.Downvote)
+        assertEquals(-1, downvotedAlr.myVote)
+        assertEquals(0, downvotedAlr.upvotes)
+        assertEquals(2, downvotedAlr.downvotes)
+        assertEquals(-2, downvotedAlr.score)
     }
 
     @Test
@@ -158,7 +165,7 @@ class UtilsKtTest {
     @Parameters(method = "siFormatCases")
     fun testSiFormat(
         expected: String,
-        input: Int,
+        input: Long,
     ) {
         assertEquals(expected, siFormat(input))
     }

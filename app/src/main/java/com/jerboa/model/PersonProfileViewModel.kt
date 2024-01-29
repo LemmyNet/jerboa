@@ -2,7 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -14,8 +14,13 @@ import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.findAndUpdateComment
+import com.jerboa.findAndUpdateCommentCreator
+import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
 import com.jerboa.findAndUpdatePost
+import com.jerboa.findAndUpdatePostCreator
+import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
 import com.jerboa.getDeduplicateMerge
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
@@ -43,7 +48,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
 
     var sortType by mutableStateOf(SortType.New)
         private set
-    var page by mutableIntStateOf(1)
+    var page by mutableLongStateOf(1)
         private set
     var savedOnly by mutableStateOf(false)
         private set
@@ -120,7 +125,8 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                         val appendedPosts = getDeduplicateMerge(oldRes.data.posts, newRes.data.posts) { it.post.id }
                         val appendedComments =
                             getDeduplicateMerge(
-                                oldRes.data.comments, newRes.data.comments,
+                                oldRes.data.comments,
+                                newRes.data.comments,
                             ) { it.comment.id }
 
                         ApiState.Success(
@@ -283,6 +289,52 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                 val newPosts =
                     findAndUpdatePost(existing.data.posts, postView)
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                personDetailsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updateBanned(personView: PersonView) {
+        when (val existing = personDetailsRes) {
+            is ApiState.Success -> {
+                val data = existing.data
+
+                // Replace all the post creators
+                val posts = findAndUpdatePostCreator(posts = data.posts, person = personView.person)
+
+                // Replace all the comment creators
+                val comments = findAndUpdateCommentCreator(comments = data.comments, person = personView.person)
+
+                val newRes = ApiState.Success(data.copy(person_view = personView, posts = posts, comments = comments))
+                personDetailsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updateBannedFromCommunity(banData: BanFromCommunityData) {
+        when (val existing = personDetailsRes) {
+            is ApiState.Success -> {
+                val data = existing.data
+
+                // Replace all the post creators
+                val posts =
+                    findAndUpdatePostCreatorBannedFromCommunity(
+                        posts = data.posts,
+                        banData = banData,
+                    )
+
+                // Replace all the comment creators
+                val comments =
+                    findAndUpdateCommentCreatorBannedFromCommunity(
+                        comments = data.comments,
+                        banData = banData,
+                    )
+
+                val newRes = ApiState.Success(data.copy(posts = posts, comments = comments))
                 personDetailsRes = newRes
             }
 

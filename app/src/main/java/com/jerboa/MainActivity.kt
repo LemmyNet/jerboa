@@ -40,6 +40,8 @@ import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.SiteViewModel
+import com.jerboa.ui.components.ban.BanFromCommunityActivity
+import com.jerboa.ui.components.ban.BanPersonActivity
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.common.LinkDropDownMenu
@@ -233,7 +235,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -277,7 +279,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -317,8 +319,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
+                            postActionbarMode = appSettings.postActionbarMode
                         )
                     }
 
@@ -356,7 +357,6 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
                         )
                     }
 
@@ -468,7 +468,6 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionbarMode = appSettings.postActionbarMode,
-                                swipeToActionPreset = appSettings.swipeToActionPreset,
                             )
                         }
                     }
@@ -502,7 +501,6 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionbarMode = appSettings.postActionbarMode,
-                            swipeToActionPreset = appSettings.swipeToActionPreset,
                         )
                     }
 
@@ -548,19 +546,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
-                        route = Route.COMMENT_REPORT,
-                        arguments =
-                            listOf(
-                                navArgument(Route.CommentReportArgs.ID) {
-                                    type = Route.CommentReportArgs.ID_TYPE
-                                },
-                            ),
+                        route = Route.POST_REMOVE,
                     ) {
-                        val args = Route.CommentReportArgs(it)
-                        CreateCommentReportActivity(
-                            commentId = args.id,
+                        PostRemoveActivity(
+                            appState = appState,
                             accountViewModel = accountViewModel,
-                            onBack = appState::navigateUp,
                         )
                     }
 
@@ -583,6 +573,24 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
+                        route = Route.BAN_PERSON,
+                    ) {
+                        BanPersonActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                        )
+                    }
+
+                    composable(
+                        route = Route.BAN_FROM_COMMUNITY,
+                    ) {
+                        BanFromCommunityActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                        )
+                    }
+
+                    composable(
                         route = Route.POST_REPORT,
                         arguments =
                             listOf(
@@ -594,6 +602,23 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.PostReportArgs(it)
                         CreatePostReportActivity(
                             postId = args.id,
+                            accountViewModel = accountViewModel,
+                            onBack = appState::navigateUp,
+                        )
+                    }
+
+                    composable(
+                        route = Route.COMMENT_REPORT,
+                        arguments =
+                            listOf(
+                                navArgument(Route.CommentReportArgs.ID) {
+                                    type = Route.CommentReportArgs.ID_TYPE
+                                },
+                            ),
+                    ) {
+                        val args = Route.CommentReportArgs(it)
+                        CreateCommentReportActivity(
+                            commentId = args.id,
                             accountViewModel = accountViewModel,
                             onBack = appState::navigateUp,
                         )

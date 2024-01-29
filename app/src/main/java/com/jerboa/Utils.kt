@@ -51,6 +51,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
@@ -87,151 +88,8 @@ fun loginFirstToast(ctx: Context) {
     Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
-enum class VoteType {
-    Upvote,
-    Downvote,
-}
-
-fun calculateNewInstantScores(
-    instantScores: InstantScores,
-    voteType: VoteType,
-): InstantScores {
-    val newVote =
-        newVote(
-            currentVote = instantScores.myVote,
-            voteType = voteType,
-        )
-    val score =
-        newScore(
-            instantScores.score,
-            instantScores.myVote,
-            voteType,
-        )
-    val votes =
-        newVoteCount(
-            Pair(instantScores.upvotes, instantScores.downvotes),
-            instantScores.myVote,
-            voteType,
-        )
-
-    return InstantScores(
-        myVote = newVote,
-        upvotes = votes.first,
-        downvotes = votes.second,
-        score = score,
-    )
-}
-
-/*
- * User changed their vote, so calculate score difference given this user's new vote.
- */
-fun newVote(
-    currentVote: Int?,
-    voteType: VoteType,
-): Int {
-    return if (voteType == VoteType.Upvote) {
-        if (currentVote == 1) {
-            0
-        } else {
-            1
-        }
-    } else {
-        if (currentVote == -1) {
-            0
-        } else {
-            -1
-        }
-    }
-}
-
-/*
- * Calculate the new score after the user votes.
- */
-fun newScore(
-    currentScore: Int,
-    currentVote: Int?,
-    voteType: VoteType,
-): Int {
-    return if (voteType == VoteType.Upvote) {
-        when (currentVote) {
-            1 -> {
-                currentScore - 1
-            }
-
-            -1 -> {
-                currentScore + 2
-            }
-
-            else -> {
-                currentScore + 1
-            }
-        }
-    } else {
-        when (currentVote) {
-            -1 -> {
-                currentScore + 1
-            }
-
-            1 -> {
-                currentScore - 2
-            }
-
-            else -> {
-                currentScore - 1
-            }
-        }
-    }
-}
-
-fun newVoteCount(
-    votes: Pair<Int, Int>,
-    currentVote: Int?,
-    voteType: VoteType,
-): Pair<Int, Int> {
-    return if (voteType == VoteType.Upvote) {
-        when (currentVote) {
-            1 -> {
-                Pair(votes.first - 1, votes.second)
-            }
-
-            -1 -> {
-                Pair(votes.first + 1, votes.second - 1)
-            }
-
-            else -> {
-                Pair(votes.first + 1, votes.second)
-            }
-        }
-    } else {
-        when (currentVote) {
-            -1 -> {
-                Pair(votes.first, votes.second - 1)
-            }
-
-            1 -> {
-                Pair(votes.first - 1, votes.second + 1)
-            }
-
-            else -> {
-                Pair(votes.first, votes.second + 1)
-            }
-        }
-    }
-}
-
-/**
- * This stores live info about votes / scores, in order to update the front end without waiting
- * for an API result
- */
-data class InstantScores(
-    val myVote: Int?,
-    val score: Int,
-    val upvotes: Int,
-    val downvotes: Int,
-)
-
 data class MissingCommentView(
-    val commentId: Int,
+    val commentId: CommentId,
     val path: String,
 )
 
@@ -241,7 +99,7 @@ sealed class CommentNodeData(
     val children: SnapshotStateList<CommentNodeData> = mutableStateListOf(),
     var parent: CommentNodeData? = null,
 ) {
-    abstract fun getId(): Int
+    abstract fun getId(): Long
 
     abstract fun getPath(): String
 }
@@ -281,7 +139,8 @@ fun commentsToFlatNodes(comments: List<CommentView>): ImmutableList<CommentNode>
  */
 fun buildCommentsTree(
     comments: List<CommentView>,
-    rootCommentId: Int?, // If it's in CommentView, then we need to know the root comment id
+    // If it's in CommentView, then we need to know the root comment id
+    rootCommentId: CommentId?,
 ): ImmutableList<CommentNodeData> {
     val isCommentView = rootCommentId != null
 
@@ -324,7 +183,7 @@ fun recCreateAndGenMissingCommentData(
     tree: MutableList<CommentNodeData>,
     currCommentPath: String,
     currCommentNodeData: CommentNodeData,
-    rootCommentId: Int?,
+    rootCommentId: CommentId?,
 ) {
     val parentId = getCommentParentId(currCommentPath)
 
@@ -809,9 +668,9 @@ fun validateUrl(
     }
 }
 
-fun siFormat(num: Int): String {
+fun siFormat(num: Long): String {
     // Weird bug where if num is zero, it won't format
-    if (num == 0) return "0"
+    if (num == 0L) return "0"
     var value = num.toDouble()
     val suffix = " KMBT"
     val formatter = DecimalFormat("#,###.#")
@@ -961,14 +820,14 @@ fun isSameInstance(
     return hostName(url) == instance
 }
 
-fun getCommentParentId(comment: Comment): Int? = getCommentParentId(comment.path)
+fun getCommentParentId(comment: Comment): CommentId? = getCommentParentId(comment.path)
 
-fun getCommentParentId(commentPath: String): Int? {
+fun getCommentParentId(commentPath: String): CommentId? {
     val split = commentPath.split(".").toMutableList()
     // remove the 0
     split.removeFirst()
     return if (split.size > 1) {
-        split[split.size - 2].toInt()
+        split[split.size - 2].toLong()
     } else {
         null
     }
@@ -989,7 +848,7 @@ fun getDepthFromComment(comment: Comment): Int = getDepthFromComment(comment.pat
 
 fun getCommentIdDepthFromPath(
     commentPath: String,
-    commentId: Int,
+    commentId: CommentId,
 ): Int {
     val split = commentPath.split(".").toMutableList()
     return split.indexOf(commentId.toString()).minus(1)
@@ -1050,7 +909,8 @@ fun saveMediaP(
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
-    mediaType: PostType, // Link is here more like other media (think of PDF, doc, txt)
+    // Link is here more like other media (think of PDF, doc, txt)
+    mediaType: PostType,
 ) {
     val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
     val mediaDir = File(dir, "Jerboa")
@@ -1202,6 +1062,66 @@ fun findAndUpdateComment(
     } else {
         comments
     }
+}
+
+fun findAndUpdatePostCreator(
+    posts: List<PostView>,
+    person: Person,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.creator.id == person.id) {
+            it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdatePostCreatorBannedFromCommunity(
+    posts: List<PostView>,
+    banData: BanFromCommunityData,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+            it.copy(creator_banned_from_community = banData.banned)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdateCommentCreator(
+    comments: List<CommentView>,
+    person: Person,
+): List<CommentView> {
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.creator.id == person.id) {
+            it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newComments
+}
+
+fun findAndUpdateCommentCreatorBannedFromCommunity(
+    comments: List<CommentView>,
+    banData: BanFromCommunityData,
+): List<CommentView> {
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+            it.copy(creator_banned_from_community = banData.banned)
+        } else {
+            it
+        }
+    }
+    return newComments
 }
 
 fun findAndUpdateCommentReply(
@@ -1497,7 +1417,7 @@ fun <T> appendData(
 fun <T> getDeduplicatedList(
     oldList: List<T>,
     uniqueNewList: List<T>,
-    getId: (T) -> Int,
+    getId: (T) -> PostId,
 ): List<T> {
     val mapIds = oldList.map { getId(it) }
     return uniqueNewList.filterNot { mapIds.contains(getId(it)) }
@@ -1506,7 +1426,7 @@ fun <T> getDeduplicatedList(
 fun <T> getDeduplicateMerge(
     oldItems: List<T>,
     newItems: List<T>,
-    getId: (T) -> Int,
+    getId: (T) -> PostId,
 ): List<T> {
     return appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
 }
@@ -1535,50 +1455,4 @@ fun String.padUrlWithHttps(): String {
     } else {
         "https://$this"
     }
-}
-
-/**
- * Determines whether someone can moderate an item. Uses a hierarchy of admins then mods.
- */
-fun canMod(
-    creatorId: PersonId,
-    admins: ImmutableList<PersonView>?,
-    moderators: ImmutableList<CommunityModeratorView>?,
-    myId: PersonId?,
-    onSelf: Boolean = false,
-): Boolean {
-    return if (myId !== null) {
-        // You can do moderator actions only on the mods added after you.
-        val adminIds = admins?.map { a -> a.person.id }.orEmpty()
-        val modIds = moderators?.map { m -> m.moderator.id }.orEmpty()
-
-        val adminsThenMods = adminIds.toMutableList()
-        adminsThenMods.addAll(modIds)
-
-        val myIndex = adminsThenMods.indexOf(myId)
-        if (myIndex == -1) {
-            false
-        } else {
-            // onSelf +1 on mod actions not for yourself, IE ban, remove, etc
-            val subList = adminsThenMods.subList(0, myIndex.plus(if (onSelf) 0 else 1))
-
-            !subList.contains(creatorId)
-        }
-    } else {
-        false
-    }
-}
-
-fun amMod(
-    moderators: ImmutableList<CommunityModeratorView>?,
-    myId: PersonId?,
-): Boolean {
-    return moderators?.map { it.moderator.id }?.contains(myId) ?: false
-}
-
-fun amAdmin(
-    admins: ImmutableList<PersonView>?,
-    myId: PersonId?,
-): Boolean {
-    return admins?.map { it.person.id }?.contains(myId) ?: false
 }

@@ -3,7 +3,7 @@ package com.jerboa.ui.components.report.post
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,7 +65,7 @@ fun CreatePostReportActivity(
                     }
                 },
                 actionText = R.string.form_submit,
-                actionIcon = Icons.Outlined.Send,
+                actionIcon = Icons.AutoMirrored.Outlined.Send,
             )
         },
         content = { padding ->

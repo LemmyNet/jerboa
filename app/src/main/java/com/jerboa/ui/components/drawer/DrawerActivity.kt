@@ -17,6 +17,7 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 
@@ -28,7 +29,7 @@ fun MainDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
     onSettingsClick: () -> Unit,
-    onCommunityClick: (Int) -> Unit,
+    onCommunityClick: (CommunityId) -> Unit,
     onClickLogin: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
     blurNSFW: Int,

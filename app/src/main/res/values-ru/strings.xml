@@ -379,7 +379,7 @@
     <string name="unblocked_community_toast">%1s разблокирован</string>
     <string name="community_block_toast_failure">Не удалось (раз)блокировать это сообщество</string>
     <string name="instance_block_toast_failure">Не удалось (раз)блокировать этот экземпляр</string>
-    <string name="saving_media">Сохраняем медиа...</string>
+    <string name="saving_media">Сохраняем медиа…</string>
     <string name="saved_media">Сохраенные медиа</string>
     <string name="share_image">Поделится картинкой</string>
     <string name="save_image">Сохранить изображение</string>

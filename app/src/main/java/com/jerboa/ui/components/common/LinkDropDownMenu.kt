@@ -8,7 +8,7 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material.icons.outlined.OpenInFull
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,7 +79,7 @@ fun LinkDropDownMenu(
                 },
             )
 
-            Divider()
+            HorizontalDivider()
 
             PopupMenuItem(
                 text = stringResource(R.string.post_listing_copy_link),
@@ -106,7 +106,7 @@ fun LinkDropDownMenu(
 
             when (mediaType) {
                 PostType.Image -> {
-                    Divider()
+                    HorizontalDivider()
                     PopupMenuItem(
                         text = stringResource(R.string.share_image),
                         icon = Icons.Outlined.Share,
@@ -126,7 +126,7 @@ fun LinkDropDownMenu(
                 }
 
                 PostType.Video -> {
-                    Divider()
+                    HorizontalDivider()
                     PopupMenuItem(
                         text = stringResource(R.string.share_video),
                         icon = Icons.Outlined.Share,
@@ -147,7 +147,7 @@ fun LinkDropDownMenu(
 
                 PostType.Link -> {
                     if (isMedia(link)) {
-                        Divider()
+                        HorizontalDivider()
                         PopupMenuItem(
                             text = stringResource(R.string.share_media),
                             icon = Icons.Outlined.Share,

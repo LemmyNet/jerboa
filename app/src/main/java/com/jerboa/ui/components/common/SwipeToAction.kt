@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -37,7 +37,7 @@ fun SwipeToAction(
     leftActions: List<SwipeToActionType>,
     rightActions: List<SwipeToActionType>,
     swipeableContent: @Composable RowScope.() -> Unit,
-    swipeState: DismissState,
+    swipeState: SwipeToDismissBoxState,
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -46,13 +46,13 @@ fun SwipeToAction(
     val rightActionsRanges =
         remember(rightActions) { SwipeToActionType.getActionToRangeList(rightActions) }
 
-    fun actionByState(state: DismissState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
+    fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
         return when (state.targetValue) {
-            DismissValue.DismissedToEnd -> {
+             SwipeToDismissBoxValue.StartToEnd -> {
                 leftActionsRanges.findLast { swipeState.progress in it.first }
             }
 
-            DismissValue.DismissedToStart -> {
+            SwipeToDismissBoxValue.EndToStart -> {
                 rightActionsRanges.findLast { swipeState.progress in it.first }
             }
 
@@ -63,16 +63,11 @@ fun SwipeToAction(
     val swipeAction =
         remember(swipeState.progress, swipeState.targetValue) { actionByState(swipeState) }
 
-    SwipeToDismiss(
-        directions =
-            remember(leftActions, rightActions) {
-                setOfNotNull(
-                    if (leftActions.isNotEmpty()) DismissDirection.StartToEnd else null,
-                    if (rightActions.isNotEmpty()) DismissDirection.EndToStart else null,
-                )
-            },
+    SwipeToDismissBox(
+        enableDismissFromStartToEnd = leftActions.isNotEmpty(),
+        enableDismissFromEndToStart = rightActions.isNotEmpty(),
         state = swipeState,
-        background = {
+        backgroundContent = {
             val lastSwipeAction = remember { mutableStateOf<SwipeToActionType?>(null) }
             val transition = updateTransition(swipeState, label = "swipe state")
             val color by transition.animateColor(
@@ -102,9 +97,9 @@ fun SwipeToAction(
                             .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
                             .fillMaxHeight()
                             .background(color = color)
-                            .align(if (swipeState.targetValue == DismissValue.DismissedToStart) Alignment.TopEnd else Alignment.TopStart),
+                            .align(if (swipeState.targetValue == SwipeToDismissBoxValue.StartToEnd) Alignment.TopEnd else Alignment.TopStart),
                     contentAlignment =
-                        if (swipeState.targetValue == DismissValue.DismissedToStart) {
+                        if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
                             Alignment.CenterStart
                         } else {
                             Alignment.CenterEnd
@@ -128,7 +123,7 @@ fun SwipeToAction(
                 }
             }
         },
-        dismissContent = { swipeableContent() },
+        content = { swipeableContent() },
     )
 }
 
@@ -138,9 +133,10 @@ fun rememberSwipeActionState(
     leftActions: List<SwipeToActionType>,
     rightActions: List<SwipeToActionType>,
     onAction: (action: SwipeToActionType) -> Unit,
-): DismissState {
+): SwipeToDismissBoxState {
     /*
     This hacky solution is required because confirmValueChange lambda doesn't pass progress state
+    They didn't fix it with new SwipeToDismissBoxState
      */
     val leftActionsRanges =
         remember(leftActions) { SwipeToActionType.getActionToRangeList(leftActions) }
@@ -148,16 +144,15 @@ fun rememberSwipeActionState(
         remember(rightActions) { SwipeToActionType.getActionToRangeList(rightActions) }
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =
-        rememberDismissState(
-            positionalThreshold = { 48.dp.toPx() },
+        rememberSwipeToDismissBoxState(
             confirmValueChange = { dismissValue ->
                 val action =
                     when (dismissValue) {
-                        DismissValue.DismissedToEnd -> {
+                        SwipeToDismissBoxValue.StartToEnd -> {
                             leftActionsRanges.findLast { progressState.floatValue in it.first }
                         }
 
-                        DismissValue.DismissedToStart -> {
+                        SwipeToDismissBoxValue.EndToStart -> {
                             rightActionsRanges.findLast { progressState.floatValue in it.first }
                         }
 

@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -45,23 +44,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
-import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.newVote
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.ui.components.ban.BanFromCommunityReturn
+import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -75,7 +76,6 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
-import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
@@ -85,6 +85,7 @@ import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
@@ -95,6 +96,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -119,7 +121,6 @@ fun PersonProfileActivity(
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: SwipeToActionPreset,
     onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -138,6 +139,8 @@ fun PersonProfileActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, personProfileViewModel::updatePost)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
+    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, personProfileViewModel::updateBanned)
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, personProfileViewModel::updateBannedFromCommunity)
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         when (val res = personProfileViewModel.personDetailsRes) {
@@ -184,11 +187,11 @@ fun PersonProfileActivity(
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =
-                            if (savedMode) {
-                                ctx.getString(R.string.bookmarks_activity_saved)
-                            } else {
-                                person.name
-                            },
+                        if (savedMode) {
+                            ctx.getString(R.string.bookmarks_activity_saved)
+                        } else {
+                            person.name
+                        },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
@@ -269,7 +272,6 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
-                swipeToActionPreset = swipeToActionPreset,
             )
         },
     )
@@ -305,7 +307,6 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
-    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -349,14 +350,6 @@ fun UserTabs(
     ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset2(
-                        pagerState,
-                        tabPositions,
-                    ),
-                )
-            },
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -394,9 +387,9 @@ fun UserTabs(
                             LazyColumn(
                                 state = listState,
                                 modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                Modifier
+                                    .fillMaxSize()
+                                    .simpleVerticalScrollbar(listState),
                             ) {
                                 item(contentType = "topSection") {
                                     PersonProfileTopSection(
@@ -439,9 +432,9 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     Box(
                         modifier =
-                            Modifier
-                                .pullRefresh(pullRefreshState)
-                                .fillMaxSize(),
+                        Modifier
+                            .pullRefresh(pullRefreshState)
+                            .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -476,10 +469,10 @@ fun UserTabs(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
                                                     score =
-                                                        newVote(
-                                                            pv.my_vote,
-                                                            VoteType.Upvote,
-                                                        ),
+                                                    newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Upvote,
+                                                    ).toLong(),
                                                 ),
                                             )
                                         }
@@ -495,11 +488,10 @@ fun UserTabs(
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score =
-                                                        newVote(
-                                                            pv.my_vote,
-                                                            VoteType.Downvote,
-                                                        ),
+                                                    score = newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Downvote,
+                                                    ).toLong(),
                                                 ),
                                             )
                                         }
@@ -549,6 +541,12 @@ fun UserTabs(
                                     },
                                     onRemoveClick = { pv ->
                                         appState.toPostRemove(post = pv.post)
+                                    },
+                                    onBanPersonClick = { p ->
+                                        appState.toBanPerson(p)
+                                    },
+                                    onBanFromCommunityClick = { d ->
+                                        appState.toBanFromCommunity(banData = d)
                                     },
                                     onLockPostClick = { pv ->
                                         account.doIfReadyElseDisplayInfo(
@@ -620,7 +618,6 @@ fun UserTabs(
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
-                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                             else -> {}
@@ -647,22 +644,26 @@ fun UserTabs(
                             }
 
                             // Holds the un-expanded comment ids
-                            val unExpandedComments = remember { mutableStateListOf<Int>() }
-                            val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+                            val unExpandedComments = remember { mutableStateListOf<Long>() }
+                            val commentsWithToggledActionBar = remember { mutableStateListOf<Long>() }
 
-                            val toggleExpanded = { commentId: Int ->
-                                if (unExpandedComments.contains(commentId)) {
-                                    unExpandedComments.remove(commentId)
-                                } else {
-                                    unExpandedComments.add(commentId)
+                            val toggleExpanded = remember {
+                                { commentId: CommentId ->
+                                    if (unExpandedComments.contains(commentId)) {
+                                        unExpandedComments.remove(commentId)
+                                    } else {
+                                        unExpandedComments.add(commentId)
+                                    }
                                 }
                             }
 
-                            val toggleActionBar = { commentId: Int ->
-                                if (commentsWithToggledActionBar.contains(commentId)) {
-                                    commentsWithToggledActionBar.remove(commentId)
-                                } else {
-                                    commentsWithToggledActionBar.add(commentId)
+                            val toggleActionBar = remember {
+                                { commentId: CommentId ->
+                                    if (commentsWithToggledActionBar.contains(commentId)) {
+                                        commentsWithToggledActionBar.remove(commentId)
+                                    } else {
+                                        commentsWithToggledActionBar.add(commentId)
+                                    }
                                 }
                             }
 
@@ -679,9 +680,9 @@ fun UserTabs(
 
                             Box(
                                 modifier =
-                                    Modifier
-                                        .pullRefresh(pullRefreshState)
-                                        .fillMaxSize(),
+                                Modifier
+                                    .pullRefresh(pullRefreshState)
+                                    .fillMaxSize(),
                             ) {
                                 JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -721,7 +722,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Upvote),
+                                                    score = newVote(cv.my_vote, VoteType.Upvote).toLong(),
                                                 ),
                                             )
                                         }
@@ -737,7 +738,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Downvote),
+                                                    score = newVote(cv.my_vote, VoteType.Downvote).toLong(),
                                                 ),
                                             )
                                         }
@@ -799,6 +800,12 @@ fun UserTabs(
                                     onRemoveClick = { cv ->
                                         appState.toCommentRemove(comment = cv.comment)
                                     },
+                                    onBanPersonClick = { p ->
+                                        appState.toBanPerson(p)
+                                    },
+                                    onBanFromCommunityClick = { d ->
+                                        appState.toBanFromCommunity(banData = d)
+                                    },
                                     onCommentLinkClick = { cv ->
                                         appState.toComment(id = cv.comment.id)
                                     },
@@ -831,7 +838,6 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
-                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                         }

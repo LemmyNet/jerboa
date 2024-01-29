@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -16,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +34,7 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage
+import com.jerboa.ui.components.common.CheckboxField
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
@@ -162,10 +161,7 @@ fun CreateEditPostBody(
         /**
          * Checkbox to mark post NSFW
          */
-        CheckboxIsNsfw(
-            checked = isNsfw,
-            onCheckedChange = onIsNsfwChange,
-        )
+        CheckboxField(label = stringResource(R.string.create_post_tag_nsfw), checked = isNsfw, onCheckedChange = onIsNsfwChange)
     }
 }
 
@@ -224,26 +220,6 @@ fun PostCommunitySelector(
                     .clickable {
                         onClickCommunityList()
                     },
-        )
-    }
-}
-
-@Composable
-fun CheckboxIsNsfw(
-    checked: Boolean,
-    onCheckedChange: (checked: Boolean) -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(
-            text = stringResource(R.string.create_post_tag_nsfw),
-        )
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
         )
     }
 }

@@ -210,7 +210,7 @@ object MarkdownHelper {
                 TextStyle(
                     color = textColor,
                     fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
-                    textAlign = textAlign,
+                    textAlign = textAlign ?: TextAlign.Unspecified,
                 ),
             )
         return TextView(context).apply {

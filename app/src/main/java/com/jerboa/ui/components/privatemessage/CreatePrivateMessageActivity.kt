@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +33,7 @@ import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.getCurrentAccount
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun CreatePrivateMessageActivity(
-    personId: Int,
+    personId: PersonId,
     personName: String,
     accountViewModel: AccountViewModel,
     onBack: () -> Unit,
@@ -94,7 +95,7 @@ fun CreatePrivateMessageActivity(
                     }
                 },
                 actionText = R.string.form_submit,
-                actionIcon = Icons.Outlined.Send,
+                actionIcon = Icons.AutoMirrored.Outlined.Send,
             )
         },
         content = { padding ->

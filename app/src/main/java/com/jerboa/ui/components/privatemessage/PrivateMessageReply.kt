@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,12 +20,13 @@ import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 
 @Composable
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -56,7 +57,7 @@ fun PrivateMessageReply(
     privateMessageView: PrivateMessageView,
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: PersonId) -> Unit,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
@@ -71,7 +72,7 @@ fun PrivateMessageReply(
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
         )
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
             text = reply,
             onTextChange = onReplyChange,
