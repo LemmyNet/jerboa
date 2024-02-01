@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.viewvotes
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +28,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.VoteView
 fun ViewVotesBody(
     likes: List<VoteView>,
     listState: LazyListState,
-    padding: PaddingValues,
     onPersonClick: (personId: PersonId) -> Unit,
 ) {
     LazyColumn(
@@ -37,11 +35,7 @@ fun ViewVotesBody(
         modifier =
             Modifier
                 .fillMaxSize()
-                .simpleVerticalScrollbar(listState)
-                .padding(
-                    vertical = padding.calculateTopPadding(),
-                    horizontal = MEDIUM_PADDING,
-                ),
+                .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         items(

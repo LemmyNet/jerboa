@@ -2,6 +2,7 @@ package com.jerboa.ui.components.viewvotes.post
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -31,6 +32,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.viewvotes.ViewVotesBody
+import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -80,7 +82,14 @@ fun PostLikesActivity(
                     },
                 )
 
-            Box(modifier = Modifier.pullRefresh(refreshState)) {
+            Box(
+                modifier = Modifier
+                    .pullRefresh(refreshState)
+                    .padding(
+                        vertical = padding.calculateTopPadding(),
+                        horizontal = MEDIUM_PADDING,
+                    ),
+            ) {
                 JerboaPullRefreshIndicator(
                     refreshing,
                     refreshState,
@@ -101,7 +110,6 @@ fun PostLikesActivity(
                         ViewVotesBody(
                             likes = likes,
                             listState = listState,
-                            padding = padding,
                             onPersonClick = appState::toProfile,
                         )
                     }

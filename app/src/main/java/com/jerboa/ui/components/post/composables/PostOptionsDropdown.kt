@@ -30,7 +30,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.PostType
 import com.jerboa.R
-import com.jerboa.api.API
+import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
@@ -46,8 +46,6 @@ import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
-import io.github.z4kn4fein.semver.toVersion
-import it.vercruysse.lemmyapi.FeatureFlags
 import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
@@ -401,7 +399,7 @@ fun PostOptionsDropdown(
                     },
                 )
 
-                val api = API.getInstanceOrNull()
+                val api = getInstanceOrNull()
 
                 if (api != null && api.FF.instanceBlock()) {
                     val instance = getInstanceFromCommunityUrl(postView.community.actor_id)
@@ -479,7 +477,7 @@ fun PostOptionsDropdown(
                 // You can do these actions on mods above you
 
                 // These are all amMod || amAdmin
-                if (FeatureFlags(version = API.version.toVersion()).listAdminVotes()) {
+                if (getInstanceOrNull()?.FF?.listAdminVotes() == true) {
                     PopupMenuItem(
                         text = stringResource(R.string.view_votes),
                         icon = ImageVector.vectorResource(R.drawable.up_filled),
