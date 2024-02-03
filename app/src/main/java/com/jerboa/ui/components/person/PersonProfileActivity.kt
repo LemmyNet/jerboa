@@ -100,7 +100,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -453,7 +452,7 @@ fun UserTabs(
                             is ApiState.Failure -> ApiErrorText(profileRes.msg)
                             is ApiState.Holder -> {
                                 PostListings(
-                                    posts = profileRes.data.posts.toImmutableList(),
+                                    posts = profileRes.data.posts.toList(),
                                     admins = siteViewModel.admins(),
                                     // No community moderators available here
                                     moderators = null,

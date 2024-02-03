@@ -72,7 +72,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -212,7 +211,7 @@ fun CommunityActivity(
                         val moderators =
                             remember(communityRes) {
                                 when (communityRes) {
-                                    is ApiState.Success -> communityRes.data.moderators.toImmutableList()
+                                    is ApiState.Success -> communityRes.data.moderators
                                     else -> {
                                         null
                                     }
@@ -220,7 +219,7 @@ fun CommunityActivity(
                             }
 
                         PostListings(
-                            posts = postsRes.data.posts.toImmutableList(),
+                            posts = postsRes.data.posts,
                             admins = siteViewModel.admins(),
                             moderators = moderators,
                             contentAboveListings = {

@@ -24,9 +24,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -159,17 +156,17 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun getFollowList(): ImmutableList<CommunityFollowerView> {
+    fun getFollowList(): List<CommunityFollowerView> {
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.follows?.toImmutableList() ?: persistentListOf()
-            else -> persistentListOf()
+            is ApiState.Success -> res.data.my_user?.follows ?: emptyList()
+            else -> emptyList()
         }
     }
 
-    fun admins(): ImmutableList<PersonView> {
+    fun admins(): List<PersonView> {
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.admins.toImmutableList()
-            else -> persistentListOf()
+            is ApiState.Success -> res.data.admins
+            else -> emptyList()
         }
     }
 

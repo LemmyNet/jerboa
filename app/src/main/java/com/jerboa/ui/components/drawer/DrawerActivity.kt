@@ -18,7 +18,6 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -64,7 +63,7 @@ fun MainDrawer(
                 }
                 else -> null
             },
-        follows = follows.toImmutableList(),
+        follows = follows.toList(),
         unreadCount = siteViewModel.unreadCount,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,
