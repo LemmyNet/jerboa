@@ -44,13 +44,17 @@ fun SwipeToAction(
 
     val leftActionsRanges =
         remember(swipeToActionPreset) {
-            SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions
-                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+            SwipeToActionType.getActionToRangeList(
+                swipeToActionPreset.leftActions
+                    .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
+            )
         }
     val rightActionsRanges =
         remember(swipeToActionPreset) {
-            SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions
-                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+            SwipeToActionType.getActionToRangeList(
+                swipeToActionPreset.rightActions
+                    .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
+            )
         }
 
     fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
@@ -95,24 +99,24 @@ fun SwipeToAction(
             )
             Box(
                 modifier =
-                Modifier
-                    .fillMaxSize(),
+                    Modifier
+                        .fillMaxSize(),
             ) {
                 Box(
                     modifier =
-                    Modifier
-                        .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
-                        .fillMaxHeight()
-                        .background(color = color)
-                        .align(
-                            if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart,
-                        ),
+                        Modifier
+                            .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
+                            .fillMaxHeight()
+                            .background(color = color)
+                            .align(
+                                if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart,
+                            ),
                     contentAlignment =
-                    if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
-                        Alignment.CenterStart
-                    } else {
-                        Alignment.CenterEnd
-                    },
+                        if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
+                            Alignment.CenterStart
+                        } else {
+                            Alignment.CenterEnd
+                        },
                 ) {
                     val tint = Color.White
                     val modifier =
@@ -141,7 +145,7 @@ fun SwipeToAction(
 fun rememberSwipeActionState(
     swipeToActionPreset: SwipeToActionPreset,
     enableDownVotes: Boolean = true,
-    onAction: (action: SwipeToActionType) -> Unit
+    onAction: (action: SwipeToActionType) -> Unit,
 ): SwipeToDismissBoxState {
     /*
     This hacky solution is required because confirmValueChange lambda doesn't pass progress state
@@ -149,13 +153,17 @@ fun rememberSwipeActionState(
      */
     val leftActionsRanges =
         remember(swipeToActionPreset) {
-            SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions
-                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+            SwipeToActionType.getActionToRangeList(
+                swipeToActionPreset.leftActions
+                    .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
+            )
         }
     val rightActionsRanges =
         remember(swipeToActionPreset) {
-            SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions
-                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+            SwipeToActionType.getActionToRangeList(
+                swipeToActionPreset.rightActions
+                    .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
+            )
         }
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =

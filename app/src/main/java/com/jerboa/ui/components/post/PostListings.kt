@@ -28,7 +28,6 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.isScrolledToEnd
-import com.jerboa.model.ReplyItem
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -213,6 +212,6 @@ fun PreviewPostListings() {
         postActionbarMode = 0,
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
-        onReplyClick = {}
+        onReplyClick = {},
     )
 }

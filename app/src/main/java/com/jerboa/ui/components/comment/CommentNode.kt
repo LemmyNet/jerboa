@@ -58,8 +58,6 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.db.entity.isAnon
-import com.jerboa.db.entity.isReady
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
@@ -268,9 +266,9 @@ fun LazyListScope.commentNodeItem(
 
         val swipeState = rememberSwipeActionState(
             swipeToActionPreset = swipeToActionPreset,
-            enableDownVotes = enableDownVotes
+            enableDownVotes = enableDownVotes,
         ) {
-            if(account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 when (it) {
                     SwipeToActionType.Upvote -> {
                         instantScores =
