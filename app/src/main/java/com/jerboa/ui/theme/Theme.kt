@@ -123,12 +123,12 @@ fun JerboaTheme(
         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 
-    window.statusBarColor = colors.material.background.toArgb()
-    // The navigation bar color is also set on BottomAppBarAll
-    window.navigationBarColor = colors.material.background.toArgb()
-
-    insets.isAppearanceLightStatusBars = isLight
-    insets.isAppearanceLightNavigationBars = isLight
+//    window.statusBarColor = colors.material.background.toArgb()
+//    // The navigation bar color is also set on BottomAppBarAll
+//    window.navigationBarColor = colors.material.background.toArgb()
+//
+//    insets.isAppearanceLightStatusBars = isLight
+//    insets.isAppearanceLightNavigationBars = isLight
 
     // Set up a provider to allow access to the custom color scheme from any child element
     CompositionLocalProvider(LocalColorScheme provides colors) {

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build.VERSION.SDK_INT
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+import androidx.activity.ComponentActivity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -39,18 +40,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
+import com.jerboa.MainActivity
 import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.feat.shareMedia
@@ -79,41 +83,55 @@ fun ImageViewer(
 
     val window = (ctx as Activity).window
     val controller = WindowCompat.getInsetsController(window, LocalView.current)
+
+    val activity = LocalContext.current as ComponentActivity
+
+
     val oldBarColor = Color(window.statusBarColor)
     val oldIcons = controller.isAppearanceLightStatusBars
 
-    DisposableEffect(systemUiController) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.clearFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-        // Unable to get the bottom navbar transparent without this
-        @Suppress("DEPRECATION")
-        window.addFlags(FLAG_TRANSLUCENT_NAVIGATION)
-
+//    DisposableEffect(systemUiController) {
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        window.clearFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//
+//        // Unable to get the bottom navbar transparent without this
+//        @Suppress("DEPRECATION")
+//        window.addFlags(FLAG_TRANSLUCENT_NAVIGATION)
+//
         systemUiController.setStatusBarColor(
             color = Color.Transparent,
             darkIcons = false,
         )
 
-        onDispose { // Restore previous system bars
+//        onDispose { // Restore previous system bars
 
-            // Does weird behaviour on android 10 and below
-            if (SDK_INT >= 30) {
-                WindowCompat.setDecorFitsSystemWindows(window, true)
-            }
+//            // Does weird behaviour on android 10 and below
+//            if (SDK_INT >= 30) {
+//                WindowCompat.setDecorFitsSystemWindows(window, true)
+//            }
+//
+//            systemUiController.setStatusBarColor(
+//                color = oldBarColor,
+//                darkIcons = oldIcons,
+//            )
+//
+//            if (!showTopBar) {
+//                systemUiController.isSystemBarsVisible = true
+//            }
+//
+//            window.addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//            @Suppress("DEPRECATION")
+//            window.clearFlags(FLAG_TRANSLUCENT_NAVIGATION)
+//        }
+//    }
 
-            systemUiController.setStatusBarColor(
-                color = oldBarColor,
-                darkIcons = oldIcons,
-            )
 
+
+    DisposableEffect(Unit) {
+        onDispose {
             if (!showTopBar) {
-                systemUiController.isSystemBarsVisible = true
+                controller.show(WindowInsetsCompat.Type.systemBars())
             }
-
-            window.addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            @Suppress("DEPRECATION")
-            window.clearFlags(FLAG_TRANSLUCENT_NAVIGATION)
         }
     }
 
@@ -172,9 +190,9 @@ fun ImageViewer(
                             LinearProgressIndicator(
                                 progress = { currentProgress.value.progress },
                                 modifier =
-                                    Modifier
-                                        .padding(it)
-                                        .fillMaxWidth(),
+                                Modifier
+                                    .padding(it)
+                                    .fillMaxWidth(),
                             )
                         } else {
                             LoadingBar(it)
@@ -189,13 +207,20 @@ fun ImageViewer(
                         state = zoomableImageState,
                         onClick = {
                             showTopBar = !showTopBar
-                            systemUiController.isSystemBarsVisible = showTopBar
+                            //systemUiController.isSystemBarsVisible = showTopBar
+                            if (showTopBar) {
+                                controller.show(WindowInsetsCompat.Type.systemBars())
+
+                            } else {
+                                controller.hide(WindowInsetsCompat.Type.systemBars())
+                            }
 
                             // Default behavior is that if navigation bar is hidden, the system will "steal" touches
                             // and show it again upon user's touch. We just want the user to be able to show the
                             // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                             // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                            systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                            //systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                            controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                         },
                         modifier = Modifier.fillMaxSize(),
                     )

@@ -109,18 +109,18 @@ fun BottomAppBarAll(
     showTextDescriptionsInNavbar: Boolean,
 ) {
     // Check for preview mode
-    if (LocalContext.current is Activity) {
-        val window = (LocalContext.current as Activity).window
-        val colorScheme = MaterialTheme.colorScheme
-
-        DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
-
-            onDispose {
-                window.navigationBarColor = colorScheme.background.toArgb()
-            }
-        }
-    }
+//    if (LocalContext.current is Activity) {
+//        val window = (LocalContext.current as Activity).window
+//        val colorScheme = MaterialTheme.colorScheme
+//
+//        DisposableEffect(Unit) {
+//            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+//
+//            onDispose {
+//                window.navigationBarColor = colorScheme.background.toArgb()
+//            }
+//        }
+//    }
 
     // If descriptions are hidden, make the bar shorter
     val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.height(56.dp)
