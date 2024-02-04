@@ -36,7 +36,7 @@ import com.jerboa.feat.SwipeToActionType.Companion.START_THRESHOLD
 @ExperimentalMaterial3Api
 fun SwipeToAction(
     swipeToActionPreset: SwipeToActionPreset,
-    enableDownVotes: Boolean = true,
+    enableDownVotes: Boolean,
     swipeableContent: @Composable RowScope.() -> Unit,
     swipeState: SwipeToDismissBoxState,
 ) {
@@ -144,7 +144,7 @@ fun SwipeToAction(
 @Composable
 fun rememberSwipeActionState(
     swipeToActionPreset: SwipeToActionPreset,
-    enableDownVotes: Boolean = true,
+    enableDownVotes: Boolean,
     onAction: (action: SwipeToActionType) -> Unit,
 ): SwipeToDismissBoxState {
     /*
