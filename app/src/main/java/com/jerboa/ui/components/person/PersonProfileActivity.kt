@@ -519,6 +519,11 @@ fun UserTabs(
                                             )
                                         }
                                     },
+                                    onReplyClick = { pv ->
+                                        appState.toCommentReply(
+                                            replyItem = ReplyItem.PostItem(pv),
+                                        )
+                                    },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
                                             postView = pv,

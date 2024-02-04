@@ -1,6 +1,7 @@
 package com.jerboa.feat
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.MaterialTheme
@@ -28,14 +29,6 @@ enum class SwipeToActionType {
                     .rangeUntil(if (index == actions.size - 1) 1f else (start + delta * (index + 1))) to it
             }
         }
-
-        fun getDefaultLeftActions(): List<SwipeToActionType> {
-            return listOf(Reply, Save)
-        }
-
-        fun getDefaultRightActions(): List<SwipeToActionType> {
-            return listOf(Upvote, Downvote)
-        }
     }
 
     @Composable
@@ -43,7 +36,7 @@ enum class SwipeToActionType {
         return when (this) {
             Upvote -> ImageVector.vectorResource(id = R.drawable.up_outline)
             Downvote -> ImageVector.vectorResource(id = R.drawable.down_outline)
-            Reply -> Icons.Outlined.Comment
+            Reply -> Icons.AutoMirrored.Outlined.Comment
             Save -> Icons.Outlined.Bookmark
         }
     }

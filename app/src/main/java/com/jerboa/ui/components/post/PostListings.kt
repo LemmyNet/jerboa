@@ -28,6 +28,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.isScrolledToEnd
+import com.jerboa.model.ReplyItem
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -51,6 +52,7 @@ fun PostListings(
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
+    onReplyClick: (postView: PostView) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
@@ -108,6 +110,7 @@ fun PostListings(
                 usePrivateTabs = usePrivateTabs,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
                 onPostClick = onPostClick,
                 onSaveClick = onSaveClick,
                 onCommunityClick = onCommunityClick,
@@ -210,5 +213,6 @@ fun PreviewPostListings() {
         postActionbarMode = 0,
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        onReplyClick = {}
     )
 }

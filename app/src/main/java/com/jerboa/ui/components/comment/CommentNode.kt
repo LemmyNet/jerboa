@@ -58,11 +58,14 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.isAnon
+import com.jerboa.db.entity.isReady
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
+import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -249,6 +252,8 @@ fun LazyListScope.commentNodeItem(
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
         val border = Border(SMALL_PADDING, borderColor)
 
+        val ctx = LocalContext.current
+
         var instantScores by
             remember {
                 mutableStateOf(
@@ -261,23 +266,28 @@ fun LazyListScope.commentNodeItem(
                 )
             }
 
-        val swipeState = rememberSwipeActionState(swipeToActionPreset) {
-            when (it) {
-                SwipeToActionType.Upvote -> {
-                    instantScores =
-                        instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(commentView)
-                }
-                SwipeToActionType.Downvote -> {
-                    instantScores =
-                        instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(commentView)
-                }
-                SwipeToActionType.Reply -> {
-                    onReplyClick(commentView)
-                }
-                SwipeToActionType.Save -> {
-                    onSaveClick(commentView)
+        val swipeState = rememberSwipeActionState(
+            swipeToActionPreset = swipeToActionPreset,
+            enableDownVotes = enableDownVotes
+        ) {
+            if(account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                when (it) {
+                    SwipeToActionType.Upvote -> {
+                        instantScores =
+                            instantScores.update(VoteType.Upvote)
+                        onUpvoteClick(commentView)
+                    }
+                    SwipeToActionType.Downvote -> {
+                        instantScores =
+                            instantScores.update(VoteType.Downvote)
+                        onDownvoteClick(commentView)
+                    }
+                    SwipeToActionType.Reply -> {
+                        onReplyClick(commentView)
+                    }
+                    SwipeToActionType.Save -> {
+                        onSaveClick(commentView)
+                    }
                 }
             }
         }
@@ -409,6 +419,7 @@ fun LazyListScope.commentNodeItem(
         if (swipeToActionPreset != SwipeToActionPreset.DISABLED) {
             SwipeToAction(
                 swipeToActionPreset = swipeToActionPreset,
+                enableDownVotes = enableDownVotes,
                 swipeableContent = swipeableContent,
                 swipeState = swipeState,
             )

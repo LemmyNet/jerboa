@@ -45,6 +45,7 @@ import com.jerboa.feat.BackConfirmationMode
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.PostActionbarMode
 import com.jerboa.feat.PostNavigationGestureMode
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
@@ -303,6 +304,18 @@ fun LookAndFeelActivity(
                     },
                     title = { Text(stringResource(id = R.string.blur_nsfw)) },
                     items = BlurTypes.entries.map { stringResource(it.resId) },
+                    onItemSelected = { _, _ -> updateAppSettings() },
+                )
+                SettingsListDropdown(
+                    state = swipeToActionPreset,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Swipe,
+                            contentDescription = null,
+                        )
+                    },
+                    title = { Text(stringResource(id = R.string.swipe_to_action_presets)) },
+                    items = SwipeToActionPreset.entries.map { stringResource(it.resId) },
                     onItemSelected = { _, _ -> updateAppSettings() },
                 )
                 SettingsCheckbox(

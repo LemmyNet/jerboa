@@ -36,15 +36,22 @@ import com.jerboa.feat.SwipeToActionType.Companion.START_THRESHOLD
 @ExperimentalMaterial3Api
 fun SwipeToAction(
     swipeToActionPreset: SwipeToActionPreset,
+    enableDownVotes: Boolean = true,
     swipeableContent: @Composable RowScope.() -> Unit,
     swipeState: SwipeToDismissBoxState,
 ) {
     val haptic = LocalHapticFeedback.current
 
     val leftActionsRanges =
-        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions) }
+        remember(swipeToActionPreset) {
+            SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions
+                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+        }
     val rightActionsRanges =
-        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions) }
+        remember(swipeToActionPreset) {
+            SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions
+                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+        }
 
     fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
         return when (state.targetValue) {
@@ -88,24 +95,24 @@ fun SwipeToAction(
             )
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxSize(),
+                Modifier
+                    .fillMaxSize(),
             ) {
                 Box(
                     modifier =
-                        Modifier
-                            .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
-                            .fillMaxHeight()
-                            .background(color = color)
-                            .align(
-                                if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart,
-                            ),
+                    Modifier
+                        .fillMaxWidth(if (swipeState.progress != 1f) swipeState.progress else 0f)
+                        .fillMaxHeight()
+                        .background(color = color)
+                        .align(
+                            if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) Alignment.TopEnd else Alignment.TopStart,
+                        ),
                     contentAlignment =
-                        if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
-                            Alignment.CenterStart
-                        } else {
-                            Alignment.CenterEnd
-                        },
+                    if (swipeState.targetValue == SwipeToDismissBoxValue.EndToStart) {
+                        Alignment.CenterStart
+                    } else {
+                        Alignment.CenterEnd
+                    },
                 ) {
                     val tint = Color.White
                     val modifier =
@@ -133,16 +140,23 @@ fun SwipeToAction(
 @Composable
 fun rememberSwipeActionState(
     swipeToActionPreset: SwipeToActionPreset,
-    onAction: (action: SwipeToActionType) -> Unit,
+    enableDownVotes: Boolean = true,
+    onAction: (action: SwipeToActionType) -> Unit
 ): SwipeToDismissBoxState {
     /*
     This hacky solution is required because confirmValueChange lambda doesn't pass progress state
     They didn't fix it with new SwipeToDismissBoxState
      */
     val leftActionsRanges =
-        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions) }
+        remember(swipeToActionPreset) {
+            SwipeToActionType.getActionToRangeList(swipeToActionPreset.leftActions
+                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+        }
     val rightActionsRanges =
-        remember(swipeToActionPreset) { SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions) }
+        remember(swipeToActionPreset) {
+            SwipeToActionType.getActionToRangeList(swipeToActionPreset.rightActions
+                .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) })
+        }
     val progressState = remember { mutableFloatStateOf(1.0f) }
     val dismissState =
         rememberSwipeToDismissBoxState(

@@ -44,6 +44,7 @@ import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -312,6 +313,11 @@ fun CommunityActivity(
                                             ),
                                     )
                                 }
+                            },
+                            onReplyClick = { pv ->
+                                appState.toCommentReply(
+                                    replyItem = ReplyItem.PostItem(pv),
+                                )
                             },
                             onEditPostClick = { postView ->
                                 appState.toPostEdit(

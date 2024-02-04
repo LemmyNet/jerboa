@@ -49,6 +49,7 @@ import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -319,6 +320,11 @@ fun MainPostListingsContent(
                         ),
                     )
                 }
+            },
+            onReplyClick = { pv ->
+                appState.toCommentReply(
+                    replyItem = ReplyItem.PostItem(pv),
+                )
             },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
