@@ -42,15 +42,32 @@ enum class SwipeToActionType {
     }
 
     @Composable
-    fun getActionColor(): Color {
+    fun getActionColor(): ActionColor {
         return when (this) {
-            Upvote -> MaterialTheme.colorScheme.secondary
-            Downvote -> MaterialTheme.colorScheme.error
-            Reply -> MaterialTheme.colorScheme.inversePrimary
-            Save -> MaterialTheme.colorScheme.primary
+            Upvote -> ActionColor(
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                background = MaterialTheme.colorScheme.secondaryContainer,
+            )
+            Downvote -> ActionColor(
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+                background = MaterialTheme.colorScheme.errorContainer,
+            )
+            Reply -> ActionColor(
+                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                background = MaterialTheme.colorScheme.tertiaryContainer,
+            )
+            Save -> ActionColor(
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                background = MaterialTheme.colorScheme.primaryContainer,
+            )
         }
     }
 }
+
+data class ActionColor(
+    val tint: Color,
+    val background: Color,
+)
 
 enum class SwipeToActionPreset(
     val leftActions: List<SwipeToActionType>,
