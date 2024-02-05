@@ -1098,34 +1098,40 @@ fun PostListing(
 
     var viewSource by remember { mutableStateOf(false) }
 
-    val swipeState = rememberSwipeActionState(
-        swipeToActionPreset = swipeToActionPreset,
-        enableDownVotes = enableDownVotes,
-    ) {
-        if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
-            when (it) {
-                SwipeToActionType.Upvote -> {
-                    instantScores =
-                        instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                }
+    val swipeAction: (action: SwipeToActionType) -> Unit = remember(postView) {
+        {
+            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                when (it) {
+                    SwipeToActionType.Upvote -> {
+                        instantScores =
+                            instantScores.update(VoteType.Upvote)
+                        onUpvoteClick(postView)
+                    }
 
-                SwipeToActionType.Downvote -> {
-                    instantScores =
-                        instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                }
+                    SwipeToActionType.Downvote -> {
+                        instantScores =
+                            instantScores.update(VoteType.Downvote)
+                        onDownvoteClick(postView)
+                    }
 
-                SwipeToActionType.Reply -> {
-                    onReplyClick(postView)
-                }
+                    SwipeToActionType.Reply -> {
+                        onReplyClick(postView)
+                    }
 
-                SwipeToActionType.Save -> {
-                    onSaveClick(postView)
+                    SwipeToActionType.Save -> {
+                        onSaveClick(postView)
+                    }
                 }
             }
         }
     }
+
+    val swipeState = rememberSwipeActionState(
+        swipeToActionPreset = swipeToActionPreset,
+        enableDownVotes = enableDownVotes,
+        onAction = swipeAction,
+        rememberKey = postView
+    )
 
     val swipeableContent: @Composable RowScope.() -> Unit = {
         Row {

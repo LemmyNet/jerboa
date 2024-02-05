@@ -267,6 +267,7 @@ fun LazyListScope.commentNodeItem(
         val swipeState = rememberSwipeActionState(
             swipeToActionPreset = swipeToActionPreset,
             enableDownVotes = enableDownVotes,
+            rememberKey = commentView
         ) {
             if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 when (it) {

@@ -22,10 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.jerboa.feat.SwipeToActionPreset
@@ -43,14 +45,14 @@ fun SwipeToAction(
     val haptic = LocalHapticFeedback.current
 
     val leftActionsRanges =
-        remember(swipeToActionPreset) {
+        remember(swipeToActionPreset, enableDownVotes) {
             SwipeToActionType.getActionToRangeList(
                 swipeToActionPreset.leftActions
                     .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
             )
         }
     val rightActionsRanges =
-        remember(swipeToActionPreset) {
+        remember(swipeToActionPreset, enableDownVotes) {
             SwipeToActionType.getActionToRangeList(
                 swipeToActionPreset.rightActions
                     .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
@@ -145,51 +147,65 @@ fun SwipeToAction(
 fun rememberSwipeActionState(
     swipeToActionPreset: SwipeToActionPreset,
     enableDownVotes: Boolean,
+    rememberKey: Any? = Unit,
     onAction: (action: SwipeToActionType) -> Unit,
 ): SwipeToDismissBoxState {
     /*
     This hacky solution is required because confirmValueChange lambda doesn't pass progress state
     They didn't fix it with new SwipeToDismissBoxState
      */
+    val density = LocalDensity.current
+
     val leftActionsRanges =
-        remember(swipeToActionPreset) {
+        remember(swipeToActionPreset, enableDownVotes) {
             SwipeToActionType.getActionToRangeList(
                 swipeToActionPreset.leftActions
                     .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
             )
         }
     val rightActionsRanges =
-        remember(swipeToActionPreset) {
+        remember(swipeToActionPreset, enableDownVotes) {
             SwipeToActionType.getActionToRangeList(
                 swipeToActionPreset.rightActions
                     .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
             )
         }
+
     val progressState = remember { mutableFloatStateOf(1.0f) }
-    val dismissState =
-        rememberSwipeToDismissBoxState(
-            positionalThreshold = { totalDistance -> totalDistance * START_THRESHOLD },
-            confirmValueChange = { dismissValue ->
-                val action =
-                    when (dismissValue) {
-                        SwipeToDismissBoxValue.StartToEnd -> {
-                            leftActionsRanges.findLast { progressState.floatValue in it.first }
-                        }
 
-                        SwipeToDismissBoxValue.EndToStart -> {
-                            rightActionsRanges.findLast { progressState.floatValue in it.first }
-                        }
-
-                        else -> {
-                            null
-                        }
-                    }
-                action?.second?.let { actionType ->
-                    onAction(actionType)
+    val confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { dismissValue ->
+        val action =
+            when (dismissValue) {
+                SwipeToDismissBoxValue.StartToEnd -> {
+                    leftActionsRanges.findLast { progressState.floatValue in it.first }
                 }
-                false // do not dismiss
-            },
-        )
+
+                SwipeToDismissBoxValue.EndToStart -> {
+                    rightActionsRanges.findLast { progressState.floatValue in it.first }
+                }
+
+                else -> {
+                    null
+                }
+            }
+        action?.second?.let { actionType ->
+            onAction(actionType)
+        }
+        false // do not dismiss
+    }
+
+    val positionalThreshold: (totalDistance: Float) -> Float = { totalDistance -> totalDistance * START_THRESHOLD }
+
+    val dismissState = rememberSaveable(
+        saver = SwipeToDismissBoxState.Saver(
+            confirmValueChange = confirmValueChange,
+            density = density,
+            positionalThreshold = { totalDistance -> totalDistance * START_THRESHOLD }
+        ),
+        inputs = arrayOf(rememberKey)
+    ) {
+        SwipeToDismissBoxState(SwipeToDismissBoxValue.Settled, density, confirmValueChange, positionalThreshold)
+    }
     progressState.floatValue = dismissState.progress
     return dismissState
 }
