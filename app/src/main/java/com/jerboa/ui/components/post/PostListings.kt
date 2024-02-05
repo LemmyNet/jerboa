@@ -26,6 +26,7 @@ import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
@@ -49,6 +50,7 @@ fun PostListings(
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
+    onReplyClick: (postView: PostView) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
@@ -80,6 +82,7 @@ fun PostListings(
     showScores: Boolean,
     postActionbarMode: Int,
     showPostAppendRetry: Boolean,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(
         state = listState,
@@ -106,6 +109,7 @@ fun PostListings(
                 usePrivateTabs = usePrivateTabs,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
                 onPostClick = onPostClick,
                 onSaveClick = onSaveClick,
                 onCommunityClick = onCommunityClick,
@@ -132,6 +136,7 @@ fun PostListings(
                 showIfRead = showIfRead,
                 showScores = showScores,
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset,
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
                     DisposableEffect(key1 = postView.post.id) {
@@ -208,5 +213,7 @@ fun PreviewPostListings() {
         showScores = true,
         postActionbarMode = 0,
         showPostAppendRetry = false,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        onReplyClick = {},
     )
 }
