@@ -3,6 +3,7 @@ package com.jerboa.ui.components.settings.lookandfeel
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -51,6 +52,7 @@ import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,6 +156,7 @@ fun LookAndFeelActivity(
                         .padding(padding),
             ) {
                 SettingsListDropdown(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = {
                         Text(text = stringResource(R.string.lang_language))
                     },
@@ -172,7 +175,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsSlider(
-                    modifier = Modifier.padding(top = 10.dp),
+                    modifier = Modifier.padding(top = 10.dp).height(SETTINGS_MENU_LINK_HEIGHT),
                     valueRange = 8f..48f,
                     state = fontSizeState,
                     icon = {
@@ -193,6 +196,7 @@ fun LookAndFeelActivity(
                     onValueChangeFinished = { updateAppSettings() },
                 )
                 SettingsList(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = themeState,
                     items = ThemeMode.entries.map { stringResource(it.mode) },
                     icon = {
@@ -210,6 +214,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsList(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = themeColorState,
                     items = ThemeColor.entries.map { stringResource(it.mode) },
                     icon = {
@@ -227,6 +232,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsList(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = postViewModeState,
                     items = PostViewMode.entries.map { stringResource(it.mode) },
                     icon = {
@@ -244,6 +250,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsList(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = postNavigationGestureModeState,
                     items = PostNavigationGestureMode.entries.map { stringResource(it.mode) },
                     icon = {
@@ -261,6 +268,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsList(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = {
                         Text(text = stringResource(R.string.confirm_exit))
                     },
@@ -278,6 +286,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsList(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = {
                         Text(text = stringResource(R.string.post_actionbar))
                     },
@@ -295,6 +304,7 @@ fun LookAndFeelActivity(
                     },
                 )
                 SettingsListDropdown(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = blurNSFW,
                     icon = {
                         Icon(
@@ -319,6 +329,7 @@ fun LookAndFeelActivity(
                     onItemSelected = { _, _ -> updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showBottomNavState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_show_navigation_bar))
@@ -326,6 +337,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showTextDescriptionsInNavbar,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
@@ -334,6 +346,7 @@ fun LookAndFeelActivity(
                     enabled = showBottomNavState.value,
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showCollapsedCommentContentState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
@@ -341,6 +354,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showCommentActionBarByDefaultState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_show_action_bar_for_comments))
@@ -348,6 +362,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showVotingArrowsInListViewState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_show_voting_arrows_list_view))
@@ -355,6 +370,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showParentCommentNavigationButtonsState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_show_parent_comment_navigation_buttons))
@@ -362,6 +378,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = navigateParentCommentsWithVolumeButtonsState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_navigate_parent_comments_with_volume_buttons))
@@ -369,6 +386,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = useCustomTabsState,
                     title = {
                         Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
@@ -376,6 +394,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = usePrivateTabsState,
                     title = {
                         Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
@@ -383,6 +402,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = secureWindowState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_secure_window))
@@ -390,6 +410,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = showPostLinkPreviewMode,
                     title = {
                         Text(stringResource(id = R.string.show_post_link_previews))
@@ -397,6 +418,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = markAsReadOnScroll,
                     title = {
                         Text(stringResource(id = R.string.mark_as_read_on_scroll))
@@ -404,6 +426,7 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = autoPlayGifs,
                     title = {
                         Text(stringResource(id = R.string.settings_autoplaygifs))
