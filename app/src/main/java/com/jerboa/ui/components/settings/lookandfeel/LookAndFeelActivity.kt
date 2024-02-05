@@ -317,6 +317,7 @@ fun LookAndFeelActivity(
                     onItemSelected = { _, _ -> updateAppSettings() },
                 )
                 SettingsListDropdown(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     state = swipeToActionPreset,
                     icon = {
                         Icon(
