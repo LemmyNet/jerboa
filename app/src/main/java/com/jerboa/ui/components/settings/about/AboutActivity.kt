@@ -2,6 +2,7 @@ package com.jerboa.ui.components.settings.about
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
 
 const val GITHUB_URL = "https://github.com/dessalines/jerboa"
 const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
@@ -73,6 +75,7 @@ fun AboutActivity(
                         .padding(padding),
             ) {
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
                     subtitle = {
                         Text(
@@ -95,6 +98,7 @@ fun AboutActivity(
                 SettingsDivider()
                 SettingsHeader(text = stringResource(R.string.settings_about_support))
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_issue_tracker)) },
                     icon = {
                         Icon(
@@ -107,6 +111,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.crash_logs)) },
                     icon = {
                         Icon(
@@ -117,6 +122,7 @@ fun AboutActivity(
                     onClick = onClickCrashLogs,
                 )
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_developer_matrix_chatroom)) },
                     icon = {
                         Icon(
@@ -129,6 +135,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
                     icon = {
                         Icon(
@@ -143,6 +150,7 @@ fun AboutActivity(
                 SettingsDivider()
                 SettingsHeader(text = stringResource(R.string.about_social))
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_join_c_jerboa)) },
                     icon = {
                         Icon(
@@ -156,6 +164,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_follow_on_mastodon)) },
                     icon = {
                         Icon(
@@ -170,7 +179,7 @@ fun AboutActivity(
                 SettingsDivider()
                 SettingsHeader(text = stringResource(R.string.settings_about_open_source))
                 SettingsMenuLink(
-                    modifier = Modifier.padding(top = 20.dp),
+                    modifier = Modifier.padding(top = 20.dp).height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_about_source_code)) },
                     subtitle = {
                         Text(

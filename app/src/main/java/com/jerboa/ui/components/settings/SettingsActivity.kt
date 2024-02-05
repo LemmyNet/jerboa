@@ -4,6 +4,7 @@ package com.jerboa.ui.components.settings
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -25,6 +26,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
 
 @Composable
 fun SettingsActivity(
@@ -47,6 +49,7 @@ fun SettingsActivity(
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
                     icon = {
                         Icon(
@@ -58,6 +61,7 @@ fun SettingsActivity(
                 )
                 if (!account.isAnon()) {
                     SettingsMenuLink(
+                        modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                         title = {
                             Text(
                                 stringResource(
@@ -76,6 +80,7 @@ fun SettingsActivity(
                     )
                 }
                 SettingsMenuLink(
+                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_activity_about)) },
                     icon = {
                         Icon(
