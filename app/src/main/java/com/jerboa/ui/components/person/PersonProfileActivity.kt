@@ -580,6 +580,7 @@ fun UserTabs(
                                             )
                                         }
                                     },
+                                    onViewPostVotesClick = appState::toPostLikes,
                                     onCommunityClick = { community ->
                                         appState.toCommunity(id = community.id)
                                     },
@@ -764,6 +765,7 @@ fun UserTabs(
                                         }
                                     },
                                     onPersonClick = appState::toProfile,
+                                    onViewVotesClick = appState::toCommentLikes,
                                     onHeaderClick = {},
                                     onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                     onCommunityClick = { community ->

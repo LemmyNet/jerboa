@@ -46,6 +46,7 @@ class CommunityListViewModel(communities: List<CommunityFollowerView>) : ViewMod
                         CommunityAggregates(
                             community_id = cfv.community.id,
                             subscribers = 0,
+                            subscribers_local = 0,
                             posts = 0,
                             comments = 0,
                             published = "",
