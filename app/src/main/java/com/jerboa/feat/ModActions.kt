@@ -3,7 +3,6 @@ package com.jerboa.feat
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
-import kotlinx.collections.immutable.ImmutableList
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -12,8 +11,8 @@ import java.time.temporal.ChronoUnit
  */
 fun canMod(
     creatorId: PersonId,
-    admins: ImmutableList<PersonView>?,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>?,
+    moderators: List<CommunityModeratorView>?,
     myId: PersonId?,
     onSelf: Boolean = false,
 ): Boolean {
@@ -46,14 +45,14 @@ fun futureDaysToUnixTime(days: Long?): Long? {
 }
 
 fun amMod(
-    moderators: ImmutableList<CommunityModeratorView>?,
+    moderators: List<CommunityModeratorView>?,
     myId: PersonId?,
 ): Boolean {
     return moderators?.map { it.moderator.id }?.contains(myId) ?: false
 }
 
 fun amAdmin(
-    admins: ImmutableList<PersonView>?,
+    admins: List<PersonView>?,
     myId: PersonId?,
 ): Boolean {
     return admins?.map { it.person.id }?.contains(myId) ?: false

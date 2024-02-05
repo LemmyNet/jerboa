@@ -69,13 +69,11 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun Drawer(
     myUserInfo: MyUserInfo?,
-    follows: ImmutableList<CommunityFollowerView>,
+    follows: List<CommunityFollowerView>,
     unreadCount: Long,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
@@ -126,7 +124,7 @@ fun Drawer(
 @Composable
 fun DrawerContent(
     showAccountAddMode: Boolean,
-    follows: ImmutableList<CommunityFollowerView>,
+    follows: List<CommunityFollowerView>,
     onAddAccount: () -> Unit,
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -175,7 +173,7 @@ fun DrawerContent(
 @Composable
 fun DrawerItemsMain(
     myUserInfo: MyUserInfo?,
-    follows: ImmutableList<CommunityFollowerView>,
+    follows: List<CommunityFollowerView>,
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -287,7 +285,7 @@ fun DrawerItemsMain(
 fun DrawerItemsMainPreview() {
     DrawerItemsMain(
         myUserInfo = null,
-        follows = persistentListOf(),
+        follows = emptyList(),
         onClickListingType = {},
         onCommunityClick = {},
         onClickSettings = {},
