@@ -17,10 +17,9 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Search
 import it.vercruysse.lemmyapi.v0x19.datatypes.SearchResponse
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
-class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) : ViewModel() {
+class CommunityListViewModel(communities: List<CommunityFollowerView>) : ViewModel() {
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -35,7 +34,7 @@ class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) 
         setCommunityListFromFollowed(communities)
     }
 
-    private fun setCommunityListFromFollowed(myFollows: ImmutableList<CommunityFollowerView>) {
+    private fun setCommunityListFromFollowed(myFollows: List<CommunityFollowerView>) {
         // A hack to convert communityFollowerView into CommunityView
         val followsIntoCommunityViews =
             myFollows.map { cfv ->
@@ -72,7 +71,7 @@ class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) 
 
     companion object {
         class Factory(
-            private val followedCommunities: ImmutableList<CommunityFollowerView>,
+            private val followedCommunities: List<CommunityFollowerView>,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(

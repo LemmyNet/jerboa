@@ -107,7 +107,7 @@ You can run it by doing
 You can generate the compose compiler metrics by executing the following gradle task.
 
 ```shell
-./gradlew assembleRelease --rerun-tasks -P com.jerboa.enableComposeCompilerReports=true
+./gradlew assembleRelease --rerun-tasks -P enableComposeCompilerReports=true
 ```
 
 Then you will find the metrics in `app/build/compose_metrics` directory.

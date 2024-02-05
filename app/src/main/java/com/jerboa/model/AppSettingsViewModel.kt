@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -9,6 +10,7 @@ import com.jerboa.db.repository.AppSettingsRepository
 import com.jerboa.jerboaApplication
 import kotlinx.coroutines.launch
 
+@Stable
 class AppSettingsViewModel(private val repository: AppSettingsRepository) : ViewModel() {
     val appSettings = repository.appSettings
     val changelog = repository.changelog

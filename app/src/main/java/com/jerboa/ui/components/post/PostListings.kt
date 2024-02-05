@@ -37,14 +37,12 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PostListings(
-    posts: ImmutableList<PostView>,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    posts: List<PostView>,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -171,9 +169,9 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = persistentListOf(samplePostView, sampleLinkPostView),
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        posts = listOf(samplePostView, sampleLinkPostView),
+        admins = emptyList(),
+        moderators = emptyList(),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},

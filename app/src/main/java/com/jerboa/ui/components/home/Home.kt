@@ -49,7 +49,6 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
-import kotlinx.collections.immutable.ImmutableList
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
@@ -281,7 +280,7 @@ fun ListingTypeOptionsDropDown(
 }
 
 @Composable
-fun Taglines(taglines: ImmutableList<Tagline>) {
+fun Taglines(taglines: List<Tagline>) {
     if (taglines.isNotEmpty()) {
         val tagline by remember { mutableStateOf(taglines.random()) }
         Column(
