@@ -62,7 +62,7 @@ object Route {
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             internal fun makeRoute(id: String) = "community/$id"
 
