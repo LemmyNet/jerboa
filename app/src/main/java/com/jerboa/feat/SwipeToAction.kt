@@ -44,10 +44,10 @@ enum class SwipeToActionType {
     @Composable
     fun getActionColor(): Color {
         return when (this) {
-            Upvote -> MaterialTheme.colorScheme.primary
-            Downvote -> MaterialTheme.colorScheme.tertiary
-            Reply -> MaterialTheme.colorScheme.onPrimary
-            Save -> MaterialTheme.colorScheme.onTertiary
+            Upvote -> MaterialTheme.colorScheme.secondary
+            Downvote -> MaterialTheme.colorScheme.error
+            Reply -> MaterialTheme.colorScheme.inversePrimary
+            Save -> MaterialTheme.colorScheme.primary
         }
     }
 }
