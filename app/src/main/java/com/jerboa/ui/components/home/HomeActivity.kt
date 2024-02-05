@@ -42,12 +42,14 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -93,6 +95,7 @@ fun HomeActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -159,6 +162,7 @@ fun HomeActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -207,6 +211,7 @@ fun MainPostListingsContent(
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -314,6 +319,11 @@ fun MainPostListingsContent(
                     )
                 }
             },
+            onReplyClick = { pv ->
+                appState.toCommentReply(
+                    replyItem = ReplyItem.PostItem(pv),
+                )
+            },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
                     postView = postView,
@@ -417,6 +427,7 @@ fun MainPostListingsContent(
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
+            swipeToActionPreset = swipeToActionPreset,
         )
     }
 }

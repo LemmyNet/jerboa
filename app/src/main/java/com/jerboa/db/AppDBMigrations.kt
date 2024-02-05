@@ -384,6 +384,25 @@ val MIGRATION_26_25 =
         }
     }
 
+val MIGRATION_26_27 =
+    object : Migration(26, 27) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+            db.execSQL(
+                "ALTER TABLE AppSettings ADD COLUMN swipe_to_action_preset INTEGER NOT NULL DEFAULT 1",
+            )
+        }
+    }
+
+val MIGRATION_27_26 =
+    object : Migration(27, 26) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE AppSettings DROP COLUMN swipe_to_action_preset",
+            )
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -417,4 +436,6 @@ val MIGRATIONS_LIST =
         MIGRATION_25_24,
         MIGRATION_25_26,
         MIGRATION_26_25,
+        MIGRATION_26_27,
+        MIGRATION_27_26,
     )

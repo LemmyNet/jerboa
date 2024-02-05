@@ -51,6 +51,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -121,6 +122,7 @@ fun PersonProfileActivity(
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
     onBack: (() -> Unit)? = null,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -271,6 +273,7 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset,
             )
         },
     )
@@ -306,6 +309,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -514,6 +518,11 @@ fun UserTabs(
                                             )
                                         }
                                     },
+                                    onReplyClick = { pv ->
+                                        appState.toCommentReply(
+                                            replyItem = ReplyItem.PostItem(pv),
+                                        )
+                                    },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
                                             postView = pv,
@@ -618,6 +627,7 @@ fun UserTabs(
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                             else -> {}
@@ -839,6 +849,7 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                         }
