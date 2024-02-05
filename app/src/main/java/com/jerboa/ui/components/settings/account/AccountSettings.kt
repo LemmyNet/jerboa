@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -48,6 +49,7 @@ import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
@@ -254,6 +256,7 @@ fun SettingsForm(
             }
         }
         SettingsListDropdown(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = defaultListingType,
             title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
             items =
@@ -264,24 +267,28 @@ fun SettingsForm(
                 ),
         )
         SettingsListDropdown(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = defaultSortType,
             title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
             items = sortTypeNames,
         )
 
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = showNsfw,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_nsfw))
             },
         )
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = showAvatars,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_avatars))
             },
         )
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = showReadPosts,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_read_posts))
@@ -289,24 +296,28 @@ fun SettingsForm(
         )
 
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = botAccount,
             title = {
                 Text(text = stringResource(R.string.account_settings_bot_account))
             },
         )
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = showBotAccount,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_bot_accounts))
             },
         )
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             state = showScores,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_scores))
             },
         )
         SettingsCheckbox(
+            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
             enabled = email.isNotEmpty(),
             state = sendNotificationsToEmail,
             title = {
