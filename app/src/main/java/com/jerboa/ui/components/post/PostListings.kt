@@ -26,6 +26,7 @@ import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
@@ -36,20 +37,20 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PostListings(
-    posts: ImmutableList<PostView>,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    posts: List<PostView>,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
+    onReplyClick: (postView: PostView) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
@@ -58,6 +59,7 @@ fun PostListings(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
+    onViewPostVotesClick: (PostId) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     loadMorePosts: () -> Unit,
@@ -80,6 +82,7 @@ fun PostListings(
     showScores: Boolean,
     postActionbarMode: Int,
     showPostAppendRetry: Boolean,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(
         state = listState,
@@ -106,6 +109,7 @@ fun PostListings(
                 usePrivateTabs = usePrivateTabs,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
                 onPostClick = onPostClick,
                 onSaveClick = onSaveClick,
                 onCommunityClick = onCommunityClick,
@@ -117,6 +121,7 @@ fun PostListings(
                 onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
+                onViewVotesClick = onViewPostVotesClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -131,6 +136,7 @@ fun PostListings(
                 showIfRead = showIfRead,
                 showScores = showScores,
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset,
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
                     DisposableEffect(key1 = postView.post.id) {
@@ -171,9 +177,9 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = persistentListOf(samplePostView, sampleLinkPostView),
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        posts = listOf(samplePostView, sampleLinkPostView),
+        admins = emptyList(),
+        moderators = emptyList(),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -186,6 +192,7 @@ fun PreviewPostListings() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewPostVotesClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         loadMorePosts = {},
@@ -206,5 +213,7 @@ fun PreviewPostListings() {
         showScores = true,
         postActionbarMode = 0,
         showPostAppendRetry = false,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        onReplyClick = {},
     )
 }

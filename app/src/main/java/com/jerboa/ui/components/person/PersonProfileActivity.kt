@@ -51,6 +51,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -100,7 +101,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -122,6 +122,7 @@ fun PersonProfileActivity(
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
     onBack: (() -> Unit)? = null,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -272,6 +273,7 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset,
             )
         },
     )
@@ -307,6 +309,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -453,7 +456,7 @@ fun UserTabs(
                             is ApiState.Failure -> ApiErrorText(profileRes.msg)
                             is ApiState.Holder -> {
                                 PostListings(
-                                    posts = profileRes.data.posts.toImmutableList(),
+                                    posts = profileRes.data.posts.toList(),
                                     admins = siteViewModel.admins(),
                                     // No community moderators available here
                                     moderators = null,
@@ -514,6 +517,11 @@ fun UserTabs(
                                                 ),
                                             )
                                         }
+                                    },
+                                    onReplyClick = { pv ->
+                                        appState.toCommentReply(
+                                            replyItem = ReplyItem.PostItem(pv),
+                                        )
                                     },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
@@ -581,6 +589,7 @@ fun UserTabs(
                                             )
                                         }
                                     },
+                                    onViewPostVotesClick = appState::toPostLikes,
                                     onCommunityClick = { community ->
                                         appState.toCommunity(id = community.id)
                                     },
@@ -618,6 +627,7 @@ fun UserTabs(
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                             else -> {}
@@ -765,6 +775,7 @@ fun UserTabs(
                                         }
                                     },
                                     onPersonClick = appState::toProfile,
+                                    onViewVotesClick = appState::toCommentLikes,
                                     onHeaderClick = {},
                                     onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                     onCommunityClick = { community ->
@@ -838,6 +849,7 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
                         }

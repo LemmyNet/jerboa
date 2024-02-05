@@ -13,6 +13,7 @@ import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
@@ -21,13 +22,12 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
-    nodes: ImmutableList<CommentNodeData>,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    nodes: List<CommentNodeData>,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -50,6 +50,7 @@ fun CommentNodes(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -64,6 +65,7 @@ fun CommentNodes(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -91,6 +93,7 @@ fun CommentNodes(
             onCommentLinkClick = onCommentLinkClick,
             onFetchChildrenClick = onFetchChildrenClick,
             onPersonClick = onPersonClick,
+            onViewVotesClick = onViewVotesClick,
             onHeaderClick = onHeaderClick,
             onHeaderLongClick = onHeaderLongClick,
             onCommunityClick = onCommunityClick,
@@ -105,6 +108,7 @@ fun CommentNodes(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            swipeToActionPreset = swipeToActionPreset,
         )
         item {
             Spacer(modifier = Modifier.height(100.dp))
@@ -113,9 +117,9 @@ fun CommentNodes(
 }
 
 fun LazyListScope.commentNodeItems(
-    nodes: ImmutableList<CommentNodeData>,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    nodes: List<CommentNodeData>,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -137,6 +141,7 @@ fun LazyListScope.commentNodeItems(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -151,6 +156,7 @@ fun LazyListScope.commentNodeItems(
     showAvatar: Boolean,
     blurNSFW: Int,
     showScores: Boolean,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     nodes.forEach { node ->
         when (node) {
@@ -173,6 +179,7 @@ fun LazyListScope.commentNodeItems(
                     onMarkAsReadClick = onMarkAsReadClick,
                     onCommentClick = onCommentClick,
                     onPersonClick = onPersonClick,
+                    onViewVotesClick = onViewVotesClick,
                     onHeaderClick = onHeaderClick,
                     onHeaderLongClick = onHeaderLongClick,
                     onCommunityClick = onCommunityClick,
@@ -194,6 +201,7 @@ fun LazyListScope.commentNodeItems(
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                     showScores = showScores,
+                    swipeToActionPreset = swipeToActionPreset,
                 )
 
             is MissingCommentNode ->
@@ -215,6 +223,7 @@ fun LazyListScope.commentNodeItems(
                     onMarkAsReadClick = onMarkAsReadClick,
                     onCommentClick = onCommentClick,
                     onPersonClick = onPersonClick,
+                    onViewVotesClick = onViewVotesClick,
                     onHeaderClick = onHeaderClick,
                     onHeaderLongClick = onHeaderLongClick,
                     onCommunityClick = onCommunityClick,
@@ -236,6 +245,7 @@ fun LazyListScope.commentNodeItems(
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                     showScores = showScores,
+                    swipeToActionPreset = swipeToActionPreset,
                 )
         }
     }

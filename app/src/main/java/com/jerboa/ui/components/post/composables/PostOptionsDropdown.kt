@@ -19,15 +19,18 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.PostType
 import com.jerboa.R
-import com.jerboa.api.API
+import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
@@ -50,6 +53,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +74,7 @@ fun PostOptionsDropdown(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (PostView) -> Unit,
     onFeaturePostClick: (PostFeatureData) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     canMod: Boolean,
@@ -394,7 +399,7 @@ fun PostOptionsDropdown(
                     },
                 )
 
-                val api = API.getInstanceOrNull()
+                val api = getInstanceOrNull()
 
                 if (api != null && api.FF.instanceBlock()) {
                     val instance = getInstanceFromCommunityUrl(postView.community.actor_id)
@@ -428,43 +433,61 @@ fun PostOptionsDropdown(
                     onReportClick(postView)
                 },
             )
+        }
 
-            if (canMod) {
-                HorizontalDivider()
+        // The moderation subfield
+        if (amMod || amAdmin) {
+            PopupMenuItem(
+                text = stringResource(R.string.moderation),
+                icon = Icons.Outlined.Shield,
+            ) {
+                // Moddable items limited to mods below you
+                if (canMod) {
+                    val (removeText, removeIcon) =
+                        if (postView.post.removed) {
+                            Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
+                        } else {
+                            Pair(stringResource(R.string.remove_post), Icons.Outlined.GppBad)
+                        }
 
-                val (removeText, removeIcon) =
-                    if (postView.post.removed) {
-                        Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
-                    } else {
-                        Pair(stringResource(R.string.remove_post), Icons.Outlined.GppBad)
+                    PopupMenuItem(
+                        text = removeText,
+                        icon = removeIcon,
+                        onClick = {
+                            onDismissRequest()
+                            onRemoveClick(postView)
+                        },
+                    )
+                    BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+
+                    // Only show ban from community button if its a local community
+                    if (postView.community.local) {
+                        BanFromCommunityPopupMenuItem(
+                            BanFromCommunityData(
+                                person = postView.creator,
+                                community = postView.community,
+                                banned = postView.creator_banned_from_community,
+                            ),
+                            onDismissRequest,
+                            onBanFromCommunityClick,
+                        )
                     }
+                }
 
-                PopupMenuItem(
-                    text = removeText,
-                    icon = removeIcon,
-                    onClick = {
-                        onDismissRequest()
-                        onRemoveClick(postView)
-                    },
-                )
-                BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+                // You can do these actions on mods above you
 
-                // Only show ban from community button if its a local community
-                if (postView.community.local) {
-                    BanFromCommunityPopupMenuItem(
-                        BanFromCommunityData(
-                            person = postView.creator,
-                            community = postView.community,
-                            banned = postView.creator_banned_from_community,
-                        ),
-                        onDismissRequest,
-                        onBanFromCommunityClick,
+                // These are all amMod || amAdmin
+                if (getInstanceOrNull()?.FF?.listAdminVotes() == true) {
+                    PopupMenuItem(
+                        text = stringResource(R.string.view_votes),
+                        icon = ImageVector.vectorResource(R.drawable.up_filled),
+                        onClick = {
+                            onDismissRequest()
+                            onViewVotesClick(postView.post.id)
+                        },
                     )
                 }
-            }
 
-            // You can do these actions on mods above you
-            if (amMod || amAdmin) {
                 val (lockText, lockIcon) =
                     if (postView.post.locked) {
                         Pair(stringResource(R.string.unlock_post), Icons.Outlined.LockOpen)
@@ -480,6 +503,7 @@ fun PostOptionsDropdown(
                         onLockPostClick(postView)
                     },
                 )
+
                 val (featureInCommunityText, featureIconUsed) =
                     if (postView.post.featured_community) {
                         Pair(stringResource(R.string.unfeature_in_community), unFeatureIcon)
@@ -501,30 +525,30 @@ fun PostOptionsDropdown(
                         )
                     },
                 )
-            }
 
-            if (amAdmin) {
-                val (featureInLocalText, featureIconUsed) =
-                    if (postView.post.featured_local) {
-                        Pair(stringResource(R.string.unfeature_in_local), unFeatureIcon)
-                    } else {
-                        Pair(stringResource(R.string.feature_in_local), featureIcon)
-                    }
+                if (amAdmin) {
+                    val (featureInLocalText, featureLocalIconUsed) =
+                        if (postView.post.featured_local) {
+                            Pair(stringResource(R.string.unfeature_in_local), unFeatureIcon)
+                        } else {
+                            Pair(stringResource(R.string.feature_in_local), featureIcon)
+                        }
 
-                PopupMenuItem(
-                    text = featureInLocalText,
-                    icon = featureIconUsed,
-                    onClick = {
-                        onDismissRequest()
-                        onFeaturePostClick(
-                            PostFeatureData(
-                                post = postView.post,
-                                featured = postView.post.featured_local,
-                                type = PostFeatureType.Local,
-                            ),
-                        )
-                    },
-                )
+                    PopupMenuItem(
+                        text = featureInLocalText,
+                        icon = featureLocalIconUsed,
+                        onClick = {
+                            onDismissRequest()
+                            onFeaturePostClick(
+                                PostFeatureData(
+                                    post = postView.post,
+                                    featured = postView.post.featured_local,
+                                    type = PostFeatureType.Local,
+                                ),
+                            )
+                        },
+                    )
+                }
             }
         }
     }

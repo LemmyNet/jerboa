@@ -59,6 +59,7 @@ import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -92,7 +93,6 @@ import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.toImmutableList
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -134,6 +134,7 @@ fun PostActivity(
     blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -292,7 +293,7 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val moderators = postRes.data.moderators.toImmutableList()
+                        val moderators = postRes.data.moderators
 
                         if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
@@ -444,6 +445,7 @@ fun PostActivity(
                                             )
                                         }
                                     },
+                                    onViewVotesClick = appState::toPostLikes,
                                     onPersonClick = appState::toProfile,
                                     // Do nothing
                                     showReply = true,
@@ -461,6 +463,7 @@ fun PostActivity(
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
                                     postActionbarMode = postActionbarMode,
+                                    swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
 
@@ -610,6 +613,7 @@ fun PostActivity(
                                             }
                                         },
                                         onPersonClick = appState::toProfile,
+                                        onViewVotesClick = appState::toCommentLikes,
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
@@ -690,6 +694,7 @@ fun PostActivity(
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),
+                                        swipeToActionPreset = swipeToActionPreset,
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

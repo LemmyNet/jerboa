@@ -73,6 +73,8 @@ import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
+import com.jerboa.ui.components.viewvotes.comment.CommentLikesActivity
+import com.jerboa.ui.components.viewvotes.post.PostLikesActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 
@@ -236,6 +238,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -279,6 +282,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -319,6 +323,7 @@ class MainActivity : AppCompatActivity() {
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -356,6 +361,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -467,6 +473,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionbarMode = appSettings.postActionbarMode,
+                                swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             )
                         }
                     }
@@ -500,6 +507,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionbarMode = appSettings.postActionbarMode,
+                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
 
@@ -602,6 +610,40 @@ class MainActivity : AppCompatActivity() {
                         CreatePostReportActivity(
                             postId = args.id,
                             accountViewModel = accountViewModel,
+                            onBack = appState::navigateUp,
+                        )
+                    }
+
+                    composable(
+                        route = Route.POST_LIKES,
+                        arguments =
+                            listOf(
+                                navArgument(Route.PostLikesArgs.ID) {
+                                    type = Route.PostLikesArgs.ID_TYPE
+                                },
+                            ),
+                    ) {
+                        val args = Route.PostLikesArgs(it)
+                        PostLikesActivity(
+                            appState = appState,
+                            postId = args.id,
+                            onBack = appState::navigateUp,
+                        )
+                    }
+
+                    composable(
+                        route = Route.COMMENT_LIKES,
+                        arguments =
+                            listOf(
+                                navArgument(Route.CommentLikesArgs.ID) {
+                                    type = Route.CommentLikesArgs.ID_TYPE
+                                },
+                            ),
+                    ) {
+                        val args = Route.CommentLikesArgs(it)
+                        CommentLikesActivity(
+                            appState = appState,
+                            commentId = args.id,
                             onBack = appState::navigateUp,
                         )
                     }

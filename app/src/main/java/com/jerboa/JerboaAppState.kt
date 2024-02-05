@@ -167,6 +167,14 @@ class JerboaAppState(
         navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
     }
 
+    fun toPostLikes(postId: PostId) {
+        navController.navigate(Route.PostLikesArgs.makeRoute(id = "$postId"))
+    }
+
+    fun toCommentLikes(commentId: CommentId) {
+        navController.navigate(Route.CommentLikesArgs.makeRoute(id = "$commentId"))
+    }
+
     fun toCommunityList(select: Boolean = Route.CommunityListArgs.SELECT_DEFAULT) {
         navController.navigate(Route.CommunityListArgs.makeRoute(select = "$select"))
     }

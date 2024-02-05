@@ -415,6 +415,11 @@
     <string name="lock_post">Lock Post</string>
     <string name="unlock_post">Unlock Post</string>
     <string name="type_your_reason">Type your reason</string>
+    <string name="swipe_action_preset_disabled">Disabled</string>
+    <string name="swipe_action_preset_default">Two sides</string>
+    <string name="swipe_action_preset_downvote_on_left_upvote_on_right">Left-right votes</string>
+    <string name="only_right_swipe_action_preset">Only right swipe</string>
+    <string name="only_left_swipe_action_preset">Only left swipe</string>
     <string name="person_banned">Banned %1$s</string>
     <string name="person_banned_for_x_days">Banned %1$s for %2$d days</string>
     <string name="person_banned_from_community">Banned %1$s from %2$s</string>
@@ -432,4 +437,10 @@
     <string name="unfeature_in_community">Unfeature in Community</string>
     <string name="feature_in_local">Feature in Local</string>
     <string name="unfeature_in_local">Unfeature in Local</string>
+    <string name="swipe_to_action_presets">Preset for swipe gesture</string>
+    <string name="swipe_action_preset_only_votes">Only votes</string>
+    <string name="view_votes">View votes</string>
+    <string name="post_votes">Post votes</string>
+    <string name="comment_votes">Comment votes</string>
+    <string name="moderation">Moderation</string>
 </resources>

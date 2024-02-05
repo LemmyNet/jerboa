@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,10 +74,13 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.amAdmin
 import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
+import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.feat.needBlur
 import com.jerboa.getPostType
 import com.jerboa.hostName
@@ -97,8 +102,10 @@ import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.common.scoreColor
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityName
@@ -118,8 +125,6 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -547,8 +552,8 @@ fun PreviewSourcePost() {
 @Composable
 fun PostFooterLine(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -562,6 +567,7 @@ fun PostFooterLine(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -617,6 +623,7 @@ fun PostFooterLine(
             onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
+            onViewVotesClick = onViewVotesClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
@@ -719,7 +726,14 @@ fun PostFooterLine(
             account = account,
             onClick = { showMoreOptions = !showMoreOptions },
             requiresAccount = false,
-            modifier = if (postActionbar == PostActionbarMode.LeftHandShort) Modifier.weight(1F, true) else Modifier,
+            modifier = if (postActionbar == PostActionbarMode.LeftHandShort) {
+                Modifier.weight(
+                    1F,
+                    true,
+                )
+            } else {
+                Modifier
+            },
         )
 
         if (postActionbar == PostActionbarMode.LeftHandShort) {
@@ -801,8 +815,8 @@ fun PostFooterLinePreview() {
         )
     PostFooterLine(
         postView = postView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         instantScores = instantScores,
         onUpvoteClick = {},
         onDownvoteClick = {},
@@ -816,6 +830,7 @@ fun PostFooterLinePreview() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -834,8 +849,8 @@ fun PostFooterLinePreview() {
 fun PreviewPostListingCard() {
     PostListing(
         postView = samplePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -852,6 +867,7 @@ fun PreviewPostListingCard() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -865,6 +881,7 @@ fun PreviewPostListingCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -873,8 +890,8 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -891,6 +908,7 @@ fun PreviewLinkPostListing() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -904,6 +922,7 @@ fun PreviewLinkPostListing() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -912,8 +931,8 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListing(
         postView = sampleImagePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -930,6 +949,7 @@ fun PreviewImagePostListingCard() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -943,6 +963,7 @@ fun PreviewImagePostListingCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -951,8 +972,8 @@ fun PreviewImagePostListingCard() {
 fun PreviewImagePostListingSmallCard() {
     PostListing(
         postView = sampleImagePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -969,6 +990,7 @@ fun PreviewImagePostListingSmallCard() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -982,6 +1004,7 @@ fun PreviewImagePostListingSmallCard() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
@@ -990,8 +1013,8 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -1008,6 +1031,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -1021,14 +1045,16 @@ fun PreviewLinkNoThumbnailPostListing() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListing(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
@@ -1046,6 +1072,7 @@ fun PostListing(
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
@@ -1060,7 +1087,9 @@ fun PostListing(
     showIfRead: Boolean,
     showScores: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
+    val ctx = LocalContext.current
     // This stores vote data
     var instantScores by
         remember {
@@ -1076,127 +1105,181 @@ fun PostListing(
 
     var viewSource by remember { mutableStateOf(false) }
 
-    when (postViewMode) {
-        PostViewMode.Card ->
-            PostListingCard(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                instantScores = instantScores,
-                onUpvoteClick = {
-                    instantScores = instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                },
-                onDownvoteClick = {
-                    instantScores = instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                },
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onPersonClick = onPersonClick,
-                onViewSourceClick = {
-                    viewSource = !viewSource
-                },
-                viewSource = viewSource,
-                showReply = showReply,
-                showCommunityName = showCommunityName,
-                fullBody = fullBody,
-                account = account,
-                expandedImage = true,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreview = showPostLinkPreview,
-                appState = appState,
-                showIfRead = showIfRead,
-                showScores = showScores,
-                postActionbarMode = postActionbarMode,
-            )
+    val swipeAction: (action: SwipeToActionType) -> Unit = remember(postView) {
+        {
+            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                when (it) {
+                    SwipeToActionType.Upvote -> {
+                        instantScores =
+                            instantScores.update(VoteType.Upvote)
+                        onUpvoteClick(postView)
+                    }
 
-        PostViewMode.SmallCard ->
-            PostListingCard(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                instantScores = instantScores,
-                onUpvoteClick = {
-                    instantScores = instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                },
-                onDownvoteClick = {
-                    instantScores = instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                },
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onPersonClick = onPersonClick,
-                onViewSourceClick = {
-                    viewSource = !viewSource
-                },
-                viewSource = viewSource,
-                showReply = showReply,
-                showCommunityName = showCommunityName,
-                fullBody = false,
-                account = account,
-                expandedImage = false,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreview = showPostLinkPreview,
-                appState = appState,
-                showScores = showScores,
-                postActionbarMode = postActionbarMode,
-            )
+                    SwipeToActionType.Downvote -> {
+                        instantScores =
+                            instantScores.update(VoteType.Downvote)
+                        onDownvoteClick(postView)
+                    }
 
-        PostViewMode.List ->
-            PostListingList(
-                postView = postView,
-                instantScores = instantScores,
-                onUpvoteClick = {
-                    instantScores = instantScores.update(VoteType.Upvote)
-                    onUpvoteClick(postView)
-                },
-                onDownvoteClick = {
-                    instantScores = instantScores.update(VoteType.Downvote)
-                    onDownvoteClick(postView)
-                },
-                onPostClick = onPostClick,
-                showCommunityName = showCommunityName,
-                account = account,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                appState = appState,
-                showIfRead = showIfRead,
-                enableDownVotes = enableDownVotes,
-                showScores = showScores,
-            )
+                    SwipeToActionType.Reply -> {
+                        onReplyClick(postView)
+                    }
+
+                    SwipeToActionType.Save -> {
+                        onSaveClick(postView)
+                    }
+                }
+            }
+        }
+    }
+
+    val swipeState = rememberSwipeActionState(
+        swipeToActionPreset = swipeToActionPreset,
+        enableDownVotes = enableDownVotes,
+        onAction = swipeAction,
+        rememberKey = postView,
+    )
+
+    val swipeableContent: @Composable RowScope.() -> Unit = {
+        Row {
+            when (postViewMode) {
+                PostViewMode.Card ->
+                    PostListingCard(
+                        postView = postView,
+                        admins = admins,
+                        moderators = moderators,
+                        instantScores = instantScores,
+                        onUpvoteClick = {
+                            instantScores = instantScores.update(VoteType.Upvote)
+                            onUpvoteClick(postView)
+                        },
+                        onDownvoteClick = {
+                            instantScores = instantScores.update(VoteType.Downvote)
+                            onDownvoteClick(postView)
+                        },
+                        onReplyClick = onReplyClick,
+                        onPostClick = onPostClick,
+                        onSaveClick = onSaveClick,
+                        onCommunityClick = onCommunityClick,
+                        onEditPostClick = onEditPostClick,
+                        onDeletePostClick = onDeletePostClick,
+                        onReportClick = onReportClick,
+                        onRemoveClick = onRemoveClick,
+                        onBanPersonClick = onBanPersonClick,
+                        onBanFromCommunityClick = onBanFromCommunityClick,
+                        onLockPostClick = onLockPostClick,
+                        onFeaturePostClick = onFeaturePostClick,
+                        onViewVotesClick = onViewVotesClick,
+                        onPersonClick = onPersonClick,
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        viewSource = viewSource,
+                        showReply = showReply,
+                        showCommunityName = showCommunityName,
+                        fullBody = fullBody,
+                        account = account,
+                        expandedImage = true,
+                        enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
+                        blurNSFW = blurNSFW,
+                        showPostLinkPreview = showPostLinkPreview,
+                        appState = appState,
+                        showIfRead = showIfRead,
+                        showScores = showScores,
+                        postActionbarMode = postActionbarMode,
+                    )
+
+                PostViewMode.SmallCard ->
+                    PostListingCard(
+                        postView = postView,
+                        admins = admins,
+                        moderators = moderators,
+                        instantScores = instantScores,
+                        onUpvoteClick = {
+                            instantScores = instantScores.update(VoteType.Upvote)
+                            onUpvoteClick(postView)
+                        },
+                        onDownvoteClick = {
+                            instantScores = instantScores.update(VoteType.Downvote)
+                            onDownvoteClick(postView)
+                        },
+                        onReplyClick = onReplyClick,
+                        onPostClick = onPostClick,
+                        onSaveClick = onSaveClick,
+                        onCommunityClick = onCommunityClick,
+                        onEditPostClick = onEditPostClick,
+                        onDeletePostClick = onDeletePostClick,
+                        onReportClick = onReportClick,
+                        onRemoveClick = onRemoveClick,
+                        onBanPersonClick = onBanPersonClick,
+                        onBanFromCommunityClick = onBanFromCommunityClick,
+                        onLockPostClick = onLockPostClick,
+                        onFeaturePostClick = onFeaturePostClick,
+                        onViewVotesClick = onViewVotesClick,
+                        onPersonClick = onPersonClick,
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        viewSource = viewSource,
+                        showReply = showReply,
+                        showCommunityName = showCommunityName,
+                        fullBody = false,
+                        account = account,
+                        expandedImage = false,
+                        enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
+                        blurNSFW = blurNSFW,
+                        showPostLinkPreview = showPostLinkPreview,
+                        appState = appState,
+                        showScores = showScores,
+                        postActionbarMode = postActionbarMode,
+                    )
+
+                PostViewMode.List ->
+                    PostListingList(
+                        postView = postView,
+                        instantScores = instantScores,
+                        onUpvoteClick = {
+                            instantScores = instantScores.update(VoteType.Upvote)
+                            onUpvoteClick(postView)
+                        },
+                        onDownvoteClick = {
+                            instantScores = instantScores.update(VoteType.Downvote)
+                            onDownvoteClick(postView)
+                        },
+                        onPostClick = onPostClick,
+                        showCommunityName = showCommunityName,
+                        account = account,
+                        showVotingArrowsInListView = showVotingArrowsInListView,
+                        showAvatar = showAvatar,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
+                        blurNSFW = blurNSFW,
+                        appState = appState,
+                        showIfRead = showIfRead,
+                        enableDownVotes = enableDownVotes,
+                        showScores = showScores,
+                    )
+            }
+        }
+    }
+
+    if (swipeToActionPreset != SwipeToActionPreset.DISABLED) {
+        SwipeToAction(
+            swipeToActionPreset = swipeToActionPreset,
+            enableDownVotes = enableDownVotes,
+            swipeableContent = swipeableContent,
+            swipeState = swipeState,
+        )
+    } else {
+        Row {
+            swipeableContent()
+        }
     }
 }
 
@@ -1525,8 +1608,8 @@ fun PostListingListWithThumbPreview() {
 @Composable
 fun PostListingCard(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -1543,6 +1626,7 @@ fun PostListingCard(
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
     showReply: Boolean = false,
@@ -1622,6 +1706,7 @@ fun PostListingCard(
             onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
+            onViewVotesClick = onViewVotesClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,

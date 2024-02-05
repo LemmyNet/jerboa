@@ -42,12 +42,14 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -75,8 +77,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -95,6 +95,7 @@ fun HomeActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -161,6 +162,7 @@ fun HomeActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 postActionbarMode = postActionbarMode,
+                swipeToActionPreset = swipeToActionPreset,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -209,6 +211,7 @@ fun MainPostListingsContent(
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -253,10 +256,10 @@ fun MainPostListingsContent(
             when (val postsRes = homeViewModel.postsRes) {
                 is ApiState.Failure -> {
                     apiErrorToast(ctx, postsRes.msg)
-                    persistentListOf()
+                    emptyList()
                 }
-                is ApiState.Holder -> postsRes.data.posts.toImmutableList()
-                else -> persistentListOf()
+                is ApiState.Holder -> postsRes.data.posts.toList()
+                else -> emptyList()
             }
 
         PostListings(
@@ -264,7 +267,7 @@ fun MainPostListingsContent(
             admins = siteViewModel.admins(),
             // No community moderators available here
             moderators = null,
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
+            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
                     appState,
@@ -315,6 +318,11 @@ fun MainPostListingsContent(
                         ),
                     )
                 }
+            },
+            onReplyClick = { pv ->
+                appState.toCommentReply(
+                    replyItem = ReplyItem.PostItem(pv),
+                )
             },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
@@ -382,6 +390,7 @@ fun MainPostListingsContent(
                     )
                 }
             },
+            onViewPostVotesClick = appState::toPostLikes,
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)
             },
@@ -418,6 +427,7 @@ fun MainPostListingsContent(
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
+            swipeToActionPreset = swipeToActionPreset,
         )
     }
 }

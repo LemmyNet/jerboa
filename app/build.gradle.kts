@@ -20,8 +20,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 55
-        versionName = "0.0.55"
+        versionCode = 56
+        versionName = "0.0.56"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -183,8 +183,6 @@ dependencies {
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
-
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.8-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")

@@ -35,6 +35,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -43,6 +44,7 @@ import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -72,7 +74,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -89,6 +90,7 @@ fun CommunityActivity(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
+    swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -212,7 +214,7 @@ fun CommunityActivity(
                         val moderators =
                             remember(communityRes) {
                                 when (communityRes) {
-                                    is ApiState.Success -> communityRes.data.moderators.toImmutableList()
+                                    is ApiState.Success -> communityRes.data.moderators
                                     else -> {
                                         null
                                     }
@@ -220,7 +222,7 @@ fun CommunityActivity(
                             }
 
                         PostListings(
-                            posts = postsRes.data.posts.toImmutableList(),
+                            posts = postsRes.data.posts,
                             admins = siteViewModel.admins(),
                             moderators = moderators,
                             contentAboveListings = {
@@ -311,6 +313,11 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            onReplyClick = { pv ->
+                                appState.toCommentReply(
+                                    replyItem = ReplyItem.PostItem(pv),
+                                )
+                            },
                             onEditPostClick = { postView ->
                                 appState.toPostEdit(
                                     postView = postView,
@@ -380,6 +387,7 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            onViewPostVotesClick = appState::toPostLikes,
                             onCommunityClick = { community ->
                                 appState.toCommunity(id = community.id)
                             },
@@ -419,6 +427,7 @@ fun CommunityActivity(
                             showScores = siteViewModel.showScores(),
                             postActionbarMode = postActionbarMode,
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
+                            swipeToActionPreset = swipeToActionPreset,
                         )
                     }
 
