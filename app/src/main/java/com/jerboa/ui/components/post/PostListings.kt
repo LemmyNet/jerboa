@@ -36,6 +36,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 
 @Composable
@@ -56,6 +57,7 @@ fun PostListings(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
+    onViewPostVotesClick: (PostId) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     loadMorePosts: () -> Unit,
@@ -115,6 +117,7 @@ fun PostListings(
                 onBanFromCommunityClick = onBanFromCommunityClick,
                 onLockPostClick = onLockPostClick,
                 onFeaturePostClick = onFeaturePostClick,
+                onViewVotesClick = onViewPostVotesClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -184,6 +187,7 @@ fun PreviewPostListings() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewPostVotesClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         loadMorePosts = {},

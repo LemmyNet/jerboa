@@ -58,6 +58,8 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
+import com.jerboa.feat.amAdmin
+import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
@@ -188,6 +190,7 @@ fun LazyListScope.commentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -350,6 +353,7 @@ fun LazyListScope.commentNodeItem(
                                         onBanFromCommunityClick = onBanFromCommunityClick,
                                         onCommentLinkClick = onCommentLinkClick,
                                         onPersonClick = onPersonClick,
+                                        onViewVotesClick = onViewVotesClick,
                                         onBlockCreatorClick = onBlockCreatorClick,
                                         onClick = {
                                             toggleExpanded(commentId)
@@ -405,6 +409,7 @@ fun LazyListScope.commentNodeItem(
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
+        onViewVotesClick = onViewVotesClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
@@ -443,6 +448,7 @@ fun LazyListScope.missingCommentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -553,6 +559,7 @@ fun LazyListScope.missingCommentNodeItem(
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
+        onViewVotesClick = onViewVotesClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
@@ -684,6 +691,7 @@ fun CommentFooterLine(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     account: Account,
@@ -691,6 +699,22 @@ fun CommentFooterLine(
     viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
+
+    val amAdmin =
+        remember(admins) {
+            amAdmin(
+                admins = admins,
+                myId = account.id,
+            )
+        }
+
+    val amMod =
+        remember {
+            amMod(
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
 
     val canMod =
         remember(admins) {
@@ -716,8 +740,11 @@ fun CommentFooterLine(
             onBlockCreatorClick = onBlockCreatorClick,
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
+            onViewVotesClick = onViewVotesClick,
             isCreator = account.id == commentView.creator.id,
             canMod = canMod,
+            amMod = amMod,
+            amAdmin = amAdmin,
             viewSource = viewSource,
         )
     }
@@ -831,6 +858,7 @@ fun CommentNodesPreview() {
         onBanFromCommunityClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
+        onViewVotesClick = {},
         onHeaderClick = {},
         onHeaderLongClick = {},
         onCommunityClick = {},

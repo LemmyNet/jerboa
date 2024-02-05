@@ -379,6 +379,7 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            onViewPostVotesClick = appState::toPostLikes,
                             onCommunityClick = { community ->
                                 appState.toCommunity(id = community.id)
                             },
