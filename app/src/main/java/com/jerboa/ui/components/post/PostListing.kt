@@ -1137,7 +1137,7 @@ fun PostListing(
         swipeToActionPreset = swipeToActionPreset,
         enableDownVotes = enableDownVotes,
         onAction = swipeAction,
-        rememberKey = postView
+        rememberKey = postView,
     )
 
     val swipeableContent: @Composable RowScope.() -> Unit = {

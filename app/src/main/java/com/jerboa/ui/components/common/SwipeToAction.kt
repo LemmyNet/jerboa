@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -200,9 +199,9 @@ fun rememberSwipeActionState(
         saver = SwipeToDismissBoxState.Saver(
             confirmValueChange = confirmValueChange,
             density = density,
-            positionalThreshold = { totalDistance -> totalDistance * START_THRESHOLD }
+            positionalThreshold = { totalDistance -> totalDistance * START_THRESHOLD },
         ),
-        inputs = arrayOf(rememberKey)
+        inputs = arrayOf(rememberKey),
     ) {
         SwipeToDismissBoxState(SwipeToDismissBoxValue.Settled, density, confirmValueChange, positionalThreshold)
     }
