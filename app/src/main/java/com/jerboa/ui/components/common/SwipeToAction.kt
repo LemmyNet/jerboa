@@ -95,7 +95,7 @@ fun SwipeToAction(
                 label = "swipe color animation",
                 targetValueByState = { state ->
                     val currentAction = actionByState(state)
-                    currentAction?.second?.getActionColor() ?: Color.Transparent
+                    currentAction?.second?.getActionColor()?.background ?: Color.Transparent
                 },
             )
             Box(
@@ -119,7 +119,7 @@ fun SwipeToAction(
                             Alignment.CenterEnd
                         },
                 ) {
-                    val tint = Color.White
+                    val tint = swipeAction?.second?.getActionColor()?.tint ?: Color.Transparent
                     val modifier =
                         Modifier
                             .padding(10.dp)
