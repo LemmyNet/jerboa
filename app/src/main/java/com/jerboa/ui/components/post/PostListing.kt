@@ -125,8 +125,6 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -554,8 +552,8 @@ fun PreviewSourcePost() {
 @Composable
 fun PostFooterLine(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -569,6 +567,7 @@ fun PostFooterLine(
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -624,6 +623,7 @@ fun PostFooterLine(
             onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
+            onViewVotesClick = onViewVotesClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
@@ -815,8 +815,8 @@ fun PostFooterLinePreview() {
         )
     PostFooterLine(
         postView = postView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         instantScores = instantScores,
         onUpvoteClick = {},
         onDownvoteClick = {},
@@ -830,6 +830,7 @@ fun PostFooterLinePreview() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         onViewSourceClick = {},
@@ -848,8 +849,8 @@ fun PostFooterLinePreview() {
 fun PreviewPostListingCard() {
     PostListing(
         postView = samplePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -866,6 +867,7 @@ fun PreviewPostListingCard() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -888,8 +890,8 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -906,6 +908,7 @@ fun PreviewLinkPostListing() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -928,8 +931,8 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListing(
         postView = sampleImagePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -946,6 +949,7 @@ fun PreviewImagePostListingCard() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -968,8 +972,8 @@ fun PreviewImagePostListingCard() {
 fun PreviewImagePostListingSmallCard() {
     PostListing(
         postView = sampleImagePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -986,6 +990,7 @@ fun PreviewImagePostListingSmallCard() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -1008,8 +1013,8 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -1026,6 +1031,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onBanFromCommunityClick = {},
         onLockPostClick = {},
         onFeaturePostClick = {},
+        onViewVotesClick = {},
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
@@ -1047,8 +1053,8 @@ fun PreviewLinkNoThumbnailPostListing() {
 @Composable
 fun PostListing(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
@@ -1066,6 +1072,7 @@ fun PostListing(
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     showReply: Boolean = false,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
@@ -1162,6 +1169,7 @@ fun PostListing(
                         onBanFromCommunityClick = onBanFromCommunityClick,
                         onLockPostClick = onLockPostClick,
                         onFeaturePostClick = onFeaturePostClick,
+                        onViewVotesClick = onViewVotesClick,
                         onPersonClick = onPersonClick,
                         onViewSourceClick = {
                             viewSource = !viewSource
@@ -1210,6 +1218,7 @@ fun PostListing(
                         onBanFromCommunityClick = onBanFromCommunityClick,
                         onLockPostClick = onLockPostClick,
                         onFeaturePostClick = onFeaturePostClick,
+                        onViewVotesClick = onViewVotesClick,
                         onPersonClick = onPersonClick,
                         onViewSourceClick = {
                             viewSource = !viewSource
@@ -1599,8 +1608,8 @@ fun PostListingListWithThumbPreview() {
 @Composable
 fun PostListingCard(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -1617,6 +1626,7 @@ fun PostListingCard(
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (PostId) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
     showReply: Boolean = false,
@@ -1696,6 +1706,7 @@ fun PostListingCard(
             onBanFromCommunityClick = onBanFromCommunityClick,
             onLockPostClick = onLockPostClick,
             onFeaturePostClick = onFeaturePostClick,
+            onViewVotesClick = onViewVotesClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             onViewSourceClick = onViewSourceClick,

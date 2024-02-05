@@ -77,8 +77,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -258,10 +256,10 @@ fun MainPostListingsContent(
             when (val postsRes = homeViewModel.postsRes) {
                 is ApiState.Failure -> {
                     apiErrorToast(ctx, postsRes.msg)
-                    persistentListOf()
+                    emptyList()
                 }
-                is ApiState.Holder -> postsRes.data.posts.toImmutableList()
-                else -> persistentListOf()
+                is ApiState.Holder -> postsRes.data.posts.toList()
+                else -> emptyList()
             }
 
         PostListings(
@@ -269,7 +267,7 @@ fun MainPostListingsContent(
             admins = siteViewModel.admins(),
             // No community moderators available here
             moderators = null,
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
+            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
                     appState,
@@ -392,6 +390,7 @@ fun MainPostListingsContent(
                     )
                 }
             },
+            onViewPostVotesClick = appState::toPostLikes,
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)
             },

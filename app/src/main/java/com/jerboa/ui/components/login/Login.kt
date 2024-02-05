@@ -55,9 +55,8 @@ import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.ui.components.common.onAutofill
 import it.vercruysse.lemmyapi.v0x19.datatypes.Login
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MyTextField(
     modifier: Modifier = Modifier,
@@ -65,7 +64,7 @@ fun MyTextField(
     placeholder: String? = null,
     text: String,
     onValueChange: (String) -> Unit,
-    autofillTypes: ImmutableList<AutofillType> = persistentListOf(),
+    autofillTypes: List<AutofillType> = emptyList(),
 ) {
     var wasAutofilled by remember { mutableStateOf(false) }
 
@@ -110,7 +109,7 @@ fun PasswordField(
                 .onAutofill(
                     LocalAutofillTree.current,
                     LocalAutofill.current,
-                    persistentListOf(AutofillType.Password),
+                    listOf(AutofillType.Password),
                 ) {
                     onValueChange(it)
                     wasAutofilled = true
@@ -233,7 +232,7 @@ fun LoginForm(
             label = stringResource(R.string.login_email_or_username),
             text = username,
             onValueChange = { username = it },
-            autofillTypes = persistentListOf(AutofillType.Username, AutofillType.EmailAddress),
+            autofillTypes = listOf(AutofillType.Username, AutofillType.EmailAddress),
         )
         PasswordField(
             password = password,
@@ -243,7 +242,7 @@ fun LoginForm(
             label = stringResource(R.string.login_totp),
             text = totp,
             onValueChange = { totp = it },
-            autofillTypes = persistentListOf(AutofillType.SmsOtpCode),
+            autofillTypes = listOf(AutofillType.SmsOtpCode),
         )
         Button(
             enabled = isValid && !loading,

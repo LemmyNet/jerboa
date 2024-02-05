@@ -62,6 +62,8 @@ import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
+import com.jerboa.feat.amAdmin
+import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
@@ -80,9 +82,6 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun CommentNodeHeader(
@@ -182,8 +181,8 @@ fun CommentBodyPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -199,6 +198,7 @@ fun LazyListScope.commentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -238,7 +238,7 @@ fun LazyListScope.commentNodeItem(
 
     val showMoreChildren =
         isExpanded(commentId) && node.children.isEmpty() &&
-            commentView.counts.child_count > 0 && !isFlat
+                commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
@@ -253,16 +253,16 @@ fun LazyListScope.commentNodeItem(
         val ctx = LocalContext.current
 
         var instantScores by
-            remember {
-                mutableStateOf(
-                    InstantScores(
-                        myVote = commentView.my_vote,
-                        score = commentView.counts.score,
-                        upvotes = commentView.counts.upvotes,
-                        downvotes = commentView.counts.downvotes,
-                    ),
-                )
-            }
+        remember {
+            mutableStateOf(
+                InstantScores(
+                    myVote = commentView.my_vote,
+                    score = commentView.counts.score,
+                    upvotes = commentView.counts.upvotes,
+                    downvotes = commentView.counts.downvotes,
+                ),
+            )
+        }
 
         val swipeState = rememberSwipeActionState(
             swipeToActionPreset = swipeToActionPreset,
@@ -291,6 +291,7 @@ fun LazyListScope.commentNodeItem(
             }
         }
 
+
         val swipeableContent: @Composable RowScope.() -> Unit = {
             AnimatedVisibility(
                 visible = !isCollapsedByParent,
@@ -299,10 +300,10 @@ fun LazyListScope.commentNodeItem(
             ) {
                 Column(
                     modifier =
-                        Modifier
-                            .padding(
-                                start = offset,
-                            ),
+                    Modifier
+                        .padding(
+                            start = offset,
+                        ),
                 ) {
                     Column(
                         modifier = Modifier.border(start = border),
@@ -310,10 +311,10 @@ fun LazyListScope.commentNodeItem(
                         HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                         Column(
                             modifier =
-                                Modifier.padding(
-                                    start = offset2,
-                                    end = MEDIUM_PADDING,
-                                ),
+                            Modifier.padding(
+                                start = offset2,
+                                end = MEDIUM_PADDING,
+                            ),
                         ) {
                             if (showPostAndCommunityContext) {
                                 PostAndCommunityContextHeader(
@@ -394,6 +395,7 @@ fun LazyListScope.commentNodeItem(
                                             onBanFromCommunityClick = onBanFromCommunityClick,
                                             onCommentLinkClick = onCommentLinkClick,
                                             onPersonClick = onPersonClick,
+                                            onViewVotesClick = onViewVotesClick,
                                             onBlockCreatorClick = onBlockCreatorClick,
                                             onClick = {
                                                 toggleExpanded(commentId)
@@ -441,7 +443,7 @@ fun LazyListScope.commentNodeItem(
     }
 
     commentNodeItems(
-        nodes = node.children.toImmutableList(),
+        nodes = node.children.toList(),
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
@@ -463,6 +465,7 @@ fun LazyListScope.commentNodeItem(
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
+        onViewVotesClick = onViewVotesClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
@@ -479,14 +482,14 @@ fun LazyListScope.commentNodeItem(
         showScores = showScores,
         admins = admins,
         moderators = moderators,
-        swipeToActionPreset = swipeToActionPreset,
+        swipeToActionPreset = swipeToActionPreset
     )
 }
 
 fun LazyListScope.missingCommentNodeItem(
     node: MissingCommentNode,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -502,6 +505,7 @@ fun LazyListScope.missingCommentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -546,6 +550,7 @@ fun LazyListScope.missingCommentNodeItem(
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
         val border = Border(SMALL_PADDING, borderColor)
 
+
         AnimatedVisibility(
             visible = !isCollapsedByParent,
             enter = expandVertically(),
@@ -553,10 +558,10 @@ fun LazyListScope.missingCommentNodeItem(
         ) {
             Column(
                 modifier =
-                    Modifier
-                        .padding(
-                            start = offset,
-                        ),
+                Modifier
+                    .padding(
+                        start = offset,
+                    ),
             ) {
                 Column(
                     modifier = Modifier.border(start = border),
@@ -564,10 +569,10 @@ fun LazyListScope.missingCommentNodeItem(
                     HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier =
-                            Modifier.padding(
-                                start = offset2,
-                                end = MEDIUM_PADDING,
-                            ),
+                        Modifier.padding(
+                            start = offset2,
+                            end = MEDIUM_PADDING,
+                        ),
                     ) {
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -589,7 +594,7 @@ fun LazyListScope.missingCommentNodeItem(
     increaseLazyListIndexTracker()
 
     commentNodeItems(
-        nodes = node.children.toImmutableList(),
+        nodes = node.children.toList(),
         admins = admins,
         moderators = moderators,
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
@@ -613,6 +618,7 @@ fun LazyListScope.missingCommentNodeItem(
         onCommentLinkClick = onCommentLinkClick,
         onFetchChildrenClick = onFetchChildrenClick,
         onPersonClick = onPersonClick,
+        onViewVotesClick = onViewVotesClick,
         onHeaderClick = onHeaderClick,
         onHeaderLongClick = onHeaderLongClick,
         onCommunityClick = onCommunityClick,
@@ -627,7 +633,7 @@ fun LazyListScope.missingCommentNodeItem(
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
         showScores = showScores,
-        swipeToActionPreset = swipeToActionPreset,
+        swipeToActionPreset = swipeToActionPreset
     )
 }
 
@@ -659,10 +665,10 @@ private fun ShowMoreChildrenNode(
     ) {
         Column(
             modifier =
-                Modifier
-                    .padding(
-                        start = offset,
-                    ),
+            Modifier
+                .padding(
+                    start = offset,
+                ),
         ) {
             HorizontalDivider()
             Column(
@@ -727,8 +733,8 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
@@ -745,6 +751,7 @@ fun CommentFooterLine(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     account: Account,
@@ -752,6 +759,22 @@ fun CommentFooterLine(
     viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
+
+    val amAdmin =
+        remember(admins) {
+            amAdmin(
+                admins = admins,
+                myId = account.id,
+            )
+        }
+
+    val amMod =
+        remember {
+            amMod(
+                moderators = moderators,
+                myId = account.id,
+            )
+        }
 
     val canMod =
         remember(admins) {
@@ -777,8 +800,11 @@ fun CommentFooterLine(
             onBlockCreatorClick = onBlockCreatorClick,
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
+            onViewVotesClick = onViewVotesClick,
             isCreator = account.id == commentView.creator.id,
             canMod = canMod,
+            amMod = amMod,
+            amAdmin = amAdmin,
             viewSource = viewSource,
         )
     }
@@ -786,15 +812,15 @@ fun CommentFooterLine(
     Row(
         horizontalArrangement = Arrangement.End,
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .combinedClickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                )
-                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+        Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+                onLongClick = onLongClick,
+            )
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -825,24 +851,24 @@ fun CommentFooterLine(
             )
             ActionBarButton(
                 icon =
-                    if (commentView.saved) {
-                        Icons.Filled.Bookmark
-                    } else {
-                        Icons.Outlined.BookmarkBorder
-                    },
+                if (commentView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
+                    Icons.Outlined.BookmarkBorder
+                },
                 contentDescription =
-                    if (commentView.saved) {
-                        stringResource(R.string.removeBookmark)
-                    } else {
-                        stringResource(R.string.addBookmark)
-                    },
+                if (commentView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
+                },
                 onClick = { onSaveClick(commentView) },
                 contentColor =
-                    if (commentView.saved) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.muted
-                    },
+                if (commentView.saved) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground.muted
+                },
                 account = account,
             )
             ActionBarButton(
@@ -869,8 +895,8 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, null)
     CommentNodes(
         nodes = tree,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         increaseLazyListIndexTracker = {},
         addToParentIndexes = {},
         isFlat = false,
@@ -892,6 +918,7 @@ fun CommentNodesPreview() {
         onBanFromCommunityClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
+        onViewVotesClick = {},
         onHeaderClick = {},
         onHeaderLongClick = {},
         onCommunityClick = {},
@@ -906,7 +933,7 @@ fun CommentNodesPreview() {
         blurNSFW = 1,
         account = AnonAccount,
         showScores = true,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.DEFAULT
     )
 }
 

@@ -45,6 +45,9 @@ object Route {
     val COMMENT_REPORT = CommentReportArgs.route
     val POST_REPORT = PostReportArgs.route
 
+    val COMMENT_LIKES = CommentLikesArgs.route
+    val POST_LIKES = PostLikesArgs.route
+
     const val SETTINGS = "settings"
     const val LOOK_AND_FEEL = "lookAndFeel"
     const val ACCOUNT_SETTINGS = "accountSettings"
@@ -200,6 +203,34 @@ object Route {
             val ID_TYPE = NavType.LongType
 
             fun makeRoute(id: String) = "postReport/$id"
+
+            internal val route by lazy { makeRoute(id = "{$ID}") }
+        }
+    }
+
+    class CommentLikesArgs(val id: CommentId) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
+
+        companion object {
+            const val ID = "id"
+            val ID_TYPE = NavType.LongType
+
+            fun makeRoute(id: String) = "commentLikes/$id"
+
+            internal val route by lazy { makeRoute(id = "{$ID}") }
+        }
+    }
+
+    class PostLikesArgs(val id: PostId) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(id = navBackStackEntry.arguments?.getLong(ID)!!)
+
+        companion object {
+            const val ID = "id"
+            val ID_TYPE = NavType.LongType
+
+            fun makeRoute(id: String) = "postLikes/$id"
 
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }

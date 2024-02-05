@@ -22,13 +22,12 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
-    nodes: ImmutableList<CommentNodeData>,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    nodes: List<CommentNodeData>,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -51,6 +50,7 @@ fun CommentNodes(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -93,6 +93,7 @@ fun CommentNodes(
             onCommentLinkClick = onCommentLinkClick,
             onFetchChildrenClick = onFetchChildrenClick,
             onPersonClick = onPersonClick,
+            onViewVotesClick = onViewVotesClick,
             onHeaderClick = onHeaderClick,
             onHeaderLongClick = onHeaderLongClick,
             onCommunityClick = onCommunityClick,
@@ -116,9 +117,9 @@ fun CommentNodes(
 }
 
 fun LazyListScope.commentNodeItems(
-    nodes: ImmutableList<CommentNodeData>,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    nodes: List<CommentNodeData>,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -140,6 +141,7 @@ fun LazyListScope.commentNodeItems(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
+    onViewVotesClick: (CommentId) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -177,6 +179,7 @@ fun LazyListScope.commentNodeItems(
                     onMarkAsReadClick = onMarkAsReadClick,
                     onCommentClick = onCommentClick,
                     onPersonClick = onPersonClick,
+                    onViewVotesClick = onViewVotesClick,
                     onHeaderClick = onHeaderClick,
                     onHeaderLongClick = onHeaderLongClick,
                     onCommunityClick = onCommunityClick,
@@ -220,6 +223,7 @@ fun LazyListScope.commentNodeItems(
                     onMarkAsReadClick = onMarkAsReadClick,
                     onCommentClick = onCommentClick,
                     onPersonClick = onPersonClick,
+                    onViewVotesClick = onViewVotesClick,
                     onHeaderClick = onHeaderClick,
                     onHeaderLongClick = onHeaderLongClick,
                     onCommunityClick = onCommunityClick,
