@@ -1,3 +1,32 @@
+# Jerboa v0.0.56-alpha Release (2024-02-05)
+
+## What's Changed
+
+- Woodpecker CI cache fixes by @Nutomic in https://github.com/dessalines/jerboa/pull/1309
+- Fix initial default sort in community not being used by @MV-GH in https://github.com/dessalines/jerboa/pull/1311
+- Fix loading more posts in community view for 0.18 instances by @MV-GH in https://github.com/dessalines/jerboa/pull/1314
+- Adding ability to remove and restore comments. #1182 by @dessalines in https://github.com/dessalines/jerboa/pull/1323
+- Post removing by @dessalines in https://github.com/dessalines/jerboa/pull/1324
+- Try removing meltwater cache. by @dessalines in https://github.com/dessalines/jerboa/pull/1326
+- Making botton app bar smaller when descriptions are hidden. by @dessalines in https://github.com/dessalines/jerboa/pull/1329
+- Adding ability to lock / unlock posts. #1182 by @dessalines in https://github.com/dessalines/jerboa/pull/1328
+- Feature post by @dessalines in https://github.com/dessalines/jerboa/pull/1330
+- Add ability to Ban and Ban from Community for posts and comments. by @dessalines in https://github.com/dessalines/jerboa/pull/1325
+- Upgrading deps. by @dessalines in https://github.com/dessalines/jerboa/pull/1333
+- General changes by @MV-GH in https://github.com/dessalines/jerboa/pull/1334
+- InstantScores refactor + Int to Long changes by @MV-GH in https://github.com/dessalines/jerboa/pull/1337
+- Remove ImmutableList and add stability config file by @MV-GH in https://github.com/dessalines/jerboa/pull/1342
+- Adding admin / mod view votes. by @dessalines in https://github.com/dessalines/jerboa/pull/1331
+- Temp workaround for compose-settings height bug. by @dessalines in https://github.com/dessalines/jerboa/pull/1345
+- Swipe post/comment to upvote/downvote/reply/save by @Snow4DV in https://github.com/dessalines/jerboa/pull/1327
+- Making swipe colors softer. by @dessalines in https://github.com/dessalines/jerboa/pull/1347
+
+## New Contributors
+
+- @Nutomic made their first contribution in https://github.com/dessalines/jerboa/pull/1309
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.55...0.0.56
+
 # Jerboa v0.0.55-alpha Release (2023-12-17)
 
 ## What's Changed
