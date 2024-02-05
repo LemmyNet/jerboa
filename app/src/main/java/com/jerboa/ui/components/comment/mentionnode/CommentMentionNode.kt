@@ -47,7 +47,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentMentionNodeHeader(
@@ -97,8 +96,8 @@ fun CommentMentionNodeHeaderPreview() {
 @Composable
 fun CommentMentionNodeFooterLine(
     personMentionView: PersonMentionView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
@@ -247,8 +246,8 @@ fun CommentMentionNodeFooterLine(
 @Composable
 fun CommentMentionNode(
     personMentionView: PersonMentionView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     onUpvoteClick: (personMentionView: PersonMentionView) -> Unit,
     onDownvoteClick: (personMentionView: PersonMentionView) -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,

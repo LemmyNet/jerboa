@@ -14,7 +14,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableList
 
 inline fun Modifier.ifDo(
     predicate: Boolean,
@@ -42,7 +41,7 @@ fun Modifier.getBlurredOrRounded(
 fun Modifier.onAutofill(
     tree: AutofillTree,
     autofill: Autofill?,
-    autofillTypes: ImmutableList<AutofillType>,
+    autofillTypes: List<AutofillType>,
     onFill: (String) -> Unit,
 ): Modifier {
     val autofillNode =

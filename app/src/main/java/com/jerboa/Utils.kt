@@ -57,8 +57,6 @@ import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.Request
@@ -126,8 +124,8 @@ class MissingCommentNode(
     override fun getPath() = missingCommentView.path
 }
 
-fun commentsToFlatNodes(comments: List<CommentView>): ImmutableList<CommentNode> {
-    return comments.map { c -> CommentNode(c, depth = 0) }.toImmutableList()
+fun commentsToFlatNodes(comments: List<CommentView>): List<CommentNode> {
+    return comments.map { c -> CommentNode(c, depth = 0) }
 }
 
 /**
@@ -141,7 +139,7 @@ fun buildCommentsTree(
     comments: List<CommentView>,
     // If it's in CommentView, then we need to know the root comment id
     rootCommentId: CommentId?,
-): ImmutableList<CommentNodeData> {
+): List<CommentNodeData> {
     val isCommentView = rootCommentId != null
 
     val map = LinkedHashMap<Number, CommentNodeData>()
@@ -169,7 +167,7 @@ fun buildCommentsTree(
         }
     }
 
-    return tree.toImmutableList()
+    return tree
 }
 
 /**

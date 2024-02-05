@@ -16,25 +16,32 @@ subprojects {
 }
 
 // Enables compose compiler metrics
-// Generate them with `./gradlew assembleRelease --rerun-tasks -P com.jerboa.enableComposeCompilerReports=true`
+// Generate them with `./gradlew assembleRelease --rerun-tasks -P enableComposeCompilerReports=true`
 // see https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md
 subprojects {
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            if (project.findProperty("com.jerboa.enableComposeCompilerReports") == "true") {
+            val destination = project.layout.buildDirectory.get().asFile.absolutePath
+            if (project.findProperty("enableComposeCompilerReports") == "true") {
 
                 freeCompilerArgs.addAll(
                     "-P",
                     "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-                        project.layout.buildDirectory + "/compose_metrics"
+                            destination + "/compose_metrics"
                 )
 
                 freeCompilerArgs.addAll(
                     "-P",
                     "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-                        project.layout.buildDirectory + "/compose_metrics"
+                        destination + "/compose_metrics"
                 )
             }
+            val configPath = "${project.projectDir.absolutePath}/../compose_compiler_config.conf"
+            println(configPath)
+            freeCompilerArgs.addAll(
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=$configPath"
+            )
         }
     }
 }

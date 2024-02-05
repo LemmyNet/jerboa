@@ -118,8 +118,6 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -547,8 +545,8 @@ fun PreviewSourcePost() {
 @Composable
 fun PostFooterLine(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -803,8 +801,8 @@ fun PostFooterLinePreview() {
         )
     PostFooterLine(
         postView = postView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         instantScores = instantScores,
         onUpvoteClick = {},
         onDownvoteClick = {},
@@ -837,8 +835,8 @@ fun PostFooterLinePreview() {
 fun PreviewPostListingCard() {
     PostListing(
         postView = samplePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -877,8 +875,8 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -917,8 +915,8 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListing(
         postView = sampleImagePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -957,8 +955,8 @@ fun PreviewImagePostListingCard() {
 fun PreviewImagePostListingSmallCard() {
     PostListing(
         postView = sampleImagePostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -997,8 +995,8 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -1035,8 +1033,8 @@ fun PreviewLinkNoThumbnailPostListing() {
 @Composable
 fun PostListing(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
@@ -1536,8 +1534,8 @@ fun PostListingListWithThumbPreview() {
 @Composable
 fun PostListingCard(
     postView: PostView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,

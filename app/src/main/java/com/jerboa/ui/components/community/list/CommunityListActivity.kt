@@ -26,7 +26,6 @@ import it.vercruysse.lemmyapi.dto.SearchType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Search
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,7 +40,7 @@ object CommunityListReturn {
 fun CommunityListActivity(
     appState: JerboaAppState,
     selectMode: Boolean = false,
-    followList: ImmutableList<CommunityFollowerView>,
+    followList: List<CommunityFollowerView>,
     blurNSFW: Int,
     drawerState: DrawerState,
 ) {

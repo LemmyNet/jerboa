@@ -75,9 +75,6 @@ import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun CommentNodeHeader(
@@ -176,8 +173,8 @@ fun CommentBodyPreview() {
 
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -390,7 +387,7 @@ fun LazyListScope.commentNodeItem(
     }
 
     commentNodeItems(
-        nodes = node.children.toImmutableList(),
+        nodes = node.children.toList(),
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
@@ -434,8 +431,8 @@ fun LazyListScope.commentNodeItem(
 
 fun LazyListScope.missingCommentNodeItem(
     node: MissingCommentNode,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -538,7 +535,7 @@ fun LazyListScope.missingCommentNodeItem(
     increaseLazyListIndexTracker()
 
     commentNodeItems(
-        nodes = node.children.toImmutableList(),
+        nodes = node.children.toList(),
         admins = admins,
         moderators = moderators,
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
@@ -676,8 +673,8 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
-    admins: ImmutableList<PersonView>,
-    moderators: ImmutableList<CommunityModeratorView>?,
+    admins: List<PersonView>,
+    moderators: List<CommunityModeratorView>?,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
@@ -838,8 +835,8 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, null)
     CommentNodes(
         nodes = tree,
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
+        admins = emptyList(),
+        moderators = emptyList(),
         increaseLazyListIndexTracker = {},
         addToParentIndexes = {},
         isFlat = false,

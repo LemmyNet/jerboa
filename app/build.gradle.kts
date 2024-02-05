@@ -184,8 +184,6 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.8-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     // Ktor uses SLF4J
