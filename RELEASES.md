@@ -1,3 +1,12 @@
+# Jerboa v0.0.57-alpha Release (2024-02-05)
+
+## What's Changed
+
+- Adding hack for swipe gesture Setting. #1338 by @dessalines in https://github.com/dessalines/jerboa/pull/1349
+- Fixing community pages, used wrong ID_TYPE. Fixes #1348 by @dessalines in https://github.com/dessalines/jerboa/pull/1350
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.56...0.0.57
+
 # Jerboa v0.0.56-alpha Release (2024-02-05)
 
 ## What's Changed
