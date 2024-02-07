@@ -163,7 +163,7 @@ val samplePerson =
         updated = "2021-10-11T07:14:53.548707",
         actor_id = "https://lemmy.ml/u/homeless",
         bio =
-        "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
+            "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
                 "that I have in here. But I'm not sure blah blah blah\n\nI have " +
                 "**tres ojos**.",
         local = true,
@@ -343,7 +343,7 @@ val sampleComment =
         creator_id = 56450,
         post_id = 139549,
         content =
-        "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
+            "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
                 " " +
                 "work" +
                 ".\n\nIts kind of a long comment\n\nbut I don't want...",
@@ -682,7 +682,7 @@ val sampleDeniedRegistrationApplication =
         answer = "**Please** let me in",
         published = "2022-01-01T09:53:46.904077",
         admin_id = samplePerson2.id,
-        deny_reason = "I'm not letting you in, sorry."
+        deny_reason = "I'm not letting you in, sorry.",
     )
 
 val sampleDeniedRegistrationApplicationView =

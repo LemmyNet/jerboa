@@ -75,6 +75,7 @@ fun Drawer(
     myUserInfo: MyUserInfo?,
     follows: List<CommunityFollowerView>,
     unreadCount: Long,
+    unreadAppCount: Long?,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -105,6 +106,7 @@ fun Drawer(
         accountViewModel = accountViewModel,
         follows = follows,
         unreadCount = unreadCount,
+        unreadAppCount = unreadAppCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
         onAddAccount = onAddAccount,
@@ -134,6 +136,7 @@ fun DrawerContent(
     onClickSettings: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Long,
+    unreadAppCount: Long?,
     blurNSFW: Int,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
@@ -162,6 +165,7 @@ fun DrawerContent(
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
         unreadCount = unreadCount,
+        unreadAppCount = unreadAppCount,
         onClickSettings = onClickSettings,
         blurNSFW = blurNSFW,
         showBottomNav = showBottomNav,
@@ -178,6 +182,7 @@ fun DrawerItemsMain(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Long,
+    unreadAppCount: Long?,
     blurNSFW: Int,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
@@ -234,10 +239,9 @@ fun DrawerItemsMain(
                         onSelectTab(it)
                         closeDrawer()
                     },
-                    iconBadgeCount = when(it) {
+                    iconBadgeCount = when (it) {
                         NavTab.Inbox -> unreadCount
-                        // TODO use unreadAppCount
-                        NavTab.RegistrationApplications -> unreadCount
+                        NavTab.RegistrationApplications -> unreadAppCount
                         else -> null
                     },
                     contentDescription = stringResource(id = it.contentDescriptionId),
@@ -295,6 +299,7 @@ fun DrawerItemsMainPreview() {
         onCommunityClick = {},
         onClickSettings = {},
         unreadCount = 2,
+        unreadAppCount = null,
         blurNSFW = 1,
         showBottomNav = false,
         closeDrawer = {},

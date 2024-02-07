@@ -105,7 +105,9 @@ fun SimpleTopAppBarPreview() {
 fun BottomAppBarAll(
     selectedTab: NavTab,
     onSelect: (NavTab) -> Unit,
+    amAdmin: Boolean,
     unreadCounts: Long,
+    unreadAppCount: Long?,
     showTextDescriptionsInNavbar: Boolean,
 ) {
     // Check for preview mode
@@ -127,12 +129,21 @@ fun BottomAppBarAll(
     NavigationBar(
         modifier = modifier,
     ) {
-        for (tab in NavTab.entries) {
+        // Hide non-admin tabs
+        val tabs = if (amAdmin) NavTab.entries else NavTab.entries.filter { !it.adminOnly }
+
+        for (tab in tabs) {
             val selected = tab == selectedTab
+            val iconBadgeCount = when (tab) {
+                NavTab.Inbox -> unreadCounts
+                NavTab.RegistrationApplications -> unreadAppCount
+                else -> null
+            }
+
             NavigationBarItem(
                 icon = {
-                    InboxIconAndBadge(
-                        iconBadgeCount = if (tab == NavTab.Inbox) unreadCounts else null,
+                    NavbarIconAndBadge(
+                        iconBadgeCount = iconBadgeCount,
                         icon =
                             if (selected) {
                                 tab.iconFilled
@@ -168,6 +179,8 @@ fun BottomAppBarAllPreview() {
         selectedTab = NavTab.Home,
         onSelect = {},
         unreadCounts = 30,
+        unreadAppCount = 2,
+        amAdmin = true,
         showTextDescriptionsInNavbar = true,
     )
 }
@@ -179,6 +192,8 @@ fun BottomAppBarAllNoDescriptionsPreview() {
         selectedTab = NavTab.Home,
         onSelect = {},
         unreadCounts = 30,
+        unreadAppCount = null,
+        amAdmin = false,
         showTextDescriptionsInNavbar = false,
     )
 }
@@ -448,7 +463,7 @@ fun scoreColor(myVote: Int?): Color {
 }
 
 @Composable
-fun InboxIconAndBadge(
+fun NavbarIconAndBadge(
     iconBadgeCount: Long?,
     icon: ImageVector,
     contentDescription: String?,

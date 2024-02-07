@@ -42,7 +42,8 @@ fun RegistrationApplicationsActivity(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val registrationApplicationsViewModel: RegistrationApplicationsViewModel = viewModel(factory = RegistrationApplicationsViewModel.Companion.Factory(account, siteViewModel))
+    val registrationApplicationsViewModel: RegistrationApplicationsViewModel =
+        viewModel(factory = RegistrationApplicationsViewModel.Companion.Factory(account, siteViewModel))
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -50,7 +51,7 @@ fun RegistrationApplicationsActivity(
         topBar = {
             RegistrationApplicationsHeader(
                 scrollBehavior = scrollBehavior,
-                unreadCount = siteViewModel.unreadAppsCount,
+                unreadCount = siteViewModel.unreadAppCount,
                 openDrawer = {
                     scope.launch {
                         drawerState.open()
@@ -70,24 +71,23 @@ fun RegistrationApplicationsActivity(
                         registrationApplicationsViewModel.resetPage()
                         registrationApplicationsViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         registrationApplicationsViewModel.listApplications(
-                            registrationApplicationsViewModel.getFormApplications()
+                            registrationApplicationsViewModel.getFormApplications(),
                         )
                     }
                 },
             )
         },
         content = { padding ->
-                RegistrationApplications(
-                    padding = padding,
-                    appState = appState,
-                    registrationApplicationsViewModel = registrationApplicationsViewModel,
-                    siteViewModel = siteViewModel,
-                    ctx = ctx,
-                    account = account,
-                    scope = scope,
-                    snackbarHostState = snackbarHostState,
-                )
-            },
+            RegistrationApplications(
+                padding = padding,
+                appState = appState,
+                registrationApplicationsViewModel = registrationApplicationsViewModel,
+                siteViewModel = siteViewModel,
+                ctx = ctx,
+                account = account,
+                scope = scope,
+                snackbarHostState = snackbarHostState,
+            )
+        },
     )
 }
-

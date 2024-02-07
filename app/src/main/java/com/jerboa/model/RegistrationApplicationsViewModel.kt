@@ -24,10 +24,9 @@ class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteVie
     )
         private set
 
-    var approveRes: ApiState<RegistrationApplicationResponse> by mutableStateOf(
+    private var approveRes: ApiState<RegistrationApplicationResponse> by mutableStateOf(
         ApiState.Empty,
     )
-        private set
 
     private var page by mutableLongStateOf(1)
 
@@ -58,7 +57,6 @@ class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteVie
             applicationsRes = API.getInstance().listRegistrationApplications(form).toApiState()
         }
     }
-
 
     fun appendApplications() {
         viewModelScope.launch {
@@ -122,9 +120,9 @@ class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteVie
         if (!account.isAnon()) {
             this.resetPage()
             this.listApplications(
-                this.getFormApplications()
+                this.getFormApplications(),
             )
-            siteViewModel.fetchUnreadAppsCount()
+            siteViewModel.fetchUnreadAppCount()
         }
     }
 

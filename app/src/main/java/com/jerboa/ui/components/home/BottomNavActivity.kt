@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AppRegistration
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
@@ -42,6 +44,7 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.amAdmin
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -63,43 +66,49 @@ enum class NavTab(
     val iconOutlined: ImageVector,
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
+    val adminOnly: Boolean,
 ) {
     Home(
-        R.string.bottomBar_label_home,
-        Icons.Outlined.Home,
-        Icons.Filled.Home,
-        R.string.bottomBar_home,
+        textId = R.string.bottomBar_label_home,
+        iconOutlined = Icons.Outlined.Home,
+        iconFilled = Icons.Filled.Home,
+        contentDescriptionId = R.string.bottomBar_home,
+        adminOnly = false,
     ),
     Search(
-        R.string.bottomBar_label_search,
-        Icons.Outlined.Search,
-        Icons.Filled.Search,
-        R.string.bottomBar_search,
+        textId = R.string.bottomBar_label_search,
+        iconOutlined = Icons.Outlined.Search,
+        iconFilled = Icons.Filled.Search,
+        contentDescriptionId = R.string.bottomBar_search,
+        adminOnly = false,
     ),
     Inbox(
-        R.string.bottomBar_label_inbox,
-        Icons.Outlined.Email,
-        Icons.Filled.Email,
-        R.string.bottomBar_inbox,
+        textId = R.string.bottomBar_label_inbox,
+        iconOutlined = Icons.Outlined.Email,
+        iconFilled = Icons.Filled.Email,
+        contentDescriptionId = R.string.bottomBar_inbox,
+        adminOnly = false,
     ),
     RegistrationApplications(
-        R.string.registrations,
-        // TODO
-        Icons.Outlined.Email,
-        Icons.Filled.Email,
+        R.string.apps,
+        Icons.Outlined.AppRegistration,
+        Icons.Filled.AppRegistration,
         R.string.bottomBar_registrations,
+        adminOnly = true,
     ),
     Saved(
-        R.string.bottomBar_label_bookmarks,
-        Icons.Outlined.Bookmarks,
-        Icons.Filled.Bookmarks,
-        R.string.bottomBar_bookmarks,
+        textId = R.string.bottomBar_label_bookmarks,
+        iconOutlined = Icons.Outlined.Bookmarks,
+        iconFilled = Icons.Filled.Bookmarks,
+        contentDescriptionId = R.string.bottomBar_bookmarks,
+        adminOnly = false,
     ),
     Profile(
-        R.string.bottomBar_label_profile,
-        Icons.Outlined.Person,
-        Icons.Filled.Person,
-        R.string.bottomBar_profile,
+        textId = R.string.bottomBar_label_profile,
+        iconOutlined = Icons.Outlined.Person,
+        iconFilled = Icons.Filled.Person,
+        contentDescriptionId = R.string.bottomBar_profile,
+        adminOnly = false,
     ),
     ;
 
@@ -192,7 +201,9 @@ fun BottomNavActivity(
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
+                            unreadAppCount = siteViewModel.unreadAppCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
+                            amAdmin = amAdmin(siteViewModel.admins(), account.id),
                             onSelect = onSelectTab,
                         )
                     }

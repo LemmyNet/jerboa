@@ -35,10 +35,10 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
-    private var unreadAppsCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
+    private var unreadAppCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
 
     val unreadCount by derivedStateOf { getUnreadCountTotal() }
-    val unreadAppsCount by derivedStateOf { getUnreadAppsCountTotal()}
+    val unreadAppCount by derivedStateOf { getUnreadAppCountTotal() }
 
     lateinit var saveUserSettings: SaveUserSettings
 
@@ -63,10 +63,9 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
                     if (it.isAnon()) { // Reset the unread counts if we're anonymous
                         unreadCountRes = ApiState.Empty
-                        unreadAppsCountRes = ApiState.Empty
+                        unreadAppCountRes = ApiState.Empty
                     } else {
                         fetchUnreadCounts()
-                        fetchUnreadAppsCount()
                     }
                 }
         }
@@ -92,6 +91,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                                 accountRepository.update(newAccount)
                             }
                         }
+
+                        // if you're an admin, fetch the unread registration counts
+                        if (it.admin) {
+                            fetchUnreadAppCount()
+                        }
                     }
                 }
 
@@ -109,15 +113,14 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun fetchUnreadAppsCount() {
+    fun fetchUnreadAppCount() {
         viewModelScope.launch {
             viewModelScope.launch {
-                unreadCountRes = ApiState.Loading
-                unreadCountRes = API.getInstance().getUnreadCount().toApiState()
+                unreadAppCountRes = ApiState.Loading
+                unreadAppCountRes = API.getInstance().getUnreadRegistrationApplicationCount().toApiState()
             }
         }
     }
-
 
     private fun getUnreadCountTotal(): Long {
         return when (val res = unreadCountRes) {
@@ -130,13 +133,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun getUnreadAppsCountTotal(): Long {
-        return when (val res = unreadAppsCountRes) {
+    private fun getUnreadAppCountTotal(): Long? {
+        return when (val res = unreadAppCountRes) {
             is ApiState.Success -> {
                 res.data.registration_applications
             }
 
-            else -> 0
+            else -> null
         }
     }
 

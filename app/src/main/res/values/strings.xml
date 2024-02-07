@@ -448,4 +448,9 @@
     <string name="applicant">Applicant</string>
     <string name="approve">Approve</string>
     <string name="deny">Deny</string>
+    <string name="approved_by">Approved by</string>
+    <string name="denied_by">Denied by</string>
+    <string name="answer">Answer</string>
+    <string name="deny_reason">Deny reason</string>
+    <string name="apps">Apps</string>
 </resources>
