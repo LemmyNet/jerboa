@@ -1,7 +1,9 @@
 package com.jerboa.datatypes
 
 import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.PostListingMode
 import it.vercruysse.lemmyapi.dto.RegistrationMode
+import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.SubscribedType
 import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentAggregates
@@ -13,6 +15,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSite
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSiteRateLimit
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUser
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMention
@@ -23,6 +26,8 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessage
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplication
+import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplicationView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Site
 import it.vercruysse.lemmyapi.v0x19.datatypes.SiteAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
@@ -158,7 +163,7 @@ val samplePerson =
         updated = "2021-10-11T07:14:53.548707",
         actor_id = "https://lemmy.ml/u/homeless",
         bio =
-            "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
+        "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
                 "that I have in here. But I'm not sure blah blah blah\n\nI have " +
                 "**tres ojos**.",
         local = true,
@@ -189,6 +194,33 @@ val samplePerson2 =
         ban_expires = null,
         instance_id = 0,
     )
+
+val sampleLocalUser = LocalUser(
+    id = 24,
+    person_id = 82,
+    show_nsfw = false,
+    theme = "none",
+    default_sort_type = SortType.Active,
+    default_listing_type = ListingType.Local,
+    interface_language = "en",
+    show_avatars = false,
+    send_notifications_to_email = false,
+    show_scores = false,
+    show_bot_accounts = false,
+    show_read_posts = false,
+    email_verified = false,
+    accepted_application = false,
+    open_links_in_new_tab = false,
+    blur_nsfw = false,
+    auto_expand = false,
+    infinite_scroll_enabled = false,
+    admin = false,
+    post_listing_mode = PostListingMode.List,
+    totp_2fa_enabled = false,
+    enable_keyboard_navigation = false,
+    enable_animated_images = false,
+    collapse_bot_comments = false,
+)
 
 val sampleCommunity =
     Community(
@@ -311,7 +343,7 @@ val sampleComment =
         creator_id = 56450,
         post_id = 139549,
         content =
-            "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
+        "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
                 " " +
                 "work" +
                 ".\n\nIts kind of a long comment\n\nbut I don't want...",
@@ -609,4 +641,54 @@ val sampleSiteView =
         counts = sampleSiteAggregates,
         local_site = sampleLocalSite,
         local_site_rate_limit = local_site_rate_limit,
+    )
+
+val samplePendingRegistrationApplication =
+    RegistrationApplication(
+        id = 23,
+        local_user_id = 28,
+        answer = "**Please** let me in",
+        published = "2022-01-01T09:53:46.904077",
+    )
+
+val samplePendingRegistrationApplicationView =
+    RegistrationApplicationView(
+        registration_application = samplePendingRegistrationApplication,
+        creator = samplePerson,
+        creator_local_user = sampleLocalUser,
+    )
+
+val sampleApprovedRegistrationApplication =
+    RegistrationApplication(
+        id = 24,
+        local_user_id = 29,
+        answer = "**Please** let me in",
+        published = "2022-01-01T09:53:46.904077",
+        admin_id = samplePerson2.id,
+    )
+
+val sampleApprovedRegistrationApplicationView =
+    RegistrationApplicationView(
+        registration_application = sampleApprovedRegistrationApplication,
+        creator = samplePerson,
+        creator_local_user = sampleLocalUser,
+        admin = samplePerson2,
+    )
+
+val sampleDeniedRegistrationApplication =
+    RegistrationApplication(
+        id = 24,
+        local_user_id = 29,
+        answer = "**Please** let me in",
+        published = "2022-01-01T09:53:46.904077",
+        admin_id = samplePerson2.id,
+        deny_reason = "I'm not letting you in, sorry."
+    )
+
+val sampleDeniedRegistrationApplicationView =
+    RegistrationApplicationView(
+        registration_application = sampleDeniedRegistrationApplication,
+        creator = samplePerson,
+        creator_local_user = sampleLocalUser,
+        admin = samplePerson2,
     )

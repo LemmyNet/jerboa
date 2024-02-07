@@ -35,6 +35,7 @@
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
+    <string name="bottomBar_registrations">Go to registrations</string>
     <string name="bottomBar_label_bookmarks">Saved</string>
     <string name="bottomBar_label_home">Home</string>
     <string name="bottomBar_label_inbox">Inbox</string>
@@ -443,4 +444,8 @@
     <string name="post_votes">Post votes</string>
     <string name="comment_votes">Comment votes</string>
     <string name="moderation">Moderation</string>
+    <string name="registrations">Registrations</string>
+    <string name="applicant">Applicant</string>
+    <string name="approve">Approve</string>
+    <string name="deny">Deny</string>
 </resources>

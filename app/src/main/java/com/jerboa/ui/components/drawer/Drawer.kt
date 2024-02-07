@@ -234,7 +234,12 @@ fun DrawerItemsMain(
                         onSelectTab(it)
                         closeDrawer()
                     },
-                    iconBadgeCount = if (it == NavTab.Inbox) unreadCount else null,
+                    iconBadgeCount = when(it) {
+                        NavTab.Inbox -> unreadCount
+                        // TODO use unreadAppCount
+                        NavTab.RegistrationApplications -> unreadCount
+                        else -> null
+                    },
                     contentDescription = stringResource(id = it.contentDescriptionId),
                 )
             }

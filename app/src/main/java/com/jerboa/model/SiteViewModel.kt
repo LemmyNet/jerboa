@@ -22,6 +22,7 @@ import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadRegistrationApplicationCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.Job
@@ -34,8 +35,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
+    private var unreadAppsCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
 
-    val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes) }
+    val unreadCount by derivedStateOf { getUnreadCountTotal() }
+    val unreadAppsCount by derivedStateOf { getUnreadAppsCountTotal()}
+
     lateinit var saveUserSettings: SaveUserSettings
 
     init {
@@ -57,10 +61,12 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     Log.d("SiteViewModel", "acc init for id: ${it.id}")
                     getSite()
 
-                    if (it.isAnon()) { // Reset the unread count if we're anonymous
+                    if (it.isAnon()) { // Reset the unread counts if we're anonymous
                         unreadCountRes = ApiState.Empty
+                        unreadAppsCountRes = ApiState.Empty
                     } else {
                         fetchUnreadCounts()
+                        fetchUnreadAppsCount()
                     }
                 }
         }
@@ -103,11 +109,31 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Long {
+    fun fetchUnreadAppsCount() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+                unreadCountRes = ApiState.Loading
+                unreadCountRes = API.getInstance().getUnreadCount().toApiState()
+            }
+        }
+    }
+
+
+    private fun getUnreadCountTotal(): Long {
         return when (val res = unreadCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data
                 unreads.mentions + unreads.private_messages + unreads.replies
+            }
+
+            else -> 0
+        }
+    }
+
+    private fun getUnreadAppsCountTotal(): Long {
+        return when (val res = unreadAppsCountRes) {
+            is ApiState.Success -> {
+                res.data.registration_applications
             }
 
             else -> 0

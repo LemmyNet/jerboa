@@ -55,6 +55,7 @@ import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsActivity
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -81,6 +82,13 @@ enum class NavTab(
         Icons.Filled.Email,
         R.string.bottomBar_inbox,
     ),
+    RegistrationApplications(
+        R.string.registrations,
+        // TODO
+        Icons.Outlined.Email,
+        Icons.Filled.Email,
+        R.string.bottomBar_registrations,
+    ),
     Saved(
         R.string.bottomBar_label_bookmarks,
         Icons.Outlined.Bookmarks,
@@ -95,7 +103,7 @@ enum class NavTab(
     ),
     ;
 
-    fun needsLogin() = this == Inbox || this == Saved || this == Profile
+    fun needsLogin() = this == Inbox || this == Saved || this == Profile || this == RegistrationApplications
 }
 
 @OptIn(
@@ -237,6 +245,15 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.RegistrationApplications.name) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                             drawerState = drawerState,
                         )
                     }

@@ -124,7 +124,7 @@ class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteVie
             this.listApplications(
                 this.getFormApplications()
             )
-//            siteViewModel.fetchUnreadCounts()
+            siteViewModel.fetchUnreadAppsCount()
         }
     }
 
