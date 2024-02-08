@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 27,
-    "identityHash": "8e8aa32b002a7ce0d76dfb82e9309bd0",
+    "version": 28,
+    "identityHash": "855d12fde8893df3f3a3bba171e19249",
     "entities": [
       {
         "tableName": "Account",
@@ -239,6 +239,13 @@
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "1"
+          },
+          {
+            "fieldPath": "lastVersionCodeViewed",
+            "columnName": "last_version_code_viewed",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {

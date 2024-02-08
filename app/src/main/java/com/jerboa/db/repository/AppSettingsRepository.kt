@@ -1,16 +1,14 @@
 package com.jerboa.db.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.jerboa.api.API
 import com.jerboa.db.dao.AppSettingsDao
 import com.jerboa.db.entity.AppSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.Request
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
@@ -30,8 +28,8 @@ class AppSettingsRepository(
     }
 
     @WorkerThread
-    suspend fun markChangelogViewed() {
-        appSettingsDao.markChangelogViewed()
+    suspend fun updateLastVersionCodeViewed(versionCode: Int) {
+        appSettingsDao.updateLastVersionCode(versionCode)
     }
 
     @WorkerThread
@@ -40,16 +38,12 @@ class AppSettingsRepository(
     }
 
     @WorkerThread
-    suspend fun updateChangelog() {
+    suspend fun updateChangelog(ctx: Context) {
         withContext(Dispatchers.IO) {
             try {
-                Log.d("jerboa", "Fetching RELEASES.md ...")
-                // Fetch the markdown text
-                val releasesUrl =
-                    "https://raw.githubusercontent.com/dessalines/jerboa/main/RELEASES.md".toHttpUrl()
-                val req = Request.Builder().url(releasesUrl).build()
-                val res = API.httpClient.newCall(req).execute()
-                _changelog.value = res.body.string()
+                Log.d("jerboa", "Getting RELEASES.md from assets...")
+                val releasesStr = ctx.assets.open("RELEASES.md").bufferedReader().use { it.readText() }
+                _changelog.value = releasesStr
             } catch (e: Exception) {
                 Log.e("jerboa", "Failed to load changelog: $e")
             }
