@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import android.content.Context
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,9 +21,9 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
             repository.update(appSettings)
         }
 
-    fun markChangelogViewed() =
+    fun updateLastVersionCodeViewed(versionCode: Int) =
         viewModelScope.launch {
-            repository.markChangelogViewed()
+            repository.updateLastVersionCodeViewed(versionCode)
         }
 
     fun updatedPostViewMode(postViewMode: Int) =
@@ -30,9 +31,9 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
             repository.updatePostViewMode(postViewMode)
         }
 
-    fun updateChangelog() =
+    fun updateChangelog(ctx: Context) =
         viewModelScope.launch {
-            repository.updateChangelog()
+            repository.updateChangelog(ctx)
         }
 }
 

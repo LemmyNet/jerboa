@@ -300,30 +300,12 @@ val MIGRATION_21_22 =
         }
     }
 
-val MIGRATION_22_21 =
-    object : Migration(22, 21) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL(
-                "ALTER TABLE Account DROP COLUMN verification_state",
-            )
-        }
-    }
-
 val MIGRATION_22_23 =
     object : Migration(22, 23) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
             db.execSQL(
                 "ALTER TABLE AppSettings ADD COLUMN markAsReadOnScroll INTEGER NOT NULL DEFAULT 0",
-            )
-        }
-    }
-
-val MIGRATION_23_22 =
-    object : Migration(23, 22) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL(
-                "ALTER TABLE AppSettings DROP COLUMN markAsReadOnScroll",
             )
         }
     }
@@ -338,15 +320,6 @@ val MIGRATION_23_24 =
         }
     }
 
-val MIGRATION_24_23 =
-    object : Migration(24, 23) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL(
-                "ALTER TABLE AppSettings DROP COLUMN post_actionbar_mode",
-            )
-        }
-    }
-
 val MIGRATION_24_25 =
     object : Migration(24, 25) {
         override fun migrate(db: SupportSQLiteDatabase) {
@@ -357,29 +330,11 @@ val MIGRATION_24_25 =
         }
     }
 
-val MIGRATION_25_24 =
-    object : Migration(25, 24) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL(
-                "ALTER TABLE AppSettings DROP COLUMN auto_play_gifs",
-            )
-        }
-    }
-
 val MIGRATION_25_26 =
     object : Migration(25, 26) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(
                 "ALTER TABLE AppSettings ADD COLUMN post_navigation_gesture_mode INTEGER NOT NULL DEFAULT 0",
-            )
-        }
-    }
-
-val MIGRATION_26_25 =
-    object : Migration(26, 25) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL(
-                "ALTER TABLE AppSettings DROP COLUMN post_navigation_gesture_mode",
             )
         }
     }
@@ -394,11 +349,11 @@ val MIGRATION_26_27 =
         }
     }
 
-val MIGRATION_27_26 =
-    object : Migration(27, 26) {
+val MIGRATION_27_28 =
+    object : Migration(27, 28) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(
-                "ALTER TABLE AppSettings DROP COLUMN swipe_to_action_preset",
+                "ALTER TABLE AppSettings ADD COLUMN last_version_code_viewed INTEGER NOT NULL default 0",
             )
         }
     }
@@ -427,15 +382,10 @@ val MIGRATIONS_LIST =
         MIGRATION_19_20,
         MIGRATION_20_21,
         MIGRATION_21_22,
-        MIGRATION_22_21,
         MIGRATION_22_23,
-        MIGRATION_23_22,
         MIGRATION_23_24,
-        MIGRATION_24_23,
         MIGRATION_24_25,
-        MIGRATION_25_24,
         MIGRATION_25_26,
-        MIGRATION_26_25,
         MIGRATION_26_27,
-        MIGRATION_27_26,
+        MIGRATION_27_28,
     )

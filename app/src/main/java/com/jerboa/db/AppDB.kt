@@ -22,6 +22,7 @@ val APP_SETTINGS_DEFAULT =
         theme = 0,
         themeColor = 0,
         viewedChangelog = 0,
+        lastVersionCodeViewed = 0,
         postViewMode = 0,
         postNavigationGestureMode = 0,
         showBottomNav = true,
@@ -44,7 +45,7 @@ val APP_SETTINGS_DEFAULT =
     )
 
 @Database(
-    version = 27,
+    version = 28,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
