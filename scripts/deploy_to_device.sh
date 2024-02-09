@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+pushd ../
+
 # Build and push
 ./gradlew installDebug
 
