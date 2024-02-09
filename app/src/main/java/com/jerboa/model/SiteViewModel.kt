@@ -99,7 +99,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                                 accountRepository.update(newAccount)
                             }
                         }
-
                     }
                 }
 

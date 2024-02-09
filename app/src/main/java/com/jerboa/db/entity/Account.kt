@@ -27,7 +27,6 @@ data class Account(
         defaultValue = "0",
     )
     val verificationState: Int,
-
     // These two are used to show extra bottom bar items right away
     @ColumnInfo(name = "is_admin") val isAdmin: Boolean,
     @ColumnInfo(name = "is_mod") val isMod: Boolean,
