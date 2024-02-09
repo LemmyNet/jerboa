@@ -36,6 +36,7 @@
     <string name="bottomBar_home">Go home</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
     <string name="bottomBar_registrations">Go to registrations</string>
+    <string name="bottomBar_reports">Go to reports</string>
     <string name="bottomBar_label_bookmarks">Saved</string>
     <string name="bottomBar_label_home">Home</string>
     <string name="bottomBar_label_inbox">Inbox</string>
@@ -453,4 +454,12 @@
     <string name="answer">Answer</string>
     <string name="deny_reason">Deny reason</string>
     <string name="apps">Apps</string>
+    <string name="reports">Reports</string>
+    <string name="reporter">Reporter</string>
+    <string name="resolved_by">Resolved by</string>
+    <string name="unresolve">Unresolve</string>
+    <string name="unresolved_by">Unresolved by</string>
+    <string name="reason">Reason</string>
+    <string name="creator">Creator</string>
+    <string name="message">Message</string>
 </resources>

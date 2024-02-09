@@ -8,12 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AppRegistration
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
@@ -43,8 +45,8 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.feat.amAdmin
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -59,6 +61,7 @@ import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsActivity
+import com.jerboa.ui.components.reports.ReportsActivity
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -66,53 +69,60 @@ enum class NavTab(
     val iconOutlined: ImageVector,
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
-    val adminOnly: Boolean,
+    val userViewType: UserViewType,
 ) {
     Home(
         textId = R.string.bottomBar_label_home,
         iconOutlined = Icons.Outlined.Home,
         iconFilled = Icons.Filled.Home,
         contentDescriptionId = R.string.bottomBar_home,
-        adminOnly = false,
+        userViewType = UserViewType.Normal,
     ),
     Search(
         textId = R.string.bottomBar_label_search,
         iconOutlined = Icons.Outlined.Search,
         iconFilled = Icons.Filled.Search,
         contentDescriptionId = R.string.bottomBar_search,
-        adminOnly = false,
+        userViewType = UserViewType.Normal,
     ),
     Inbox(
         textId = R.string.bottomBar_label_inbox,
         iconOutlined = Icons.Outlined.Email,
         iconFilled = Icons.Filled.Email,
         contentDescriptionId = R.string.bottomBar_inbox,
-        adminOnly = false,
+        userViewType = UserViewType.Normal,
     ),
     RegistrationApplications(
         R.string.apps,
         Icons.Outlined.AppRegistration,
         Icons.Filled.AppRegistration,
         R.string.bottomBar_registrations,
-        adminOnly = true,
+        userViewType = UserViewType.AdminOnly,
+    ),
+    Reports(
+        R.string.reports,
+        Icons.Outlined.Flag,
+        Icons.Filled.Flag,
+        R.string.bottomBar_reports,
+        userViewType = UserViewType.AdminOrMod,
     ),
     Saved(
         textId = R.string.bottomBar_label_bookmarks,
         iconOutlined = Icons.Outlined.Bookmarks,
         iconFilled = Icons.Filled.Bookmarks,
         contentDescriptionId = R.string.bottomBar_bookmarks,
-        adminOnly = false,
+        userViewType = UserViewType.Normal,
     ),
     Profile(
         textId = R.string.bottomBar_label_profile,
         iconOutlined = Icons.Outlined.Person,
         iconFilled = Icons.Filled.Person,
         contentDescriptionId = R.string.bottomBar_profile,
-        adminOnly = false,
+        userViewType = UserViewType.Normal,
     ),
     ;
 
-    fun needsLogin() = this == Inbox || this == Saved || this == Profile || this == RegistrationApplications
+    fun needsLogin() = this == Inbox || this == Saved || this == Profile || this == RegistrationApplications || this == Reports
 }
 
 @OptIn(
@@ -202,8 +212,9 @@ fun BottomNavActivity(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
                             unreadAppCount = siteViewModel.unreadAppCount,
+                            unreadReportCount = siteViewModel.unreadReportCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
-                            amAdmin = amAdmin(siteViewModel.admins(), account.id),
+                            userViewType = siteViewModel.userViewType(),
                             onSelect = onSelectTab,
                         )
                     }
@@ -266,6 +277,16 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.Reports.name) {
+                        ReportsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 

@@ -76,6 +76,7 @@ fun Drawer(
     follows: List<CommunityFollowerView>,
     unreadCount: Long,
     unreadAppCount: Long?,
+    unreadReportCount: Long?,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -107,6 +108,7 @@ fun Drawer(
         follows = follows,
         unreadCount = unreadCount,
         unreadAppCount = unreadAppCount,
+        unreadReportCount = unreadReportCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
         onAddAccount = onAddAccount,
@@ -137,6 +139,7 @@ fun DrawerContent(
     myUserInfo: MyUserInfo?,
     unreadCount: Long,
     unreadAppCount: Long?,
+    unreadReportCount: Long?,
     blurNSFW: Int,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
@@ -166,6 +169,7 @@ fun DrawerContent(
         onCommunityClick = onCommunityClick,
         unreadCount = unreadCount,
         unreadAppCount = unreadAppCount,
+        unreadReportCount = unreadReportCount,
         onClickSettings = onClickSettings,
         blurNSFW = blurNSFW,
         showBottomNav = showBottomNav,
@@ -183,6 +187,7 @@ fun DrawerItemsMain(
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Long,
     unreadAppCount: Long?,
+    unreadReportCount: Long?,
     blurNSFW: Int,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
@@ -242,6 +247,7 @@ fun DrawerItemsMain(
                     iconBadgeCount = when (it) {
                         NavTab.Inbox -> unreadCount
                         NavTab.RegistrationApplications -> unreadAppCount
+                        NavTab.Reports -> unreadReportCount
                         else -> null
                     },
                     contentDescription = stringResource(id = it.contentDescriptionId),
@@ -299,6 +305,7 @@ fun DrawerItemsMainPreview() {
         onCommunityClick = {},
         onClickSettings = {},
         unreadCount = 2,
+        unreadReportCount = 5,
         unreadAppCount = null,
         blurNSFW = 1,
         showBottomNav = false,

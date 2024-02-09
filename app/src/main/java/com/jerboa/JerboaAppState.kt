@@ -132,7 +132,7 @@ class JerboaAppState(
         navController.navigate(Route.COMMENT_REPLY)
     }
 
-    fun toComment(id: CommunityId) {
+    fun toComment(id: CommentId) {
         navController.navigate(Route.CommentArgs.makeRoute(id = "$id"))
     }
 

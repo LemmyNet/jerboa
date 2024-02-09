@@ -15,11 +15,14 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.api.toApiState
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCount
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadRegistrationApplicationCountResponse
@@ -36,9 +39,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
     private var unreadAppCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
+    private var unreadReportCountRes: ApiState<GetReportCountResponse> by mutableStateOf(ApiState.Empty)
 
     val unreadCount by derivedStateOf { getUnreadCountTotal() }
     val unreadAppCount by derivedStateOf { getUnreadAppCountTotal() }
+    val unreadReportCount by derivedStateOf { getUnreadReportCountTotal() }
 
     lateinit var saveUserSettings: SaveUserSettings
 
@@ -64,6 +69,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     if (it.isAnon()) { // Reset the unread counts if we're anonymous
                         unreadCountRes = ApiState.Empty
                         unreadAppCountRes = ApiState.Empty
+                        unreadReportCountRes = ApiState.Empty
                     } else {
                         fetchUnreadCounts()
                     }
@@ -78,13 +84,15 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
-                    res.data.my_user?.local_user_view?.local_user?.let {
+                    res.data.my_user?.let { mui ->
                         val currAcc = accountRepository.currentAccount.value
+                        val localUser = mui.local_user_view.local_user
+
                         if (currAcc != null) {
                             val newAccount =
                                 currAcc.copy(
-                                    defaultListingType = it.default_listing_type.ordinal,
-                                    defaultSortType = it.default_sort_type.ordinal,
+                                    defaultListingType = localUser.default_listing_type.ordinal,
+                                    defaultSortType = localUser.default_sort_type.ordinal,
                                 )
 
                             if (currAcc != newAccount) {
@@ -93,8 +101,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                         }
 
                         // if you're an admin, fetch the unread registration counts
-                        if (it.admin) {
+                        if (localUser.admin) {
                             fetchUnreadAppCount()
+                        }
+
+                        // If you're an admin or you moderate something, fetch reports
+                        if (localUser.admin || mui.moderates.isNotEmpty()) {
+                            fetchUnreadReportCount()
                         }
                     }
                 }
@@ -122,6 +135,15 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
+    fun fetchUnreadReportCount() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+                unreadReportCountRes = ApiState.Loading
+                unreadReportCountRes = API.getInstance().getReportCount(GetReportCount()).toApiState()
+            }
+        }
+    }
+
     private fun getUnreadCountTotal(): Long {
         return when (val res = unreadCountRes) {
             is ApiState.Success -> {
@@ -137,6 +159,17 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = unreadAppCountRes) {
             is ApiState.Success -> {
                 res.data.registration_applications
+            }
+
+            else -> null
+        }
+    }
+
+    private fun getUnreadReportCountTotal(): Long? {
+        return when (val res = unreadReportCountRes) {
+            is ApiState.Success -> {
+                val unreads = res.data
+                unreads.post_reports + unreads.comment_reports + (unreads.private_message_reports ?: 0)
             }
 
             else -> null
@@ -196,6 +229,25 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.admins
             else -> emptyList()
+        }
+    }
+
+    fun userViewType(): UserViewType {
+        return when (val res = siteRes) {
+            is ApiState.Success -> {
+                res.data.my_user?.let { mui ->
+                    if (mui.local_user_view.local_user.admin) {
+                        UserViewType.AdminOnly
+                    } else if (mui.moderates.isNotEmpty()) {
+                        UserViewType.AdminOrMod
+                    } else {
+                        UserViewType.Normal
+                    }
+                } ?: run {
+                    UserViewType.Normal
+                }
+            }
+            else -> UserViewType.Normal
         }
     }
 
