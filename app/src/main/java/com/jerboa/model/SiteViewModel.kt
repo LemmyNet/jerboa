@@ -66,6 +66,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                         unreadAppCountRes = ApiState.Empty
                     } else {
                         fetchUnreadCounts()
+
+                        // if you're an admin, fetch the unread registration counts
+                        if (it.isAdmin) {
+                            fetchUnreadAppCount()
+                        }
                     }
                 }
         }
@@ -78,13 +83,16 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
-                    res.data.my_user?.local_user_view?.local_user?.let {
+                    res.data.my_user?.let { mui ->
                         val currAcc = accountRepository.currentAccount.value
+                        val localUser = mui.local_user_view.local_user
                         if (currAcc != null) {
                             val newAccount =
                                 currAcc.copy(
-                                    defaultListingType = it.default_listing_type.ordinal,
-                                    defaultSortType = it.default_sort_type.ordinal,
+                                    defaultListingType = localUser.default_listing_type.ordinal,
+                                    defaultSortType = localUser.default_sort_type.ordinal,
+                                    isAdmin = localUser.admin,
+                                    isMod = mui.moderates.isNotEmpty(),
                                 )
 
                             if (currAcc != newAccount) {
@@ -92,10 +100,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                             }
                         }
 
-                        // if you're an admin, fetch the unread registration counts
-                        if (it.admin) {
-                            fetchUnreadAppCount()
-                        }
                     }
                 }
 

@@ -452,5 +452,5 @@
     <string name="denied_by">Denied by</string>
     <string name="answer">Answer</string>
     <string name="deny_reason">Deny reason</string>
-    <string name="apps">Apps</string>
+    <string name="applications_request_shorthand">Apps</string>
 </resources>

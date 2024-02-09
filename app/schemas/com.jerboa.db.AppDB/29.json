@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 28,
-    "identityHash": "855d12fde8893df3f3a3bba171e19249",
+    "version": 29,
+    "identityHash": "731bf955d6f87beffb10a163f0070c90",
     "entities": [
       {
         "tableName": "Account",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `current` INTEGER NOT NULL, `instance` TEXT NOT NULL, `name` TEXT NOT NULL, `jwt` TEXT NOT NULL, `default_listing_type` INTEGER NOT NULL DEFAULT 0, `default_sort_type` INTEGER NOT NULL DEFAULT 0, `verification_state` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `current` INTEGER NOT NULL, `instance` TEXT NOT NULL, `name` TEXT NOT NULL, `jwt` TEXT NOT NULL, `default_listing_type` INTEGER NOT NULL DEFAULT 0, `default_sort_type` INTEGER NOT NULL DEFAULT 0, `verification_state` INTEGER NOT NULL DEFAULT 0, `is_admin` INTEGER NOT NULL, `is_mod` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -58,6 +58,18 @@
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
+          },
+          {
+            "fieldPath": "isAdmin",
+            "columnName": "is_admin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isMod",
+            "columnName": "is_mod",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -261,7 +273,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '855d12fde8893df3f3a3bba171e19249')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '731bf955d6f87beffb10a163f0070c90')"
     ]
   }
 }
