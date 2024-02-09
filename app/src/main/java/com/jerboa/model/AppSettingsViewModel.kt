@@ -1,7 +1,11 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -14,7 +18,7 @@ import kotlinx.coroutines.launch
 @Stable
 class AppSettingsViewModel(private val repository: AppSettingsRepository) : ViewModel() {
     val appSettings = repository.appSettings
-    val changelog = repository.changelog
+    var changelog by mutableStateOf("")
 
     fun update(appSettings: AppSettings) =
         viewModelScope.launch {
@@ -31,9 +35,14 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
             repository.updatePostViewMode(postViewMode)
         }
 
-    fun updateChangelog(ctx: Context) =
+    fun loadChangelog(ctx: Context) =
         viewModelScope.launch {
-            repository.updateChangelog(ctx)
+            try {
+                Log.d("jerboa", "Getting RELEASES.md from assets...")
+                changelog = ctx.assets.open("RELEASES.md").bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                Log.e("jerboa", "Failed to load changelog: $e")
+            }
         }
 }
 
