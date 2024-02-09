@@ -15,7 +15,6 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.api.toApiState
-import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
@@ -72,6 +71,16 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                         unreadReportCountRes = ApiState.Empty
                     } else {
                         fetchUnreadCounts()
+
+                        // if you're an admin, fetch the unread registration counts
+                        if (it.isAdmin) {
+                            fetchUnreadAppCount()
+                        }
+
+                        // if you're an admin or a mod, fetch the report counts
+                        if (it.isAdmin || it.isMod) {
+                            fetchUnreadReportCount()
+                        }
                     }
                 }
         }
@@ -87,27 +96,18 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     res.data.my_user?.let { mui ->
                         val currAcc = accountRepository.currentAccount.value
                         val localUser = mui.local_user_view.local_user
-
                         if (currAcc != null) {
                             val newAccount =
                                 currAcc.copy(
                                     defaultListingType = localUser.default_listing_type.ordinal,
                                     defaultSortType = localUser.default_sort_type.ordinal,
+                                    isAdmin = localUser.admin,
+                                    isMod = mui.moderates.isNotEmpty(),
                                 )
 
                             if (currAcc != newAccount) {
                                 accountRepository.update(newAccount)
                             }
-                        }
-
-                        // if you're an admin, fetch the unread registration counts
-                        if (localUser.admin) {
-                            fetchUnreadAppCount()
-                        }
-
-                        // If you're an admin or you moderate something, fetch reports
-                        if (localUser.admin || mui.moderates.isNotEmpty()) {
-                            fetchUnreadReportCount()
                         }
                     }
                 }
@@ -229,25 +229,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.admins
             else -> emptyList()
-        }
-    }
-
-    fun userViewType(): UserViewType {
-        return when (val res = siteRes) {
-            is ApiState.Success -> {
-                res.data.my_user?.let { mui ->
-                    if (mui.local_user_view.local_user.admin) {
-                        UserViewType.AdminOnly
-                    } else if (mui.moderates.isNotEmpty()) {
-                        UserViewType.AdminOrMod
-                    } else {
-                        UserViewType.Normal
-                    }
-                } ?: run {
-                    UserViewType.Normal
-                }
-            }
-            else -> UserViewType.Normal
         }
     }
 

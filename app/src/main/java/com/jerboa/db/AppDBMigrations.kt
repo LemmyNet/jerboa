@@ -358,6 +358,19 @@ val MIGRATION_27_28 =
         }
     }
 
+val MIGRATION_28_29 =
+    object : Migration(28, 29) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Add is_admin and is_mod columns
+            db.execSQL(
+                "ALTER TABLE Account add column is_admin INTEGER NOT NULL default 0",
+            )
+            db.execSQL(
+                "ALTER TABLE Account add column is_mod INTEGER NOT NULL default 0",
+            )
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -388,4 +401,5 @@ val MIGRATIONS_LIST =
         MIGRATION_25_26,
         MIGRATION_26_27,
         MIGRATION_27_28,
+        MIGRATION_28_29,
     )

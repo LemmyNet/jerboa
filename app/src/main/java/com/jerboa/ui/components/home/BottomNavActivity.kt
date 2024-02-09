@@ -47,6 +47,8 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.isReady
+import com.jerboa.db.entity.userViewType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -93,7 +95,7 @@ enum class NavTab(
         userViewType = UserViewType.Normal,
     ),
     RegistrationApplications(
-        R.string.apps,
+        R.string.applications_request_shorthand,
         Icons.Outlined.AppRegistration,
         Icons.Filled.AppRegistration,
         R.string.bottomBar_registrations,
@@ -207,14 +209,14 @@ fun BottomNavActivity(
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
                 bottomBar = {
-                    if (appSettings.showBottomNav) {
+                    if (appSettings.showBottomNav && account.isReady()) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
                             unreadAppCount = siteViewModel.unreadAppCount,
                             unreadReportCount = siteViewModel.unreadReportCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
-                            userViewType = siteViewModel.userViewType(),
+                            userViewType = account.userViewType(),
                             onSelect = onSelectTab,
                         )
                     }

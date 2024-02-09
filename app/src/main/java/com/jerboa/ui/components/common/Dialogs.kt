@@ -10,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -56,9 +55,9 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
 
         if (whatsChangedDialogOpen) {
             val scrollState = rememberScrollState()
-            val markdown by appSettingsViewModel.changelog.collectAsState()
+            val markdown = appSettingsViewModel.changelog
             LaunchedEffect(appSettingsViewModel) {
-                appSettingsViewModel.updateChangelog(ctx)
+                appSettingsViewModel.loadChangelog(ctx)
             }
 
             AlertDialog(
