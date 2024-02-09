@@ -10,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -18,11 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.jerboa.R
+import com.jerboa.getVersionCode
 import com.jerboa.model.AppSettingsViewModel
 
 val DONATION_MARKDOWN =
@@ -35,25 +36,28 @@ val DONATION_MARKDOWN =
     - [Support on Liberapay](https://liberapay.com/Lemmy).
     - [Support on Patreon](https://www.patreon.com/dessalines).
     - [Support on OpenCollective](https://opencollective.com/lemmy).
+    
+    ---
 
     """.trimIndent()
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
-    val changelogViewed = appSettingsViewModel.appSettings.observeAsState().value?.viewedChangelog
+    val ctx = LocalContext.current
+    val lastVersionCodeViewed = appSettingsViewModel.appSettings.observeAsState().value?.lastVersionCodeViewed
 
-    // Make sure its initialized
-    changelogViewed?.also { cViewed ->
-        val viewed = cViewed == 1
+    lastVersionCodeViewed?.also { lastViewed ->
+        val currentVersionCode = ctx.getVersionCode()
+        val viewed = lastViewed == currentVersionCode
 
         var whatsChangedDialogOpen by remember { mutableStateOf(!viewed) }
 
         if (whatsChangedDialogOpen) {
             val scrollState = rememberScrollState()
-            val markdown by appSettingsViewModel.changelog.collectAsState()
+            val markdown = appSettingsViewModel.changelog
             LaunchedEffect(appSettingsViewModel) {
-                appSettingsViewModel.updateChangelog()
+                appSettingsViewModel.loadChangelog(ctx)
             }
 
             AlertDialog(
@@ -74,7 +78,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     Button(
                         onClick = {
                             whatsChangedDialogOpen = false
-                            appSettingsViewModel.markChangelogViewed()
+                            appSettingsViewModel.updateLastVersionCodeViewed(currentVersionCode)
                         },
                         modifier = Modifier.fillMaxWidth().testTag("jerboa:changelogbtn"),
                     ) {
@@ -83,7 +87,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                 },
                 onDismissRequest = {
                     whatsChangedDialogOpen = false
-                    appSettingsViewModel.markChangelogViewed()
+                    appSettingsViewModel.updateLastVersionCodeViewed(currentVersionCode)
                 },
                 modifier = Modifier.semantics { testTagsAsResourceId = true },
             )

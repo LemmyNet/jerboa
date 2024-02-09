@@ -8,6 +8,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -1454,3 +1456,19 @@ fun String.padUrlWithHttps(): String {
         "https://$this"
     }
 }
+
+fun Context.getPackageInfo(): PackageInfo {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+    } else {
+        packageManager.getPackageInfo(packageName, 0)
+    }
+}
+
+fun Context.getVersionCode(): Int =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        getPackageInfo().longVersionCode.toInt()
+    } else {
+        @Suppress("DEPRECATION")
+        getPackageInfo().versionCode
+    }

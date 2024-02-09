@@ -24,6 +24,7 @@ data class AppSettings(
         defaultValue = "0",
     )
     val themeColor: Int,
+    // TODO get rid of this column next time you regenerate the app
     @ColumnInfo(
         name = "viewed_changelog",
         defaultValue = "0",
@@ -124,4 +125,9 @@ data class AppSettings(
         defaultValue = "1",
     )
     val swipeToActionPreset: Int,
+    @ColumnInfo(
+        name = "last_version_code_viewed",
+        defaultValue = "0",
+    )
+    val lastVersionCodeViewed: Int,
 )
