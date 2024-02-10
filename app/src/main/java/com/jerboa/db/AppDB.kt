@@ -39,7 +39,7 @@ val APP_SETTINGS_DEFAULT =
         backConfirmationMode = 1,
         markAsReadOnScroll = false,
         showPostLinkPreviews = true,
-        postActionbarMode = 0,
+        postActionBarMode = 0,
         autoPlayGifs = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT.ordinal,
     )

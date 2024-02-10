@@ -24,9 +24,8 @@ import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityFederated
 import com.jerboa.datatypes.sampleCommunityView
-import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.needBlur
-import com.jerboa.toEnum
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
@@ -81,7 +80,7 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -99,7 +98,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
-                blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
+                blur = blurNSFW.needBlur(community.nsfw),
             )
         } ?: run {
             if (showDefaultIcon) {
@@ -127,7 +126,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     CommunityLink(
         community = community,
@@ -151,7 +150,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -178,7 +177,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
     )
 }
 
@@ -189,6 +188,6 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
     )
 }

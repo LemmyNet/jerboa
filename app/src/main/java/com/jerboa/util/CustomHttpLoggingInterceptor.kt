@@ -6,6 +6,7 @@ import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.internal.charsetOrUtf8
 import okhttp3.internal.http.promisesBody
 import okhttp3.internal.platform.Platform
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,7 +18,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
-import okhttp3.internal.charsetOrUtf8 as charsetOrUtf8
 
 /**
  * Based of [HttpLoggingInterceptor], redacts the giving fields
