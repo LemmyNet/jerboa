@@ -305,7 +305,8 @@ fun LazyListScope.commentNodeItem(
                             ),
                 ) {
                     Column(
-                        modifier = Modifier.border(start = border),
+                        modifier = Modifier.border(start = border)
+                            .padding(bottom = LARGE_PADDING),
                     ) {
                         HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                         Column(
@@ -818,7 +819,7 @@ fun CommentFooterLine(
                     onClick = onClick,
                     onLongClick = onLongClick,
                 )
-                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+                .padding(top = MEDIUM_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
