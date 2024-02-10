@@ -55,7 +55,7 @@ fun Account.isReady(): Boolean {
     return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
 }
 
-fun Account.userViewType(): UserViewType  {
+fun Account.userViewType(): UserViewType {
     return if (isAdmin) {
         UserViewType.AdminOnly
     } else if (isMod) {
