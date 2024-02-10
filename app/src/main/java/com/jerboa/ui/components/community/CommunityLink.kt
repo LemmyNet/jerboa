@@ -18,17 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.jerboa.R
-import com.jerboa.communityNameShown
 import com.jerboa.datatypes.sampleCommunity
+import com.jerboa.datatypes.sampleCommunityFederated
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.needBlur
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
@@ -45,15 +45,14 @@ fun CommunityName(
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    overflow: TextOverflow = TextOverflow.Ellipsis,
 ) {
-    Text(
-        text = communityNameShown(community),
-        style = style,
-        color = color,
+    ItemAndInstanceTitle(
+        title = community.title,
+        actorId = community.actor_id,
+        local = community.local,
         modifier = modifier,
-        overflow = overflow,
-        maxLines = 1,
+        color = color,
+        style = style,
     )
 }
 
@@ -61,6 +60,12 @@ fun CommunityName(
 @Composable
 fun CommunityNamePreview() {
     CommunityName(community = sampleCommunity)
+}
+
+@Preview
+@Composable
+fun CommunityFederatedNamePreview() {
+    CommunityName(community = sampleCommunityFederated)
 }
 
 @Composable

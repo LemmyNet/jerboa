@@ -54,6 +54,7 @@ import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
@@ -458,9 +459,9 @@ fun personNameShown(
     federatedName: Boolean = false,
 ): String {
     return if (!federatedName) {
-        person.display_name ?: person.name
+        person.getDisplayName()
     } else {
-        val name = person.display_name ?: person.name
+        val name = person.getDisplayName()
         if (person.local) {
             name
         } else {
@@ -469,6 +470,9 @@ fun personNameShown(
     }
 }
 
+/**
+ * Warning, do not use this for links and such, only for messages
+ */
 fun communityNameShown(community: Community): String {
     return if (community.local) {
         community.title

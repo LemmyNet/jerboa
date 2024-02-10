@@ -37,10 +37,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.data
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.feat.openMatrix
-import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
+import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
@@ -97,8 +98,11 @@ fun PersonProfileTopSection(
             modifier = Modifier.padding(MEDIUM_PADDING),
             verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         ) {
-            Text(
-                text = personNameShown(personView.person, true),
+            ItemAndInstanceTitle(
+                title = personView.person.getDisplayName(),
+                actorId = personView.person.actor_id,
+                local = personView.person.local,
+                color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.titleLarge,
             )
 

@@ -7,18 +7,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.samplePerson
-import com.jerboa.personNameShown
+import com.jerboa.datatypes.samplePerson2
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
@@ -30,26 +30,18 @@ fun PersonName(
     color: Color = MaterialTheme.colorScheme.tertiary,
     isPostCreator: Boolean = false,
 ) {
-    PersonName(personNameShown(person), color, isPostCreator)
-}
-
-@Composable
-fun PersonName(
-    name: String,
-    color: Color = MaterialTheme.colorScheme.tertiary,
-    isPostCreator: Boolean = false,
-) {
     val style = MaterialTheme.typography.bodyMedium
+    val name = person.getDisplayName()
 
     if (isPostCreator) {
         TextBadge(text = name, textStyle = style)
     } else {
-        Text(
-            text = name,
+        ItemAndInstanceTitle(
+            title = name,
+            actorId = person.actor_id,
+            local = person.local,
             color = color,
             style = style,
-            overflow = TextOverflow.Clip,
-            maxLines = 1,
         )
     }
 }
@@ -58,6 +50,12 @@ fun PersonName(
 @Composable
 fun PersonNamePreview() {
     PersonName(person = samplePerson, isPostCreator = false)
+}
+
+@Preview
+@Composable
+fun PersonNameFederatedPreview() {
+    PersonName(person = samplePerson2, isPostCreator = false)
 }
 
 @Composable
