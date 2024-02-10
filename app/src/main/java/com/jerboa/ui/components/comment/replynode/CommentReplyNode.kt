@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.VoteType
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -242,7 +243,7 @@ fun CommentReplyNodeInbox(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     enableDownvotes: Boolean,
     showScores: Boolean,
 ) {

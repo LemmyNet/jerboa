@@ -26,6 +26,8 @@ import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
@@ -73,14 +75,14 @@ fun PostListings(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     appState: JerboaAppState,
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -135,7 +137,7 @@ fun PostListings(
                 showPostLinkPreview = showPostLinkPreviews,
                 showIfRead = showIfRead,
                 showScores = showScores,
-                postActionbarMode = postActionbarMode,
+                postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
@@ -204,14 +206,14 @@ fun PreviewPostListings() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showPostLinkPreviews = true,
         appState = rememberJerboaAppState(),
         markAsReadOnScroll = false,
         onMarkAsRead = {},
         showIfRead = true,
         showScores = true,
-        postActionbarMode = 0,
+        postActionBarMode = PostActionBarMode.Long,
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
         onReplyClick = {},

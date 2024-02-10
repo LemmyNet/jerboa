@@ -114,7 +114,7 @@ data class AppSettings(
         name = "post_actionbar_mode",
         defaultValue = "0",
     )
-    val postActionbarMode: Int,
+    val postActionBarMode: Int,
     @ColumnInfo(
         name = "auto_play_gifs",
         defaultValue = "0",
