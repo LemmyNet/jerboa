@@ -44,4 +44,7 @@ subprojects {
             )
         }
     }
+    tasks.check {
+        dependsOn("installKotlinterPrePushHook")
+    }
 }
