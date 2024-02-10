@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.getDisplayName
@@ -28,9 +29,9 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 fun PersonName(
     person: Person,
     color: Color = MaterialTheme.colorScheme.tertiary,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
     isPostCreator: Boolean = false,
 ) {
-    val style = MaterialTheme.typography.bodyMedium
     val name = person.getDisplayName()
 
     if (isPostCreator) {

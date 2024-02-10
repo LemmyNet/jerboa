@@ -458,10 +458,10 @@ fun personNameShown(
     person: Person,
     federatedName: Boolean = false,
 ): String {
+    val name = person.getDisplayName()
     return if (!federatedName) {
-        person.getDisplayName()
+        name
     } else {
-        val name = person.getDisplayName()
         if (person.local) {
             name
         } else {
