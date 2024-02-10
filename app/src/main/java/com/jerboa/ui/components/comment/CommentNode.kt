@@ -58,6 +58,7 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
@@ -81,7 +82,16 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 
 @Composable
 fun CommentNodeHeader(
@@ -217,7 +227,7 @@ fun LazyListScope.commentNodeItem(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -524,7 +534,7 @@ fun LazyListScope.missingCommentNodeItem(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -692,7 +702,7 @@ fun PostAndCommunityContextHeader(
     community: Community,
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: PostId) -> Unit,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING),
@@ -724,7 +734,7 @@ fun PostAndCommunityContextHeaderPreview() {
         community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
     )
 }
 
@@ -929,7 +939,7 @@ fun CommentNodesPreview() {
         showActionBar = { _ -> true },
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
         showScores = true,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,

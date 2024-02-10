@@ -51,6 +51,8 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -116,11 +118,11 @@ fun PersonProfileActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     onBack: (() -> Unit)? = null,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -272,7 +274,7 @@ fun PersonProfileActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
-                postActionbarMode = postActionbarMode,
+                postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             )
         },
@@ -303,12 +305,12 @@ fun UserTabs(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
@@ -625,7 +627,7 @@ fun UserTabs(
                                     },
                                     showIfRead = false,
                                     showScores = showScores,
-                                    postActionbarMode = postActionbarMode,
+                                    postActionBarMode = postActionBarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
                                 )

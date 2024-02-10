@@ -13,6 +13,7 @@ import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
@@ -63,7 +64,7 @@ fun CommentNodes(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -154,7 +155,7 @@ fun LazyListScope.commentNodeItems(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
