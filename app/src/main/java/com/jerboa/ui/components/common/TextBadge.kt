@@ -59,8 +59,10 @@ fun ItemAndInstanceTitle(
     title: String,
     actorId: String?,
     local: Boolean,
-    color: Color = MaterialTheme.colorScheme.primary,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    itemColor: Color = MaterialTheme.colorScheme.primary,
+    itemStyle: TextStyle = MaterialTheme.typography.labelLarge,
+    instanceColor: Color = MaterialTheme.colorScheme.onSurface.muted,
+    instanceStyle: TextStyle = MaterialTheme.typography.labelSmall,
 ) {
     val serverStr = if (!local) {
         actorId?.let { aId ->
@@ -75,14 +77,14 @@ fun ItemAndInstanceTitle(
     Text(
         text = buildAnnotatedString {
             withStyle(
-                style = style.toSpanStyle().copy(color = color),
+                style = itemStyle.toSpanStyle().copy(color = itemColor),
             ) {
                 append(title)
             }
             serverStr?.let { server ->
                 withStyle(
-                    style = MaterialTheme.typography.labelSmall.toSpanStyle().copy(
-                        color = MaterialTheme.colorScheme.onSurface.muted,
+                    style = instanceStyle.toSpanStyle().copy(
+                        color = instanceColor,
                     ),
                 ) {
                     append(server)

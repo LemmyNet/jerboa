@@ -44,15 +44,15 @@ fun CommunityName(
     modifier: Modifier = Modifier,
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelLarge,
 ) {
     ItemAndInstanceTitle(
         title = community.title,
         actorId = community.actor_id,
         local = community.local,
         modifier = modifier,
-        color = color,
-        style = style,
+        itemColor = color,
+        itemStyle = style,
     )
 }
 
@@ -77,7 +77,7 @@ fun CommunityLink(
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelLarge,
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,

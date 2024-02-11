@@ -445,7 +445,7 @@ fun AvatarAndAccountName(
                 title = myPerson?.getDisplayName() ?: account.name,
                 actorId = myPerson?.actor_id,
                 local = true,
-                color = MaterialTheme.colorScheme.onSurface,
+                itemColor = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = if (account.isAnon()) "" else "${account.name}@${account.instance}",

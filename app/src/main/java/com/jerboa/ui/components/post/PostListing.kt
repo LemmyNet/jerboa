@@ -186,7 +186,7 @@ fun PostHeaderLine(
                             showAvatar = showAvatar,
                         )
                         if (postView.post.featured_local) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = stringResource(R.string.postListing_featuredLocal),
@@ -195,7 +195,7 @@ fun PostHeaderLine(
                             )
                         }
                         if (postView.post.featured_community) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = stringResource(R.string.postListing_featuredCommunity),
@@ -204,7 +204,7 @@ fun PostHeaderLine(
                             )
                         }
                         if (postView.post.locked) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.CommentsDisabled,
                                 contentDescription = stringResource(R.string.postListing_locked),
@@ -1389,8 +1389,9 @@ fun PostListingList(
                 PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
-                    verticalArrangement = Arrangement.Center,
                 ) {
+                    // You must use a center align modifier for each of these
+                    val centerMod = Modifier.align(Alignment.CenterVertically)
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
@@ -1398,8 +1399,9 @@ fun PostListingList(
                             clickable = false,
                             showDefaultIcon = false,
                             blurNSFW = blurNSFW,
+                            modifier = centerMod,
                         )
-                        DotSpacer(0.dp)
+                        DotSpacer(modifier = centerMod)
                     }
                     PersonProfileLink(
                         person = postView.creator,
@@ -1409,8 +1411,9 @@ fun PostListingList(
                         clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
                         showAvatar = showAvatar,
+                        modifier = centerMod,
                     )
-                    DotSpacer(0.dp)
+                    DotSpacer(modifier = centerMod)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
                             val hostName = hostName(postUrl)
@@ -1419,12 +1422,17 @@ fun PostListingList(
                                     text = it,
                                     color = MaterialTheme.colorScheme.onBackground.muted,
                                     style = MaterialTheme.typography.bodyMedium,
+                                    modifier = centerMod,
                                 )
-                                DotSpacer(0.dp)
+                                DotSpacer(modifier = centerMod)
                             }
                         }
                     }
-                    TimeAgo(published = postView.post.published, updated = postView.post.updated)
+                    TimeAgo(
+                        published = postView.post.published,
+                        updated = postView.post.updated,
+                        modifier = centerMod,
+                    )
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -1436,7 +1444,7 @@ fun PostListingList(
                             style = MaterialTheme.typography.bodyMedium,
                             color = scoreColor(myVote = instantScores.myVote),
                         )
-                        DotSpacer(0.dp)
+                        DotSpacer()
                     }
                     Text(
                         text =

@@ -36,6 +36,7 @@ import java.util.Date
 @Composable
 fun TimeAgo(
     published: String,
+    modifier: Modifier = Modifier,
     updated: String? = null,
     precedingString: String? = null,
     longTimeFormat: Boolean = false,
@@ -52,7 +53,7 @@ fun TimeAgo(
             stringResource(R.string.time_ago_ago, it, publishedPretty)
         } ?: run { publishedPretty }
 
-    Row {
+    Row(modifier = modifier) {
         Text(
             text = afterPreceding,
             color = MaterialTheme.colorScheme.onBackground.muted,
@@ -106,7 +107,10 @@ fun dateStringToPretty(
 @Preview
 @Composable
 fun TimeAgoPreview() {
-    TimeAgo(samplePerson.published, samplePerson.updated)
+    TimeAgo(
+        published = samplePerson.published,
+        updated = samplePerson.updated,
+    )
 }
 
 @Composable
@@ -134,7 +138,7 @@ fun ScoreAndTime(
                 fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
             )
         }
-        DotSpacer(0.dp, MaterialTheme.typography.bodyMedium)
+        DotSpacer(style = MaterialTheme.typography.bodyMedium)
         TimeAgo(published = published, updated = updated)
     }
 }

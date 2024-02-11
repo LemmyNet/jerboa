@@ -29,7 +29,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 fun PersonName(
     person: Person,
     color: Color = MaterialTheme.colorScheme.tertiary,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelLarge,
     isPostCreator: Boolean = false,
 ) {
     val name = person.getDisplayName()
@@ -41,8 +41,8 @@ fun PersonName(
             title = name,
             actorId = person.actor_id,
             local = person.local,
-            color = color,
-            style = style,
+            itemColor = color,
+            itemStyle = style,
         )
     }
 }
@@ -63,6 +63,7 @@ fun PersonNameFederatedPreview() {
 fun PersonProfileLink(
     person: Person,
     onClick: (personId: PersonId) -> Unit,
+    modifier: Modifier = Modifier,
     clickable: Boolean = true,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
@@ -77,9 +78,9 @@ fun PersonProfileLink(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier =
             if (clickable) {
-                Modifier.clickable { onClick(person.id) }
+                modifier.clickable { onClick(person.id) }
             } else {
-                Modifier
+                modifier
             },
     ) {
         if (showAvatar) {
