@@ -51,6 +51,7 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -151,25 +152,16 @@ fun CommentBody(
     onClick: () -> Unit,
     onLongClick: ((View) -> Boolean),
 ) {
-    val content =
-        if (comment.removed) {
-            stringResource(R.string.comment_body_removed)
-        } else if (comment.deleted) {
-            stringResource(R.string.comment_body_deleted)
-        } else {
-            comment.content
-        }
-
     if (viewSource) {
         SelectionContainer {
             Text(
-                text = comment.content,
+                text = comment.getContent(),
                 fontFamily = FontFamily.Monospace,
             )
         }
     } else {
         MyMarkdownText(
-            markdown = content,
+            markdown = comment.getContent(),
             onClick = onClick,
             onLongClick = onLongClick,
             modifier = Modifier.padding(0.dp, 0.dp, 0.dp, MEDIUM_PADDING),
