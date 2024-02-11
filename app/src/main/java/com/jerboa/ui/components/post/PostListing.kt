@@ -369,7 +369,7 @@ fun PostTitleAndImageLink(
     url?.let { cUrl ->
         PictrsUrlImage(
             url = cUrl,
-	    blur = blurNSFW.needBlur(postView),
+            blur = blurNSFW.needBlur(postView),
             modifier =
                 Modifier
                     .combinedClickable(
