@@ -134,6 +134,7 @@ fun PostHeaderLine(
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
+    fullBody: Boolean,
     blurNSFW: BlurNSFW,
     showScores: Boolean,
 ) {
@@ -144,10 +145,11 @@ fun PostHeaderLine(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f),
             ) {
-                if (showCommunityName) {
+                if (showCommunityName && showAvatar) {
                     community.icon?.let {
                         CircularIcon(
                             icon = it,
@@ -159,7 +161,7 @@ fun PostHeaderLine(
                         )
                     }
                 }
-                Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                Column {
                     if (showCommunityName) {
                         CommunityName(
                             community = postView.community,
@@ -173,14 +175,14 @@ fun PostHeaderLine(
                         PersonProfileLink(
                             person = postView.creator,
                             onClick = onPersonClick,
-                            showTags = true,
+                            showTags = fullBody,
                             // Set this to false, we already know this
                             isPostCreator = false,
                             isModerator = postView.creator_is_moderator,
                             isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,
                             color = MaterialTheme.colorScheme.onSurface.muted,
-                            showAvatar = showAvatar,
+                            showAvatar = !showCommunityName && showAvatar,
                         )
                         if (postView.post.featured_local) {
                             DotSpacer()
@@ -251,6 +253,7 @@ fun PostHeaderLinePreview() {
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         showScores = true,
+        fullBody = true,
     )
 }
 
@@ -1250,7 +1253,6 @@ fun PostListing(
                         showCommunityName = showCommunityName,
                         account = account,
                         showVotingArrowsInListView = showVotingArrowsInListView,
-                        showAvatar = showAvatar,
                         useCustomTabs = useCustomTabs,
                         usePrivateTabs = usePrivateTabs,
                         blurNSFW = blurNSFW,
@@ -1338,7 +1340,6 @@ fun PostListingList(
     showCommunityName: Boolean = true,
     account: Account,
     showVotingArrowsInListView: Boolean,
-    showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: BlurNSFW,
@@ -1392,6 +1393,7 @@ fun PostListingList(
                             onClick = {},
                             clickable = false,
                             showDefaultIcon = false,
+                            showAvatar = false,
                             blurNSFW = blurNSFW,
                             modifier = centerMod,
                         )
@@ -1404,7 +1406,7 @@ fun PostListingList(
                         onClick = {},
                         clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
-                        showAvatar = showAvatar,
+                        showAvatar = false,
                         modifier = centerMod,
                     )
                     DotSpacer(modifier = centerMod)
@@ -1566,7 +1568,6 @@ fun PostListingListPreview() {
         onPostClick = {},
         account = AnonAccount,
         showVotingArrowsInListView = true,
-        showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = BlurNSFW.NSFW,
@@ -1596,7 +1597,6 @@ fun PostListingListWithThumbPreview() {
         onPostClick = {},
         account = AnonAccount,
         showVotingArrowsInListView = true,
-        showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = BlurNSFW.NSFW,
@@ -1653,7 +1653,7 @@ fun PostListingCard(
                 .padding(vertical = MEDIUM_PADDING)
                 .clickable { onPostClick(postView) }
                 .testTag("jerboa:post"),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
@@ -1669,6 +1669,7 @@ fun PostListingCard(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            fullBody = fullBody,
         )
 
         //  Title + metadata

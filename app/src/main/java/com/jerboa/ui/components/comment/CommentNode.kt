@@ -325,6 +325,7 @@ fun LazyListScope.commentNodeItem(
                                     onCommunityClick = onCommunityClick,
                                     onPostClick = onPostClick,
                                     blurNSFW = blurNSFW,
+                                    showAvatar = showAvatar,
                                 )
                             }
                             CommentNodeHeader(
@@ -695,6 +696,7 @@ fun PostAndCommunityContextHeader(
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: PostId) -> Unit,
     blurNSFW: BlurNSFW,
+    showAvatar: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING),
@@ -713,6 +715,7 @@ fun PostAndCommunityContextHeader(
                 onClick = onCommunityClick,
                 showDefaultIcon = false,
                 blurNSFW = blurNSFW,
+                showAvatar = showAvatar,
             )
         }
     }
@@ -727,6 +730,7 @@ fun PostAndCommunityContextHeaderPreview() {
         onCommunityClick = {},
         onPostClick = {},
         blurNSFW = BlurNSFW.NSFW,
+        showAvatar = true,
     )
 }
 

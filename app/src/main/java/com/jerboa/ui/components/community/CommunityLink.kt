@@ -43,7 +43,7 @@ fun CommunityName(
     modifier: Modifier = Modifier,
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
-    style: TextStyle = MaterialTheme.typography.labelLarge,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     ItemAndInstanceTitle(
         title = community.title,
@@ -80,6 +80,7 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
+    showAvatar: Boolean,
     blurNSFW: BlurNSFW,
 ) {
     Row(
@@ -92,21 +93,23 @@ fun CommunityLink(
                 modifier
             },
     ) {
-        community.icon?.let {
-            CircularIcon(
-                icon = it,
-                contentDescription = null,
-                size = size,
-                thumbnailSize = thumbnailSize,
-                blur = blurNSFW.needBlur(community.nsfw),
-            )
-        } ?: run {
-            if (showDefaultIcon) {
-                Icon(
-                    imageVector = Icons.Outlined.Forum,
-                    contentDescription = "",
-                    modifier = Modifier.size(size),
+        if (showAvatar) {
+            community.icon?.let {
+                CircularIcon(
+                    icon = it,
+                    contentDescription = null,
+                    size = size,
+                    thumbnailSize = thumbnailSize,
+                    blur = blurNSFW.needBlur(community.nsfw),
                 )
+            } ?: run {
+                if (showDefaultIcon) {
+                    Icon(
+                        imageVector = Icons.Outlined.Forum,
+                        contentDescription = "",
+                        modifier = Modifier.size(size),
+                    )
+                }
             }
         }
         Column {
@@ -126,6 +129,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
+    showAvatar: Boolean,
     blurNSFW: BlurNSFW,
 ) {
     CommunityLink(
@@ -142,6 +146,7 @@ fun CommunityLinkLarger(
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
+        showAvatar = showAvatar,
     )
 }
 
@@ -150,6 +155,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
+    showAvatar: Boolean,
     blurNSFW: BlurNSFW,
 ) {
     CommunityLink(
@@ -167,6 +173,7 @@ fun CommunityLinkLargerWithUserCount(
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
+        showAvatar = showAvatar,
     )
 }
 
@@ -177,6 +184,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
+        showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
     )
 }
@@ -188,6 +196,7 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
+        showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
     )
 }

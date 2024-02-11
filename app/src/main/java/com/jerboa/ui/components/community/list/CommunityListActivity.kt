@@ -44,6 +44,7 @@ fun CommunityListActivity(
     followList: List<CommunityFollowerView>,
     blurNSFW: BlurNSFW,
     drawerState: DrawerState,
+    showAvatar: Boolean,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -108,6 +109,7 @@ fun CommunityListActivity(
                                     .padding(padding)
                                     .imePadding(),
                             blurNSFW = blurNSFW,
+                            showAvatar = showAvatar,
                         )
                     }
 

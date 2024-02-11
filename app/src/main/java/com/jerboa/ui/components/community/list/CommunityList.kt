@@ -73,6 +73,7 @@ fun CommunityListings(
     onClickCommunity: (community: Community) -> Unit,
     modifier: Modifier = Modifier,
     blurNSFW: BlurNSFW,
+    showAvatar: Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -91,6 +92,7 @@ fun CommunityListings(
                     community = item.community,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
+                    showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                 )
             } else {
@@ -98,6 +100,7 @@ fun CommunityListings(
                     communityView = item,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
+                    showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                 )
             }
@@ -113,6 +116,7 @@ fun CommunityListingsPreview() {
         communities = communities,
         onClickCommunity = {},
         blurNSFW = BlurNSFW.NSFW,
+        showAvatar = true,
     )
 }
 

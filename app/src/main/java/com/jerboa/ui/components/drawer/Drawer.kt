@@ -276,6 +276,7 @@ fun DrawerItemsMain(
                     community = follow.community,
                     onClick = onCommunityClick,
                     showDefaultIcon = true,
+                    showAvatar = true,
                     blurNSFW = blurNSFW,
                 )
             }
@@ -451,7 +452,7 @@ fun AvatarAndAccountName(
             Text(
                 text = if (account.isAnon()) "" else "${account.name}@${account.instance}",
                 color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.basicMarquee(),
                 maxLines = 2,
             )
