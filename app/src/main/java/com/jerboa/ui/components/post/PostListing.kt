@@ -350,7 +350,7 @@ fun PostTitleAndImageLink(
     showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
-    val url = postView.post.url!!.toHttps()
+    val url = postView.post.url?.toHttps()
 
     Column(
         modifier =
@@ -366,16 +366,18 @@ fun PostTitleAndImageLink(
         )
     }
 
-    PictrsUrlImage(
-        url = url,
-        blur = blurNSFW.needBlur(postView),
-        modifier =
-            Modifier
-                .combinedClickable(
-                    onClick = { appState.openImageViewer(url) },
-                    onLongClick = { appState.showLinkPopup(url) },
-                ),
-    )
+    url?.let { cUrl ->
+        PictrsUrlImage(
+            url = cUrl,
+            blur = blurNSFW.needBlur(postView),
+            modifier =
+                Modifier
+                    .combinedClickable(
+                        onClick = { appState.openImageViewer(cUrl) },
+                        onLongClick = { appState.showLinkPopup(cUrl) },
+                    ),
+        )
+    }
 }
 
 @Composable
@@ -455,7 +457,7 @@ fun PostBody(
         )
 
         // The metadata card
-        if (fullBody && showPostLinkPreview && post.embed_title !== null) {
+        if (fullBody && showPostLinkPreview) {
             MetadataCard(post = post)
         }
 
@@ -1742,10 +1744,14 @@ fun MetadataCard(post: Post) {
             Column(
                 modifier = Modifier.padding(MEDIUM_PADDING),
             ) {
-                Text(
-                    text = post.embed_title!!,
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                if (post.name != post.embed_title) {
+                    post.embed_title?.let { title ->
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                    }
+                }
                 post.embed_description?.also {
                     HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
                     // This is actually html, but markdown can render it
