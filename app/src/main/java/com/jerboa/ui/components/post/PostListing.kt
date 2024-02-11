@@ -1739,7 +1739,7 @@ fun MetadataCard(post: Post) {
             Column(
                 modifier = Modifier.padding(MEDIUM_PADDING),
             ) {
-                if (post.name !== post.embed_title) {
+                if (post.name != post.embed_title) {
                     post.embed_title?.let { title ->
                         Text(
                             text = title,
