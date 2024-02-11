@@ -34,9 +34,11 @@ import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.isAnon
-import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
+import com.jerboa.feat.changeBlurTypeInsideCommunity
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.feat.shareLink
@@ -86,10 +88,10 @@ fun CommunityActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to community activity")
@@ -251,7 +253,7 @@ fun CommunityActivity(
                                                     )
                                                 }
                                             },
-                                            blurNSFW = BlurTypes.changeBlurTypeInsideCommunity(blurNSFW),
+                                            blurNSFW = blurNSFW.changeBlurTypeInsideCommunity(),
                                         )
                                     }
 
@@ -407,7 +409,7 @@ fun CommunityActivity(
                             showAvatar = siteViewModel.showAvatar(),
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
-                            blurNSFW = BlurTypes.changeBlurTypeInsideCommunity(blurNSFW),
+                            blurNSFW = blurNSFW.changeBlurTypeInsideCommunity(),
                             showPostLinkPreviews = showPostLinkPreviews,
                             appState = appState,
                             markAsReadOnScroll = markAsReadOnScroll,
@@ -425,7 +427,7 @@ fun CommunityActivity(
                             },
                             showIfRead = true,
                             showScores = siteViewModel.showScores(),
-                            postActionbarMode = postActionbarMode,
+                            postActionBarMode = postActionBarMode,
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                             swipeToActionPreset = swipeToActionPreset,
                         )

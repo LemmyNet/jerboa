@@ -69,9 +69,9 @@ import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
-import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
@@ -86,7 +86,6 @@ import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
-import com.jerboa.toEnum
 import com.jerboa.toHttps
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
@@ -135,7 +134,7 @@ fun PostHeaderLine(
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
 ) {
     val community = postView.community
@@ -156,7 +155,7 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
+                            blur = blurNSFW.needBlur(community.nsfw),
                         )
                     }
                 }
@@ -250,7 +249,7 @@ fun PostHeaderLinePreview() {
         onCommunityClick = {},
         onPersonClick = {},
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showScores = true,
     )
 }
@@ -290,7 +289,7 @@ fun PostTitleBlock(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -346,7 +345,7 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -370,7 +369,7 @@ fun PostTitleAndImageLink(
     url?.let { cUrl ->
         PictrsUrlImage(
             url = cUrl,
-            blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
+	    blur = blurNSFW.needBlur(postView),
             modifier =
                 Modifier
                     .combinedClickable(
@@ -387,7 +386,7 @@ fun PostTitleAndThumbnail(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -436,7 +435,7 @@ fun PostBody(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     clickBody: () -> Unit = {},
@@ -521,7 +520,7 @@ fun PreviewStoryTitleAndMetadata() {
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -539,7 +538,7 @@ fun PreviewSourcePost() {
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -574,7 +573,7 @@ fun PostFooterLine(
     enableDownVotes: Boolean,
     viewSource: Boolean,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     fromPostActivity: Boolean,
     scope: CoroutineScope,
 ) {
@@ -632,13 +631,11 @@ fun PostFooterLine(
         )
     }
 
-    val postActionbar = postActionbarMode.toEnum<PostActionbarMode>()
-
     val horizontalArrangement =
-        when (postActionbar) {
-            PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
-            PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
-            PostActionbarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+        when (postActionBarMode) {
+            PostActionBarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
+            PostActionBarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+            PostActionBarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
         }
 
     Row(
@@ -650,7 +647,7 @@ fun PostFooterLine(
                 .padding(bottom = SMALL_PADDING),
     ) {
         // Right handside shows the comments on the left side
-        if (postActionbar == PostActionbarMode.RightHandShort) {
+        if (postActionBarMode == PostActionBarMode.RightHandShort) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
@@ -678,7 +675,7 @@ fun PostFooterLine(
             )
         }
 
-        if (postActionbar == PostActionbarMode.Long) {
+        if (postActionBarMode == PostActionBarMode.Long) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
@@ -723,7 +720,7 @@ fun PostFooterLine(
             account = account,
             onClick = { showMoreOptions = !showMoreOptions },
             requiresAccount = false,
-            modifier = if (postActionbar == PostActionbarMode.LeftHandShort) {
+            modifier = if (postActionBarMode == PostActionBarMode.LeftHandShort) {
                 Modifier.weight(
                     1F,
                     true,
@@ -733,7 +730,7 @@ fun PostFooterLine(
             },
         )
 
-        if (postActionbar == PostActionbarMode.LeftHandShort) {
+        if (postActionBarMode == PostActionBarMode.LeftHandShort) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
@@ -835,7 +832,7 @@ fun PostFooterLinePreview() {
         enableDownVotes = true,
         viewSource = false,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         fromPostActivity = true,
         scope = rememberCoroutineScope(),
     )
@@ -872,12 +869,12 @@ fun PreviewPostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -913,12 +910,12 @@ fun PreviewLinkPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -954,12 +951,12 @@ fun PreviewImagePostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -995,12 +992,12 @@ fun PreviewImagePostListingSmallCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -1036,12 +1033,12 @@ fun PreviewLinkNoThumbnailPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -1078,12 +1075,12 @@ fun PostListing(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val ctx = LocalContext.current
@@ -1186,7 +1183,7 @@ fun PostListing(
                         appState = appState,
                         showIfRead = showIfRead,
                         showScores = showScores,
-                        postActionbarMode = postActionbarMode,
+                        postActionBarMode = postActionBarMode,
                     )
 
                 PostViewMode.SmallCard ->
@@ -1234,7 +1231,7 @@ fun PostListing(
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showScores = showScores,
-                        postActionbarMode = postActionbarMode,
+                        postActionBarMode = postActionBarMode,
                     )
 
                 PostViewMode.List ->
@@ -1344,7 +1341,7 @@ fun PostListingList(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
@@ -1469,7 +1466,7 @@ private fun ThumbnailTile(
     postView: PostView,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
 ) {
     postView.post.url?.also { url ->
@@ -1499,7 +1496,7 @@ private fun ThumbnailTile(
             postView.post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
-                    blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
+                    blur = blurNSFW.needBlur(postView),
                     roundBottomEndCorner = postType != PostType.Link,
                     modifier = postLinkPicMod,
                 )
@@ -1564,7 +1561,7 @@ fun PostListingListPreview() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
@@ -1594,7 +1591,7 @@ fun PostListingListWithThumbPreview() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
@@ -1635,12 +1632,12 @@ fun PostListingCard(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean = false,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
 ) {
     Column(
         modifier =
@@ -1713,7 +1710,7 @@ fun PostListingCard(
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
             showScores = showScores,
-            postActionbarMode = postActionbarMode,
+            postActionBarMode = postActionBarMode,
             fromPostActivity = fullBody,
             scope = appState.coroutineScope,
         )

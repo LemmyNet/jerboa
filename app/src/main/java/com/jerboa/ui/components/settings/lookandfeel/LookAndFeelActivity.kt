@@ -43,8 +43,8 @@ import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
-import com.jerboa.feat.BlurTypes
-import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.getLangPreferenceDropdownEntries
@@ -101,7 +101,7 @@ fun LookAndFeelActivity(
     val blurNSFW = rememberIntSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
     val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
-    val postActionbarMode = rememberIntSettingState(settings.postActionbarMode)
+    val postActionBarMode = rememberIntSettingState(settings.postActionBarMode)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -136,7 +136,7 @@ fun LookAndFeelActivity(
                 backConfirmationMode = backConfirmationMode.value,
                 showPostLinkPreviews = showPostLinkPreviewMode.value,
                 markAsReadOnScroll = markAsReadOnScroll.value,
-                postActionbarMode = postActionbarMode.value,
+                postActionBarMode = postActionBarMode.value,
                 autoPlayGifs = autoPlayGifs.value,
                 postNavigationGestureMode = postNavigationGestureModeState.value,
                 swipeToActionPreset = swipeToActionPreset.value,
@@ -291,10 +291,10 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = stringResource(R.string.post_actionbar))
                     },
-                    state = postActionbarMode,
-                    items = PostActionbarMode.entries.map { stringResource(it.resId) },
+                    state = postActionBarMode,
+                    items = PostActionBarMode.entries.map { stringResource(it.resId) },
                     onItemSelected = { i, _ ->
-                        postActionbarMode.value = i
+                        postActionBarMode.value = i
                         updateAppSettings()
                     },
                     icon = {
@@ -314,7 +314,7 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = { Text(stringResource(id = R.string.blur_nsfw)) },
-                    items = BlurTypes.entries.map { stringResource(it.resId) },
+                    items = BlurNSFW.entries.map { stringResource(it.resId) },
                     onItemSelected = { _, _ -> updateAppSettings() },
                 )
                 SettingsListDropdown(

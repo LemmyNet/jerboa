@@ -3,7 +3,6 @@ package com.jerboa.feat
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Bookmark
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
