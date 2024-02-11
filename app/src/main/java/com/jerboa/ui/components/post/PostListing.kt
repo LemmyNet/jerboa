@@ -1653,6 +1653,7 @@ fun PostListingCard(
                 .padding(vertical = MEDIUM_PADDING)
                 .clickable { onPostClick(postView) }
                 .testTag("jerboa:post"),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
@@ -1670,8 +1671,6 @@ fun PostListingCard(
             showScores = showScores,
         )
 
-        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
-
         //  Title + metadata
         PostBody(
             postView = postView,
@@ -1687,8 +1686,6 @@ fun PostListingCard(
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
         )
-
-        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
 
         // Footer bar
         PostFooterLine(
