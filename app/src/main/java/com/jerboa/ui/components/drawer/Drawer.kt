@@ -49,6 +49,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -85,7 +86,7 @@ fun Drawer(
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
     isOpen: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -137,7 +138,7 @@ fun DrawerContent(
     myUserInfo: MyUserInfo?,
     unreadCount: Long,
     unreadAppCount: Long?,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -183,7 +184,7 @@ fun DrawerItemsMain(
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Long,
     unreadAppCount: Long?,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -300,7 +301,7 @@ fun DrawerItemsMainPreview() {
         onClickSettings = {},
         unreadCount = 2,
         unreadAppCount = null,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showBottomNav = false,
         closeDrawer = {},
         onSelectTab = {},

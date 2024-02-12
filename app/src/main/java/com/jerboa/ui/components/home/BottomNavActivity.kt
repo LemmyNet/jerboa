@@ -183,7 +183,7 @@ fun BottomNavActivity(
                         scope = scope,
                         drawerState = drawerState,
                         onSelectTab = onSelectTab,
-                        blurNSFW = appSettings.blurNSFW,
+                        blurNSFW = appSettings.blurNSFW.toEnum(),
                         showBottomNav = appSettings.showBottomNav,
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
@@ -232,10 +232,10 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -245,7 +245,7 @@ fun BottomNavActivity(
                             appState = appState,
                             selectMode = false,
                             followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                         )
                     }
@@ -255,7 +255,7 @@ fun BottomNavActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                         )
                     }
@@ -280,11 +280,11 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -300,11 +300,11 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }

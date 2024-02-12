@@ -234,10 +234,10 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -278,10 +278,10 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -317,12 +317,12 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -356,11 +356,11 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -379,7 +379,7 @@ class MainActivity : AppCompatActivity() {
                         CommunityListActivity(
                             appState = appState,
                             selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
                         )
@@ -434,7 +434,7 @@ class MainActivity : AppCompatActivity() {
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                         )
                     }
@@ -481,9 +481,9 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
+                                blurNSFW = appSettings.blurNSFW.toEnum(),
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
-                                postActionbarMode = appSettings.postActionbarMode,
+                                postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             )
                         }
@@ -515,9 +515,9 @@ class MainActivity : AppCompatActivity() {
                             showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }

@@ -42,6 +42,8 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -91,10 +93,10 @@ fun HomeActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     drawerState: DrawerState,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to home activity")
@@ -161,7 +163,7 @@ fun HomeActivity(
                 showPostLinkPreviews = showPostLinkPreviews,
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
-                postActionbarMode = postActionbarMode,
+                postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             )
         },
@@ -206,11 +208,11 @@ fun MainPostListingsContent(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val ctx = LocalContext.current
@@ -425,7 +427,7 @@ fun MainPostListingsContent(
             },
             showIfRead = true,
             showScores = siteViewModel.showScores(),
-            postActionbarMode = postActionbarMode,
+            postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
         )

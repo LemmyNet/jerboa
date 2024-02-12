@@ -27,6 +27,7 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.getContent
 import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
@@ -102,12 +103,13 @@ fun CommentOptionsDropdown(
                     ).show()
                 },
             )
+            val content = commentView.comment.getContent()
             PopupMenuItem(
                 text = stringResource(R.string.comment_node_copy_comment),
                 icon = Icons.Outlined.ContentCopy,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
+                    if (copyToClipboard(ctx, content, "comment")) {
                         Toast.makeText(
                             ctx,
                             ctx.getString(R.string.comment_node_comment_copied),
