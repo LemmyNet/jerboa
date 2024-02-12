@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -68,18 +69,14 @@ fun ItemAndInstanceTitle(
         fontSize = INSTANCE_FONT_SIZE.sp,
     ),
 ) {
-    val serverStr = if (!local) {
-        actorId?.let { aId ->
-            "@${hostName(aId)}"
-        } ?: run {
+    val text = remember(title + local + itemColor) {
+        val serverStr = if (!local && actorId != null) {
+            "@${hostName(actorId)}"
+        } else {
             null
         }
-    } else {
-        null
-    }
 
-    Text(
-        text = buildAnnotatedString {
+        buildAnnotatedString {
             withStyle(
                 style = itemStyle.toSpanStyle().copy(color = itemColor),
             ) {
@@ -94,7 +91,11 @@ fun ItemAndInstanceTitle(
                     append(server)
                 }
             }
-        },
+        }
+    }
+
+    Text(
+        text = text,
         maxLines = 1,
         modifier = modifier.basicMarquee(),
     )

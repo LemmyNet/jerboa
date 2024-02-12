@@ -3,8 +3,6 @@ package com.jerboa.ui.components.drawer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -426,7 +424,6 @@ fun DrawerHeader(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AvatarAndAccountName(
     account: Account,
@@ -446,15 +443,8 @@ fun AvatarAndAccountName(
             ItemAndInstanceTitle(
                 title = myPerson?.getDisplayName() ?: account.name,
                 actorId = myPerson?.actor_id,
-                local = true,
+                local = false,
                 itemColor = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = if (account.isAnon()) "" else "${account.name}@${account.instance}",
-                color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.basicMarquee(),
-                maxLines = 2,
             )
         }
     }
