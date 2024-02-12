@@ -69,7 +69,7 @@ fun ItemAndInstanceTitle(
         fontSize = INSTANCE_FONT_SIZE.sp,
     ),
 ) {
-    val text = remember(title + local + itemColor) {
+    val text = remember(title, local, itemColor) {
         val serverStr = if (!local && actorId != null) {
             "@${hostName(actorId)}"
         } else {

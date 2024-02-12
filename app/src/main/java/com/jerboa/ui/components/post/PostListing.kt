@@ -22,9 +22,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
@@ -116,6 +116,7 @@ import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
+import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
@@ -758,7 +759,7 @@ fun CommentNewCountRework(
         }
 
     ActionBarButtonAndBadge(
-        icon = Icons.Outlined.Forum,
+        icon = Icons.Outlined.ChatBubbleOutline,
         iconBadgeCount = unread,
         contentDescription = null,
         text = siFormat(comments),
@@ -1290,6 +1291,7 @@ fun PostVotingTile(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier =
             Modifier
                 .fillMaxHeight()
@@ -1383,7 +1385,7 @@ fun PostListingList(
             ) {
                 PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
                 ) {
                     // You must use a center align modifier for each of these
                     val centerMod = Modifier.align(Alignment.CenterVertically)
@@ -1431,7 +1433,7 @@ fun PostListingList(
                     )
                 }
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (!showVotingArrowsInListView) {
@@ -1732,33 +1734,36 @@ fun PostListingHeaderPreview() {
 
 @Composable
 fun MetadataCard(post: Post) {
-    OutlinedCard(
-        shape = MaterialTheme.shapes.medium,
-        modifier =
-            Modifier
-                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                .fillMaxWidth(),
-        content = {
-            Column(
-                modifier = Modifier.padding(MEDIUM_PADDING),
-            ) {
-                if (post.name != post.embed_title) {
-                    post.embed_title?.let { title ->
+    val embedTitle = post.embed_title
+    if (embedTitle != null) {
+        OutlinedCard(
+            shape = MaterialTheme.shapes.medium,
+            modifier =
+                Modifier
+                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .fillMaxWidth(),
+            content = {
+                Column(
+                    modifier = Modifier.padding(MEDIUM_PADDING),
+                ) {
+                    if (post.name != embedTitle) {
                         Text(
-                            text = title,
+                            text = embedTitle,
                             style = MaterialTheme.typography.titleLarge,
+                        )
+                        if (post.embed_description != null) {
+                            HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+                        }
+                    }
+                    post.embed_description?.let {
+                        // This is actually html, but markdown can render it
+                        MyMarkdownText(
+                            markdown = it,
+                            onClick = {},
                         )
                     }
                 }
-                post.embed_description?.also {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-                    // This is actually html, but markdown can render it
-                    MyMarkdownText(
-                        markdown = it,
-                        onClick = {},
-                    )
-                }
-            }
-        },
-    )
+            },
+        )
+    }
 }

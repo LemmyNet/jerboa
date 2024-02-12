@@ -76,7 +76,7 @@ fun CommunityLink(
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    style: TextStyle = MaterialTheme.typography.labelLarge,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,

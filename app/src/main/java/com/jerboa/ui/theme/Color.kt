@@ -1360,4 +1360,4 @@ fun dracula(): Pair<JerboaColorScheme, JerboaColorScheme> {
 val Color.muted get() = this.copy(alpha = 0.5F)
 
 val CARD_COLORS @Composable
-get() = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
+get() = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
