@@ -23,7 +23,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,6 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.db.entity.isReady
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -128,7 +131,10 @@ fun BottomNavActivity(
     appSettings: AppSettings,
     drawerState: DrawerState,
 ) {
-    val account = getCurrentAccount(accountViewModel)
+    val acc by accountViewModel.currentAccount.observeAsState()
+    val account by remember {
+        derivedStateOf { acc ?: AnonAccount }
+    }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
@@ -197,7 +203,7 @@ fun BottomNavActivity(
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
                 bottomBar = {
-                    if (appSettings.showBottomNav && account.isReady()) {
+                    if (appSettings.showBottomNav && acc != null) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
