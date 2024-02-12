@@ -47,7 +47,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.db.entity.isReady
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -56,7 +55,6 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
