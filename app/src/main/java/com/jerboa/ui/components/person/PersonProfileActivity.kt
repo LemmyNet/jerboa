@@ -425,6 +425,7 @@ fun UserTabs(
                                             appState.toCommunity(id = community.id)
                                         },
                                         showDefaultIcon = true,
+                                        showAvatar = showAvatar,
                                         blurNSFW = blurNSFW,
                                     )
                                 }

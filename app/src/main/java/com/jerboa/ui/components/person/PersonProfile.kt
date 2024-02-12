@@ -42,7 +42,6 @@ import com.jerboa.R
 import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.feat.openMatrix
-import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
@@ -100,8 +99,8 @@ fun PersonProfileTopSection(
             modifier = Modifier.padding(MEDIUM_PADDING),
             verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         ) {
-            Text(
-                text = personNameShown(personView.person, true),
+            PersonName(
+                person = personView.person,
                 style = MaterialTheme.typography.titleLarge,
             )
 

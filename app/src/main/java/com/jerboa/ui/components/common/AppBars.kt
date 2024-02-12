@@ -450,14 +450,15 @@ fun ActionBarButtonAndBadge(
 
 @Composable
 fun DotSpacer(
-    padding: Dp = SMALL_PADDING,
+    modifier: Modifier = Modifier,
+    padding: Dp = 0.dp,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
         text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
-        modifier = Modifier.padding(horizontal = padding),
+        modifier = modifier.padding(horizontal = padding),
     )
 }
 

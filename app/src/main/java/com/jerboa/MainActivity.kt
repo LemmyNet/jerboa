@@ -383,6 +383,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
+                            showAvatar = siteViewModel.showAvatar(),
                         )
                     }
 
