@@ -54,6 +54,7 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
@@ -129,7 +130,7 @@ fun BottomNavActivity(
     appSettings: AppSettings,
     drawerState: DrawerState,
 ) {
-    val acc by accountViewModel.currentAccount.observeAsState()
+    val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
     val account by remember {
         derivedStateOf { acc ?: AnonAccount }
     }
@@ -201,7 +202,7 @@ fun BottomNavActivity(
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
                 bottomBar = {
-                    if (appSettings.showBottomNav && acc != null) {
+                    if (appSettings.showBottomNav && acc !== GuardAccount) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
