@@ -90,6 +90,7 @@ fun PostReportItem(
                 showAvatar = showAvatar,
                 blurNSFW = blurNSFW,
                 showScores = showScores,
+                fullBody = false,
             )
         }
 
