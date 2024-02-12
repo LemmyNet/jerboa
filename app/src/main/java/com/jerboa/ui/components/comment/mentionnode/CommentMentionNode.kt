@@ -287,6 +287,7 @@ fun CommentMentionNode(
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
             blurNSFW = blurNSFW,
+            showAvatar = showAvatar,
         )
         CommentMentionNodeHeader(
             personMentionView = personMentionView,

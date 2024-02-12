@@ -267,6 +267,7 @@ fun CommentReplyNodeInbox(
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
             blurNSFW = blurNSFW,
+            showAvatar = showAvatar,
         )
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,

@@ -186,7 +186,7 @@ val samplePerson2 =
         updated = "2021-10-11T07:14:53.548707",
         actor_id = "https://lemmy.ml/u/homeless",
         bio = null,
-        local = true,
+        local = false,
         banner = null,
         deleted = false,
         matrix_user_id = null,
@@ -241,6 +241,8 @@ val sampleCommunity =
         hidden = false,
         posting_restricted_to_mods = false,
     )
+
+val sampleCommunityFederated = sampleCommunity.copy(local = false)
 
 val samplePostAggregates =
     PostAggregates(

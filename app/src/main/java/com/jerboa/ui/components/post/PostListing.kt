@@ -22,9 +22,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
@@ -116,6 +116,7 @@ import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
+import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
@@ -134,6 +135,7 @@ fun PostHeaderLine(
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
+    fullBody: Boolean,
     blurNSFW: BlurNSFW,
     showScores: Boolean,
 ) {
@@ -144,10 +146,11 @@ fun PostHeaderLine(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f),
             ) {
-                if (showCommunityName) {
+                if (showCommunityName && showAvatar) {
                     community.icon?.let {
                         CircularIcon(
                             icon = it,
@@ -159,7 +162,7 @@ fun PostHeaderLine(
                         )
                     }
                 }
-                Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                Column {
                     if (showCommunityName) {
                         CommunityName(
                             community = postView.community,
@@ -173,17 +176,17 @@ fun PostHeaderLine(
                         PersonProfileLink(
                             person = postView.creator,
                             onClick = onPersonClick,
-                            showTags = true,
+                            showTags = fullBody,
                             // Set this to false, we already know this
                             isPostCreator = false,
                             isModerator = postView.creator_is_moderator,
                             isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,
                             color = MaterialTheme.colorScheme.onSurface.muted,
-                            showAvatar = showAvatar,
+                            showAvatar = !showCommunityName && showAvatar,
                         )
                         if (postView.post.featured_local) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = stringResource(R.string.postListing_featuredLocal),
@@ -192,7 +195,7 @@ fun PostHeaderLine(
                             )
                         }
                         if (postView.post.featured_community) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = stringResource(R.string.postListing_featuredCommunity),
@@ -201,7 +204,7 @@ fun PostHeaderLine(
                             )
                         }
                         if (postView.post.locked) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.CommentsDisabled,
                                 contentDescription = stringResource(R.string.postListing_locked),
@@ -251,6 +254,7 @@ fun PostHeaderLinePreview() {
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         showScores = true,
+        fullBody = true,
     )
 }
 
@@ -755,7 +759,7 @@ fun CommentNewCountRework(
         }
 
     ActionBarButtonAndBadge(
-        icon = Icons.Outlined.Forum,
+        icon = Icons.Outlined.ChatBubbleOutline,
         iconBadgeCount = unread,
         contentDescription = null,
         text = siFormat(comments),
@@ -1250,7 +1254,6 @@ fun PostListing(
                         showCommunityName = showCommunityName,
                         account = account,
                         showVotingArrowsInListView = showVotingArrowsInListView,
-                        showAvatar = showAvatar,
                         useCustomTabs = useCustomTabs,
                         usePrivateTabs = usePrivateTabs,
                         blurNSFW = blurNSFW,
@@ -1288,6 +1291,7 @@ fun PostVotingTile(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier =
             Modifier
                 .fillMaxHeight()
@@ -1338,7 +1342,6 @@ fun PostListingList(
     showCommunityName: Boolean = true,
     account: Account,
     showVotingArrowsInListView: Boolean,
-    showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: BlurNSFW,
@@ -1382,18 +1385,21 @@ fun PostListingList(
             ) {
                 PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
-                    verticalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
                 ) {
+                    // You must use a center align modifier for each of these
+                    val centerMod = Modifier.align(Alignment.CenterVertically)
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
                             onClick = {},
                             clickable = false,
                             showDefaultIcon = false,
+                            showAvatar = false,
                             blurNSFW = blurNSFW,
+                            modifier = centerMod,
                         )
-                        DotSpacer(0.dp)
+                        DotSpacer(modifier = centerMod)
                     }
                     PersonProfileLink(
                         person = postView.creator,
@@ -1402,9 +1408,10 @@ fun PostListingList(
                         onClick = {},
                         clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
-                        showAvatar = showAvatar,
+                        showAvatar = false,
+                        modifier = centerMod,
                     )
-                    DotSpacer(0.dp)
+                    DotSpacer(modifier = centerMod)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
                             val hostName = hostName(postUrl)
@@ -1413,15 +1420,20 @@ fun PostListingList(
                                     text = it,
                                     color = MaterialTheme.colorScheme.onBackground.muted,
                                     style = MaterialTheme.typography.bodyMedium,
+                                    modifier = centerMod,
                                 )
-                                DotSpacer(0.dp)
+                                DotSpacer(modifier = centerMod)
                             }
                         }
                     }
-                    TimeAgo(published = postView.post.published, updated = postView.post.updated)
+                    TimeAgo(
+                        published = postView.post.published,
+                        updated = postView.post.updated,
+                        modifier = centerMod,
+                    )
                 }
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (!showVotingArrowsInListView) {
@@ -1430,7 +1442,7 @@ fun PostListingList(
                             style = MaterialTheme.typography.bodyMedium,
                             color = scoreColor(myVote = instantScores.myVote),
                         )
-                        DotSpacer(0.dp)
+                        DotSpacer()
                     }
                     Text(
                         text =
@@ -1558,7 +1570,6 @@ fun PostListingListPreview() {
         onPostClick = {},
         account = AnonAccount,
         showVotingArrowsInListView = true,
-        showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = BlurNSFW.NSFW,
@@ -1588,7 +1599,6 @@ fun PostListingListWithThumbPreview() {
         onPostClick = {},
         account = AnonAccount,
         showVotingArrowsInListView = true,
-        showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = BlurNSFW.NSFW,
@@ -1645,6 +1655,7 @@ fun PostListingCard(
                 .padding(vertical = MEDIUM_PADDING)
                 .clickable { onPostClick(postView) }
                 .testTag("jerboa:post"),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
@@ -1660,9 +1671,8 @@ fun PostListingCard(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            fullBody = fullBody,
         )
-
-        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
 
         //  Title + metadata
         PostBody(
@@ -1679,8 +1689,6 @@ fun PostListingCard(
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
         )
-
-        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
 
         // Footer bar
         PostFooterLine(
@@ -1726,33 +1734,36 @@ fun PostListingHeaderPreview() {
 
 @Composable
 fun MetadataCard(post: Post) {
-    OutlinedCard(
-        shape = MaterialTheme.shapes.medium,
-        modifier =
-            Modifier
-                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                .fillMaxWidth(),
-        content = {
-            Column(
-                modifier = Modifier.padding(MEDIUM_PADDING),
-            ) {
-                if (post.name != post.embed_title) {
-                    post.embed_title?.let { title ->
+    val embedTitle = post.embed_title
+    if (embedTitle != null) {
+        OutlinedCard(
+            shape = MaterialTheme.shapes.medium,
+            modifier =
+                Modifier
+                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .fillMaxWidth(),
+            content = {
+                Column(
+                    modifier = Modifier.padding(MEDIUM_PADDING),
+                ) {
+                    if (post.name != embedTitle) {
                         Text(
-                            text = title,
+                            text = embedTitle,
                             style = MaterialTheme.typography.titleLarge,
+                        )
+                        if (post.embed_description != null) {
+                            HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+                        }
+                    }
+                    post.embed_description?.let {
+                        // This is actually html, but markdown can render it
+                        MyMarkdownText(
+                            markdown = it,
+                            onClick = {},
                         )
                     }
                 }
-                post.embed_description?.also {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-                    // This is actually html, but markdown can render it
-                    MyMarkdownText(
-                        markdown = it,
-                        onClick = {},
-                    )
-                }
-            }
-        },
-    )
+            },
+        )
+    }
 }

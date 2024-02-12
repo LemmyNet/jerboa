@@ -3,6 +3,8 @@ package com.jerboa.ui.components.drawer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,10 +42,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
@@ -59,7 +61,6 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.NavTab
-import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -283,6 +284,7 @@ fun DrawerItemsMain(
                     community = follow.community,
                     onClick = onCommunityClick,
                     showDefaultIcon = true,
+                    showAvatar = true,
                     blurNSFW = blurNSFW,
                 )
             }
@@ -433,6 +435,7 @@ fun DrawerHeader(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AvatarAndAccountName(
     account: Account,
@@ -449,15 +452,17 @@ fun AvatarAndAccountName(
             }
         }
         Column {
-            PersonName(
-                name = myPerson?.display_name ?: account.name,
+            Text(
+                text = myPerson?.getDisplayName() ?: account.name,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.basicMarquee(),
             )
             Text(
                 text = if (account.isAnon()) "" else "${account.name}@${account.instance}",
                 color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelSmall,
-                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.basicMarquee(),
                 maxLines = 2,
             )
         }

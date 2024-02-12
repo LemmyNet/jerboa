@@ -252,6 +252,7 @@ fun BottomNavActivity(
                             followList = siteViewModel.getFollowList(),
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
+                            showAvatar = siteViewModel.showAvatar(),
                         )
                     }
 
