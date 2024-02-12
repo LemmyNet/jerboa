@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.ButtonDefaults
@@ -163,26 +162,6 @@ fun ReportResolverBlock(
 ) {
     val resolvedStr = stringResource(if (resolved) R.string.resolved_by else R.string.unresolved_by)
 
-//        resolveIcon = {
-//            Icon(
-//                imageVector = Icons.Outlined.CheckCircle,
-//                contentDescription = null,
-//                tint = MaterialTheme.colorScheme.error,
-//                modifier =
-//                Modifier
-//                    .height(ACTION_BAR_ICON_SIZE),
-//            )
-//        resolveIcon = {
-//            Icon(
-//                imageVector = Icons.Outlined.CheckCircle,
-//                contentDescription = null,
-//                tint = MaterialTheme.colorScheme.primary,
-//                modifier =
-//                Modifier
-//                    .height(ACTION_BAR_ICON_SIZE),
-//            )
-//        }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -231,7 +210,7 @@ fun ResolveButtonPreview() {
 
 @Preview
 @Composable
-fun unResolveButtonPreview() {
+fun UnResolveButtonPreview() {
     ResolveButtonBlock(
         resolved = true,
         onResolveClick = {},
