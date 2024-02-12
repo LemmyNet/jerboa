@@ -66,6 +66,7 @@ fun MainDrawer(
             },
         follows = follows.toList(),
         unreadCount = siteViewModel.unreadCount,
+        unreadAppCount = siteViewModel.unreadAppCount,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,
         isOpen = drawerState.isOpen,

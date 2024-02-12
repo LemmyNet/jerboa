@@ -959,6 +959,23 @@ fun findAndUpdatePrivateMessage(
     }
 }
 
+fun findAndUpdateApplication(
+    applications: List<RegistrationApplicationView>,
+    updatedApplication: RegistrationApplicationView,
+): List<RegistrationApplicationView> {
+    val foundIndex =
+        applications.indexOfFirst {
+            it.registration_application.id == updatedApplication.registration_application.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = applications.toMutableList()
+        mutable[foundIndex] = updatedApplication
+        mutable.toList()
+    } else {
+        applications
+    }
+}
+
 fun showBlockPersonToast(
     blockPersonRes: ApiState<BlockPersonResponse>,
     ctx: Context,

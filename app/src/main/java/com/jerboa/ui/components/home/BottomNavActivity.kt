@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AppRegistration
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
@@ -21,7 +23,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,6 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
@@ -49,12 +54,13 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsActivity
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -62,40 +68,53 @@ enum class NavTab(
     val iconOutlined: ImageVector,
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
+    val adminOnly: Boolean,
 ) {
     Home(
-        R.string.bottomBar_label_home,
-        Icons.Outlined.Home,
-        Icons.Filled.Home,
-        R.string.bottomBar_home,
+        textId = R.string.bottomBar_label_home,
+        iconOutlined = Icons.Outlined.Home,
+        iconFilled = Icons.Filled.Home,
+        contentDescriptionId = R.string.bottomBar_home,
+        adminOnly = false,
     ),
     Search(
-        R.string.bottomBar_label_search,
-        Icons.Outlined.Search,
-        Icons.Filled.Search,
-        R.string.bottomBar_search,
+        textId = R.string.bottomBar_label_search,
+        iconOutlined = Icons.Outlined.Search,
+        iconFilled = Icons.Filled.Search,
+        contentDescriptionId = R.string.bottomBar_search,
+        adminOnly = false,
     ),
     Inbox(
-        R.string.bottomBar_label_inbox,
-        Icons.Outlined.Email,
-        Icons.Filled.Email,
-        R.string.bottomBar_inbox,
+        textId = R.string.bottomBar_label_inbox,
+        iconOutlined = Icons.Outlined.Email,
+        iconFilled = Icons.Filled.Email,
+        contentDescriptionId = R.string.bottomBar_inbox,
+        adminOnly = false,
+    ),
+    RegistrationApplications(
+        R.string.applications_request_shorthand,
+        Icons.Outlined.AppRegistration,
+        Icons.Filled.AppRegistration,
+        R.string.bottomBar_registrations,
+        adminOnly = true,
     ),
     Saved(
-        R.string.bottomBar_label_bookmarks,
-        Icons.Outlined.Bookmarks,
-        Icons.Filled.Bookmarks,
-        R.string.bottomBar_bookmarks,
+        textId = R.string.bottomBar_label_bookmarks,
+        iconOutlined = Icons.Outlined.Bookmarks,
+        iconFilled = Icons.Filled.Bookmarks,
+        contentDescriptionId = R.string.bottomBar_bookmarks,
+        adminOnly = false,
     ),
     Profile(
-        R.string.bottomBar_label_profile,
-        Icons.Outlined.Person,
-        Icons.Filled.Person,
-        R.string.bottomBar_profile,
+        textId = R.string.bottomBar_label_profile,
+        iconOutlined = Icons.Outlined.Person,
+        iconFilled = Icons.Filled.Person,
+        contentDescriptionId = R.string.bottomBar_profile,
+        adminOnly = false,
     ),
     ;
 
-    fun needsLogin() = this == Inbox || this == Saved || this == Profile
+    fun needsLogin() = this == Inbox || this == Saved || this == Profile || this == RegistrationApplications
 }
 
 @OptIn(
@@ -111,7 +130,10 @@ fun BottomNavActivity(
     appSettings: AppSettings,
     drawerState: DrawerState,
 ) {
-    val account = getCurrentAccount(accountViewModel)
+    val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
+    val account by remember {
+        derivedStateOf { acc ?: AnonAccount }
+    }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
@@ -180,11 +202,13 @@ fun BottomNavActivity(
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
                 bottomBar = {
-                    if (appSettings.showBottomNav) {
+                    if (appSettings.showBottomNav && acc !== GuardAccount) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
+                            unreadAppCount = siteViewModel.unreadAppCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
+                            amAdmin = account.isAdmin,
                             onSelect = onSelectTab,
                         )
                     }
@@ -237,6 +261,15 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.RegistrationApplications.name) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                             drawerState = drawerState,
                         )
                     }

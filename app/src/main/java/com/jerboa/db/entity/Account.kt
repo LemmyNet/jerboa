@@ -27,18 +27,23 @@ data class Account(
         defaultValue = "0",
     )
     val verificationState: Int,
+    // These two are used to show extra bottom bar items right away
+    @ColumnInfo(name = "is_admin") val isAdmin: Boolean,
+    @ColumnInfo(name = "is_mod") val isMod: Boolean,
 )
 
 val AnonAccount =
     Account(
-        -1,
-        true,
-        "",
-        "Anonymous",
-        "",
-        1,
-        0,
+        id = -1,
+        current = true,
+        instance = "",
+        name = "Anonymous",
+        jwt = "",
+        defaultListingType = 1,
+        defaultSortType = 0,
         verificationState = 0,
+        isAdmin = false,
+        isMod = false,
     )
 
 fun Account.isAnon(): Boolean {

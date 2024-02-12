@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.MarkunreadMailbox
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.R
+import com.jerboa.UnreadOrAll
 import com.jerboa.api.API
 import com.jerboa.datatypes.data
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -278,5 +282,31 @@ fun CenteredPopupMenu(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun UnreadOrAllOptionsDropDown(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickUnreadOrAll: (UnreadOrAll) -> Unit,
+    selectedUnreadOrAll: UnreadOrAll,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+    ) {
+        MenuItem(
+            text = stringResource(R.string.dialogs_all),
+            icon = Icons.AutoMirrored.Outlined.List,
+            onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
+            highlight = (selectedUnreadOrAll == UnreadOrAll.All),
+        )
+        MenuItem(
+            text = stringResource(R.string.dialogs_unread),
+            icon = Icons.Outlined.MarkunreadMailbox,
+            onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
+            highlight = (selectedUnreadOrAll == UnreadOrAll.Unread),
+        )
     }
 }

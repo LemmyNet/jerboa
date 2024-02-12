@@ -54,6 +54,8 @@ object Route {
     const val ABOUT = "about"
     const val CRASH_LOGS = "crashLogs"
 
+    const val REGISTRATION_APPLICATIONS = "registrationApplications"
+
     val VIEW = ViewArgs.route
 
     class CommunityFromIdArgs(val id: CommunityId) {

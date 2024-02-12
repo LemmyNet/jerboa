@@ -30,3 +30,5 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
 fun getPostViewMode(appSettingsViewModel: AppSettingsViewModel): PostViewMode {
     return getEnumFromIntSetting<PostViewMode>(appSettingsViewModel.appSettings) { it.postViewMode }
 }
+
+val GuardAccount = AnonAccount.copy()

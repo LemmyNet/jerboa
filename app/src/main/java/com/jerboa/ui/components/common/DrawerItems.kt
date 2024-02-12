@@ -57,7 +57,7 @@ fun IconAndTextDrawerItem(
     ) {
         Row {
             icon?.also { ico ->
-                InboxIconAndBadge(
+                NavbarIconAndBadge(
                     iconBadgeCount = iconBadgeCount,
                     modifier = spacingMod.size(DRAWER_ITEM_SPACING),
                     icon = ico,
