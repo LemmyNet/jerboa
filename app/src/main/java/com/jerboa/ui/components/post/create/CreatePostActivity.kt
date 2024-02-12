@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post.create
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.util.Patterns
@@ -138,6 +139,7 @@ fun CreatePostActivity(
                                     body = body,
                                     url = url,
                                     isNsfw = isNsfw,
+                                    ctx = ctx,
                                     createPostViewModel = createPostViewModel,
                                     selectedCommunity = selectedCommunity,
                                     onSuccess = appState::toPostWithPopUpTo,
@@ -212,6 +214,7 @@ fun CreatePostActivity(
 fun onSubmitClick(
     name: String,
     body: TextFieldValue,
+    ctx: Context,
     url: String,
     isNsfw: Boolean,
     selectedCommunity: Community?,
@@ -231,6 +234,7 @@ fun onSubmitClick(
                 body = bodyOut,
                 nsfw = isNsfw,
             ),
+            ctx = ctx,
             onSuccess = onSuccess,
         )
     }

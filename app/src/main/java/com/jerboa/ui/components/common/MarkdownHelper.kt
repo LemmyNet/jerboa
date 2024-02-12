@@ -14,8 +14,6 @@ import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.annotation.IdRes
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +23,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import coil.imageLoader
@@ -161,8 +158,6 @@ object MarkdownHelper {
         onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
-        val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-
         BoxWithConstraints {
             val canvasWidthMaybe = with(LocalDensity.current) { maxWidth.toPx() }.toInt()
             val textSizeMaybe = with(LocalDensity.current) { style.fontSize.toPx() }
@@ -172,8 +167,6 @@ object MarkdownHelper {
                     createTextView(
                         context = ctx,
                         color = color,
-                        defaultColor = defaultColor,
-                        fontSize = TextUnit.Unspecified,
                         style = style,
                         viewId = null,
                         onClick = onClick,
@@ -195,8 +188,6 @@ object MarkdownHelper {
     private fun createTextView(
         context: Context,
         color: Color = Color.Unspecified,
-        defaultColor: Color,
-        fontSize: TextUnit = TextUnit.Unspecified,
         textAlign: TextAlign? = null,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
@@ -204,12 +195,12 @@ object MarkdownHelper {
         onClick: (() -> Unit)? = null,
         onLongClick: ((View) -> Boolean)? = null,
     ): TextView {
-        val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
+        val textColor = color.takeOrElse { style.color }
         val mergedStyle =
             style.merge(
                 TextStyle(
                     color = textColor,
-                    fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
+                    fontSize = style.fontSize,
                     textAlign = textAlign ?: TextAlign.Unspecified,
                 ),
             )
@@ -244,18 +235,15 @@ object MarkdownHelper {
     fun CreateMarkdownPreview(
         markdown: String,
         modifier: Modifier = Modifier,
-        color: Color = MaterialTheme.colorScheme.onSurface,
+        color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
         style: TextStyle,
-        defaultColor: Color,
     ) {
         AndroidView(
             factory = { ctx ->
                 createTextViewPreview(
                     context = ctx,
                     color = color,
-                    defaultColor = defaultColor,
-                    fontSize = TextUnit.Unspecified,
                     style = style,
                     onClick = onClick,
                 )
@@ -270,18 +258,16 @@ object MarkdownHelper {
     private fun createTextViewPreview(
         context: Context,
         color: Color = Color.Unspecified,
-        defaultColor: Color,
-        fontSize: TextUnit = TextUnit.Unspecified,
         maxLines: Int = 5,
         style: TextStyle,
         onClick: (() -> Unit)? = null,
     ): TextView {
-        val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
+        val textColor = color.takeOrElse { style.color }
         val mergedStyle =
             style.merge(
                 TextStyle(
                     color = textColor,
-                    fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
+                    fontSize = style.fontSize,
                 ),
             )
         return TextView(context).apply {

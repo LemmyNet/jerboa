@@ -59,6 +59,8 @@ import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -92,7 +94,20 @@ import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -131,9 +146,9 @@ fun PostActivity(
     showVotingArrowsInListView: Boolean,
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreview: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     Log.d("jerboa", "got to post activity")
@@ -462,7 +477,7 @@ fun PostActivity(
                                     showPostLinkPreview = showPostLinkPreview,
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
-                                    postActionbarMode = postActionbarMode,
+                                    postActionBarMode = postActionBarMode,
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
                             }

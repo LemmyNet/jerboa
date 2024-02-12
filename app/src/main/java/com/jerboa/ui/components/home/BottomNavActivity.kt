@@ -25,7 +25,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,8 +48,8 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.db.entity.isReady
 import com.jerboa.db.entity.userViewType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
@@ -56,8 +58,8 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -140,7 +142,10 @@ fun BottomNavActivity(
     appSettings: AppSettings,
     drawerState: DrawerState,
 ) {
-    val account = getCurrentAccount(accountViewModel)
+    val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
+    val account by remember {
+        derivedStateOf { acc ?: AnonAccount }
+    }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
@@ -195,7 +200,7 @@ fun BottomNavActivity(
                         scope = scope,
                         drawerState = drawerState,
                         onSelectTab = onSelectTab,
-                        blurNSFW = appSettings.blurNSFW,
+                        blurNSFW = appSettings.blurNSFW.toEnum(),
                         showBottomNav = appSettings.showBottomNav,
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
@@ -209,7 +214,7 @@ fun BottomNavActivity(
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
                 bottomBar = {
-                    if (appSettings.showBottomNav && account.isReady()) {
+                    if (appSettings.showBottomNav && acc !== GuardAccount) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
@@ -245,10 +250,10 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -258,7 +263,7 @@ fun BottomNavActivity(
                             appState = appState,
                             selectMode = false,
                             followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                         )
                     }
@@ -268,7 +273,16 @@ fun BottomNavActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.RegistrationApplications.name) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                             drawerState = drawerState,
                         )
                     }
@@ -288,7 +302,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                         )
                     }
 
@@ -303,11 +317,11 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -323,11 +337,11 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }

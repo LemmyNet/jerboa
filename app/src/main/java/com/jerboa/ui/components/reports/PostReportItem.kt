@@ -13,6 +13,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.datatypes.samplePostReportView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.post.PostBody
 import com.jerboa.ui.components.post.PostHeaderLine
@@ -34,7 +35,7 @@ fun PostReportItem(
     onPostClick: (PostView) -> Unit,
     onCommunityClick: (Community) -> Unit,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     account: Account,
 ) {
@@ -146,7 +147,7 @@ fun PostReportItemPreview() {
         onCommunityClick = {},
         onResolveClick = {},
         showAvatar = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showScores = true,
         account = AnonAccount,
         appState = rememberJerboaAppState(),

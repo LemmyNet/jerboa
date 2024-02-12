@@ -44,6 +44,7 @@ import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -69,7 +70,7 @@ fun ReportsActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     Log.d("jerboa", "got to reports activity")
 
@@ -156,7 +157,7 @@ fun ReportsTabs(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     val pagerState = rememberPagerState { ReportsTab.entries.size }
 
