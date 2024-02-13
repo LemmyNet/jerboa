@@ -74,6 +74,7 @@ enum class NavTab(
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
     val userViewType: UserViewType,
+    val needsLogin: Boolean,
 ) {
     Home(
         textId = R.string.bottomBar_label_home,
@@ -81,6 +82,7 @@ enum class NavTab(
         iconFilled = Icons.Filled.Home,
         contentDescriptionId = R.string.bottomBar_home,
         userViewType = UserViewType.Normal,
+        needsLogin = false,
     ),
     Search(
         textId = R.string.bottomBar_label_search,
@@ -88,6 +90,7 @@ enum class NavTab(
         iconFilled = Icons.Filled.Search,
         contentDescriptionId = R.string.bottomBar_search,
         userViewType = UserViewType.Normal,
+        needsLogin = false,
     ),
     Inbox(
         textId = R.string.bottomBar_label_inbox,
@@ -95,6 +98,7 @@ enum class NavTab(
         iconFilled = Icons.Filled.Email,
         contentDescriptionId = R.string.bottomBar_inbox,
         userViewType = UserViewType.Normal,
+        needsLogin = true,
     ),
     RegistrationApplications(
         R.string.applications_request_shorthand,
@@ -102,6 +106,7 @@ enum class NavTab(
         Icons.Filled.AppRegistration,
         R.string.bottomBar_registrations,
         userViewType = UserViewType.AdminOnly,
+        needsLogin = true,
     ),
     Reports(
         R.string.reports,
@@ -109,6 +114,7 @@ enum class NavTab(
         Icons.Filled.Flag,
         R.string.bottomBar_reports,
         userViewType = UserViewType.AdminOrMod,
+        needsLogin = true,
     ),
     Saved(
         textId = R.string.bottomBar_label_bookmarks,
@@ -116,6 +122,7 @@ enum class NavTab(
         iconFilled = Icons.Filled.Bookmarks,
         contentDescriptionId = R.string.bottomBar_bookmarks,
         userViewType = UserViewType.Normal,
+        needsLogin = true,
     ),
     Profile(
         textId = R.string.bottomBar_label_profile,
@@ -123,10 +130,8 @@ enum class NavTab(
         iconFilled = Icons.Filled.Person,
         contentDescriptionId = R.string.bottomBar_profile,
         userViewType = UserViewType.Normal,
+        needsLogin = true,
     ),
-    ;
-
-    fun needsLogin() = this == Inbox || this == Saved || this == Profile || this == RegistrationApplications || this == Reports
 }
 
 @OptIn(
@@ -170,7 +175,7 @@ fun BottomNavActivity(
     }
 
     val onSelectTab: (NavTab) -> Unit = { tab: NavTab ->
-        if (tab.needsLogin()) {
+        if (tab.needsLogin) {
             account.doIfReadyElseDisplayInfo(
                 appState,
                 ctx,

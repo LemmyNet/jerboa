@@ -39,8 +39,8 @@ fun PostReportItem(
     showScores: Boolean,
     account: Account,
 ) {
-    // Build a simulated post view from the post report view data
-    // Set the original post data (a troll could change it)
+    // Build a post-view using the content at the time it was reported,
+    // not the current state.
     val origPost = postReportView.post.copy(
         name = postReportView.post_report.original_post_name,
         url = postReportView.post_report.original_post_url,

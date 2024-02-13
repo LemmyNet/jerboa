@@ -304,19 +304,17 @@ class ReportsViewModel(account: Account, siteViewModel: SiteViewModel) : ViewMod
 
     init {
         if (!account.isAnon()) {
-            if (!account.isAnon()) {
-                this.resetPages()
-                this.listPostReports(
-                    this.getFormPostReports(),
-                )
-                this.listCommentReports(
-                    this.getFormCommentReports(),
-                )
-                this.listMessageReports(
-                    this.getFormMessageReports(),
-                )
-                siteViewModel.fetchUnreadReportCount()
-            }
+            this.resetPages()
+            this.listPostReports(
+                this.getFormPostReports(),
+            )
+            this.listCommentReports(
+                this.getFormCommentReports(),
+            )
+            this.listMessageReports(
+                this.getFormMessageReports(),
+            )
+            siteViewModel.fetchUnreadReportCount()
         }
     }
 

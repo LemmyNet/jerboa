@@ -28,8 +28,8 @@ fun CommentReportItem(
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
-    // Build a simulated post view from the report view data
-    // Set the original post data (a troll could change it)
+    // Build a comment-view using the content at the time it was reported,
+    // not the current state.
     val origComment = commentReportView.comment.copy(
         content = commentReportView.comment_report.original_comment_text,
         published = commentReportView.comment_report.published,
