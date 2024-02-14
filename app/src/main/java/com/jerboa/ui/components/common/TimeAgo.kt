@@ -24,10 +24,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
+import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
 import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
-import com.jerboa.feat.upvotePercentStr
+import com.jerboa.feat.formatPercent
+import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
@@ -135,7 +137,7 @@ fun ScoreAndTime(
         NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
-        val upvotePct = upvotePercentStr(
+        val upvotePct = upvotePercent(
             upvotes = upvotes,
             downvotes = downvotes,
         )
@@ -143,17 +145,21 @@ fun ScoreAndTime(
             VoteDisplayMode.Full -> {
                 LargeVoteIndicator(data = score.toString(), myVote = myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
-                SmallVoteIndicator(data = "-$downvotes".toString())
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
+                    SmallVoteIndicator(data = "$downvotes↓")
+                    DotSpacer(style = MaterialTheme.typography.labelMedium)
+                }
             }
             VoteDisplayMode.ScoreAndUpvotePercentage -> {
                 LargeVoteIndicator(data = score.toString(), myVote = myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
-                SmallVoteIndicator(data = upvotePct)
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
+                    SmallVoteIndicator(data = formatPercent(upvotePct))
+                    DotSpacer(style = MaterialTheme.typography.labelMedium)
+                }
             }
             VoteDisplayMode.UpvotePercentage -> {
-                LargeVoteIndicator(data = upvotePct, myVote = myVote)
+                LargeVoteIndicator(data = formatPercent(upvotePct), myVote = myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
             }
             VoteDisplayMode.Score -> {
@@ -184,7 +190,7 @@ private fun SmallVoteIndicator(data: String) {
     Text(
         text = data,
         color = MaterialTheme.colorScheme.onBackground.muted,
-        style = MaterialTheme.typography.labelSmall,
+        style = MaterialTheme.typography.labelMedium,
     )
 }
 

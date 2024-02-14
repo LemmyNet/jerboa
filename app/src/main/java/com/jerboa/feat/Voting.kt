@@ -48,12 +48,15 @@ fun newVote(
     voteAction: VoteType,
 ): Int = if (voteAction.value == oldVote) 0 else voteAction.value
 
-fun upvotePercentStr(
+fun upvotePercent(
     upvotes: Long,
     downvotes: Long,
-): String {
-    val pct = (upvotes / (upvotes + downvotes)) * 100F
-    val formatted = "%.0f".format(pct)
+): Float {
+    return (upvotes.toFloat() / (upvotes + downvotes))
+}
+
+fun formatPercent(pct: Float): String {
+    val formatted = "%.0f".format(pct * 100F)
     return "$formatted%"
 }
 
@@ -64,7 +67,7 @@ private fun scoreOrPctStr(
     voteDisplayMode: VoteDisplayMode,
 ): String? {
     return when (voteDisplayMode) {
-        VoteDisplayMode.UpvotePercentage -> upvotePercentStr(upvotes, downvotes)
+        VoteDisplayMode.UpvotePercentage -> formatPercent(upvotePercent(upvotes, downvotes))
         VoteDisplayMode.HideAll -> null
         else -> score.toString()
     }
