@@ -3,6 +3,7 @@ package com.jerboa.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.feat.AccountVerificationState
 
 @Entity
@@ -52,4 +53,14 @@ fun Account.isAnon(): Boolean {
 
 fun Account.isReady(): Boolean {
     return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
+}
+
+fun Account.userViewType(): UserViewType {
+    return if (isAdmin) {
+        UserViewType.AdminOnly
+    } else if (isMod) {
+        UserViewType.AdminOrMod
+    } else {
+        UserViewType.Normal
+    }
 }

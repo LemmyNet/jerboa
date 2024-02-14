@@ -68,6 +68,7 @@ import com.jerboa.ui.components.remove.comment.CommentRemoveActivity
 import com.jerboa.ui.components.remove.post.PostRemoveActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
+import com.jerboa.ui.components.reports.ReportsActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
@@ -448,6 +449,29 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                        )
+                    }
+
+                    composable(
+                        route = Route.REGISTRATION_APPLICATIONS,
+                    ) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(
+                        route = Route.REPORTS,
+                    ) {
+                        ReportsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                         )
                     }
 

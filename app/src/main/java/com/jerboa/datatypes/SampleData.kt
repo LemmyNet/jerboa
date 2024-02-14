@@ -9,6 +9,8 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReply
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
@@ -23,8 +25,12 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
 import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplicationView
@@ -187,6 +193,25 @@ val samplePerson2 =
         actor_id = "https://lemmy.ml/u/homeless",
         bio = null,
         local = false,
+        banner = null,
+        deleted = false,
+        matrix_user_id = null,
+        bot_account = false,
+        ban_expires = null,
+        instance_id = 0,
+    )
+
+val samplePerson3 =
+    Person(
+        id = 33478,
+        name = "witch_power",
+        display_name = null,
+        banned = false,
+        published = "2021-08-08T01:47:44.437708",
+        updated = "2021-10-11T07:14:53.548707",
+        actor_id = "https://lemmy.ml/u/witch_power",
+        bio = null,
+        local = true,
         banner = null,
         deleted = false,
         matrix_user_id = null,
@@ -693,4 +718,74 @@ val sampleDeniedRegistrationApplicationView =
         creator = samplePerson,
         creator_local_user = sampleLocalUser,
         admin = samplePerson2,
+    )
+
+val samplePostReport =
+    PostReport(
+        creator_id = 28,
+        id = 89,
+        original_post_name = samplePost.name,
+        post_id = samplePost.id,
+        published = samplePost.published,
+        reason = "This post is *peak* **cringe**",
+        resolved = true,
+        resolver_id = samplePerson3.id,
+    )
+
+val samplePostReportView =
+    PostReportView(
+        post_creator = samplePerson,
+        creator = samplePerson2,
+        resolver = samplePerson3,
+        post = samplePost,
+        post_report = samplePostReport,
+        community = sampleCommunity,
+        counts = samplePostAggregates,
+        creator_banned_from_community = false,
+    )
+
+val sampleCommentReport =
+    CommentReport(
+        creator_id = 28,
+        id = 89,
+        original_comment_text = sampleComment.content,
+        comment_id = sampleComment.id,
+        published = sampleComment.published,
+        reason = "This is a bad comment, remove it plz.",
+        resolved = true,
+        resolver_id = samplePerson3.id,
+    )
+
+val sampleCommentReportView =
+    CommentReportView(
+        comment_creator = samplePerson,
+        creator = samplePerson2,
+        resolver = samplePerson3,
+        post = samplePost,
+        comment = sampleComment,
+        comment_report = sampleCommentReport,
+        community = sampleCommunity,
+        counts = sampleCommentAggregates,
+        creator_banned_from_community = false,
+    )
+
+val samplePrivateMessageReport =
+    PrivateMessageReport(
+        creator_id = 28,
+        id = 89,
+        original_pm_text = samplePrivateMessage.content,
+        private_message_id = samplePrivateMessage.id,
+        published = sampleComment.published,
+        reason = "This PM is from a spammer",
+        resolved = true,
+        resolver_id = samplePerson3.id,
+    )
+
+val samplePrivateMessageReportView =
+    PrivateMessageReportView(
+        private_message_report = samplePrivateMessageReport,
+        private_message = samplePrivateMessage,
+        private_message_creator = samplePerson,
+        creator = samplePerson2,
+        resolver = samplePerson3,
     )

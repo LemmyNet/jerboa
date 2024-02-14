@@ -189,3 +189,12 @@ enum class VoteDisplayMode {
     Score,
     HideAll,
 }
+
+/**
+ * Says which type of users can view which bottom app bar tabs.
+ */
+enum class UserViewType {
+    Normal,
+    AdminOnly,
+    AdminOrMod,
+}
