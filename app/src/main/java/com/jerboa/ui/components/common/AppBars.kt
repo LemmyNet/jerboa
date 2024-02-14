@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
@@ -234,6 +235,8 @@ fun CommentNavigationBottomAppBar(
 fun CommentOrPostNodeHeader(
     creator: Person,
     score: Long,
+    upvotes: Long,
+    downvotes: Long,
     myVote: Int,
     published: String,
     updated: String?,
@@ -248,7 +251,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     showAvatar: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -293,12 +296,14 @@ fun CommentOrPostNodeHeader(
         }
         ScoreAndTime(
             score = score,
+            upvotes = upvotes,
+            downvotes = downvotes,
             myVote = myVote,
             published = published,
             updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
-            showScores = showScores,
+            voteDisplayMode = voteDisplayMode,
         )
     }
 }
@@ -309,6 +314,8 @@ fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
         creator = samplePerson,
         score = 23,
+        upvotes = 21,
+        downvotes = 2,
         myVote = 1,
         published = samplePost.published,
         updated = samplePost.updated,
@@ -321,7 +328,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
     )
 }
 

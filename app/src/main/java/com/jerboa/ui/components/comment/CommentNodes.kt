@@ -12,6 +12,7 @@ import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
@@ -65,7 +66,7 @@ fun CommentNodes(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(state = listState) {
@@ -108,7 +109,7 @@ fun CommentNodes(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-            showScores = showScores,
+            voteDisplayMode = voteDisplayMode,
             swipeToActionPreset = swipeToActionPreset,
         )
         item {
@@ -156,7 +157,7 @@ fun LazyListScope.commentNodeItems(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     nodes.forEach { node ->
@@ -201,7 +202,7 @@ fun LazyListScope.commentNodeItems(
                     enableDownVotes = enableDownVotes,
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
-                    showScores = showScores,
+                    voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
                 )
 
@@ -245,7 +246,7 @@ fun LazyListScope.commentNodeItems(
                     enableDownVotes = enableDownVotes,
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
-                    showScores = showScores,
+                    voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
                 )
         }

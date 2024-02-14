@@ -426,7 +426,7 @@ fun MainPostListingsContent(
                 }
             },
             showIfRead = true,
-            showScores = siteViewModel.showScores(),
+            voteDisplayMode = siteViewModel.voteDisplayMode(),
             postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,

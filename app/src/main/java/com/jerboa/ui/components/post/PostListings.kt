@@ -22,6 +22,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
@@ -81,7 +82,7 @@ fun PostListings(
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
@@ -136,7 +137,7 @@ fun PostListings(
                 appState = appState,
                 showPostLinkPreview = showPostLinkPreviews,
                 showIfRead = showIfRead,
-                showScores = showScores,
+                voteDisplayMode = voteDisplayMode,
                 postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             ).let {
@@ -212,7 +213,7 @@ fun PreviewPostListings() {
         markAsReadOnScroll = false,
         onMarkAsRead = {},
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,

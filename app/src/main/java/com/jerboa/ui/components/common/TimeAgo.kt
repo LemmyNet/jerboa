@@ -24,8 +24,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.feat.upvotePercentStr
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
@@ -57,13 +59,13 @@ fun TimeAgo(
         Text(
             text = afterPreceding,
             color = MaterialTheme.colorScheme.onBackground.muted,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.labelMedium,
         )
 
         updated?.also {
             DotSpacer(
                 padding = SMALL_PADDING,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
             )
             val updatedPretty = dateStringToPretty(it, longTimeFormat)
 
@@ -72,7 +74,7 @@ fun TimeAgo(
             } else {
                 Text(
                     text = "($updatedPretty)",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onBackground.muted,
                     fontStyle = FontStyle.Italic,
                 )
@@ -116,13 +118,15 @@ fun TimeAgoPreview() {
 @Composable
 fun ScoreAndTime(
     score: Long,
+    upvotes: Long,
+    downvotes: Long,
     myVote: Int,
     published: String,
     updated: String?,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     isNsfw: Boolean = false,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -131,27 +135,126 @@ fun ScoreAndTime(
         NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
-        if (showScores) {
-            Text(
-                text = score.toString(),
-                color = scoreColor(myVote = myVote),
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
-            )
+        val upvotePct = upvotePercentStr(
+            upvotes = upvotes,
+            downvotes = downvotes,
+        )
+        when (voteDisplayMode) {
+            VoteDisplayMode.Full -> {
+                LargeVoteIndicator(data = score.toString(), myVote = myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                SmallVoteIndicator(data = "-$downvotes".toString())
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
+            VoteDisplayMode.ScoreAndUpvotePercentage -> {
+                LargeVoteIndicator(data = score.toString(), myVote = myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                SmallVoteIndicator(data = upvotePct)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
+            VoteDisplayMode.UpvotePercentage -> {
+                LargeVoteIndicator(data = upvotePct, myVote = myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
+            VoteDisplayMode.Score -> {
+                LargeVoteIndicator(data = score.toString(), myVote = myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
+            VoteDisplayMode.HideAll -> {}
         }
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
         TimeAgo(published = published, updated = updated)
     }
+}
+
+@Composable
+private fun LargeVoteIndicator(
+    data: String,
+    myVote: Int,
+) {
+    Text(
+        text = data,
+        color = scoreColor(myVote = myVote),
+        style = MaterialTheme.typography.labelMedium,
+        fontSize = MaterialTheme.typography.labelMedium.fontSize.times(1.3),
+    )
+}
+
+@Composable
+private fun SmallVoteIndicator(data: String) {
+    Text(
+        text = data,
+        color = MaterialTheme.colorScheme.onBackground.muted,
+        style = MaterialTheme.typography.labelSmall,
+    )
+}
+
+@Preview
+@Composable
+fun ScoreFullAndTimePreview() {
+    ScoreAndTime(
+        score = 25,
+        myVote = -1,
+        upvotes = 10,
+        downvotes = 15,
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.Full,
+    )
+}
+
+@Preview
+@Composable
+fun ScoreAndUpvotePctAndTimePreview() {
+    ScoreAndTime(
+        score = 25,
+        myVote = -1,
+        upvotes = 10,
+        downvotes = 15,
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.ScoreAndUpvotePercentage,
+    )
+}
+
+@Preview
+@Composable
+fun UpvotePctAndTimePreview() {
+    ScoreAndTime(
+        score = 25,
+        myVote = -1,
+        upvotes = 10,
+        downvotes = 15,
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.UpvotePercentage,
+    )
 }
 
 @Preview
 @Composable
 fun ScoreAndTimePreview() {
     ScoreAndTime(
-        score = 23,
+        score = 25,
         myVote = -1,
+        upvotes = 10,
+        downvotes = 15,
         published = samplePost.published,
         updated = samplePost.updated,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Score,
+    )
+}
+
+@Preview
+@Composable
+fun HideAllAndTimePreview() {
+    ScoreAndTime(
+        score = 25,
+        myVote = -1,
+        upvotes = 10,
+        downvotes = 15,
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.HideAll,
     )
 }
 
@@ -175,7 +278,7 @@ fun CollapsedIndicator(
             ) {
                 Text(
                     text = "+$descendants",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
             }
@@ -206,7 +309,7 @@ fun NsfwBadge(visible: Boolean) {
             ) {
                 Text(
                     text = "NSFW",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
             }

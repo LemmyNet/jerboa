@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
@@ -51,15 +52,19 @@ fun CommentReplyNodeHeader(
     commentReplyView: CommentReplyView,
     onPersonClick: (personId: PersonId) -> Unit,
     score: Long,
+    upvotes: Long,
+    downvotes: Long,
     myVote: Int,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
         score = score,
+        upvotes = upvotes,
+        downvotes = downvotes,
         myVote = myVote,
         published = commentReplyView.comment.published,
         updated = commentReplyView.comment.updated,
@@ -72,7 +77,7 @@ fun CommentReplyNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
-        showScores = showScores,
+        voteDisplayMode = voteDisplayMode,
     )
 }
 
@@ -83,11 +88,13 @@ fun CommentReplyNodeHeaderPreview() {
         commentReplyView = sampleCommentReplyView,
         score = 23,
         myVote = 26,
+        upvotes = 21,
+        downvotes = 2,
+        voteDisplayMode = VoteDisplayMode.Full,
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
         showAvatar = true,
-        showScores = true,
     )
 }
 
@@ -105,11 +112,8 @@ fun CommentReplyNodeInboxFooterLine(
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     myVote: Int,
-    upvotes: Long,
-    downvotes: Long,
     account: Account,
     enableDownvotes: Boolean,
-    showScores: Boolean,
     viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -140,18 +144,14 @@ fun CommentReplyNodeInboxFooterLine(
         ) {
             VoteGeneric(
                 myVote = myVote,
-                votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0L) && showScores,
                 account = account,
             )
             if (enableDownvotes) {
                 VoteGeneric(
                     myVote = myVote,
-                    votes = downvotes,
                     type = VoteType.Downvote,
-                    showNumber = showScores,
                     onVoteClick = onDownvoteClick,
                     account = account,
                 )
@@ -245,7 +245,7 @@ fun CommentReplyNodeInbox(
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
     enableDownvotes: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -273,6 +273,8 @@ fun CommentReplyNodeInbox(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
             score = score,
+            upvotes = upvotes,
+            downvotes = downvotes,
             myVote = myVote,
             onClick = {
                 isExpanded = !isExpanded
@@ -281,7 +283,7 @@ fun CommentReplyNodeInbox(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
-            showScores = showScores,
+            voteDisplayMode = voteDisplayMode,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -322,11 +324,8 @@ fun CommentReplyNodeInbox(
                         onCommentLinkClick = onCommentLinkClick,
                         onBlockCreatorClick = onBlockCreatorClick,
                         myVote = myVote,
-                        upvotes = upvotes,
-                        downvotes = downvotes,
                         account = account,
                         enableDownvotes = enableDownvotes,
-                        showScores = showScores,
                         viewSource = viewSource,
                     )
                 }
