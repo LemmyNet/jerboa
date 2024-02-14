@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
@@ -104,9 +105,10 @@ fun SimpleTopAppBarPreview() {
 fun BottomAppBarAll(
     selectedTab: NavTab,
     onSelect: (NavTab) -> Unit,
-    amAdmin: Boolean,
+    userViewType: UserViewType,
     unreadCounts: Long,
     unreadAppCount: Long?,
+    unreadReportCount: Long?,
     showTextDescriptionsInNavbar: Boolean,
 ) {
     // Check for preview mode
@@ -128,14 +130,19 @@ fun BottomAppBarAll(
     NavigationBar(
         modifier = modifier,
     ) {
-        // Hide non-admin tabs
-        val tabs = if (amAdmin) NavTab.entries else NavTab.entries.filter { !it.adminOnly }
+        // Hide tabs according to permissions
+        val tabs = when (userViewType) {
+            UserViewType.Normal -> NavTab.entries.filter { it.userViewType == UserViewType.Normal }
+            UserViewType.AdminOrMod -> NavTab.entries.filter { it.userViewType != UserViewType.AdminOnly }
+            UserViewType.AdminOnly -> NavTab.entries
+        }
 
         for (tab in tabs) {
             val selected = tab == selectedTab
             val iconBadgeCount = when (tab) {
                 NavTab.Inbox -> unreadCounts
                 NavTab.RegistrationApplications -> unreadAppCount
+                NavTab.Reports -> unreadReportCount
                 else -> null
             }
 
@@ -179,7 +186,8 @@ fun BottomAppBarAllPreview() {
         onSelect = {},
         unreadCounts = 30,
         unreadAppCount = 2,
-        amAdmin = true,
+        unreadReportCount = 8,
+        userViewType = UserViewType.AdminOnly,
         showTextDescriptionsInNavbar = true,
     )
 }
@@ -192,7 +200,8 @@ fun BottomAppBarAllNoDescriptionsPreview() {
         onSelect = {},
         unreadCounts = 30,
         unreadAppCount = null,
-        amAdmin = false,
+        unreadReportCount = null,
+        userViewType = UserViewType.Normal,
         showTextDescriptionsInNavbar = false,
     )
 }

@@ -980,6 +980,57 @@ fun findAndUpdateApplication(
     }
 }
 
+fun findAndUpdatePostReport(
+    reports: List<PostReportView>,
+    updatedReport: PostReportView,
+): List<PostReportView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            it.post_report.id == updatedReport.post_report.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
+    }
+}
+
+fun findAndUpdateCommentReport(
+    reports: List<CommentReportView>,
+    updatedReport: CommentReportView,
+): List<CommentReportView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            it.comment_report.id == updatedReport.comment_report.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
+    }
+}
+
+fun findAndUpdatePrivateMessageReport(
+    reports: List<PrivateMessageReportView>,
+    updatedReport: PrivateMessageReportView,
+): List<PrivateMessageReportView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            it.private_message_report.id == updatedReport.private_message_report.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
+    }
+}
+
 fun showBlockPersonToast(
     blockPersonRes: ApiState<BlockPersonResponse>,
     ctx: Context,

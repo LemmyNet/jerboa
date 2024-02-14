@@ -55,6 +55,7 @@ object Route {
     const val CRASH_LOGS = "crashLogs"
 
     const val REGISTRATION_APPLICATIONS = "registrationApplications"
+    const val REPORTS = "reports"
 
     val VIEW = ViewArgs.route
 
