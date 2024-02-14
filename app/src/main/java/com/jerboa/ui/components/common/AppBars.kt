@@ -438,7 +438,7 @@ fun ActionBarButtonAndBadge(
             Text(
                 text = text,
                 color = contentColor,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
             )
         }
         iconBadgeCount?.also {
@@ -446,7 +446,7 @@ fun ActionBarButtonAndBadge(
             TextBadge(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 text = iconBadgeCount,
-                textStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                textStyle = MaterialTheme.typography.labelSmall.copy(fontStyle = FontStyle.Italic),
                 textColor = contentColor,
                 verticalTextPadding = 2f,
                 horizontalTextPadding = 4f,
