@@ -460,4 +460,6 @@
     <string name="message">Message</string>
     <string name="report_person">Report %1$s</string>
     <string name="block_person">Block %1$s</string>
+    <string name="undistinguish_comment">Undistinguish comment</string>
+    <string name="distinguish_comment">Distinguish comment</string>
 </resources>
