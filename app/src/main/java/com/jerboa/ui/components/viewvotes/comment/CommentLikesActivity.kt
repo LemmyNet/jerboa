@@ -32,7 +32,6 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.viewvotes.ViewVotesBody
-import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -84,10 +83,7 @@ fun CommentLikesActivity(
 
             Box(
                 modifier = Modifier.pullRefresh(refreshState)
-                    .padding(
-                        vertical = padding.calculateTopPadding(),
-                        horizontal = MEDIUM_PADDING,
-                    ),
+                    .padding(padding),
             ) {
                 JerboaPullRefreshIndicator(
                     refreshing,
