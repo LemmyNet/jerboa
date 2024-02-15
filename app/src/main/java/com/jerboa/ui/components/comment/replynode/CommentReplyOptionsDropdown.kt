@@ -112,7 +112,7 @@ fun CommentReplyOptionsDropdown(
         if (!isCreator) {
             HorizontalDivider()
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_block, commentReplyView.creator.name),
+                text = stringResource(R.string.block_person, commentReplyView.creator.name),
                 icon = Icons.Outlined.Block,
                 onClick = {
                     onDismissRequest()

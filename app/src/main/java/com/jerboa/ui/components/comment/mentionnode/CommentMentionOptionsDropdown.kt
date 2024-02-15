@@ -116,7 +116,7 @@ fun CommentMentionsOptionsDropdown(
         if (!isCreator) {
             HorizontalDivider()
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_block, personMentionView.creator.name),
+                text = stringResource(R.string.block_person, personMentionView.creator.name),
                 icon = Icons.Outlined.Block,
                 onClick = {
                     onDismissRequest()

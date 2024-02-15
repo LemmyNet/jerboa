@@ -55,6 +55,7 @@ import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
+import com.jerboa.feat.canMod
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.isScrolledToEnd
@@ -173,10 +174,13 @@ fun PersonProfileActivity(
                     PersonProfileHeader(
                         personName = ctx.getString(R.string.loading),
                         myProfile = false,
+                        banned = false,
+                        canBan = false,
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
                         onMessagePersonClick = {},
+                        onBanPersonClick = {},
                         selectedSortType = personProfileViewModel.sortType,
                         openDrawer = ::openDrawer,
                         scrollBehavior = scrollBehavior,
@@ -187,6 +191,13 @@ fun PersonProfileActivity(
                 }
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
+                    val canBan =
+                        canMod(
+                            creatorId = person.id,
+                            admins = siteViewModel.admins(),
+                            moderators = null,
+                            myId = account.id,
+                        )
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =
@@ -197,6 +208,8 @@ fun PersonProfileActivity(
                             },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
+                        banned = person.banned,
+                        canBan = canBan,
                         onClickSortType = { sortType ->
                             scrollToTop(scope, postListState)
                             personProfileViewModel.resetPage()
@@ -239,9 +252,12 @@ fun PersonProfileActivity(
                         },
                         onMessagePersonClick = {
                             appState.toCreatePrivateMessage(
-                                profileRes.data.person_view.person.id,
-                                profileRes.data.person_view.person.getDisplayName(),
+                                person.id,
+                                person.getDisplayName(),
                             )
+                        },
+                        onBanPersonClick = {
+                            appState.toBanPerson(person)
                         },
                         openDrawer = ::openDrawer,
                         onBack = onBack,

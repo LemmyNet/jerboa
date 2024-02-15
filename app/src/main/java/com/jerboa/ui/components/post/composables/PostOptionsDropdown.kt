@@ -364,11 +364,11 @@ fun PostOptionsDropdown(
         } else {
             PopupMenuItem(
                 // Reuse existing translations
-                text = stringResource(R.string.post_listing_block, ""),
+                text = stringResource(R.string.block_person, ""),
                 icon = Icons.Outlined.Block,
             ) {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_block, postView.creator.name),
+                    text = stringResource(R.string.block_person, postView.creator.name),
                     icon = Icons.Outlined.Block,
                     onClick = {
                         onDismissRequest()
@@ -384,7 +384,7 @@ fun PostOptionsDropdown(
                 )
 
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_block, postView.community.name),
+                    text = stringResource(R.string.block_person, postView.community.name),
                     icon = Icons.Outlined.Block,
                     onClick = {
                         onDismissRequest()
@@ -404,7 +404,7 @@ fun PostOptionsDropdown(
                 if (api != null && api.FF.instanceBlock()) {
                     val instance = getInstanceFromCommunityUrl(postView.community.actor_id)
                     PopupMenuItem(
-                        text = stringResource(R.string.post_listing_block, instance),
+                        text = stringResource(R.string.block_person, instance),
                         icon = Icons.Outlined.Block,
                         onClick = {
                             onDismissRequest()
