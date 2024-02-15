@@ -173,7 +173,7 @@ fun CommentOptionsDropdown(
             }
         } else {
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_block, commentView.creator.name),
+                text = stringResource(R.string.block_person, commentView.creator.name),
                 icon = Icons.Outlined.Block,
                 onClick = {
                     onDismissRequest()

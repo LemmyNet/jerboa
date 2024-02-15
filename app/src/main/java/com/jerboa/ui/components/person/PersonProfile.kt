@@ -15,8 +15,10 @@ import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -157,10 +159,13 @@ fun PersonProfileTopSectionPreview() {
 fun PersonProfileHeader(
     personName: String,
     myProfile: Boolean,
+    banned: Boolean,
+    canBan: Boolean,
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
     onMessagePersonClick: () -> Unit,
+    onBanPersonClick: () -> Unit,
     selectedSortType: SortType,
     openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
@@ -231,7 +236,10 @@ fun PersonProfileHeader(
                         )
                     }
                     PersonProfileMoreDropdown(
+                        personName = personName,
                         expanded = showMoreOptions,
+                        banned = banned,
+                        canBan = canBan,
                         onDismissRequest = { showMoreOptions = false },
                         onBlockPersonClick = {
                             showMoreOptions = false
@@ -244,6 +252,10 @@ fun PersonProfileHeader(
                         onMessagePersonClick = {
                             showMoreOptions = false
                             onMessagePersonClick()
+                        },
+                        onBanPersonClick = {
+                            showMoreOptions = false
+                            onBanPersonClick()
                         },
                         openMatrix =
                             matrixId?.let {
@@ -277,11 +289,15 @@ fun PersonProfileHeaderTitle(
 
 @Composable
 fun PersonProfileMoreDropdown(
+    personName: String,
+    banned: Boolean,
+    canBan: Boolean,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
     onMessagePersonClick: () -> Unit,
+    onBanPersonClick: () -> Unit,
     openMatrix: (() -> Unit)?,
 ) {
     DropdownMenu(
@@ -310,14 +326,27 @@ fun PersonProfileMoreDropdown(
 
         HorizontalDivider()
         MenuItem(
-            text = stringResource(R.string.person_profile_block_person),
+            text = stringResource(R.string.block_person, personName),
             onClick = onBlockPersonClick,
             icon = Icons.Outlined.Block,
         )
         MenuItem(
-            text = stringResource(R.string.person_profile_report_person),
+            text = stringResource(R.string.report_person, personName),
             onClick = onReportPersonClick,
             icon = Icons.Outlined.Flag,
         )
+        if (canBan) {
+            val (banText, banIcon) =
+                if (banned) {
+                    Pair(stringResource(R.string.unban_person, personName), Icons.Outlined.Restore)
+                } else {
+                    Pair(stringResource(R.string.ban_person, personName), Icons.Outlined.Gavel)
+                }
+            MenuItem(
+                text = banText,
+                onClick = onBanPersonClick,
+                icon = banIcon,
+            )
+        }
     }
 }
