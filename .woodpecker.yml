@@ -15,6 +15,14 @@ steps:
     environment:
       GRADLE_USER_HOME: ".gradle"
 
+  lint_vital_release:
+    image: *android_image
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew lintVitalRelease
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+
   build_project:
     image: *android_image
     commands:
