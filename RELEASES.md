@@ -1,3 +1,9 @@
+# Jerboa 0.0.59 (2024-02-15)
+
+## What's Changed
+
+- Adding lintVitalRelease to CI by @dessalines in #1383
+
 # Jerboa 0.0.58 (2024-02-15)
 
 ## What's Changed
