@@ -123,7 +123,7 @@ fun CommentsHeaderTitle(selectedSortType: CommentSortType) {
         )
         Text(
             text = getLocalizedCommentSortTypeName(ctx, selectedSortType),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }
