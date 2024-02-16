@@ -78,8 +78,6 @@
     <string name="person_profile_joined">Beigetreten</string>
     <string name="person_profile_posts">%1$s Beiträge</string>
     <string name="person_profile_comments">%1$s Kommentare</string>
-    <string name="person_profile_block_person">Person blockieren</string>
-    <string name="person_profile_report_person">Person melden</string>
     <string name="person_profile_activity_moderates">Moderiert</string>
     <string name="create_post_create_post">Beitrag erstellen</string>
     <string name="create_post_copy_suggested_title">vorgeschlagenen Titel kopieren: %1$s</string>
@@ -94,7 +92,6 @@
     <string name="post_listing_copy_link">Link kopieren</string>
     <string name="post_listing_copy_permalink">Permalink kopieren</string>
     <string name="post_listing_report_post">Beitrag melden</string>
-    <string name="post_listing_block">Blockiere %1$s</string>
     <string name="post_listing_edit">Bearbeiten</string>
     <string name="post_listing_restore">Wiederherstellen</string>
     <string name="post_listing_delete">Löschen</string>
@@ -169,7 +166,6 @@
     <string name="comment_node_permalink_copied">Permalink kopiert</string>
     <string name="post_listing_link_copied">Link kopiert</string>
     <string name="post_listing_permalink_copied">Permalink kopiert</string>
-    <string name="comment_node_block">Blockiere %1$s</string>
     <string name="moreOptions">Zeige mehr Optionen</string>
     <string name="lessOptions">Zeige weniger Optionen</string>
     <string name="bottomBar_home">Gehe zur Startseite</string>

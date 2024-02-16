@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">댓글을 입력하세요</string>
     <string name="comment_next_parent">다음 부모 댓글</string>
     <string name="comment_previous_parent">이전 부모 댓글</string>
-    <string name="comment_node_block">%1$s 차단</string>
     <string name="comment_node_copy_permalink">퍼머링크 복사</string>
     <string name="comment_node_copy_comment">댓글 텍스트 복사</string>
     <string name="comment_node_delete">삭제</string>
@@ -202,11 +201,9 @@
     <string name="person_profile_activity_comments">댓글</string>
     <string name="person_profile_activity_moderates">운영</string>
     <string name="person_profile_activity_posts">게시물</string>
-    <string name="person_profile_block_person">사용자 차단</string>
     <string name="person_profile_comments">%1$s 개의 댓글</string>
     <string name="person_profile_joined">가입함</string>
     <string name="person_profile_posts">%1$s 개의 게시물</string>
-    <string name="person_profile_report_person">사용자 신고</string>
     <string name="pictrs_image_upload_image">이미지 업로드</string>
     <string name="postListing_deleted">삭제됨</string>
     <string name="postListing_featuredCommunity">커뮤니티에서 인기</string>
@@ -217,7 +214,6 @@
     <string name="post_activity_comments">댓글</string>
     <string name="post_edit_body_placeholder">본문</string>
     <string name="post_edit_edit_post">게시물 수정</string>
-    <string name="post_listing_block">%1$s 차단</string>
     <string name="post_listing_comments_count">%1$s 개의 댓글</string>
     <string name="post_listing_copy_link">링크 복사</string>
     <string name="post_listing_copy_permalink">퍼머링크 복사</string>

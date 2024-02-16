@@ -151,11 +151,9 @@
     <string name="person_profile_activity_comments">Комментарии</string>
     <string name="person_profile_activity_moderates">Модерирует</string>
     <string name="person_profile_activity_posts">Посты</string>
-    <string name="person_profile_block_person">Заблокировать пользователя</string>
     <string name="person_profile_comments">%1$s комментариев</string>
     <string name="person_profile_joined">Зарегистрировался</string>
     <string name="person_profile_posts">%1$s постов</string>
-    <string name="person_profile_report_person">Пожаловаться на пользователя</string>
     <string name="pictrs_image_upload_image">Загрузить изображение</string>
     <string name="postListing_deleted">Удалено</string>
     <string name="removed">Удалено</string>
@@ -167,7 +165,6 @@
     <string name="post_activity_comments">Комментарии</string>
     <string name="post_edit_body_placeholder">Наполнение</string>
     <string name="post_edit_edit_post">Отредактировать пост</string>
-    <string name="post_listing_block">Заблокировать %1$s</string>
     <string name="post_listing_comments_count">%1$s комментариев</string>
     <string name="post_listing_copy_link">Скопировать ссылку</string>
     <string name="post_listing_copy_permalink">Скопировать ссылку на публикацию</string>
@@ -290,7 +287,6 @@
     <string name="comment_body_removed">*Удалено*</string>
     <string name="comment_edit_edit">Править</string>
     <string name="comment_edit_type_your_comment">Введите ваш комментарий</string>
-    <string name="comment_node_block">Заблокировать %1$s</string>
     <string name="comment_node_copy_permalink">Скопировать ссылку на комментарий</string>
     <string name="comment_node_copy_comment">Скопировать текст комментария</string>
     <string name="comment_node_delete">Удалить</string>

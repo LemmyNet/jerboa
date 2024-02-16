@@ -71,8 +71,6 @@
     <string name="person_profile_joined">参加</string>
     <string name="person_profile_posts">投稿%1$s件</string>
     <string name="person_profile_comments">コメント%1$s件</string>
-    <string name="person_profile_block_person">ユーザーをブロック</string>
-    <string name="person_profile_report_person">ユーザーを報告</string>
     <string name="person_profile_activity_moderates">管理担当</string>
     <string name="create_post_create_post">投稿を作成</string>
     <string name="create_post_copy_suggested_title">お勧めタイトルをコピー: %1$s</string>
@@ -87,7 +85,6 @@
     <string name="post_listing_copy_link">リンクをコピー</string>
     <string name="post_listing_copy_permalink">元リンクをコピー</string>
     <string name="post_listing_report_post">投稿を報告</string>
-    <string name="post_listing_block">%1$sをブロック</string>
     <string name="post_listing_edit">編集</string>
     <string name="post_listing_restore">復元</string>
     <string name="post_listing_delete">削除</string>
@@ -161,7 +158,6 @@
     <string name="comment_node_permalink_copied">元リンクをコピーしました</string>
     <string name="post_listing_link_copied">リンクをコピーしました</string>
     <string name="post_listing_permalink_copied">元リンクをコピーしました</string>
-    <string name="comment_node_block">%1$sをブロック</string>
     <string name="moreOptions">追加オプションを表示</string>
     <string name="lessOptions">追加オプションを非表示</string>
     <string name="bottomBar_home">ホームへ行く</string>

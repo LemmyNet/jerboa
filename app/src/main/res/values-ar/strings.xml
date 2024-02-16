@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">اكتب تعليقك</string>
     <string name="comment_next_parent">التعليق الأصل التالي</string>
     <string name="comment_previous_parent">التعليق الأصل السابق</string>
-    <string name="comment_node_block">احظر %1$s</string>
     <string name="comment_node_copy_permalink">انسخ الرابط الدائم</string>
     <string name="comment_node_copy_comment">انسخ نصَّ التعليق</string>
     <string name="comment_node_delete">احذف</string>
@@ -208,11 +207,9 @@
     <string name="person_profile_activity_comments">التعليقات</string>
     <string name="person_profile_activity_moderates">مشرف في</string>
     <string name="person_profile_activity_posts">الموضوعات</string>
-    <string name="person_profile_block_person">احظر الشخص</string>
     <string name="person_profile_comments">%1$s تعليق</string>
     <string name="person_profile_joined">منضم</string>
     <string name="person_profile_posts">%1$s موضوع</string>
-    <string name="person_profile_report_person">ارفع أمر الشخص</string>
     <string name="pictrs_image_upload_image">حمِّل صورةً</string>
     <string name="postListing_deleted">محذوف</string>
     <string name="postListing_featuredCommunity">بارز في المجتمع</string>
@@ -223,7 +220,6 @@
     <string name="post_activity_comments">التعليقات</string>
     <string name="post_edit_body_placeholder">المتن</string>
     <string name="post_edit_edit_post">حرِّر الموضوع</string>
-    <string name="post_listing_block">احظر %1$s</string>
     <string name="post_listing_comments_count">%1$s تعليق</string>
     <string name="post_listing_copy_link">انسخ الرابط</string>
     <string name="post_listing_copy_permalink">انسخ الرابط الدائم</string>

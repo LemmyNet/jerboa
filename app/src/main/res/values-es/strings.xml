@@ -74,8 +74,6 @@
     <string name="person_profile_joined">Unido</string>
     <string name="person_profile_posts">%1$s publicaciones</string>
     <string name="person_profile_comments">%1$s comentarios</string>
-    <string name="person_profile_block_person">Bloquear Persona</string>
-    <string name="person_profile_report_person">Reportar Persona</string>
     <string name="person_profile_activity_moderates">Modera</string>
     <string name="create_post_create_post">Crear Publicación</string>
     <string name="create_post_copy_suggested_title">copiar título sugerido: %1$s</string>
@@ -94,7 +92,6 @@
     <string name="post_listing_name_copied">Nombre copiado</string>
     <string name="post_listing_text_copied">Texto copiado</string>
     <string name="post_listing_report_post">Reportar Publicación</string>
-    <string name="post_listing_block">Bloquear %1$s</string>
     <string name="post_listing_edit">Editar</string>
     <string name="post_listing_restore">Restaurar</string>
     <string name="post_listing_copy_thumbnail_link">Copiar enlace de imagen</string>
@@ -177,7 +174,6 @@
     <string name="post_listing_permalink_copied">Enlace Permanente Copiado</string>
     <string name="comment_next_parent">Siguiente Comentario Padre</string>
     <string name="comment_previous_parent">Comentario Padre Anterior</string>
-    <string name="comment_node_block">Bloquear %1$s</string>
     <string name="moreOptions">Mostrar más opciones</string>
     <string name="lessOptions">Mostrar menos opciones</string>
     <string name="bottomBar_home">Ir a Inicio</string>
