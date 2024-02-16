@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">Şərhinizi yazın</string>
     <string name="comment_next_parent">Növbəti Yaxın Şərh</string>
     <string name="comment_previous_parent">Əvvəlki Yaxın Şərh</string>
-    <string name="comment_node_block">%1$s Əngəllə</string>
     <string name="comment_node_copy_permalink">Daimi keçidi köçür</string>
     <string name="comment_node_copy_comment">Şərh Mətnin Köçür</string>
     <string name="comment_node_delete">Sil</string>
@@ -202,11 +201,9 @@
     <string name="person_profile_activity_comments">Şərhlər</string>
     <string name="person_profile_activity_moderates">Münsiflər</string>
     <string name="person_profile_activity_posts">Elanlar</string>
-    <string name="person_profile_block_person">Şəxsi Əngəllə</string>
     <string name="person_profile_comments">%1$s şərh</string>
     <string name="person_profile_joined">Qoşuldu</string>
     <string name="person_profile_posts">%1$s elan</string>
-    <string name="person_profile_report_person">Şəxsi şikayət et</string>
     <string name="pictrs_image_upload_image">Şəkil Yüklə</string>
     <string name="postListing_deleted">Silindi</string>
     <string name="postListing_featuredCommunity">İcmada seçilən</string>
@@ -217,7 +214,6 @@
     <string name="post_activity_comments">Şərhlər</string>
     <string name="post_edit_body_placeholder">Qrup</string>
     <string name="post_edit_edit_post">Elanı Redaktə Et</string>
-    <string name="post_listing_block"> %1$s Əngəllə</string>
     <string name="post_listing_comments_count">%1$s şərh</string>
     <string name="post_listing_copy_link">Bağlantını köçür</string>
     <string name="post_listing_copy_permalink">Daimi keçidi köçür</string>

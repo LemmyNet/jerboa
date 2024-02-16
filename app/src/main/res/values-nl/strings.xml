@@ -99,8 +99,6 @@
     <string name="person_profile_joined">Lid geworden</string>
     <string name="person_profile_posts">%1$s berichten</string>
     <string name="person_profile_comments">%1$s reacties</string>
-    <string name="person_profile_block_person">Persoon blokkeren</string>
-    <string name="person_profile_report_person">Persoon rapporteren</string>
     <string name="person_profile_activity_moderates">Moderators</string>
     <string name="create_post_create_post">Bericht maken</string>
     <string name="create_post_copy_suggested_title">suggereerde titel kopiëren: %1$s</string>
@@ -122,7 +120,6 @@
     <string name="post_listing_copy_link">Link kopiëren</string>
     <string name="post_listing_copy_permalink">Permalink kopiëren</string>
     <string name="post_listing_report_post">Bericht rapporteren</string>
-    <string name="post_listing_block">Blokkeer %1$s</string>
     <string name="post_listing_edit">Bewerken</string>
     <string name="post_listing_restore">Herstellen</string>
     <string name="post_listing_delete">Verwijderen</string>
@@ -203,7 +200,6 @@
     <string name="comment_node_permalink_copied">Permalink gekopieerd</string>
     <string name="post_listing_link_copied">Link gekopieerd</string>
     <string name="post_listing_permalink_copied">Permalink gekopieerd</string>
-    <string name="comment_node_block">%1$s blokkeren</string>
     <string name="markRead">Markeer als gelezen</string>
     <string name="markUnread">Markeer als niet gelezen</string>
     <string name="markdownHelper_formatBold">Opmaak als vette text</string>

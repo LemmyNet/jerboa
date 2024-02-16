@@ -19,7 +19,7 @@ steps:
     image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
-      - ./gradlew assembleDebug
+      - ./gradlew assembleRelease
     environment:
       GRADLE_USER_HOME: ".gradle"
 
