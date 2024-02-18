@@ -460,4 +460,6 @@
     <string name="message">Message</string>
     <string name="report_person">Report %1$s</string>
     <string name="block_person">Block %1$s</string>
+    <string name="site_info_name">%1$s info</string>
+    <string name="site_legal_info_name">%1$s legal info</string>
 </resources>
