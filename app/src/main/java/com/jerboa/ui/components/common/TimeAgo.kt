@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jerboa.R
 import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
 import com.jerboa.datatypes.VoteDisplayMode
@@ -31,6 +32,7 @@ import com.jerboa.datatypes.samplePost
 import com.jerboa.feat.formatPercent
 import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
+import com.jerboa.ui.theme.SCORE_SIZE_ADD
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import java.time.Instant
@@ -181,7 +183,7 @@ private fun LargeVoteIndicator(
         text = data,
         color = scoreColor(myVote = myVote),
         style = MaterialTheme.typography.labelMedium,
-        fontSize = MaterialTheme.typography.labelMedium.fontSize.times(1.3),
+        fontSize = MaterialTheme.typography.labelMedium.fontSize.value.plus(SCORE_SIZE_ADD).sp,
     )
 }
 

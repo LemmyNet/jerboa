@@ -7,12 +7,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.jerboa.DEFAULT_FONT_SIZE
 import com.jerboa.db.dao.AccountDao
 import com.jerboa.db.dao.AppSettingsDao
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.ui.theme.DEFAULT_FONT_SIZE
 import java.util.concurrent.Executors
 
 val APP_SETTINGS_DEFAULT =

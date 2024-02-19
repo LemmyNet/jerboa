@@ -64,7 +64,7 @@ fun HomeHeaderTitle(
         )
         Text(
             text = ctx.getString(selectedSortType.data.shortForm),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

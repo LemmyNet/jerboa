@@ -71,8 +71,6 @@
     <string name="person_profile_joined">Blev medlem af</string>
     <string name="person_profile_posts">%1$s indlæg</string>
     <string name="person_profile_comments">%1$s kommentarer</string>
-    <string name="person_profile_block_person">Bloker bruger</string>
-    <string name="person_profile_report_person">Rapportér bruger</string>
     <string name="person_profile_activity_moderates">Modererer</string>
     <string name="create_post_create_post">Opret indlæg</string>
     <string name="create_post_copy_suggested_title">Kopier foreslået titel: %1$s</string>
@@ -87,7 +85,6 @@
     <string name="post_listing_copy_link">Kopier link</string>
     <string name="post_listing_copy_permalink">Kopier permalænke</string>
     <string name="post_listing_report_post">Rapportér indlæg</string>
-    <string name="post_listing_block">Bloker %1$s</string>
     <string name="post_listing_edit">Rediger</string>
     <string name="post_listing_restore">Gendan</string>
     <string name="post_listing_delete">Slet</string>
@@ -161,7 +158,6 @@
     <string name="comment_node_permalink_copied">Permanent link kopieret</string>
     <string name="post_listing_link_copied">Link kopieret</string>
     <string name="post_listing_permalink_copied">Permanent link kopieret</string>
-    <string name="comment_node_block">Bloker %1$s</string>
     <string name="moreOptions">Vis flere muligheder</string>
     <string name="lessOptions">Vis færre muligheder</string>
     <string name="bottomBar_home">Gå til startsiden</string>

@@ -20,8 +20,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 57
-        versionName = "0.0.57"
+        versionCode = 59
+        versionName = "0.0.59"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -139,7 +139,7 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.5.0")
     implementation("io.coil-kt:coil-svg:2.5.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.7.1")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.8.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -167,7 +167,7 @@ dependencies {
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("androidx.compose.ui:ui:1.6.1")
@@ -191,8 +191,8 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.9-SNAPSHOT")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Ktor uses SLF4J
-    implementation("org.slf4j:slf4j-api:2.0.11")
-    implementation("uk.uuid.slf4j:slf4j-android:2.0.11-0")
+    implementation("org.slf4j:slf4j-api:2.0.12")
+    implementation("uk.uuid.slf4j:slf4j-android:2.0.12-0")
 }

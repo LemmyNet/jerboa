@@ -350,7 +350,7 @@ fun PostName(
 
     Text(
         text = postView.post.name,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.headlineLarge,
         color = color,
         modifier = Modifier.testTag("jerboa:posttitle"),
     )

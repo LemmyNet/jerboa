@@ -3,7 +3,7 @@ package com.jerboa.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jerboa.DEFAULT_FONT_SIZE
+import com.jerboa.ui.theme.DEFAULT_FONT_SIZE
 
 @Entity
 data class AppSettings(
