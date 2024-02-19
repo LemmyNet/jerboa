@@ -18,17 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.jerboa.R
-import com.jerboa.communityNameShown
 import com.jerboa.datatypes.sampleCommunity
+import com.jerboa.datatypes.sampleCommunityFederated
 import com.jerboa.datatypes.sampleCommunityView
-import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.needBlur
-import com.jerboa.toEnum
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
@@ -45,15 +44,14 @@ fun CommunityName(
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    overflow: TextOverflow = TextOverflow.Ellipsis,
 ) {
-    Text(
-        text = communityNameShown(community),
-        style = style,
-        color = color,
+    ItemAndInstanceTitle(
+        title = community.title,
+        actorId = community.actor_id,
+        local = community.local,
         modifier = modifier,
-        overflow = overflow,
-        maxLines = 1,
+        itemColor = color,
+        itemStyle = style,
     )
 }
 
@@ -61,6 +59,12 @@ fun CommunityName(
 @Composable
 fun CommunityNamePreview() {
     CommunityName(community = sampleCommunity)
+}
+
+@Preview
+@Composable
+fun CommunityFederatedNamePreview() {
+    CommunityName(community = sampleCommunityFederated)
 }
 
 @Composable
@@ -76,7 +80,8 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
-    blurNSFW: Int,
+    showAvatar: Boolean,
+    blurNSFW: BlurNSFW,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -88,21 +93,23 @@ fun CommunityLink(
                 modifier
             },
     ) {
-        community.icon?.let {
-            CircularIcon(
-                icon = it,
-                contentDescription = null,
-                size = size,
-                thumbnailSize = thumbnailSize,
-                blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
-            )
-        } ?: run {
-            if (showDefaultIcon) {
-                Icon(
-                    imageVector = Icons.Outlined.Forum,
-                    contentDescription = "",
-                    modifier = Modifier.size(size),
+        if (showAvatar) {
+            community.icon?.let {
+                CircularIcon(
+                    icon = it,
+                    contentDescription = null,
+                    size = size,
+                    thumbnailSize = thumbnailSize,
+                    blur = blurNSFW.needBlur(community.nsfw),
                 )
+            } ?: run {
+                if (showDefaultIcon) {
+                    Icon(
+                        imageVector = Icons.Outlined.Forum,
+                        contentDescription = "",
+                        modifier = Modifier.size(size),
+                    )
+                }
             }
         }
         Column {
@@ -122,7 +129,8 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Int,
+    showAvatar: Boolean,
+    blurNSFW: BlurNSFW,
 ) {
     CommunityLink(
         community = community,
@@ -138,6 +146,7 @@ fun CommunityLinkLarger(
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
+        showAvatar = showAvatar,
     )
 }
 
@@ -146,7 +155,8 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Int,
+    showAvatar: Boolean,
+    blurNSFW: BlurNSFW,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -163,6 +173,7 @@ fun CommunityLinkLargerWithUserCount(
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
+        showAvatar = showAvatar,
     )
 }
 
@@ -173,7 +184,8 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = 1,
+        showAvatar = true,
+        blurNSFW = BlurNSFW.NSFW,
     )
 }
 
@@ -184,6 +196,7 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = 1,
+        showAvatar = true,
+        blurNSFW = BlurNSFW.NSFW,
     )
 }

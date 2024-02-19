@@ -35,6 +35,8 @@
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
+    <string name="bottomBar_registrations">Go to registrations</string>
+    <string name="bottomBar_reports">Go to reports</string>
     <string name="bottomBar_label_bookmarks">Saved</string>
     <string name="bottomBar_label_home">Home</string>
     <string name="bottomBar_label_inbox">Inbox</string>
@@ -54,7 +56,6 @@
     <string name="comment_edit_type_your_comment">Type your comment</string>
     <string name="comment_next_parent">Next Parent Comment</string>
     <string name="comment_previous_parent">Previous Parent Comment</string>
-    <string name="comment_node_block">Block %1$s</string>
     <string name="comment_node_copy_permalink">Copy Permalink</string>
     <string name="comment_node_copy_comment">Copy Comment Text</string>
     <string name="comment_node_delete">Delete</string>
@@ -211,11 +212,9 @@
     <string name="person_profile_activity_comments">Comments</string>
     <string name="person_profile_activity_moderates">Moderates</string>
     <string name="person_profile_activity_posts">Posts</string>
-    <string name="person_profile_block_person">Block Person</string>
     <string name="person_profile_comments">%1$s comments</string>
     <string name="person_profile_joined">Joined</string>
     <string name="person_profile_posts">%1$s posts</string>
-    <string name="person_profile_report_person">Report Person</string>
     <string name="pictrs_image_upload_image">Upload Image</string>
     <string name="postListing_deleted">Deleted</string>
     <string name="removed">Removed</string>
@@ -227,7 +226,6 @@
     <string name="post_activity_comments">Comments</string>
     <string name="post_edit_body_placeholder">Body</string>
     <string name="post_edit_edit_post">Edit Post</string>
-    <string name="post_listing_block">Block %1$s</string>
     <string name="post_listing_comments_count">%1$s comments</string>
     <string name="post_listing_copy_link">Copy link</string>
     <string name="post_listing_copy_permalink">Copy Permalink</string>
@@ -443,4 +441,27 @@
     <string name="post_votes">Post votes</string>
     <string name="comment_votes">Comment votes</string>
     <string name="moderation">Moderation</string>
+    <string name="registrations">Registrations</string>
+    <string name="applicant">Applicant</string>
+    <string name="approve">Approve</string>
+    <string name="deny">Deny</string>
+    <string name="approved_by">Approved by</string>
+    <string name="denied_by">Denied by</string>
+    <string name="answer">Answer</string>
+    <string name="deny_reason">Deny reason</string>
+    <string name="applications_request_shorthand">Apps</string>
+    <string name="reports">Reports</string>
+    <string name="reporter">Reporter</string>
+    <string name="resolved_by">Resolved by</string>
+    <string name="unresolve">Unresolve</string>
+    <string name="unresolved_by">Unresolved by</string>
+    <string name="reason">Reason</string>
+    <string name="creator">Creator</string>
+    <string name="message">Message</string>
+    <string name="report_person">Report %1$s</string>
+    <string name="block_person">Block %1$s</string>
+    <string name="undistinguish_comment">Undistinguish comment</string>
+    <string name="distinguish_comment">Distinguish comment</string>
+    <string name="site_info_name">%1$s info</string>
+    <string name="site_legal_info_name">%1$s legal info</string>
 </resources>

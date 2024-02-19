@@ -44,6 +44,7 @@ import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -83,7 +84,7 @@ fun InboxActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -195,7 +196,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
 ) {
     val pagerState = rememberPagerState { InboxTab.entries.size }
 

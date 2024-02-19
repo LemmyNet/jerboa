@@ -20,8 +20,11 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCount
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadRegistrationApplicationCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.Job
@@ -34,8 +37,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
+    private var unreadAppCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
+    private var unreadReportCountRes: ApiState<GetReportCountResponse> by mutableStateOf(ApiState.Empty)
 
-    val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes) }
+    val unreadCount by derivedStateOf { getUnreadCountTotal() }
+    val unreadAppCount by derivedStateOf { getUnreadAppCountTotal() }
+    val unreadReportCount by derivedStateOf { getUnreadReportCountTotal() }
+
     lateinit var saveUserSettings: SaveUserSettings
 
     init {
@@ -57,10 +65,22 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     Log.d("SiteViewModel", "acc init for id: ${it.id}")
                     getSite()
 
-                    if (it.isAnon()) { // Reset the unread count if we're anonymous
+                    if (it.isAnon()) { // Reset the unread counts if we're anonymous
                         unreadCountRes = ApiState.Empty
+                        unreadAppCountRes = ApiState.Empty
+                        unreadReportCountRes = ApiState.Empty
                     } else {
                         fetchUnreadCounts()
+
+                        // if you're an admin, fetch the unread registration counts
+                        if (it.isAdmin) {
+                            fetchUnreadAppCount()
+                        }
+
+                        // if you're an admin or a mod, fetch the report counts
+                        if (it.isAdmin || it.isMod) {
+                            fetchUnreadReportCount()
+                        }
                     }
                 }
         }
@@ -73,13 +93,16 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
-                    res.data.my_user?.local_user_view?.local_user?.let {
+                    res.data.my_user?.let { mui ->
                         val currAcc = accountRepository.currentAccount.value
+                        val localUser = mui.local_user_view.local_user
                         if (currAcc != null) {
                             val newAccount =
                                 currAcc.copy(
-                                    defaultListingType = it.default_listing_type.ordinal,
-                                    defaultSortType = it.default_sort_type.ordinal,
+                                    defaultListingType = localUser.default_listing_type.ordinal,
+                                    defaultSortType = localUser.default_sort_type.ordinal,
+                                    isAdmin = localUser.admin,
+                                    isMod = mui.moderates.isNotEmpty(),
                                 )
 
                             if (currAcc != newAccount) {
@@ -103,7 +126,25 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Long {
+    fun fetchUnreadAppCount() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+                unreadAppCountRes = ApiState.Loading
+                unreadAppCountRes = API.getInstance().getUnreadRegistrationApplicationCount().toApiState()
+            }
+        }
+    }
+
+    fun fetchUnreadReportCount() {
+        viewModelScope.launch {
+            viewModelScope.launch {
+                unreadReportCountRes = ApiState.Loading
+                unreadReportCountRes = API.getInstance().getReportCount(GetReportCount()).toApiState()
+            }
+        }
+    }
+
+    private fun getUnreadCountTotal(): Long {
         return when (val res = unreadCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data
@@ -111,6 +152,27 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
             }
 
             else -> 0
+        }
+    }
+
+    private fun getUnreadAppCountTotal(): Long? {
+        return when (val res = unreadAppCountRes) {
+            is ApiState.Success -> {
+                res.data.registration_applications
+            }
+
+            else -> null
+        }
+    }
+
+    private fun getUnreadReportCountTotal(): Long? {
+        return when (val res = unreadReportCountRes) {
+            is ApiState.Success -> {
+                val unreads = res.data
+                unreads.post_reports + unreads.comment_reports + (unreads.private_message_reports ?: 0)
+            }
+
+            else -> null
         }
     }
 

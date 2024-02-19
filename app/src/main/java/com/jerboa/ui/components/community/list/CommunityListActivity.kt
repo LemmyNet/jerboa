@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.model.CommunityListViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -41,8 +42,9 @@ fun CommunityListActivity(
     appState: JerboaAppState,
     selectMode: Boolean = false,
     followList: List<CommunityFollowerView>,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     drawerState: DrawerState,
+    showAvatar: Boolean,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -107,6 +109,7 @@ fun CommunityListActivity(
                                     .padding(padding)
                                     .imePadding(),
                             blurNSFW = blurNSFW,
+                            showAvatar = showAvatar,
                         )
                     }
 

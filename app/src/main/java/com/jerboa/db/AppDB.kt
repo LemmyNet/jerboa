@@ -7,12 +7,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.jerboa.DEFAULT_FONT_SIZE
 import com.jerboa.db.dao.AccountDao
 import com.jerboa.db.dao.AppSettingsDao
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.ui.theme.DEFAULT_FONT_SIZE
 import java.util.concurrent.Executors
 
 val APP_SETTINGS_DEFAULT =
@@ -22,6 +22,7 @@ val APP_SETTINGS_DEFAULT =
         theme = 0,
         themeColor = 0,
         viewedChangelog = 0,
+        lastVersionCodeViewed = 0,
         postViewMode = 0,
         postNavigationGestureMode = 0,
         showBottomNav = true,
@@ -38,13 +39,13 @@ val APP_SETTINGS_DEFAULT =
         backConfirmationMode = 1,
         markAsReadOnScroll = false,
         showPostLinkPreviews = true,
-        postActionbarMode = 0,
+        postActionBarMode = 0,
         autoPlayGifs = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT.ordinal,
     )
 
 @Database(
-    version = 27,
+    version = 29,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

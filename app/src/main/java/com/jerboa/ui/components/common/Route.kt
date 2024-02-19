@@ -33,6 +33,7 @@ object Route {
     const val COMMENT_REPLY = "commentReply"
 
     const val SITE_SIDEBAR = "siteSidebar"
+    const val SITE_LEGAL = "siteLegal"
     const val COMMENT_EDIT = "commentEdit"
     const val POST_EDIT = "postEdit"
     const val POST_REMOVE = "postRemove"
@@ -54,6 +55,9 @@ object Route {
     const val ABOUT = "about"
     const val CRASH_LOGS = "crashLogs"
 
+    const val REGISTRATION_APPLICATIONS = "registrationApplications"
+    const val REPORTS = "reports"
+
     val VIEW = ViewArgs.route
 
     class CommunityFromIdArgs(val id: CommunityId) {
@@ -62,7 +66,7 @@ object Route {
 
         companion object {
             const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            val ID_TYPE = NavType.LongType
 
             internal fun makeRoute(id: String) = "community/$id"
 

@@ -54,6 +54,7 @@ import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
+import com.jerboa.ui.components.home.legal.SiteLegalActivity
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -64,10 +65,12 @@ import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
+import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsActivity
 import com.jerboa.ui.components.remove.comment.CommentRemoveActivity
 import com.jerboa.ui.components.remove.post.PostRemoveActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
+import com.jerboa.ui.components.reports.ReportsActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
@@ -234,10 +237,10 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -278,10 +281,10 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -317,12 +320,12 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -356,11 +359,11 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -379,9 +382,10 @@ class MainActivity : AppCompatActivity() {
                         CommunityListActivity(
                             appState = appState,
                             selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
+                            showAvatar = siteViewModel.showAvatar(),
                         )
                     }
 
@@ -434,8 +438,42 @@ class MainActivity : AppCompatActivity() {
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
+                        )
+                    }
+
+                    composable(
+                        route = Route.REGISTRATION_APPLICATIONS,
+                    ) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(
+                        route = Route.REGISTRATION_APPLICATIONS,
+                    ) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(
+                        route = Route.REPORTS,
+                    ) {
+                        ReportsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                         )
                     }
 
@@ -470,9 +508,9 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
+                                blurNSFW = appSettings.blurNSFW.toEnum(),
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
-                                postActionbarMode = appSettings.postActionbarMode,
+                                postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             )
                         }
@@ -504,9 +542,9 @@ class MainActivity : AppCompatActivity() {
                             showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -523,6 +561,13 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.SITE_SIDEBAR) {
                         SiteSidebarActivity(
+                            appState = appState,
+                            siteViewModel = siteViewModel,
+                        )
+                    }
+
+                    composable(route = Route.SITE_LEGAL) {
+                        SiteLegalActivity(
                             siteViewModel = siteViewModel,
                             onBackClick = appState::popBackStack,
                         )

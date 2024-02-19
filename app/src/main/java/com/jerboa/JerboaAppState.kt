@@ -127,12 +127,14 @@ class JerboaAppState(
 
     fun toSiteSideBar() = navController.navigate(Route.SITE_SIDEBAR)
 
+    fun toSiteLegal() = navController.navigate(Route.SITE_LEGAL)
+
     fun toCommentReply(replyItem: ReplyItem) {
         sendReturnForwards(CommentReplyReturn.COMMENT_SEND, replyItem)
         navController.navigate(Route.COMMENT_REPLY)
     }
 
-    fun toComment(id: CommunityId) {
+    fun toComment(id: CommentId) {
         navController.navigate(Route.CommentArgs.makeRoute(id = "$id"))
     }
 

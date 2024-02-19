@@ -76,7 +76,8 @@ class LoginViewModel : ViewModel() {
                     }
 
                     is ApiState.Success -> {
-                        val luv = siteRes.data.my_user!!.local_user_view
+                        val mui = siteRes.data.my_user!!
+                        val luv = mui.local_user_view
 
                         if (accountViewModel.allAccounts.value?.any {
                                 it.name.equals(
@@ -98,6 +99,8 @@ class LoginViewModel : ViewModel() {
                                 defaultListingType = luv.local_user.default_listing_type.ordinal,
                                 defaultSortType = luv.local_user.default_sort_type.ordinal,
                                 verificationState = 0,
+                                isAdmin = luv.local_user.admin,
+                                isMod = mui.moderates.isNotEmpty(),
                             )
 
                         // Save that info in the DB

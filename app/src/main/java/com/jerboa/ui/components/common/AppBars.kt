@@ -6,12 +6,10 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -49,6 +47,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
@@ -78,7 +77,7 @@ fun SimpleTopAppBar(
             Text(
                 text = text,
                 maxLines = 1,
-                modifier = Modifier.basicMarquee(),
+                modifier = Modifier.customMarquee(),
             )
         },
         navigationIcon = {
@@ -105,7 +104,10 @@ fun SimpleTopAppBarPreview() {
 fun BottomAppBarAll(
     selectedTab: NavTab,
     onSelect: (NavTab) -> Unit,
+    userViewType: UserViewType,
     unreadCounts: Long,
+    unreadAppCount: Long?,
+    unreadReportCount: Long?,
     showTextDescriptionsInNavbar: Boolean,
 ) {
     // Check for preview mode
@@ -127,12 +129,26 @@ fun BottomAppBarAll(
     NavigationBar(
         modifier = modifier,
     ) {
-        for (tab in NavTab.entries) {
+        // Hide tabs according to permissions
+        val tabs = when (userViewType) {
+            UserViewType.Normal -> NavTab.entries.filter { it.userViewType == UserViewType.Normal }
+            UserViewType.AdminOrMod -> NavTab.entries.filter { it.userViewType != UserViewType.AdminOnly }
+            UserViewType.AdminOnly -> NavTab.entries
+        }
+
+        for (tab in tabs) {
             val selected = tab == selectedTab
+            val iconBadgeCount = when (tab) {
+                NavTab.Inbox -> unreadCounts
+                NavTab.RegistrationApplications -> unreadAppCount
+                NavTab.Reports -> unreadReportCount
+                else -> null
+            }
+
             NavigationBarItem(
                 icon = {
-                    InboxIconAndBadge(
-                        iconBadgeCount = if (tab == NavTab.Inbox) unreadCounts else null,
+                    NavbarIconAndBadge(
+                        iconBadgeCount = iconBadgeCount,
                         icon =
                             if (selected) {
                                 tab.iconFilled
@@ -168,6 +184,9 @@ fun BottomAppBarAllPreview() {
         selectedTab = NavTab.Home,
         onSelect = {},
         unreadCounts = 30,
+        unreadAppCount = 2,
+        unreadReportCount = 8,
+        userViewType = UserViewType.AdminOnly,
         showTextDescriptionsInNavbar = true,
     )
 }
@@ -179,6 +198,9 @@ fun BottomAppBarAllNoDescriptionsPreview() {
         selectedTab = NavTab.Home,
         onSelect = {},
         unreadCounts = 30,
+        unreadAppCount = null,
+        unreadReportCount = null,
+        userViewType = UserViewType.Normal,
         showTextDescriptionsInNavbar = false,
     )
 }
@@ -226,8 +248,7 @@ fun CommentOrPostNodeHeader(
     deleted: Boolean,
     onPersonClick: (personId: PersonId) -> Unit,
     isPostCreator: Boolean,
-    isModerator: Boolean,
-    isAdmin: Boolean,
+    isDistinguished: Boolean,
     isCommunityBanned: Boolean,
     onClick: () -> Unit,
     onLongCLick: () -> Unit,
@@ -271,8 +292,7 @@ fun CommentOrPostNodeHeader(
                 onClick = { onPersonClick(creator.id) },
                 showTags = true,
                 isPostCreator = isPostCreator,
-                isModerator = isModerator,
-                isAdmin = isAdmin,
+                isDistinguished = isDistinguished,
                 isCommunityBanned = isCommunityBanned,
                 showAvatar = showAvatar,
             )
@@ -301,8 +321,7 @@ fun CommentOrPostNodeHeaderPreview() {
         deleted = false,
         onPersonClick = {},
         isPostCreator = true,
-        isModerator = true,
-        isAdmin = false,
+        isDistinguished = false,
         isCommunityBanned = false,
         onClick = {},
         onLongCLick = {},
@@ -427,14 +446,15 @@ fun ActionBarButtonAndBadge(
 
 @Composable
 fun DotSpacer(
-    padding: Dp = SMALL_PADDING,
+    modifier: Modifier = Modifier,
+    padding: Dp = 0.dp,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
         text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
-        modifier = Modifier.padding(horizontal = padding),
+        modifier = modifier.padding(horizontal = padding),
     )
 }
 
@@ -448,7 +468,7 @@ fun scoreColor(myVote: Int?): Color {
 }
 
 @Composable
-fun InboxIconAndBadge(
+fun NavbarIconAndBadge(
     iconBadgeCount: Long?,
     icon: ImageVector,
     contentDescription: String?,

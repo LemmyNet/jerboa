@@ -3,6 +3,7 @@ package com.jerboa.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.feat.AccountVerificationState
 
 @Entity
@@ -27,18 +28,23 @@ data class Account(
         defaultValue = "0",
     )
     val verificationState: Int,
+    // These two are used to show extra bottom bar items right away
+    @ColumnInfo(name = "is_admin") val isAdmin: Boolean,
+    @ColumnInfo(name = "is_mod") val isMod: Boolean,
 )
 
 val AnonAccount =
     Account(
-        -1,
-        true,
-        "",
-        "Anonymous",
-        "",
-        1,
-        0,
+        id = -1,
+        current = true,
+        instance = "",
+        name = "Anonymous",
+        jwt = "",
+        defaultListingType = 1,
+        defaultSortType = 0,
         verificationState = 0,
+        isAdmin = false,
+        isMod = false,
     )
 
 fun Account.isAnon(): Boolean {
@@ -47,4 +53,14 @@ fun Account.isAnon(): Boolean {
 
 fun Account.isReady(): Boolean {
     return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
+}
+
+fun Account.userViewType(): UserViewType {
+    return if (isAdmin) {
+        UserViewType.AdminOnly
+    } else if (isMod) {
+        UserViewType.AdminOrMod
+    } else {
+        UserViewType.Normal
+    }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.VoteType
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -65,8 +66,7 @@ fun CommentReplyNodeHeader(
         deleted = commentReplyView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = false,
-        isModerator = false,
-        isAdmin = false,
+        isDistinguished = commentReplyView.comment.distinguished,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,
@@ -242,7 +242,7 @@ fun CommentReplyNodeInbox(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     enableDownvotes: Boolean,
     showScores: Boolean,
 ) {
@@ -266,6 +266,7 @@ fun CommentReplyNodeInbox(
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
             blurNSFW = blurNSFW,
+            showAvatar = showAvatar,
         )
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,

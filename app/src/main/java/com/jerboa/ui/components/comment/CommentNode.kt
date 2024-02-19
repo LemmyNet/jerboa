@@ -51,6 +51,7 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -58,6 +59,7 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
@@ -81,7 +83,16 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 
 @Composable
 fun CommentNodeHeader(
@@ -112,8 +123,7 @@ fun CommentNodeHeader(
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
         showScores = showScores,
-        isModerator = commentView.creator_is_moderator,
-        isAdmin = commentView.creator_is_admin,
+        isDistinguished = commentView.comment.distinguished,
     )
 }
 
@@ -141,25 +151,16 @@ fun CommentBody(
     onClick: () -> Unit,
     onLongClick: ((View) -> Boolean),
 ) {
-    val content =
-        if (comment.removed) {
-            stringResource(R.string.comment_body_removed)
-        } else if (comment.deleted) {
-            stringResource(R.string.comment_body_deleted)
-        } else {
-            comment.content
-        }
-
     if (viewSource) {
         SelectionContainer {
             Text(
-                text = comment.content,
+                text = comment.getContent(),
                 fontFamily = FontFamily.Monospace,
             )
         }
     } else {
         MyMarkdownText(
-            markdown = content,
+            markdown = comment.getContent(),
             onClick = onClick,
             onLongClick = onLongClick,
             modifier = Modifier.padding(0.dp, 0.dp, 0.dp, MEDIUM_PADDING),
@@ -205,6 +206,7 @@ fun LazyListScope.commentNodeItem(
     onPostClick: (postId: PostId) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onDistinguishClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
@@ -217,7 +219,7 @@ fun LazyListScope.commentNodeItem(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -305,7 +307,8 @@ fun LazyListScope.commentNodeItem(
                             ),
                 ) {
                     Column(
-                        modifier = Modifier.border(start = border),
+                        modifier = Modifier.border(start = border)
+                            .padding(bottom = LARGE_PADDING),
                     ) {
                         HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                         Column(
@@ -322,6 +325,7 @@ fun LazyListScope.commentNodeItem(
                                     onCommunityClick = onCommunityClick,
                                     onPostClick = onPostClick,
                                     blurNSFW = blurNSFW,
+                                    showAvatar = showAvatar,
                                 )
                             }
                             CommentNodeHeader(
@@ -390,6 +394,7 @@ fun LazyListScope.commentNodeItem(
                                             onSaveClick = onSaveClick,
                                             onReportClick = onReportClick,
                                             onRemoveClick = onRemoveClick,
+                                            onDistinguishClick = onDistinguishClick,
                                             onBanPersonClick = onBanPersonClick,
                                             onBanFromCommunityClick = onBanFromCommunityClick,
                                             onCommentLinkClick = onCommentLinkClick,
@@ -459,6 +464,7 @@ fun LazyListScope.commentNodeItem(
         onDeleteCommentClick = onDeleteCommentClick,
         onReportClick = onReportClick,
         onRemoveClick = onRemoveClick,
+        onDistinguishClick = onDistinguishClick,
         onBanPersonClick = onBanPersonClick,
         onBanFromCommunityClick = onBanFromCommunityClick,
         onCommentLinkClick = onCommentLinkClick,
@@ -511,6 +517,7 @@ fun LazyListScope.missingCommentNodeItem(
     onPostClick: (postId: PostId) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onDistinguishClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
@@ -523,7 +530,7 @@ fun LazyListScope.missingCommentNodeItem(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -611,6 +618,7 @@ fun LazyListScope.missingCommentNodeItem(
         onDeleteCommentClick = onDeleteCommentClick,
         onReportClick = onReportClick,
         onRemoveClick = onRemoveClick,
+        onDistinguishClick = onDistinguishClick,
         onBanPersonClick = onBanPersonClick,
         onBanFromCommunityClick = onBanFromCommunityClick,
         onCommentLinkClick = onCommentLinkClick,
@@ -691,7 +699,8 @@ fun PostAndCommunityContextHeader(
     community: Community,
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: PostId) -> Unit,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
+    showAvatar: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING),
@@ -710,6 +719,7 @@ fun PostAndCommunityContextHeader(
                 onClick = onCommunityClick,
                 showDefaultIcon = false,
                 blurNSFW = blurNSFW,
+                showAvatar = showAvatar,
             )
         }
     }
@@ -723,7 +733,8 @@ fun PostAndCommunityContextHeaderPreview() {
         community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
+        showAvatar = true,
     )
 }
 
@@ -744,6 +755,7 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onDistinguishClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
@@ -793,6 +805,7 @@ fun CommentFooterLine(
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onDistinguishClick = onDistinguishClick,
             onBanPersonClick = onBanPersonClick,
             onBanFromCommunityClick = onBanFromCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
@@ -818,7 +831,7 @@ fun CommentFooterLine(
                     onClick = onClick,
                     onLongClick = onLongClick,
                 )
-                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+                .padding(top = MEDIUM_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -912,6 +925,7 @@ fun CommentNodesPreview() {
         onDeleteCommentClick = {},
         onReportClick = {},
         onRemoveClick = {},
+        onDistinguishClick = {},
         onBanPersonClick = {},
         onBanFromCommunityClick = {},
         onCommentLinkClick = {},
@@ -928,7 +942,7 @@ fun CommentNodesPreview() {
         showActionBar = { _ -> true },
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
         showScores = true,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,

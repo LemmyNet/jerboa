@@ -35,7 +35,8 @@ fun ViewVotesBody(
         modifier =
             Modifier
                 .fillMaxSize()
-                .simpleVerticalScrollbar(listState),
+                .simpleVerticalScrollbar(listState)
+                .padding(horizontal = MEDIUM_PADDING),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         items(

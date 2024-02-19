@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
@@ -71,7 +72,8 @@ fun CommunityListings(
     communities: List<CommunityView>,
     onClickCommunity: (community: Community) -> Unit,
     modifier: Modifier = Modifier,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
+    showAvatar: Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -90,6 +92,7 @@ fun CommunityListings(
                     community = item.community,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
+                    showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                 )
             } else {
@@ -97,6 +100,7 @@ fun CommunityListings(
                     communityView = item,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
+                    showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
                 )
             }
@@ -111,7 +115,8 @@ fun CommunityListingsPreview() {
     CommunityListings(
         communities = communities,
         onClickCommunity = {},
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
+        showAvatar = true,
     )
 }
 

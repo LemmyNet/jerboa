@@ -8,10 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.jerboa.VIEW_VOTES_LIMIT
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import com.jerboa.appendData
+import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.v0x19.datatypes.ListPostLikes
 import it.vercruysse.lemmyapi.v0x19.datatypes.ListPostLikesResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
@@ -40,6 +41,7 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
     private fun getForm(): ListPostLikes {
         return ListPostLikes(
             post_id = id,
+            limit = VIEW_VOTES_LIMIT,
             page = page,
         )
     }
@@ -58,7 +60,11 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
             likesRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        val appended = appendData(oldRes.data.post_likes, newRes.data.post_likes)
+                        val appended =
+                            getDeduplicateMerge(
+                                oldRes.data.post_likes,
+                                newRes.data.post_likes,
+                            ) { it.creator.id }
 
                         ApiState.Success(oldRes.data.copy(post_likes = appended))
                     }

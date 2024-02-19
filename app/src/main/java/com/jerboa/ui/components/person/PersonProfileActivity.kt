@@ -51,8 +51,11 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
+import com.jerboa.feat.canMod
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.isScrolledToEnd
@@ -92,6 +95,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
@@ -116,11 +120,11 @@ fun PersonProfileActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     onBack: (() -> Unit)? = null,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -171,10 +175,13 @@ fun PersonProfileActivity(
                     PersonProfileHeader(
                         personName = ctx.getString(R.string.loading),
                         myProfile = false,
+                        banned = false,
+                        canBan = false,
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
                         onMessagePersonClick = {},
+                        onBanPersonClick = {},
                         selectedSortType = personProfileViewModel.sortType,
                         openDrawer = ::openDrawer,
                         scrollBehavior = scrollBehavior,
@@ -185,6 +192,13 @@ fun PersonProfileActivity(
                 }
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
+                    val canBan =
+                        canMod(
+                            creatorId = person.id,
+                            admins = siteViewModel.admins(),
+                            moderators = null,
+                            myId = account.id,
+                        )
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =
@@ -195,6 +209,8 @@ fun PersonProfileActivity(
                             },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
+                        banned = person.banned,
+                        canBan = canBan,
                         onClickSortType = { sortType ->
                             scrollToTop(scope, postListState)
                             personProfileViewModel.resetPage()
@@ -237,9 +253,12 @@ fun PersonProfileActivity(
                         },
                         onMessagePersonClick = {
                             appState.toCreatePrivateMessage(
-                                profileRes.data.person_view.person.id,
-                                profileRes.data.person_view.person.getDisplayName(),
+                                person.id,
+                                person.getDisplayName(),
                             )
+                        },
+                        onBanPersonClick = {
+                            appState.toBanPerson(person)
                         },
                         openDrawer = ::openDrawer,
                         onBack = onBack,
@@ -272,7 +291,7 @@ fun PersonProfileActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
-                postActionbarMode = postActionbarMode,
+                postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             )
         },
@@ -303,12 +322,12 @@ fun UserTabs(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val tabTitles =
@@ -423,6 +442,7 @@ fun UserTabs(
                                             appState.toCommunity(id = community.id)
                                         },
                                         showDefaultIcon = true,
+                                        showAvatar = showAvatar,
                                         blurNSFW = blurNSFW,
                                     )
                                 }
@@ -625,7 +645,7 @@ fun UserTabs(
                                     },
                                     showIfRead = false,
                                     showScores = showScores,
-                                    postActionbarMode = postActionbarMode,
+                                    postActionBarMode = postActionBarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
@@ -801,6 +821,22 @@ fun UserTabs(
                                                 DeleteComment(
                                                     comment_id = cv.comment.id,
                                                     deleted = !cv.comment.deleted,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onDistinguishClick = { cv ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
+                                            personProfileViewModel.distinguishComment(
+                                                DistinguishComment(
+                                                    comment_id = cv.comment.id,
+                                                    distinguished = !cv.comment.distinguished,
                                                 ),
                                             )
                                         }

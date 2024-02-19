@@ -3,6 +3,7 @@ package com.jerboa.ui.components.drawer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,25 +41,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.customMarquee
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.NavTab
-import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -75,6 +77,8 @@ fun Drawer(
     myUserInfo: MyUserInfo?,
     follows: List<CommunityFollowerView>,
     unreadCount: Long,
+    unreadAppCount: Long?,
+    unreadReportCount: Long?,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -84,7 +88,7 @@ fun Drawer(
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
     isOpen: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -105,6 +109,8 @@ fun Drawer(
         accountViewModel = accountViewModel,
         follows = follows,
         unreadCount = unreadCount,
+        unreadAppCount = unreadAppCount,
+        unreadReportCount = unreadReportCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
         onAddAccount = onAddAccount,
@@ -134,7 +140,9 @@ fun DrawerContent(
     onClickSettings: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Long,
-    blurNSFW: Int,
+    unreadAppCount: Long?,
+    unreadReportCount: Long?,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -162,6 +170,8 @@ fun DrawerContent(
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
         unreadCount = unreadCount,
+        unreadAppCount = unreadAppCount,
+        unreadReportCount = unreadReportCount,
         onClickSettings = onClickSettings,
         blurNSFW = blurNSFW,
         showBottomNav = showBottomNav,
@@ -178,7 +188,9 @@ fun DrawerItemsMain(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Long,
-    blurNSFW: Int,
+    unreadAppCount: Long?,
+    unreadReportCount: Long?,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -234,7 +246,12 @@ fun DrawerItemsMain(
                         onSelectTab(it)
                         closeDrawer()
                     },
-                    iconBadgeCount = if (it == NavTab.Inbox) unreadCount else null,
+                    iconBadgeCount = when (it) {
+                        NavTab.Inbox -> unreadCount
+                        NavTab.RegistrationApplications -> unreadAppCount
+                        NavTab.Reports -> unreadReportCount
+                        else -> null
+                    },
                     contentDescription = stringResource(id = it.contentDescriptionId),
                 )
             }
@@ -273,6 +290,7 @@ fun DrawerItemsMain(
                     community = follow.community,
                     onClick = onCommunityClick,
                     showDefaultIcon = true,
+                    showAvatar = true,
                     blurNSFW = blurNSFW,
                 )
             }
@@ -290,7 +308,9 @@ fun DrawerItemsMainPreview() {
         onCommunityClick = {},
         onClickSettings = {},
         unreadCount = 2,
-        blurNSFW = 1,
+        unreadReportCount = 5,
+        unreadAppCount = null,
+        blurNSFW = BlurNSFW.NSFW,
         showBottomNav = false,
         closeDrawer = {},
         onSelectTab = {},
@@ -422,6 +442,7 @@ fun DrawerHeader(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AvatarAndAccountName(
     account: Account,
@@ -438,15 +459,17 @@ fun AvatarAndAccountName(
             }
         }
         Column {
-            PersonName(
-                name = myPerson?.display_name ?: account.name,
+            Text(
+                text = myPerson?.getDisplayName() ?: account.name,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.customMarquee(),
             )
             Text(
                 text = if (account.isAnon()) "" else "${account.name}@${account.instance}",
                 color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelSmall,
-                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.customMarquee(),
                 maxLines = 2,
             )
         }

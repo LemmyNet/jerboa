@@ -14,8 +14,8 @@ interface AppSettingsDao {
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)
 
-    @Query("UPDATE AppSettings set viewed_changelog = 1")
-    suspend fun markChangelogViewed()
+    @Query("UPDATE AppSettings SET last_version_code_viewed = :versionCode")
+    suspend fun updateLastVersionCode(versionCode: Int)
 
     @Query("UPDATE AppSettings set post_view_mode = :postViewMode")
     suspend fun updatePostViewMode(postViewMode: Int)

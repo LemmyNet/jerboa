@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">Digita il tuo commento</string>
     <string name="comment_next_parent">Vai al commento padre successivo</string>
     <string name="comment_previous_parent">Vai al commento padre precedente</string>
-    <string name="comment_node_block">Blocca %1$s</string>
     <string name="comment_node_copy_permalink">Copia permalink</string>
     <string name="comment_node_copy_comment">Copia testo del commento</string>
     <string name="comment_node_delete">Elimina</string>
@@ -196,11 +195,9 @@
     <string name="person_profile_activity_comments">Commenti</string>
     <string name="person_profile_activity_moderates">Modera</string>
     <string name="person_profile_activity_posts">Post</string>
-    <string name="person_profile_block_person">Blocca utente</string>
     <string name="person_profile_comments">%1$s commenti</string>
     <string name="person_profile_joined">Profilo creato</string>
     <string name="person_profile_posts">%1$s post</string>
-    <string name="person_profile_report_person">Segnala utente</string>
     <string name="pictrs_image_upload_image">Carica immagine</string>
     <string name="postListing_deleted">Eliminato</string>
     <string name="postListing_featuredCommunity">Presente in comunità</string>
@@ -211,7 +208,6 @@
     <string name="post_activity_comments">Commenti</string>
     <string name="post_edit_body_placeholder">Contenuto</string>
     <string name="post_edit_edit_post">Modifica post</string>
-    <string name="post_listing_block">Blocca %1$s</string>
     <string name="post_listing_comments_count">%1$s commenti</string>
     <string name="post_listing_copy_link">Copia link</string>
     <string name="post_listing_copy_permalink">Copia permalink</string>

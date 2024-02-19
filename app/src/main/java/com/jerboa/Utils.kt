@@ -8,6 +8,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -52,6 +54,7 @@ import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
@@ -455,10 +458,10 @@ fun personNameShown(
     person: Person,
     federatedName: Boolean = false,
 ): String {
+    val name = person.getDisplayName()
     return if (!federatedName) {
-        person.display_name ?: person.name
+        name
     } else {
-        val name = person.display_name ?: person.name
         if (person.local) {
             name
         } else {
@@ -467,6 +470,9 @@ fun personNameShown(
     }
 }
 
+/**
+ * Warning, do not use this for links and such, only for messages
+ */
 fun communityNameShown(community: Community): String {
     return if (community.local) {
         community.title
@@ -954,6 +960,74 @@ fun findAndUpdatePrivateMessage(
         mutable.toList()
     } else {
         messages
+    }
+}
+
+fun findAndUpdateApplication(
+    applications: List<RegistrationApplicationView>,
+    updatedApplication: RegistrationApplicationView,
+): List<RegistrationApplicationView> {
+    val foundIndex =
+        applications.indexOfFirst {
+            it.registration_application.id == updatedApplication.registration_application.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = applications.toMutableList()
+        mutable[foundIndex] = updatedApplication
+        mutable.toList()
+    } else {
+        applications
+    }
+}
+
+fun findAndUpdatePostReport(
+    reports: List<PostReportView>,
+    updatedReport: PostReportView,
+): List<PostReportView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            it.post_report.id == updatedReport.post_report.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
+    }
+}
+
+fun findAndUpdateCommentReport(
+    reports: List<CommentReportView>,
+    updatedReport: CommentReportView,
+): List<CommentReportView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            it.comment_report.id == updatedReport.comment_report.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
+    }
+}
+
+fun findAndUpdatePrivateMessageReport(
+    reports: List<PrivateMessageReportView>,
+    updatedReport: PrivateMessageReportView,
+): List<PrivateMessageReportView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            it.private_message_report.id == updatedReport.private_message_report.id
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
     }
 }
 
@@ -1454,3 +1528,19 @@ fun String.padUrlWithHttps(): String {
         "https://$this"
     }
 }
+
+fun Context.getPackageInfo(): PackageInfo {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+    } else {
+        packageManager.getPackageInfo(packageName, 0)
+    }
+}
+
+fun Context.getVersionCode(): Int =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        getPackageInfo().longVersionCode.toInt()
+    } else {
+        @Suppress("DEPRECATION")
+        getPackageInfo().versionCode
+    }

@@ -71,8 +71,6 @@
     <string name="person_profile_joined">Gick med i</string>
     <string name="person_profile_posts">%1$s inlägg</string>
     <string name="person_profile_comments">%1$s kommentarer</string>
-    <string name="person_profile_block_person">Blockera Användare</string>
-    <string name="person_profile_report_person">Rapportera Användare</string>
     <string name="person_profile_activity_moderates">Modererar</string>
     <string name="create_post_create_post">Skapa Inlägg</string>
     <string name="create_post_copy_suggested_title">kopiera föreslagen titel: %1$s</string>
@@ -87,7 +85,6 @@
     <string name="post_listing_copy_link">Kopiera länk</string>
     <string name="post_listing_copy_permalink">Kopiera Permalänk</string>
     <string name="post_listing_report_post">Rapportera Inlägg</string>
-    <string name="post_listing_block">Blockera %1$s</string>
     <string name="post_listing_edit">Redigera</string>
     <string name="post_listing_restore">Återställ</string>
     <string name="post_listing_delete">Radera</string>
@@ -161,7 +158,6 @@
     <string name="comment_node_permalink_copied">Permalänk Kopierad</string>
     <string name="post_listing_link_copied">Länk Kopierad</string>
     <string name="post_listing_permalink_copied">Permaliänk Kopierad</string>
-    <string name="comment_node_block">Blockera %1$s</string>
     <string name="moreOptions">Visa fler alternativ</string>
     <string name="lessOptions">Visa färre alternativ</string>
     <string name="bottomBar_home">Gå hem</string>

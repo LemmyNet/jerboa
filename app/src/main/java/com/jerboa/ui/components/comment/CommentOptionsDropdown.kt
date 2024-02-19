@@ -3,6 +3,7 @@ package com.jerboa.ui.components.comment
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.CopyAll
@@ -27,6 +28,7 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.getContent
 import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
@@ -50,6 +52,7 @@ fun CommentOptionsDropdown(
     onBlockCreatorClick: (Person) -> Unit,
     onReportClick: (CommentView) -> Unit,
     onRemoveClick: (CommentView) -> Unit,
+    onDistinguishClick: (CommentView) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
@@ -102,12 +105,13 @@ fun CommentOptionsDropdown(
                     ).show()
                 },
             )
+            val content = commentView.comment.getContent()
             PopupMenuItem(
                 text = stringResource(R.string.comment_node_copy_comment),
                 icon = Icons.Outlined.ContentCopy,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
+                    if (copyToClipboard(ctx, content, "comment")) {
                         Toast.makeText(
                             ctx,
                             ctx.getString(R.string.comment_node_comment_copied),
@@ -171,7 +175,7 @@ fun CommentOptionsDropdown(
             }
         } else {
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_block, commentView.creator.name),
+                text = stringResource(R.string.block_person, commentView.creator.name),
                 icon = Icons.Outlined.Block,
                 onClick = {
                     onDismissRequest()
@@ -225,6 +229,25 @@ fun CommentOptionsDropdown(
                             onBanFromCommunityClick,
                         )
                     }
+                }
+
+                // Are an admin or mod, and also the comment creator
+                if (isCreator) {
+                    val (distinguishText, distinguishIcon) =
+                        if (commentView.comment.distinguished) {
+                            Pair(stringResource(R.string.undistinguish_comment), Icons.Outlined.Shield)
+                        } else {
+                            Pair(stringResource(R.string.distinguish_comment), Icons.Filled.Shield)
+                        }
+
+                    PopupMenuItem(
+                        text = distinguishText,
+                        icon = distinguishIcon,
+                        onClick = {
+                            onDismissRequest()
+                            onDistinguishClick(commentView)
+                        },
+                    )
                 }
 
                 // You can do these actions on mods above you

@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import com.jerboa.ThemeColor
@@ -33,7 +32,7 @@ fun JerboaTheme(
 ) {
     val themeMode = ThemeMode.entries[appSettings.theme]
     val themeColor = ThemeColor.entries[appSettings.themeColor]
-    val fontSize = appSettings.fontSize.sp
+    val fontSize = appSettings.fontSize
 
     val ctx = LocalContext.current
     val android12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
 import com.jerboa.copyToClipboard
+import com.jerboa.datatypes.getContent
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
@@ -83,12 +84,13 @@ fun CommentMentionsOptionsDropdown(
                     ).show()
                 },
             )
+            val content = personMentionView.comment.getContent()
             PopupMenuItem(
                 text = stringResource(R.string.comment_node_copy_comment),
                 icon = Icons.Outlined.ContentCopy,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, personMentionView.comment.content, "comment")) {
+                    if (copyToClipboard(ctx, content, "comment")) {
                         Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
@@ -114,7 +116,7 @@ fun CommentMentionsOptionsDropdown(
         if (!isCreator) {
             HorizontalDivider()
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_block, personMentionView.creator.name),
+                text = stringResource(R.string.block_person, personMentionView.creator.name),
                 icon = Icons.Outlined.Block,
                 onClick = {
                     onDismissRequest()

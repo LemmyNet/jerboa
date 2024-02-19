@@ -11,6 +11,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
@@ -31,7 +32,7 @@ fun MainDrawer(
     onCommunityClick: (CommunityId) -> Unit,
     onClickLogin: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
 ) {
     val account = getCurrentAccount(accountViewModel)
@@ -65,6 +66,8 @@ fun MainDrawer(
             },
         follows = follows.toList(),
         unreadCount = siteViewModel.unreadCount,
+        unreadAppCount = siteViewModel.unreadAppCount,
+        unreadReportCount = siteViewModel.unreadReportCount,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,
         isOpen = drawerState.isOpen,

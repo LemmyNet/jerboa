@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
 import com.jerboa.ui.components.comment.CommentBody
@@ -68,8 +69,7 @@ fun CommentMentionNodeHeader(
         deleted = personMentionView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = false,
-        isModerator = false,
-        isAdmin = false,
+        isDistinguished = personMentionView.comment.distinguished,
         isCommunityBanned = personMentionView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,
@@ -262,7 +262,7 @@ fun CommentMentionNode(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     enableDownvotes: Boolean,
     showScores: Boolean,
 ) {
@@ -286,6 +286,7 @@ fun CommentMentionNode(
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
             blurNSFW = blurNSFW,
+            showAvatar = showAvatar,
         )
         CommentMentionNodeHeader(
             personMentionView = personMentionView,

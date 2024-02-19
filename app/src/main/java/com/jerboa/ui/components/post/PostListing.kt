@@ -18,15 +18,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
@@ -35,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -47,7 +46,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -71,9 +69,9 @@ import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
-import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
@@ -88,7 +86,6 @@ import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
-import com.jerboa.toEnum
 import com.jerboa.toHttps
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
@@ -119,6 +116,7 @@ import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
+import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
@@ -137,7 +135,8 @@ fun PostHeaderLine(
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    fullBody: Boolean,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
 ) {
     val community = postView.community
@@ -147,10 +146,11 @@ fun PostHeaderLine(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f),
             ) {
-                if (showCommunityName) {
+                if (showCommunityName && showAvatar) {
                     community.icon?.let {
                         CircularIcon(
                             icon = it,
@@ -158,11 +158,11 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
+                            blur = blurNSFW.needBlur(community.nsfw),
                         )
                     }
                 }
-                Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                Column {
                     if (showCommunityName) {
                         CommunityName(
                             community = postView.community,
@@ -176,17 +176,15 @@ fun PostHeaderLine(
                         PersonProfileLink(
                             person = postView.creator,
                             onClick = onPersonClick,
-                            showTags = true,
+                            showTags = fullBody,
                             // Set this to false, we already know this
                             isPostCreator = false,
-                            isModerator = postView.creator_is_moderator,
-                            isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,
                             color = MaterialTheme.colorScheme.onSurface.muted,
-                            showAvatar = showAvatar,
+                            showAvatar = !showCommunityName && showAvatar,
                         )
                         if (postView.post.featured_local) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = stringResource(R.string.postListing_featuredLocal),
@@ -195,7 +193,7 @@ fun PostHeaderLine(
                             )
                         }
                         if (postView.post.featured_community) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = stringResource(R.string.postListing_featuredCommunity),
@@ -204,7 +202,7 @@ fun PostHeaderLine(
                             )
                         }
                         if (postView.post.locked) {
-                            DotSpacer(0.dp)
+                            DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.CommentsDisabled,
                                 contentDescription = stringResource(R.string.postListing_locked),
@@ -252,8 +250,9 @@ fun PostHeaderLinePreview() {
         onCommunityClick = {},
         onPersonClick = {},
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showScores = true,
+        fullBody = true,
     )
 }
 
@@ -280,8 +279,7 @@ fun PostNodeHeader(
         onLongCLick = {},
         showAvatar = showAvatar,
         showScores = showScores,
-        isModerator = postView.creator_is_moderator,
-        isAdmin = postView.creator_is_admin,
+        isDistinguished = false,
     )
 }
 
@@ -292,7 +290,7 @@ fun PostTitleBlock(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -338,7 +336,7 @@ fun PostName(
 
     Text(
         text = postView.post.name,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.headlineLarge,
         color = color,
         modifier = Modifier.testTag("jerboa:posttitle"),
     )
@@ -348,12 +346,12 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
-    val url = postView.post.url!!.toHttps()
+    val url = postView.post.url?.toHttps()
 
     Column(
         modifier =
@@ -369,16 +367,18 @@ fun PostTitleAndImageLink(
         )
     }
 
-    PictrsUrlImage(
-        url = url,
-        blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
-        modifier =
-            Modifier
-                .combinedClickable(
-                    onClick = { appState.openImageViewer(url) },
-                    onLongClick = { appState.showLinkPopup(url) },
-                ),
-    )
+    url?.let { cUrl ->
+        PictrsUrlImage(
+            url = cUrl,
+            blur = blurNSFW.needBlur(postView),
+            modifier =
+                Modifier
+                    .combinedClickable(
+                        onClick = { appState.openImageViewer(cUrl) },
+                        onLongClick = { appState.showLinkPopup(cUrl) },
+                    ),
+        )
+    }
 }
 
 @Composable
@@ -387,7 +387,7 @@ fun PostTitleAndThumbnail(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -436,7 +436,7 @@ fun PostBody(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     clickBody: () -> Unit = {},
@@ -458,7 +458,7 @@ fun PostBody(
         )
 
         // The metadata card
-        if (fullBody && showPostLinkPreview && post.embed_title !== null) {
+        if (fullBody && showPostLinkPreview) {
             MetadataCard(post = post)
         }
 
@@ -496,12 +496,9 @@ fun PostBody(
                             }
                         }
                     } else {
-                        val defaultColor: Color =
-                            LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-
                         CreateMarkdownPreview(
                             markdown = text,
-                            defaultColor = defaultColor,
+                            color = LocalContentColor.current,
                             onClick = clickBody,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(MEDIUM_PADDING),
@@ -524,7 +521,7 @@ fun PreviewStoryTitleAndMetadata() {
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -542,7 +539,7 @@ fun PreviewSourcePost() {
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -577,7 +574,7 @@ fun PostFooterLine(
     enableDownVotes: Boolean,
     viewSource: Boolean,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     fromPostActivity: Boolean,
     scope: CoroutineScope,
 ) {
@@ -635,13 +632,11 @@ fun PostFooterLine(
         )
     }
 
-    val postActionbar = postActionbarMode.toEnum<PostActionbarMode>()
-
     val horizontalArrangement =
-        when (postActionbar) {
-            PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
-            PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
-            PostActionbarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+        when (postActionBarMode) {
+            PostActionBarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
+            PostActionBarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+            PostActionBarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
         }
 
     Row(
@@ -653,7 +648,7 @@ fun PostFooterLine(
                 .padding(bottom = SMALL_PADDING),
     ) {
         // Right handside shows the comments on the left side
-        if (postActionbar == PostActionbarMode.RightHandShort) {
+        if (postActionBarMode == PostActionBarMode.RightHandShort) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
@@ -681,7 +676,7 @@ fun PostFooterLine(
             )
         }
 
-        if (postActionbar == PostActionbarMode.Long) {
+        if (postActionBarMode == PostActionBarMode.Long) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
@@ -726,7 +721,7 @@ fun PostFooterLine(
             account = account,
             onClick = { showMoreOptions = !showMoreOptions },
             requiresAccount = false,
-            modifier = if (postActionbar == PostActionbarMode.LeftHandShort) {
+            modifier = if (postActionBarMode == PostActionBarMode.LeftHandShort) {
                 Modifier.weight(
                     1F,
                     true,
@@ -736,7 +731,7 @@ fun PostFooterLine(
             },
         )
 
-        if (postActionbar == PostActionbarMode.LeftHandShort) {
+        if (postActionBarMode == PostActionBarMode.LeftHandShort) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
@@ -761,7 +756,7 @@ fun CommentNewCountRework(
         }
 
     ActionBarButtonAndBadge(
-        icon = Icons.Outlined.Forum,
+        icon = Icons.Outlined.ChatBubbleOutline,
         iconBadgeCount = unread,
         contentDescription = null,
         text = siFormat(comments),
@@ -838,7 +833,7 @@ fun PostFooterLinePreview() {
         enableDownVotes = true,
         viewSource = false,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         fromPostActivity = true,
         scope = rememberCoroutineScope(),
     )
@@ -875,12 +870,12 @@ fun PreviewPostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -916,12 +911,12 @@ fun PreviewLinkPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -957,12 +952,12 @@ fun PreviewImagePostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -998,12 +993,12 @@ fun PreviewImagePostListingSmallCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -1039,12 +1034,12 @@ fun PreviewLinkNoThumbnailPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
-        postActionbarMode = PostActionbarMode.Long.ordinal,
+        postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }
@@ -1081,12 +1076,12 @@ fun PostListing(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val ctx = LocalContext.current
@@ -1189,7 +1184,7 @@ fun PostListing(
                         appState = appState,
                         showIfRead = showIfRead,
                         showScores = showScores,
-                        postActionbarMode = postActionbarMode,
+                        postActionBarMode = postActionBarMode,
                     )
 
                 PostViewMode.SmallCard ->
@@ -1237,7 +1232,7 @@ fun PostListing(
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showScores = showScores,
-                        postActionbarMode = postActionbarMode,
+                        postActionBarMode = postActionBarMode,
                     )
 
                 PostViewMode.List ->
@@ -1256,7 +1251,6 @@ fun PostListing(
                         showCommunityName = showCommunityName,
                         account = account,
                         showVotingArrowsInListView = showVotingArrowsInListView,
-                        showAvatar = showAvatar,
                         useCustomTabs = useCustomTabs,
                         usePrivateTabs = usePrivateTabs,
                         blurNSFW = blurNSFW,
@@ -1294,6 +1288,7 @@ fun PostVotingTile(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier =
             Modifier
                 .fillMaxHeight()
@@ -1344,10 +1339,9 @@ fun PostListingList(
     showCommunityName: Boolean = true,
     account: Account,
     showVotingArrowsInListView: Boolean,
-    showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
@@ -1388,29 +1382,31 @@ fun PostListingList(
             ) {
                 PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
-                    verticalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
                 ) {
+                    // You must use a center align modifier for each of these
+                    val centerMod = Modifier.align(Alignment.CenterVertically)
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
                             onClick = {},
                             clickable = false,
                             showDefaultIcon = false,
+                            showAvatar = false,
                             blurNSFW = blurNSFW,
+                            modifier = centerMod,
                         )
-                        DotSpacer(0.dp)
+                        DotSpacer(modifier = centerMod)
                     }
                     PersonProfileLink(
                         person = postView.creator,
-                        isModerator = postView.creator_is_moderator,
-                        isAdmin = postView.creator_is_admin,
                         onClick = {},
                         clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
-                        showAvatar = showAvatar,
+                        showAvatar = false,
+                        modifier = centerMod,
                     )
-                    DotSpacer(0.dp)
+                    DotSpacer(modifier = centerMod)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
                             val hostName = hostName(postUrl)
@@ -1419,15 +1415,20 @@ fun PostListingList(
                                     text = it,
                                     color = MaterialTheme.colorScheme.onBackground.muted,
                                     style = MaterialTheme.typography.bodyMedium,
+                                    modifier = centerMod,
                                 )
-                                DotSpacer(0.dp)
+                                DotSpacer(modifier = centerMod)
                             }
                         }
                     }
-                    TimeAgo(published = postView.post.published, updated = postView.post.updated)
+                    TimeAgo(
+                        published = postView.post.published,
+                        updated = postView.post.updated,
+                        modifier = centerMod,
+                    )
                 }
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (!showVotingArrowsInListView) {
@@ -1436,7 +1437,7 @@ fun PostListingList(
                             style = MaterialTheme.typography.bodyMedium,
                             color = scoreColor(myVote = instantScores.myVote),
                         )
-                        DotSpacer(0.dp)
+                        DotSpacer()
                     }
                     Text(
                         text =
@@ -1472,7 +1473,7 @@ private fun ThumbnailTile(
     postView: PostView,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
 ) {
     postView.post.url?.also { url ->
@@ -1502,7 +1503,7 @@ private fun ThumbnailTile(
             postView.post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
-                    blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
+                    blur = blurNSFW.needBlur(postView),
                     roundBottomEndCorner = postType != PostType.Link,
                     modifier = postLinkPicMod,
                 )
@@ -1564,10 +1565,9 @@ fun PostListingListPreview() {
         onPostClick = {},
         account = AnonAccount,
         showVotingArrowsInListView = true,
-        showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
@@ -1594,10 +1594,9 @@ fun PostListingListWithThumbPreview() {
         onPostClick = {},
         account = AnonAccount,
         showVotingArrowsInListView = true,
-        showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = 1,
+        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
@@ -1638,12 +1637,12 @@ fun PostListingCard(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean = false,
     showScores: Boolean,
-    postActionbarMode: Int,
+    postActionBarMode: PostActionBarMode,
 ) {
     Column(
         modifier =
@@ -1651,6 +1650,7 @@ fun PostListingCard(
                 .padding(vertical = MEDIUM_PADDING)
                 .clickable { onPostClick(postView) }
                 .testTag("jerboa:post"),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
@@ -1666,9 +1666,8 @@ fun PostListingCard(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            fullBody = fullBody,
         )
-
-        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
 
         //  Title + metadata
         PostBody(
@@ -1685,8 +1684,6 @@ fun PostListingCard(
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
         )
-
-        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
 
         // Footer bar
         PostFooterLine(
@@ -1716,7 +1713,7 @@ fun PostListingCard(
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
             showScores = showScores,
-            postActionbarMode = postActionbarMode,
+            postActionBarMode = postActionBarMode,
             fromPostActivity = fullBody,
             scope = appState.coroutineScope,
         )
@@ -1732,29 +1729,36 @@ fun PostListingHeaderPreview() {
 
 @Composable
 fun MetadataCard(post: Post) {
-    OutlinedCard(
-        shape = MaterialTheme.shapes.medium,
-        modifier =
-            Modifier
-                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                .fillMaxWidth(),
-        content = {
-            Column(
-                modifier = Modifier.padding(MEDIUM_PADDING),
-            ) {
-                Text(
-                    text = post.embed_title!!,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                post.embed_description?.also {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-                    // This is actually html, but markdown can render it
-                    MyMarkdownText(
-                        markdown = it,
-                        onClick = {},
-                    )
+    val embedTitle = post.embed_title
+    if (embedTitle != null) {
+        OutlinedCard(
+            shape = MaterialTheme.shapes.medium,
+            modifier =
+                Modifier
+                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .fillMaxWidth(),
+            content = {
+                Column(
+                    modifier = Modifier.padding(MEDIUM_PADDING),
+                ) {
+                    if (post.name != embedTitle) {
+                        Text(
+                            text = embedTitle,
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        if (post.embed_description != null) {
+                            HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+                        }
+                    }
+                    post.embed_description?.let {
+                        // This is actually html, but markdown can render it
+                        MyMarkdownText(
+                            markdown = it,
+                            onClick = {},
+                        )
+                    }
                 }
-            }
-        },
-    )
+            },
+        )
+    }
 }

@@ -13,6 +13,7 @@ import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
@@ -45,6 +46,7 @@ fun CommentNodes(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onDistinguishClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
@@ -63,7 +65,7 @@ fun CommentNodes(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -88,6 +90,7 @@ fun CommentNodes(
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
             onRemoveClick = onRemoveClick,
+            onDistinguishClick = onDistinguishClick,
             onBanPersonClick = onBanPersonClick,
             onBanFromCommunityClick = onBanFromCommunityClick,
             onCommentLinkClick = onCommentLinkClick,
@@ -136,6 +139,7 @@ fun LazyListScope.commentNodeItems(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
+    onDistinguishClick: (commentView: CommentView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
@@ -154,7 +158,7 @@ fun LazyListScope.commentNodeItems(
     showActionBar: (commentId: CommentId) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Int,
+    blurNSFW: BlurNSFW,
     showScores: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -188,6 +192,7 @@ fun LazyListScope.commentNodeItems(
                     onDeleteCommentClick = onDeleteCommentClick,
                     onReportClick = onReportClick,
                     onRemoveClick = onRemoveClick,
+                    onDistinguishClick = onDistinguishClick,
                     onBanPersonClick = onBanPersonClick,
                     onBanFromCommunityClick = onBanFromCommunityClick,
                     onCommentLinkClick = onCommentLinkClick,
@@ -232,6 +237,7 @@ fun LazyListScope.commentNodeItems(
                     onDeleteCommentClick = onDeleteCommentClick,
                     onReportClick = onReportClick,
                     onRemoveClick = onRemoveClick,
+                    onDistinguishClick = onDistinguishClick,
                     onBanPersonClick = onBanPersonClick,
                     onBanFromCommunityClick = onBanFromCommunityClick,
                     onCommentLinkClick = onCommentLinkClick,

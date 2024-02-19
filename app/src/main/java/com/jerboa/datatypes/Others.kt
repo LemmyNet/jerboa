@@ -180,3 +180,12 @@ data class PostFeatureData(
     val type: PostFeatureType,
     val featured: Boolean,
 )
+
+/**
+ * Says which type of users can view which bottom app bar tabs.
+ */
+enum class UserViewType {
+    Normal,
+    AdminOnly,
+    AdminOrMod,
+}

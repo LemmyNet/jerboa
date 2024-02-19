@@ -1,18 +1,23 @@
 package com.jerboa.datatypes
 
 import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.dto.PostListingMode
 import it.vercruysse.lemmyapi.dto.RegistrationMode
+import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.SubscribedType
 import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReply
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSite
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSiteRateLimit
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUser
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMention
@@ -20,9 +25,15 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostAggregates
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessage
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReport
+import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplication
+import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplicationView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Site
 import it.vercruysse.lemmyapi.v0x19.datatypes.SiteAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
@@ -181,6 +192,25 @@ val samplePerson2 =
         updated = "2021-10-11T07:14:53.548707",
         actor_id = "https://lemmy.ml/u/homeless",
         bio = null,
+        local = false,
+        banner = null,
+        deleted = false,
+        matrix_user_id = null,
+        bot_account = false,
+        ban_expires = null,
+        instance_id = 0,
+    )
+
+val samplePerson3 =
+    Person(
+        id = 33478,
+        name = "witch_power",
+        display_name = null,
+        banned = false,
+        published = "2021-08-08T01:47:44.437708",
+        updated = "2021-10-11T07:14:53.548707",
+        actor_id = "https://lemmy.ml/u/witch_power",
+        bio = null,
         local = true,
         banner = null,
         deleted = false,
@@ -189,6 +219,33 @@ val samplePerson2 =
         ban_expires = null,
         instance_id = 0,
     )
+
+val sampleLocalUser = LocalUser(
+    id = 24,
+    person_id = 82,
+    show_nsfw = false,
+    theme = "none",
+    default_sort_type = SortType.Active,
+    default_listing_type = ListingType.Local,
+    interface_language = "en",
+    show_avatars = false,
+    send_notifications_to_email = false,
+    show_scores = false,
+    show_bot_accounts = false,
+    show_read_posts = false,
+    email_verified = false,
+    accepted_application = false,
+    open_links_in_new_tab = false,
+    blur_nsfw = false,
+    auto_expand = false,
+    infinite_scroll_enabled = false,
+    admin = false,
+    post_listing_mode = PostListingMode.List,
+    totp_2fa_enabled = false,
+    enable_keyboard_navigation = false,
+    enable_animated_images = false,
+    collapse_bot_comments = false,
+)
 
 val sampleCommunity =
     Community(
@@ -209,6 +266,8 @@ val sampleCommunity =
         hidden = false,
         posting_restricted_to_mods = false,
     )
+
+val sampleCommunityFederated = sampleCommunity.copy(local = false)
 
 val samplePostAggregates =
     PostAggregates(
@@ -609,4 +668,124 @@ val sampleSiteView =
         counts = sampleSiteAggregates,
         local_site = sampleLocalSite,
         local_site_rate_limit = local_site_rate_limit,
+    )
+
+val samplePendingRegistrationApplication =
+    RegistrationApplication(
+        id = 23,
+        local_user_id = 28,
+        answer = "**Please** let me in",
+        published = "2022-01-01T09:53:46.904077",
+    )
+
+val samplePendingRegistrationApplicationView =
+    RegistrationApplicationView(
+        registration_application = samplePendingRegistrationApplication,
+        creator = samplePerson,
+        creator_local_user = sampleLocalUser,
+    )
+
+val sampleApprovedRegistrationApplication =
+    RegistrationApplication(
+        id = 24,
+        local_user_id = 29,
+        answer = "**Please** let me in",
+        published = "2022-01-01T09:53:46.904077",
+        admin_id = samplePerson2.id,
+    )
+
+val sampleApprovedRegistrationApplicationView =
+    RegistrationApplicationView(
+        registration_application = sampleApprovedRegistrationApplication,
+        creator = samplePerson,
+        creator_local_user = sampleLocalUser,
+        admin = samplePerson2,
+    )
+
+val sampleDeniedRegistrationApplication =
+    RegistrationApplication(
+        id = 24,
+        local_user_id = 29,
+        answer = "**Please** let me in",
+        published = "2022-01-01T09:53:46.904077",
+        admin_id = samplePerson2.id,
+        deny_reason = "I'm not letting you in, sorry.",
+    )
+
+val sampleDeniedRegistrationApplicationView =
+    RegistrationApplicationView(
+        registration_application = sampleDeniedRegistrationApplication,
+        creator = samplePerson,
+        creator_local_user = sampleLocalUser,
+        admin = samplePerson2,
+    )
+
+val samplePostReport =
+    PostReport(
+        creator_id = 28,
+        id = 89,
+        original_post_name = samplePost.name,
+        post_id = samplePost.id,
+        published = samplePost.published,
+        reason = "This post is *peak* **cringe**",
+        resolved = true,
+        resolver_id = samplePerson3.id,
+    )
+
+val samplePostReportView =
+    PostReportView(
+        post_creator = samplePerson,
+        creator = samplePerson2,
+        resolver = samplePerson3,
+        post = samplePost,
+        post_report = samplePostReport,
+        community = sampleCommunity,
+        counts = samplePostAggregates,
+        creator_banned_from_community = false,
+    )
+
+val sampleCommentReport =
+    CommentReport(
+        creator_id = 28,
+        id = 89,
+        original_comment_text = sampleComment.content,
+        comment_id = sampleComment.id,
+        published = sampleComment.published,
+        reason = "This is a bad comment, remove it plz.",
+        resolved = true,
+        resolver_id = samplePerson3.id,
+    )
+
+val sampleCommentReportView =
+    CommentReportView(
+        comment_creator = samplePerson,
+        creator = samplePerson2,
+        resolver = samplePerson3,
+        post = samplePost,
+        comment = sampleComment,
+        comment_report = sampleCommentReport,
+        community = sampleCommunity,
+        counts = sampleCommentAggregates,
+        creator_banned_from_community = false,
+    )
+
+val samplePrivateMessageReport =
+    PrivateMessageReport(
+        creator_id = 28,
+        id = 89,
+        original_pm_text = samplePrivateMessage.content,
+        private_message_id = samplePrivateMessage.id,
+        published = sampleComment.published,
+        reason = "This PM is from a spammer",
+        resolved = true,
+        resolver_id = samplePerson3.id,
+    )
+
+val samplePrivateMessageReportView =
+    PrivateMessageReportView(
+        private_message_report = samplePrivateMessageReport,
+        private_message = samplePrivateMessage,
+        private_message_creator = samplePerson,
+        creator = samplePerson2,
+        resolver = samplePerson3,
     )

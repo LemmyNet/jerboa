@@ -5,13 +5,17 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AppRegistration
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
@@ -21,7 +25,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,7 +47,10 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.datatypes.UserViewType
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.userViewType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -49,12 +58,14 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsActivity
+import com.jerboa.ui.components.reports.ReportsActivity
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -62,40 +73,65 @@ enum class NavTab(
     val iconOutlined: ImageVector,
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
+    val userViewType: UserViewType,
+    val needsLogin: Boolean,
 ) {
     Home(
-        R.string.bottomBar_label_home,
-        Icons.Outlined.Home,
-        Icons.Filled.Home,
-        R.string.bottomBar_home,
+        textId = R.string.bottomBar_label_home,
+        iconOutlined = Icons.Outlined.Home,
+        iconFilled = Icons.Filled.Home,
+        contentDescriptionId = R.string.bottomBar_home,
+        userViewType = UserViewType.Normal,
+        needsLogin = false,
     ),
     Search(
-        R.string.bottomBar_label_search,
-        Icons.Outlined.Search,
-        Icons.Filled.Search,
-        R.string.bottomBar_search,
+        textId = R.string.bottomBar_label_search,
+        iconOutlined = Icons.Outlined.Search,
+        iconFilled = Icons.Filled.Search,
+        contentDescriptionId = R.string.bottomBar_search,
+        userViewType = UserViewType.Normal,
+        needsLogin = false,
     ),
     Inbox(
-        R.string.bottomBar_label_inbox,
-        Icons.Outlined.Email,
-        Icons.Filled.Email,
-        R.string.bottomBar_inbox,
+        textId = R.string.bottomBar_label_inbox,
+        iconOutlined = Icons.Outlined.Email,
+        iconFilled = Icons.Filled.Email,
+        contentDescriptionId = R.string.bottomBar_inbox,
+        userViewType = UserViewType.Normal,
+        needsLogin = true,
+    ),
+    RegistrationApplications(
+        R.string.applications_request_shorthand,
+        Icons.Outlined.AppRegistration,
+        Icons.Filled.AppRegistration,
+        R.string.bottomBar_registrations,
+        userViewType = UserViewType.AdminOnly,
+        needsLogin = true,
+    ),
+    Reports(
+        R.string.reports,
+        Icons.Outlined.Flag,
+        Icons.Filled.Flag,
+        R.string.bottomBar_reports,
+        userViewType = UserViewType.AdminOrMod,
+        needsLogin = true,
     ),
     Saved(
-        R.string.bottomBar_label_bookmarks,
-        Icons.Outlined.Bookmarks,
-        Icons.Filled.Bookmarks,
-        R.string.bottomBar_bookmarks,
+        textId = R.string.bottomBar_label_bookmarks,
+        iconOutlined = Icons.Outlined.Bookmarks,
+        iconFilled = Icons.Filled.Bookmarks,
+        contentDescriptionId = R.string.bottomBar_bookmarks,
+        userViewType = UserViewType.Normal,
+        needsLogin = true,
     ),
     Profile(
-        R.string.bottomBar_label_profile,
-        Icons.Outlined.Person,
-        Icons.Filled.Person,
-        R.string.bottomBar_profile,
+        textId = R.string.bottomBar_label_profile,
+        iconOutlined = Icons.Outlined.Person,
+        iconFilled = Icons.Filled.Person,
+        contentDescriptionId = R.string.bottomBar_profile,
+        userViewType = UserViewType.Normal,
+        needsLogin = true,
     ),
-    ;
-
-    fun needsLogin() = this == Inbox || this == Saved || this == Profile
 }
 
 @OptIn(
@@ -111,7 +147,10 @@ fun BottomNavActivity(
     appSettings: AppSettings,
     drawerState: DrawerState,
 ) {
-    val account = getCurrentAccount(accountViewModel)
+    val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
+    val account by remember {
+        derivedStateOf { acc ?: AnonAccount }
+    }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
@@ -136,7 +175,7 @@ fun BottomNavActivity(
     }
 
     val onSelectTab: (NavTab) -> Unit = { tab: NavTab ->
-        if (tab.needsLogin()) {
+        if (tab.needsLogin) {
             account.doIfReadyElseDisplayInfo(
                 appState,
                 ctx,
@@ -166,7 +205,7 @@ fun BottomNavActivity(
                         scope = scope,
                         drawerState = drawerState,
                         onSelectTab = onSelectTab,
-                        blurNSFW = appSettings.blurNSFW,
+                        blurNSFW = appSettings.blurNSFW.toEnum(),
                         showBottomNav = appSettings.showBottomNav,
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
@@ -180,11 +219,14 @@ fun BottomNavActivity(
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
                 bottomBar = {
-                    if (appSettings.showBottomNav) {
+                    if (appSettings.showBottomNav && acc !== GuardAccount) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
                             unreadCounts = siteViewModel.unreadCount,
+                            unreadAppCount = siteViewModel.unreadAppCount,
+                            unreadReportCount = siteViewModel.unreadReportCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
+                            userViewType = account.userViewType(),
                             onSelect = onSelectTab,
                         )
                     }
@@ -213,10 +255,10 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -226,8 +268,9 @@ fun BottomNavActivity(
                             appState = appState,
                             selectMode = false,
                             followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
+                            showAvatar = siteViewModel.showAvatar(),
                         )
                     }
 
@@ -236,8 +279,36 @@ fun BottomNavActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.RegistrationApplications.name) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.RegistrationApplications.name) {
+                        RegistrationApplicationsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                        )
+                    }
+
+                    composable(route = NavTab.Reports.name) {
+                        ReportsActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            drawerState = drawerState,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                         )
                     }
 
@@ -252,11 +323,11 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
@@ -272,11 +343,11 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionbarMode = appSettings.postActionbarMode,
+                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                         )
                     }
