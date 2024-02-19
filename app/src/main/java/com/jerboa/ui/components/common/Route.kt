@@ -33,6 +33,7 @@ object Route {
     const val COMMENT_REPLY = "commentReply"
 
     const val SITE_SIDEBAR = "siteSidebar"
+    const val SITE_LEGAL = "siteLegal"
     const val COMMENT_EDIT = "commentEdit"
     const val POST_EDIT = "postEdit"
     const val POST_REMOVE = "postRemove"

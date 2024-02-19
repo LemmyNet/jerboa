@@ -1,9 +1,16 @@
 package com.jerboa.ui.components.home.sidebar
 
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.jerboa.JerboaAppState
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -14,16 +21,16 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SiteSidebarActivity(
+    appState: JerboaAppState,
     siteViewModel: SiteViewModel,
-    onBackClick: () -> Unit,
 ) {
     Log.d("jerboa", "got to site sidebar activity")
 
     val title =
         when (val siteRes = siteViewModel.siteRes) {
-            is ApiState.Success -> "${siteRes.data.site_view.site.name} Info"
+            is ApiState.Success -> stringResource(R.string.site_info_name, siteRes.data.site_view.site.name)
             else -> {
-                "Loading..."
+                stringResource(R.string.loading)
             }
         }
 
@@ -31,7 +38,26 @@ fun SiteSidebarActivity(
         topBar = {
             SimpleTopAppBar(
                 text = title,
-                onBackClick,
+                onClickBack = appState::popBackStack,
+                actions = {
+                    when (val siteRes = siteViewModel.siteRes) {
+                        is ApiState.Success -> {
+                            if (siteRes.data.site_view.local_site.legal_information != null) {
+                                IconButton(
+                                    onClick = {
+                                        appState.toSiteLegal()
+                                    },
+                                ) {
+                                    Icon(
+                                        Icons.Default.Policy,
+                                        contentDescription = title,
+                                    )
+                                }
+                            }
+                        }
+                        else -> {}
+                    }
+                },
             )
         },
         content = { padding ->
