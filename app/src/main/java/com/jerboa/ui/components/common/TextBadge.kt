@@ -2,7 +2,6 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,7 +46,7 @@ fun TextBadge(
             modifier =
                 Modifier
                     .padding(horizontalTextPadding.dp, verticalTextPadding.dp)
-                    .basicMarquee(),
+                    .customMarquee(),
         )
     }
 }
@@ -97,6 +96,6 @@ fun ItemAndInstanceTitle(
     Text(
         text = text,
         maxLines = 1,
-        modifier = modifier.basicMarquee(),
+        modifier = modifier.customMarquee(),
     )
 }

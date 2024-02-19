@@ -2,7 +2,6 @@ package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,6 +53,7 @@ import com.jerboa.feat.needBlur
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDropdown
+import com.jerboa.ui.components.common.customMarquee
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -257,7 +257,7 @@ fun CommunityHeaderTitle(
             text = communityName,
             style = MaterialTheme.typography.titleLarge,
             maxLines = 1,
-            modifier = Modifier.basicMarquee(),
+            modifier = Modifier.customMarquee(),
         )
         Text(
             text = ctx.getString(selectedSortType.data.shortForm),
