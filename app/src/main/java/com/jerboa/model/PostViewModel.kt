@@ -38,6 +38,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+    private var distinguishCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
@@ -152,6 +153,21 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             when (val deleteRes = deleteCommentRes) {
                 is ApiState.Success -> {
                     updateComment(deleteRes.data.comment_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun distinguishComment(form: DistinguishComment) {
+        viewModelScope.launch {
+            distinguishCommentRes = ApiState.Loading
+            distinguishCommentRes = API.getInstance().distinguishComment(form).toApiState()
+
+            when (val distinguishRes = distinguishCommentRes) {
+                is ApiState.Success -> {
+                    updateComment(distinguishRes.data.comment_view)
                 }
 
                 else -> {}

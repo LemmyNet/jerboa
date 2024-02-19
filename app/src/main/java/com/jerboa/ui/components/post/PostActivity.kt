@@ -101,6 +101,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -649,6 +650,23 @@ fun PostActivity(
                                                     DeleteComment(
                                                         comment_id = cv.comment.id,
                                                         deleted = !cv.comment.deleted,
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        onDistinguishClick = { cv ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
+                                                postViewModel.distinguishComment(
+                                                    DistinguishComment(
+                                                        comment_id = cv.comment.id,
+                                                        distinguished = !cv.comment.distinguished,
                                                     ),
                                                 )
                                             }

@@ -182,8 +182,6 @@ fun PostHeaderLine(
                             showTags = fullBody,
                             // Set this to false, we already know this
                             isPostCreator = false,
-                            isModerator = postView.creator_is_moderator,
-                            isAdmin = postView.creator_is_admin,
                             isCommunityBanned = postView.creator_banned_from_community,
                             color = MaterialTheme.colorScheme.onSurface.muted,
                             showAvatar = !showCommunityName && showAvatar,
@@ -292,8 +290,7 @@ fun PostNodeHeader(
         onLongCLick = {},
         showAvatar = showAvatar,
         voteDisplayMode = voteDisplayMode,
-        isModerator = postView.creator_is_moderator,
-        isAdmin = postView.creator_is_admin,
+        isDistinguished = false,
     )
 }
 
@@ -1408,8 +1405,6 @@ fun PostListingList(
                     }
                     PersonProfileLink(
                         person = postView.creator,
-                        isModerator = postView.creator_is_moderator,
-                        isAdmin = postView.creator_is_admin,
                         onClick = {},
                         clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
