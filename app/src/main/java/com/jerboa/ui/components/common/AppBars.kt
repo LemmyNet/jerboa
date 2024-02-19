@@ -6,7 +6,6 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -78,7 +77,7 @@ fun SimpleTopAppBar(
             Text(
                 text = text,
                 maxLines = 1,
-                modifier = Modifier.basicMarquee(),
+                modifier = Modifier.customMarquee(),
             )
         },
         navigationIcon = {

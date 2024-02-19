@@ -53,6 +53,7 @@ import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
+import com.jerboa.ui.components.home.legal.SiteLegalActivity
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -559,6 +560,13 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.SITE_SIDEBAR) {
                         SiteSidebarActivity(
+                            appState = appState,
+                            siteViewModel = siteViewModel,
+                        )
+                    }
+
+                    composable(route = Route.SITE_LEGAL) {
+                        SiteLegalActivity(
                             siteViewModel = siteViewModel,
                             onBackClick = appState::popBackStack,
                         )

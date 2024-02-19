@@ -2,7 +2,6 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,8 +16,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.jerboa.INSTANCE_FONT_SIZE
 import com.jerboa.hostName
 import com.jerboa.ui.theme.muted
 
@@ -47,7 +44,7 @@ fun TextBadge(
             modifier =
                 Modifier
                     .padding(horizontalTextPadding.dp, verticalTextPadding.dp)
-                    .basicMarquee(),
+                    .customMarquee(),
         )
     }
 }
@@ -65,9 +62,7 @@ fun ItemAndInstanceTitle(
     itemColor: Color = MaterialTheme.colorScheme.primary,
     itemStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     instanceColor: Color = MaterialTheme.colorScheme.onSurface.muted,
-    instanceStyle: TextStyle = MaterialTheme.typography.bodySmall.copy(
-        fontSize = INSTANCE_FONT_SIZE.sp,
-    ),
+    instanceStyle: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
     val text = remember(title, local, itemColor) {
         val serverStr = if (!local && actorId != null) {
@@ -97,6 +92,6 @@ fun ItemAndInstanceTitle(
     Text(
         text = text,
         maxLines = 1,
-        modifier = modifier.basicMarquee(),
+        modifier = modifier.customMarquee(),
     )
 }

@@ -1,7 +1,8 @@
-# Jerboa 0.0.58 (2024-02-15)
+# Jerboa 0.0.59 (2024-02-15)
 
 ## What's Changed
 
+- Adding lintVitalRelease to CI by @dessalines in #1383
 - Adding ability to ban users from profile pages. by @dessalines in #1380
 - Fixing view votes crash. Fixes #1357 by @dessalines in #1379
 - Add report queue by @dessalines in #1360

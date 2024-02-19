@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">Πληκτρολόγησε το σχόλιό σου</string>
     <string name="comment_next_parent">Επόμενο σχόλιο γονέα</string>
     <string name="comment_previous_parent">Προηγούμενο σχόλιο γονέα</string>
-    <string name="comment_node_block">Αποκλεισμός %1$s</string>
     <string name="comment_node_copy_permalink">Αντιγραφή συνδέσμου</string>
     <string name="comment_node_copy_comment">Αντιγραφή κειμένου σχολίου</string>
     <string name="comment_node_delete">Διαγραφή</string>
@@ -196,11 +195,9 @@
     <string name="person_profile_activity_comments">Σχόλια</string>
     <string name="person_profile_activity_moderates">Συντονιστής</string>
     <string name="person_profile_activity_posts">Δημοσιεύσεις</string>
-    <string name="person_profile_block_person">Αποκλεισμός Λογαριασμού</string>
     <string name="person_profile_comments">%1$s σχόλια</string>
     <string name="person_profile_joined">Συνδέθηκε</string>
     <string name="person_profile_posts">%1$s δημοσιεύσεις</string>
-    <string name="person_profile_report_person">Αναφορά Προσώπου</string>
     <string name="pictrs_image_upload_image">Ανέβασμα Εικόνας</string>
     <string name="postListing_deleted">Διαγράφηκε</string>
     <string name="postListing_featuredCommunity">Προβάλλεται στην κοινότητα</string>
@@ -211,7 +208,6 @@
     <string name="post_activity_comments">Σχόλια</string>
     <string name="post_edit_body_placeholder">Body</string>
     <string name="post_edit_edit_post">Επεξεργασία Δημοσίευσης</string>
-    <string name="post_listing_block">Αποκλεισμός %1$s</string>
     <string name="post_listing_comments_count">%1$s σχόλια</string>
     <string name="post_listing_copy_link">Αντιγραφή συνδέσμου</string>
     <string name="post_listing_copy_permalink">Αντιγραφή συνδέσμου</string>

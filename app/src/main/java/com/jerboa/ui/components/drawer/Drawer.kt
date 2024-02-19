@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,6 +56,7 @@ import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.customMarquee
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
@@ -463,13 +463,13 @@ fun AvatarAndAccountName(
                 text = myPerson?.getDisplayName() ?: account.name,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.basicMarquee(),
+                modifier = Modifier.customMarquee(),
             )
             Text(
                 text = if (account.isAnon()) "" else "${account.name}@${account.instance}",
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.basicMarquee(),
+                modifier = Modifier.customMarquee(),
                 maxLines = 2,
             )
         }

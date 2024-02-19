@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">Введіть тут свій коментар</string>
     <string name="comment_next_parent">Наступний батьківський коментар</string>
     <string name="comment_previous_parent">Попередній батьківський коментар</string>
-    <string name="comment_node_block">Заблокувати %1$s</string>
     <string name="comment_node_copy_permalink">Копіювати постійне посилання</string>
     <string name="comment_node_copy_comment">Копіювати текст коментаря</string>
     <string name="comment_node_delete">Видалити</string>
@@ -197,11 +196,9 @@
     <string name="person_profile_activity_comments">Коментарі</string>
     <string name="person_profile_activity_moderates">Модерує</string>
     <string name="person_profile_activity_posts">Дописи</string>
-    <string name="person_profile_block_person">Заблокувати цю особу</string>
     <string name="person_profile_comments">%1$s коментарів</string>
     <string name="person_profile_joined">Приєднався</string>
     <string name="person_profile_posts">%1$s дописів</string>
-    <string name="person_profile_report_person">Поскаржитися на цю особу</string>
     <string name="pictrs_image_upload_image">Завантажити зображення</string>
     <string name="postListing_deleted">Видалено</string>
     <string name="postListing_featuredCommunity">Радимо в спільноті</string>
@@ -212,7 +209,6 @@
     <string name="post_activity_comments">Коментарі</string>
     <string name="post_edit_body_placeholder">Основний текст</string>
     <string name="post_edit_edit_post">Редагувати допис</string>
-    <string name="post_listing_block">Заблокувати %1$s</string>
     <string name="post_listing_comments_count">%1$s коментарів</string>
     <string name="post_listing_copy_link">Копіювати посилання</string>
     <string name="post_listing_copy_permalink">Копіювати постійне посилання</string>

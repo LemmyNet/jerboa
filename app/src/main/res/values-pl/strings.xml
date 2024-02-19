@@ -71,8 +71,6 @@
     <string name="person_profile_joined">Dołączono</string>
     <string name="person_profile_posts">%1$s postów</string>
     <string name="person_profile_comments">%1$s komentarzy</string>
-    <string name="person_profile_block_person">Zablokuj Osobę</string>
-    <string name="person_profile_report_person">Zgłoś Osobę</string>
     <string name="person_profile_activity_moderates">Moderuje</string>
     <string name="create_post_create_post">Stwórz post</string>
     <string name="create_post_copy_suggested_title">skopiuj sugerowany tytuł: %1$s</string>
@@ -87,7 +85,6 @@
     <string name="post_listing_copy_link">Skopiuj link</string>
     <string name="post_listing_copy_permalink">Skopiuj Permalink</string>
     <string name="post_listing_report_post">Zgłoś Post</string>
-    <string name="post_listing_block">Zablokuj %1$s</string>
     <string name="post_listing_edit">Edytuj</string>
     <string name="post_listing_restore">Przywróć</string>
     <string name="post_listing_delete">Usuń</string>
@@ -161,7 +158,6 @@
     <string name="comment_node_permalink_copied">Permalink Skopiowany</string>
     <string name="post_listing_link_copied">Link Skopiowany</string>
     <string name="post_listing_permalink_copied">Permalink Skopiowany</string>
-    <string name="comment_node_block">Zablokuj %1$s</string>
     <string name="moreOptions">Pokaż więcej opcji</string>
     <string name="lessOptions">Pokaż mniej opcji</string>
     <string name="bottomBar_home">Idź na Główna</string>

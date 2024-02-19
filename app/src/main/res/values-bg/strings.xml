@@ -52,7 +52,6 @@
     <string name="comment_edit_type_your_comment">Въведете коментар</string>
     <string name="comment_next_parent">Следващ родителски коментар</string>
     <string name="comment_previous_parent">Предишен родителски коментар</string>
-    <string name="comment_node_block">Блокиране на %1$s</string>
     <string name="comment_node_copy_permalink">Копиране на постоянен линк</string>
     <string name="comment_node_copy_comment">Копиране на текста на коментара</string>
     <string name="comment_node_delete">Изтриване</string>
@@ -208,11 +207,9 @@
     <string name="person_profile_activity_comments">Коментари</string>
     <string name="person_profile_activity_moderates">Модерира</string>
     <string name="person_profile_activity_posts">Постове</string>
-    <string name="person_profile_block_person">Блокиране на човека</string>
     <string name="person_profile_comments">%1$s коментара</string>
     <string name="person_profile_joined">Присъединен</string>
     <string name="person_profile_posts">%1$s поста</string>
-    <string name="person_profile_report_person">Докладване на човека</string>
     <string name="pictrs_image_upload_image">Качване на изображение</string>
     <string name="postListing_deleted">Изтрито</string>
     <string name="postListing_featuredCommunity">Представено в общността</string>
@@ -223,7 +220,6 @@
     <string name="post_activity_comments">Коментари</string>
     <string name="post_edit_body_placeholder">Съдържание</string>
     <string name="post_edit_edit_post">Редактиране на поста</string>
-    <string name="post_listing_block">Блокиране на %1$s</string>
     <string name="post_listing_comments_count">%1$s коментара</string>
     <string name="post_listing_copy_link">Копиране на линка</string>
     <string name="post_listing_copy_permalink">Копиране на постоянен линк</string>

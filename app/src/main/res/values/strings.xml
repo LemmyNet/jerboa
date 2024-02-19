@@ -462,4 +462,6 @@
     <string name="block_person">Block %1$s</string>
     <string name="undistinguish_comment">Undistinguish comment</string>
     <string name="distinguish_comment">Distinguish comment</string>
+    <string name="site_info_name">%1$s info</string>
+    <string name="site_legal_info_name">%1$s legal info</string>
 </resources>

@@ -53,7 +53,6 @@
   <string name="comment_edit_type_your_comment">Skriv inn kommentar</string>
     <string name="comment_next_parent">Neste forelderkommentar</string>
   <string name="comment_previous_parent">Førre forelderkommentar</string>
-  <string name="comment_node_block">Blokker %1$s</string>
   <string name="comment_node_copy_permalink">Kopier fastlenkje</string>
   <string name="comment_node_copy_comment">Kopier kommentartekst</string>
   <string name="comment_node_delete">Slett</string>
@@ -204,11 +203,9 @@
   <string name="person_profile_activity_comments">Kommentarar</string>
   <string name="person_profile_activity_moderates">Modererer</string>
   <string name="person_profile_activity_posts">Innlegg</string>
-  <string name="person_profile_block_person">Blokker person</string>
   <string name="person_profile_comments">%1$s kommentarar</string>
   <string name="person_profile_joined">Vart med</string>
   <string name="person_profile_posts">%1$s innlegg</string>
-  <string name="person_profile_report_person">Rapporter person</string>
   <string name="pictrs_image_upload_image">Last opp bilete</string>
   <string name="postListing_deleted">Sletta</string>
   <string name="postListing_featuredCommunity">Framheva i fellesskapet</string>
@@ -219,7 +216,6 @@
   <string name="post_activity_comments">Kommentarar</string>
   <string name="post_edit_body_placeholder">Meldingstekst</string>
   <string name="post_edit_edit_post">Rediger innlegg</string>
-  <string name="post_listing_block">Blokker %1$s</string>
     <string name="post_listing_comments_count">%1$s kommentarar</string>
   <string name="post_listing_copy_link">Kopier lenkje</string>
   <string name="post_listing_copy_permalink">Kopier fastlenkje</string>

@@ -23,10 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.formatDuration
+import com.jerboa.ui.theme.SCORE_SIZE_ADD
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import java.time.Instant
@@ -57,13 +59,13 @@ fun TimeAgo(
         Text(
             text = afterPreceding,
             color = MaterialTheme.colorScheme.onBackground.muted,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.labelMedium,
         )
 
         updated?.also {
             DotSpacer(
                 padding = SMALL_PADDING,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
             )
             val updatedPretty = dateStringToPretty(it, longTimeFormat)
 
@@ -72,7 +74,7 @@ fun TimeAgo(
             } else {
                 Text(
                     text = "($updatedPretty)",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onBackground.muted,
                     fontStyle = FontStyle.Italic,
                 )
@@ -135,10 +137,12 @@ fun ScoreAndTime(
             Text(
                 text = score.toString(),
                 color = scoreColor(myVote = myVote),
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontSize = MaterialTheme.typography.labelMedium.fontSize.value.plus(SCORE_SIZE_ADD).sp,
+                ),
             )
         }
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
+        DotSpacer(style = MaterialTheme.typography.labelMedium)
         TimeAgo(published = published, updated = updated)
     }
 }
@@ -175,7 +179,7 @@ fun CollapsedIndicator(
             ) {
                 Text(
                     text = "+$descendants",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
             }
@@ -206,7 +210,7 @@ fun NsfwBadge(visible: Boolean) {
             ) {
                 Text(
                     text = "NSFW",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
             }
