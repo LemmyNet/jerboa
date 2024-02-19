@@ -69,8 +69,7 @@ fun PersonProfileLink(
     clickable: Boolean = true,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
-    isModerator: Boolean = false,
-    isAdmin: Boolean = false,
+    isDistinguished: Boolean = false,
     isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
     showAvatar: Boolean,
@@ -94,18 +93,11 @@ fun PersonProfileLink(
             }
         }
         if (showTags) {
-            if (isModerator) {
+            if (isDistinguished) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = stringResource(R.string.person_iconModerator),
                     tint = MaterialTheme.colorScheme.tertiary,
-                )
-            }
-            if (isAdmin) {
-                Icon(
-                    imageVector = Icons.Outlined.Shield,
-                    contentDescription = stringResource(R.string.person_iconAdmin),
-                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
             if (isCommunityBanned || person.banned) {
@@ -148,7 +140,7 @@ fun PersonProfileLinkPreviewTags() {
         person = samplePerson,
         isPostCreator = true,
         isCommunityBanned = true,
-        isModerator = true,
+        isDistinguished = true,
         showTags = true,
         onClick = {},
         showAvatar = true,

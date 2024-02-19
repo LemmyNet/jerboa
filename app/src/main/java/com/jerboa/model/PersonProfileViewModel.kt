@@ -43,6 +43,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+    private var distinguishCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
     private var markPostRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
@@ -261,6 +262,21 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             when (val deleteRes = deleteCommentRes) {
                 is ApiState.Success -> {
                     updateComment(deleteRes.data.comment_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun distinguishComment(form: DistinguishComment) {
+        viewModelScope.launch {
+            distinguishCommentRes = ApiState.Loading
+            distinguishCommentRes = API.getInstance().distinguishComment(form).toApiState()
+
+            when (val distinguishRes = distinguishCommentRes) {
+                is ApiState.Success -> {
+                    updateComment(distinguishRes.data.comment_view)
                 }
 
                 else -> {}
