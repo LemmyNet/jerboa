@@ -1,6 +1,8 @@
 package com.jerboa.ui.components.common
 
 import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -64,4 +66,9 @@ fun Modifier.onAutofill(
                 }
             }
         }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+fun Modifier.customMarquee(): Modifier {
+    return this.basicMarquee(delayMillis = 4_000)
 }
