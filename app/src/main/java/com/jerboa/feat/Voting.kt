@@ -56,7 +56,7 @@ fun upvotePercent(
 }
 
 fun formatPercent(pct: Float): String {
-    return "%.0f".format(pct * 100F) + "%"
+    return "%.0f%%".format(pct * 100F)
 }
 
 private fun scoreOrPctStr(
