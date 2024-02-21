@@ -129,10 +129,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun PostHeaderLine(
     postView: PostView,
-    myVote: Int,
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
+    instantScores: InstantScores,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     modifier: Modifier = Modifier,
@@ -231,10 +228,7 @@ fun PostHeaderLine(
                 }
             }
             ScoreAndTime(
-                score = score,
-                myVote = myVote,
-                upvotes = upvotes,
-                downvotes = downvotes,
+                instantScores = instantScores,
                 published = postView.post.published,
                 updated = postView.post.updated,
                 isNsfw = nsfwCheck(postView),
@@ -250,10 +244,12 @@ fun PostHeaderLinePreview() {
     val postView = sampleLinkPostView
     PostHeaderLine(
         postView = postView,
-        myVote = 0,
-        score = 10,
-        upvotes = 9,
-        downvotes = 1,
+        instantScores = InstantScores(
+            myVote = 0,
+            score = 10,
+            upvotes = 9,
+            downvotes = 1,
+        ),
         onCommunityClick = {},
         onPersonClick = {},
         showAvatar = true,
@@ -266,20 +262,14 @@ fun PostHeaderLinePreview() {
 @Composable
 fun PostNodeHeader(
     postView: PostView,
-    myVote: Int,
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
+    instantScores: InstantScores,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
     voteDisplayMode: VoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
-        myVote = myVote,
-        score = score,
-        upvotes = upvotes,
-        downvotes = downvotes,
+        instantScores = instantScores,
         published = postView.post.published,
         updated = postView.post.updated,
         deleted = postView.post.deleted,
@@ -1662,10 +1652,7 @@ fun PostListingCard(
         // Header
         PostHeaderLine(
             postView = postView,
-            myVote = instantScores.myVote,
-            score = instantScores.score,
-            upvotes = instantScores.upvotes,
-            downvotes = instantScores.downvotes,
+            instantScores = instantScores,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             showCommunityName = showCommunityName,

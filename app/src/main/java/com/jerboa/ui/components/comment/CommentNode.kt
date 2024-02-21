@@ -99,10 +99,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 fun CommentNodeHeader(
     commentView: CommentView,
     onPersonClick: (personId: PersonId) -> Unit,
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     collapsedCommentsCount: Long,
     isExpanded: Boolean,
     onClick: () -> Unit,
@@ -112,11 +109,8 @@ fun CommentNodeHeader(
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
-        score = score,
-        upvotes = upvotes,
-        downvotes = downvotes,
+        instantScores = instantScores,
         voteDisplayMode = voteDisplayMode,
-        myVote = myVote,
         published = commentView.comment.published,
         updated = commentView.comment.updated,
         deleted = commentView.comment.deleted,
@@ -137,11 +131,13 @@ fun CommentNodeHeader(
 fun CommentNodeHeaderPreview() {
     CommentNodeHeader(
         commentView = sampleCommentView,
-        score = 23,
-        upvotes = 21,
-        downvotes = 2,
+        instantScores = InstantScores(
+            score = 23,
+            upvotes = 21,
+            downvotes = 2,
+            myVote = 26,
+        ),
         voteDisplayMode = VoteDisplayMode.Full,
-        myVote = 26,
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
@@ -338,10 +334,7 @@ fun LazyListScope.commentNodeItem(
                             CommentNodeHeader(
                                 commentView = commentView,
                                 onPersonClick = onPersonClick,
-                                score = instantScores.score,
-                                myVote = instantScores.myVote,
-                                upvotes = instantScores.upvotes,
-                                downvotes = instantScores.downvotes,
+                                instantScores = instantScores,
                                 voteDisplayMode = voteDisplayMode,
                                 onClick = {
                                     onHeaderClick(commentView)

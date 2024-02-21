@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleCommentReportView
+import com.jerboa.feat.InstantScores
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -62,10 +63,12 @@ fun CommentReportItem(
         // Don't use the full CommentNode, as you don't need any of the actions there
         CommentNodeHeader(
             commentView = commentView,
-            myVote = commentView.my_vote,
-            score = commentView.counts.score,
-            upvotes = commentView.counts.upvotes,
-            downvotes = commentView.counts.downvotes,
+            instantScores = InstantScores(
+                myVote = commentView.my_vote,
+                score = commentView.counts.score,
+                upvotes = commentView.counts.upvotes,
+                downvotes = commentView.counts.downvotes,
+            ),
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
             voteDisplayMode = voteDisplayMode,

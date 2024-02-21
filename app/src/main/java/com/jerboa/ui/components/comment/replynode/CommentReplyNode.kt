@@ -31,6 +31,7 @@ import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -51,10 +52,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 fun CommentReplyNodeHeader(
     commentReplyView: CommentReplyView,
     onPersonClick: (personId: PersonId) -> Unit,
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
@@ -62,10 +60,7 @@ fun CommentReplyNodeHeader(
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
-        score = score,
-        upvotes = upvotes,
-        downvotes = downvotes,
-        myVote = myVote,
+        instantScores = instantScores,
         published = commentReplyView.comment.published,
         updated = commentReplyView.comment.updated,
         deleted = commentReplyView.comment.deleted,
@@ -85,10 +80,12 @@ fun CommentReplyNodeHeader(
 fun CommentReplyNodeHeaderPreview() {
     CommentReplyNodeHeader(
         commentReplyView = sampleCommentReplyView,
-        score = 23,
-        myVote = 26,
-        upvotes = 21,
-        downvotes = 2,
+        instantScores = InstantScores(
+            score = 23,
+            myVote = 26,
+            upvotes = 21,
+            downvotes = 2,
+        ),
         voteDisplayMode = VoteDisplayMode.Full,
         onPersonClick = {},
         onClick = {},
@@ -247,10 +244,18 @@ fun CommentReplyNodeInbox(
     voteDisplayMode: VoteDisplayMode,
 ) {
     // These are necessary for instant comment voting
-    val score = commentReplyView.counts.score
-    val myVote = commentReplyView.my_vote
-    val upvotes = commentReplyView.counts.upvotes
-    val downvotes = commentReplyView.counts.downvotes
+    // This stores vote data
+    var instantScores by
+        remember {
+            mutableStateOf(
+                InstantScores(
+                    score = commentReplyView.counts.score,
+                    myVote = commentReplyView.my_vote,
+                    upvotes = commentReplyView.counts.upvotes,
+                    downvotes = commentReplyView.counts.downvotes,
+                ),
+            )
+        }
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
@@ -271,10 +276,7 @@ fun CommentReplyNodeInbox(
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
-            score = score,
-            upvotes = upvotes,
-            downvotes = downvotes,
-            myVote = myVote,
+            instantScores = instantScores,
             onClick = {
                 isExpanded = !isExpanded
             },
@@ -307,9 +309,13 @@ fun CommentReplyNodeInbox(
                     CommentReplyNodeInboxFooterLine(
                         commentReplyView = commentReplyView,
                         onUpvoteClick = {
+                            instantScores =
+                                instantScores.update(VoteType.Upvote)
                             onUpvoteClick(commentReplyView)
                         },
                         onDownvoteClick = {
+                            instantScores =
+                                instantScores.update(VoteType.Downvote)
                             onDownvoteClick(commentReplyView)
                         },
                         onPersonClick = onPersonClick,
@@ -322,7 +328,7 @@ fun CommentReplyNodeInbox(
                         onReportClick = onReportClick,
                         onCommentLinkClick = onCommentLinkClick,
                         onBlockCreatorClick = onBlockCreatorClick,
-                        myVote = myVote,
+                        myVote = instantScores.myVote,
                         account = account,
                         enableDownvotes = enableDownvotes,
                         viewSource = viewSource,

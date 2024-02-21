@@ -15,6 +15,7 @@ import com.jerboa.datatypes.samplePostReportView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.InstantScores
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.post.PostBody
 import com.jerboa.ui.components.post.PostHeaderLine
@@ -83,10 +84,12 @@ fun PostReportItem(
         ) {
             PostHeaderLine(
                 postView = postView,
-                myVote = postView.my_vote,
-                score = postView.counts.score,
-                upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes,
+                instantScores = InstantScores(
+                    myVote = postView.my_vote,
+                    score = postView.counts.score,
+                    upvotes = postView.counts.upvotes,
+                    downvotes = postView.counts.downvotes,
+                ),
                 onCommunityClick = onCommunityClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = true,

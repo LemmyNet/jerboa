@@ -53,6 +53,7 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
@@ -64,7 +65,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -242,10 +243,7 @@ fun CommentNavigationBottomAppBar(
 @Composable
 fun CommentOrPostNodeHeader(
     creator: Person,
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     published: String,
     updated: String?,
     deleted: Boolean,
@@ -301,10 +299,7 @@ fun CommentOrPostNodeHeader(
             )
         }
         ScoreAndTime(
-            score = score,
-            upvotes = upvotes,
-            downvotes = downvotes,
-            myVote = myVote,
+            instantScores = instantScores,
             published = published,
             updated = updated,
             isExpanded = isExpanded,
@@ -319,10 +314,12 @@ fun CommentOrPostNodeHeader(
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
         creator = samplePerson,
-        score = 23,
-        upvotes = 21,
-        downvotes = 2,
-        myVote = 1,
+        instantScores = InstantScores(
+            score = 23,
+            upvotes = 21,
+            downvotes = 2,
+            myVote = 1,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         deleted = false,

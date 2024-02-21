@@ -29,6 +29,7 @@ import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
 import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.formatPercent
 import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
@@ -121,10 +122,7 @@ fun TimeAgoPreview() {
 
 @Composable
 fun ScoreAndTime(
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     published: String,
     updated: String?,
     isExpanded: Boolean = true,
@@ -140,20 +138,20 @@ fun ScoreAndTime(
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
         val upvotePct = upvotePercent(
-            upvotes = upvotes,
-            downvotes = downvotes,
+            upvotes = instantScores.upvotes,
+            downvotes = instantScores.downvotes,
         )
         when (voteDisplayMode) {
             VoteDisplayMode.Full -> {
-                LargeVoteIndicator(data = score.toString(), myVote = myVote)
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
                 if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
-                    SmallVoteIndicator(data = "$downvotes↓")
+                    SmallVoteIndicator(data = "${instantScores.downvotes}↓")
                     DotSpacer(style = MaterialTheme.typography.labelMedium)
                 }
             }
             VoteDisplayMode.ScoreAndUpvotePercentage -> {
-                LargeVoteIndicator(data = score.toString(), myVote = myVote)
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
                 if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
                     SmallVoteIndicator(data = formatPercent(upvotePct))
@@ -161,11 +159,11 @@ fun ScoreAndTime(
                 }
             }
             VoteDisplayMode.UpvotePercentage -> {
-                LargeVoteIndicator(data = formatPercent(upvotePct), myVote = myVote)
+                LargeVoteIndicator(data = formatPercent(upvotePct), myVote = instantScores.myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
             }
             VoteDisplayMode.Score -> {
-                LargeVoteIndicator(data = score.toString(), myVote = myVote)
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
             }
             VoteDisplayMode.HideAll -> {}
@@ -200,10 +198,12 @@ private fun SmallVoteIndicator(data: String) {
 @Composable
 fun ScoreFullAndTimePreview() {
     ScoreAndTime(
-        score = 25,
-        myVote = -1,
-        upvotes = 10,
-        downvotes = 15,
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         voteDisplayMode = VoteDisplayMode.Full,
@@ -214,10 +214,12 @@ fun ScoreFullAndTimePreview() {
 @Composable
 fun ScoreAndUpvotePctAndTimePreview() {
     ScoreAndTime(
-        score = 25,
-        myVote = -1,
-        upvotes = 10,
-        downvotes = 15,
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         voteDisplayMode = VoteDisplayMode.ScoreAndUpvotePercentage,
@@ -228,10 +230,12 @@ fun ScoreAndUpvotePctAndTimePreview() {
 @Composable
 fun UpvotePctAndTimePreview() {
     ScoreAndTime(
-        score = 25,
-        myVote = -1,
-        upvotes = 10,
-        downvotes = 15,
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         voteDisplayMode = VoteDisplayMode.UpvotePercentage,
@@ -242,10 +246,12 @@ fun UpvotePctAndTimePreview() {
 @Composable
 fun ScoreAndTimePreview() {
     ScoreAndTime(
-        score = 25,
-        myVote = -1,
-        upvotes = 10,
-        downvotes = 15,
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         voteDisplayMode = VoteDisplayMode.Score,
@@ -256,10 +262,12 @@ fun ScoreAndTimePreview() {
 @Composable
 fun HideAllAndTimePreview() {
     ScoreAndTime(
-        score = 25,
-        myVote = -1,
-        upvotes = 10,
-        downvotes = 15,
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         voteDisplayMode = VoteDisplayMode.HideAll,

@@ -31,6 +31,7 @@ import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
 import com.jerboa.ui.components.comment.CommentBody
@@ -54,10 +55,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 fun CommentMentionNodeHeader(
     personMentionView: PersonMentionView,
     onPersonClick: (personId: PersonId) -> Unit,
-    score: Long,
-    upvotes: Long,
-    downvotes: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
@@ -65,10 +63,7 @@ fun CommentMentionNodeHeader(
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
-        score = score,
-        myVote = myVote,
-        upvotes = upvotes,
-        downvotes = downvotes,
+        instantScores = instantScores,
         voteDisplayMode = voteDisplayMode,
         published = personMentionView.comment.published,
         updated = personMentionView.comment.updated,
@@ -88,10 +83,12 @@ fun CommentMentionNodeHeader(
 fun CommentMentionNodeHeaderPreview() {
     CommentMentionNodeHeader(
         personMentionView = samplePersonMentionView,
-        score = 23,
-        myVote = 26,
-        upvotes = 21,
-        downvotes = 2,
+        instantScores = InstantScores(
+            score = 23,
+            myVote = 26,
+            upvotes = 21,
+            downvotes = 2,
+        ),
         voteDisplayMode = VoteDisplayMode.Full,
         onPersonClick = {},
         onClick = {},
@@ -267,10 +264,17 @@ fun CommentMentionNode(
     voteDisplayMode: VoteDisplayMode,
 ) {
     // These are necessary for instant comment voting
-    val score = personMentionView.counts.score
-    val myVote = personMentionView.my_vote
-    val upvotes = personMentionView.counts.upvotes
-    val downvotes = personMentionView.counts.downvotes
+    var instantScores by
+        remember {
+            mutableStateOf(
+                InstantScores(
+                    score = personMentionView.counts.score,
+                    myVote = personMentionView.my_vote,
+                    upvotes = personMentionView.counts.upvotes,
+                    downvotes = personMentionView.counts.downvotes,
+                ),
+            )
+        }
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
@@ -291,10 +295,7 @@ fun CommentMentionNode(
         CommentMentionNodeHeader(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
-            score = score,
-            myVote = myVote,
-            upvotes = upvotes,
-            downvotes = downvotes,
+            instantScores = instantScores,
             voteDisplayMode = voteDisplayMode,
             onClick = {
                 isExpanded = !isExpanded
@@ -329,9 +330,13 @@ fun CommentMentionNode(
                         admins = admins,
                         moderators = moderators,
                         onUpvoteClick = {
+                            instantScores =
+                                instantScores.update(VoteType.Upvote)
                             onUpvoteClick(personMentionView)
                         },
                         onDownvoteClick = {
+                            instantScores =
+                                instantScores.update(VoteType.Downvote)
                             onDownvoteClick(personMentionView)
                         },
                         onPersonClick = onPersonClick,
@@ -345,10 +350,10 @@ fun CommentMentionNode(
                         onRemoveClick = onRemoveClick,
                         onLinkClick = onLinkClick,
                         onBlockCreatorClick = onBlockCreatorClick,
-                        myVote = myVote,
                         account = account,
                         enableDownvotes = enableDownvotes,
                         viewSource = viewSource,
+                        myVote = instantScores.myVote,
                     )
                 }
             }

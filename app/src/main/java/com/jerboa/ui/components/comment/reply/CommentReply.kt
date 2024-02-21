@@ -19,6 +19,7 @@ import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.entity.Account
+import com.jerboa.feat.InstantScores
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
@@ -43,10 +44,12 @@ fun RepliedComment(
         CommentNodeHeader(
             commentView = commentView,
             onPersonClick = onPersonClick,
-            score = commentView.counts.score,
-            upvotes = commentView.counts.upvotes,
-            downvotes = commentView.counts.downvotes,
-            myVote = commentView.my_vote,
+            instantScores = InstantScores(
+                score = commentView.counts.score,
+                upvotes = commentView.counts.upvotes,
+                downvotes = commentView.counts.downvotes,
+                myVote = commentView.my_vote,
+            ),
             collapsedCommentsCount = 0,
             isExpanded = true,
             onClick = {},
@@ -71,10 +74,12 @@ fun RepliedCommentReply(
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
-            score = commentReplyView.counts.score,
-            upvotes = commentReplyView.counts.upvotes,
-            downvotes = commentReplyView.counts.downvotes,
-            myVote = commentReplyView.my_vote,
+            instantScores = InstantScores(
+                score = commentReplyView.counts.score,
+                upvotes = commentReplyView.counts.upvotes,
+                downvotes = commentReplyView.counts.downvotes,
+                myVote = commentReplyView.my_vote,
+            ),
             onClick = {},
             onLongClick = {},
             showAvatar = showAvatar,
@@ -97,10 +102,12 @@ fun RepliedMentionReply(
         CommentMentionNodeHeader(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
-            score = personMentionView.counts.score,
-            upvotes = personMentionView.counts.upvotes,
-            downvotes = personMentionView.counts.downvotes,
-            myVote = personMentionView.my_vote,
+            instantScores = InstantScores(
+                score = personMentionView.counts.score,
+                upvotes = personMentionView.counts.upvotes,
+                downvotes = personMentionView.counts.downvotes,
+                myVote = personMentionView.my_vote,
+            ),
             onClick = {},
             onLongClick = {},
             showAvatar = showAvatar,
@@ -133,10 +140,12 @@ fun RepliedPost(
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PostNodeHeader(
             postView = postView,
-            myVote = postView.my_vote,
-            score = postView.counts.score,
-            upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes,
+            instantScores = InstantScores(
+                myVote = postView.my_vote,
+                score = postView.counts.score,
+                upvotes = postView.counts.upvotes,
+                downvotes = postView.counts.downvotes,
+            ),
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
             voteDisplayMode = voteDisplayMode,
