@@ -62,6 +62,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -128,8 +129,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun PostHeaderLine(
     postView: PostView,
-    myVote: Int,
-    score: Long,
+    instantScores: InstantScores,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     modifier: Modifier = Modifier,
@@ -137,7 +137,7 @@ fun PostHeaderLine(
     showAvatar: Boolean,
     fullBody: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     val community = postView.community
     Column(modifier = modifier) {
@@ -228,12 +228,11 @@ fun PostHeaderLine(
                 }
             }
             ScoreAndTime(
-                score = score,
-                myVote = myVote,
+                instantScores = instantScores,
                 published = postView.post.published,
                 updated = postView.post.updated,
                 isNsfw = nsfwCheck(postView),
-                showScores = showScores,
+                voteDisplayMode = voteDisplayMode,
             )
         }
     }
@@ -245,30 +244,32 @@ fun PostHeaderLinePreview() {
     val postView = sampleLinkPostView
     PostHeaderLine(
         postView = postView,
-        myVote = 0,
-        score = 10,
+        instantScores = InstantScores(
+            myVote = 0,
+            score = 10,
+            upvotes = 9,
+            downvotes = 1,
+        ),
         onCommunityClick = {},
         onPersonClick = {},
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
-        showScores = true,
         fullBody = true,
+        voteDisplayMode = VoteDisplayMode.Full,
     )
 }
 
 @Composable
 fun PostNodeHeader(
     postView: PostView,
-    myVote: Int,
-    score: Long,
+    instantScores: InstantScores,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
-        myVote = myVote,
-        score = score,
+        instantScores = instantScores,
         published = postView.post.published,
         updated = postView.post.updated,
         deleted = postView.post.deleted,
@@ -278,7 +279,7 @@ fun PostNodeHeader(
         onClick = {},
         onLongCLick = {},
         showAvatar = showAvatar,
-        showScores = showScores,
+        voteDisplayMode = voteDisplayMode,
         isDistinguished = false,
     )
 }
@@ -573,7 +574,6 @@ fun PostFooterLine(
     account: Account,
     enableDownVotes: Boolean,
     viewSource: Boolean,
-    showScores: Boolean,
     postActionBarMode: PostActionBarMode,
     fromPostActivity: Boolean,
     scope: CoroutineScope,
@@ -659,17 +659,13 @@ fun PostFooterLine(
 
         VoteGeneric(
             myVote = instantScores.myVote,
-            votes = instantScores.upvotes,
             type = VoteType.Upvote,
-            showNumber = (instantScores.downvotes != 0L) && showScores,
             onVoteClick = onUpvoteClick,
             account = account,
         )
         if (enableDownVotes) {
             VoteGeneric(
                 myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                showNumber = showScores,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
                 account = account,
@@ -832,7 +828,6 @@ fun PostFooterLinePreview() {
         account = AnonAccount,
         enableDownVotes = true,
         viewSource = false,
-        showScores = true,
         postActionBarMode = PostActionBarMode.Long,
         fromPostActivity = true,
         scope = rememberCoroutineScope(),
@@ -874,7 +869,7 @@ fun PreviewPostListingCard() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
@@ -915,7 +910,7 @@ fun PreviewLinkPostListing() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
@@ -956,7 +951,7 @@ fun PreviewImagePostListingCard() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
@@ -997,7 +992,7 @@ fun PreviewImagePostListingSmallCard() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
@@ -1038,7 +1033,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
@@ -1080,7 +1075,7 @@ fun PostListing(
     appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -1183,7 +1178,7 @@ fun PostListing(
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showIfRead = showIfRead,
-                        showScores = showScores,
+                        voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                     )
 
@@ -1231,7 +1226,7 @@ fun PostListing(
                         blurNSFW = blurNSFW,
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
-                        showScores = showScores,
+                        voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                     )
 
@@ -1257,7 +1252,7 @@ fun PostListing(
                         appState = appState,
                         showIfRead = showIfRead,
                         enableDownVotes = enableDownVotes,
-                        showScores = showScores,
+                        voteDisplayMode = voteDisplayMode,
                     )
             }
         }
@@ -1284,7 +1279,7 @@ fun PostVotingTile(
     onDownvoteClick: () -> Unit,
     account: Account,
     enableDownVotes: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -1296,17 +1291,19 @@ fun PostVotingTile(
     ) {
         VoteGeneric(
             myVote = instantScores.myVote,
-            votes = instantScores.upvotes,
             type = VoteType.Upvote,
-            showNumber = false,
             onVoteClick = onUpvoteClick,
             account = account,
         )
+
+        val scoreOrPctStr = instantScores.scoreOrPctStr(voteDisplayMode)
+
         Text(
-            text = instantScores.score.toString(),
+            text = scoreOrPctStr ?: "",
             style = MaterialTheme.typography.bodyMedium,
             color = scoreColor(myVote = instantScores.myVote),
-            modifier = Modifier.alpha(if (showScores) 1f else 0f),
+            // Hide the vote number if its
+            modifier = Modifier.alpha(if (scoreOrPctStr != null) 1f else 0f),
         )
 
         if (enableDownVotes) {
@@ -1318,9 +1315,7 @@ fun PostVotingTile(
             )
             VoteGeneric(
                 myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
                 type = VoteType.Downvote,
-                showNumber = false,
                 onVoteClick = onDownvoteClick,
                 account = account,
             )
@@ -1345,7 +1340,7 @@ fun PostListingList(
     appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     Column(
         modifier =
@@ -1370,7 +1365,7 @@ fun PostListingList(
                     onDownvoteClick = onDownvoteClick,
                     account = account,
                     enableDownVotes = enableDownVotes,
-                    showScores = showScores,
+                    voteDisplayMode = voteDisplayMode,
                 )
             }
             Column(
@@ -1571,7 +1566,7 @@ fun PostListingListPreview() {
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
     )
 }
 
@@ -1600,7 +1595,7 @@ fun PostListingListWithThumbPreview() {
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
     )
 }
 
@@ -1641,7 +1636,7 @@ fun PostListingCard(
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean = false,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     postActionBarMode: PostActionBarMode,
 ) {
     Column(
@@ -1657,15 +1652,14 @@ fun PostListingCard(
         // Header
         PostHeaderLine(
             postView = postView,
-            myVote = instantScores.myVote,
-            score = instantScores.score,
+            instantScores = instantScores,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             showCommunityName = showCommunityName,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-            showScores = showScores,
+            voteDisplayMode = voteDisplayMode,
             fullBody = fullBody,
         )
 
@@ -1712,7 +1706,6 @@ fun PostListingCard(
             account = account,
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
-            showScores = showScores,
             postActionBarMode = postActionBarMode,
             fromPostActivity = fullBody,
             scope = appState.coroutineScope,

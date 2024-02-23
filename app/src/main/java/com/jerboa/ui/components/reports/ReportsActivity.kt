@@ -268,7 +268,7 @@ fun ReportsTabs(
                                             postReportView = reportView,
                                             account = account,
                                             blurNSFW = blurNSFW,
-                                            showScores = siteViewModel.showScores(),
+                                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             showAvatar = siteViewModel.showAvatar(),
                                             onCommunityClick = { community ->
                                                 appState.toCommunity(id = community.id)
@@ -385,7 +385,7 @@ fun ReportsTabs(
                                     ) { reportView ->
                                         CommentReportItem(
                                             commentReportView = reportView,
-                                            showScores = siteViewModel.showScores(),
+                                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             showAvatar = siteViewModel.showAvatar(),
                                             onPersonClick = appState::toProfile,
                                             onCommentClick = appState::toComment,

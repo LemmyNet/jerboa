@@ -432,7 +432,7 @@ fun InboxTabs(
                                             showAvatar = siteViewModel.showAvatar(),
                                             blurNSFW = blurNSFW,
                                             enableDownvotes = siteViewModel.enableDownvotes(),
-                                            showScores = siteViewModel.showScores(),
+                                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                                         )
                                     }
                                 }
@@ -646,7 +646,7 @@ fun InboxTabs(
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
                                             blurNSFW = blurNSFW,
-                                            showScores = siteViewModel.showScores(),
+                                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             enableDownvotes = siteViewModel.enableDownvotes(),
                                         )
                                     }

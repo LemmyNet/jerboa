@@ -181,6 +181,15 @@ data class PostFeatureData(
     val featured: Boolean,
 )
 
+// TODO this should be got rid of after https://github.com/LemmyNet/lemmy/issues/4449
+enum class VoteDisplayMode {
+    Full,
+    ScoreAndUpvotePercentage,
+    UpvotePercentage,
+    Score,
+    HideAll,
+}
+
 /**
  * Says which type of users can view which bottom app bar tabs.
  */

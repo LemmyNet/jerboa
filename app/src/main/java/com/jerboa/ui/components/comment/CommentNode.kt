@@ -51,6 +51,7 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
@@ -98,19 +99,18 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 fun CommentNodeHeader(
     commentView: CommentView,
     onPersonClick: (personId: PersonId) -> Unit,
-    score: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     collapsedCommentsCount: Long,
     isExpanded: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
-        score = score,
-        myVote = myVote,
+        instantScores = instantScores,
+        voteDisplayMode = voteDisplayMode,
         published = commentView.comment.published,
         updated = commentView.comment.updated,
         deleted = commentView.comment.deleted,
@@ -122,7 +122,6 @@ fun CommentNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
-        showScores = showScores,
         isDistinguished = commentView.comment.distinguished,
     )
 }
@@ -132,15 +131,19 @@ fun CommentNodeHeader(
 fun CommentNodeHeaderPreview() {
     CommentNodeHeader(
         commentView = sampleCommentView,
-        score = 23,
-        myVote = 26,
+        instantScores = InstantScores(
+            score = 23,
+            upvotes = 21,
+            downvotes = 2,
+            myVote = 26,
+        ),
+        voteDisplayMode = VoteDisplayMode.Full,
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
         collapsedCommentsCount = 5,
         isExpanded = false,
         showAvatar = true,
-        showScores = true,
     )
 }
 
@@ -220,7 +223,7 @@ fun LazyListScope.commentNodeItem(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentView = node.commentView
@@ -331,8 +334,8 @@ fun LazyListScope.commentNodeItem(
                             CommentNodeHeader(
                                 commentView = commentView,
                                 onPersonClick = onPersonClick,
-                                score = instantScores.score,
-                                myVote = instantScores.myVote,
+                                instantScores = instantScores,
+                                voteDisplayMode = voteDisplayMode,
                                 onClick = {
                                     onHeaderClick(commentView)
                                 },
@@ -342,7 +345,6 @@ fun LazyListScope.commentNodeItem(
                                 collapsedCommentsCount = commentView.counts.child_count,
                                 isExpanded = isExpanded(commentId),
                                 showAvatar = showAvatar,
-                                showScores = showScores,
                             )
                             AnimatedVisibility(
                                 visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -409,7 +411,6 @@ fun LazyListScope.commentNodeItem(
                                             },
                                             account = account,
                                             enableDownVotes = enableDownVotes,
-                                            showScores = showScores,
                                             viewSource = viewSource,
                                         )
                                     }
@@ -484,7 +485,7 @@ fun LazyListScope.commentNodeItem(
         enableDownVotes = enableDownVotes,
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
-        showScores = showScores,
+        voteDisplayMode = voteDisplayMode,
         admins = admins,
         moderators = moderators,
         swipeToActionPreset = swipeToActionPreset,
@@ -531,7 +532,7 @@ fun LazyListScope.missingCommentNodeItem(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentId = node.missingCommentView.commentId
@@ -638,7 +639,7 @@ fun LazyListScope.missingCommentNodeItem(
         enableDownVotes = enableDownVotes,
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
-        showScores = showScores,
+        voteDisplayMode = voteDisplayMode,
         swipeToActionPreset = swipeToActionPreset,
     )
 }
@@ -765,7 +766,6 @@ fun CommentFooterLine(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     account: Account,
-    showScores: Boolean,
     viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -838,18 +838,14 @@ fun CommentFooterLine(
         ) {
             VoteGeneric(
                 myVote = instantScores.myVote,
-                votes = instantScores.upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (instantScores.downvotes != 0L) && showScores,
                 account = account,
             )
             if (enableDownVotes) {
                 VoteGeneric(
                     myVote = instantScores.myVote,
-                    votes = instantScores.downvotes,
                     type = VoteType.Downvote,
-                    showNumber = showScores,
                     onVoteClick = onDownvoteClick,
                     account = account,
                 )
@@ -944,7 +940,7 @@ fun CommentNodesPreview() {
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,
     )
 }

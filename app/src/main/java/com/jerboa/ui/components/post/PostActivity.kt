@@ -477,7 +477,7 @@ fun PostActivity(
                                     appState = appState,
                                     showPostLinkPreview = showPostLinkPreview,
                                     showIfRead = false,
-                                    showScores = siteViewModel.showScores(),
+                                    voteDisplayMode = siteViewModel.voteDisplayMode(),
                                     postActionBarMode = postActionBarMode,
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
@@ -726,7 +726,7 @@ fun PostActivity(
                                                 )
                                         },
                                         blurNSFW = blurNSFW,
-                                        showScores = siteViewModel.showScores(),
+                                        voteDisplayMode = siteViewModel.voteDisplayMode(),
                                         swipeToActionPreset = swipeToActionPreset,
                                     )
                                     item {

@@ -27,9 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
 import com.jerboa.ui.components.comment.CommentBody
@@ -53,17 +55,16 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 fun CommentMentionNodeHeader(
     personMentionView: PersonMentionView,
     onPersonClick: (personId: PersonId) -> Unit,
-    score: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
-        score = score,
-        myVote = myVote,
+        instantScores = instantScores,
+        voteDisplayMode = voteDisplayMode,
         published = personMentionView.comment.published,
         updated = personMentionView.comment.updated,
         deleted = personMentionView.comment.deleted,
@@ -74,7 +75,6 @@ fun CommentMentionNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
-        showScores = showScores,
     )
 }
 
@@ -83,13 +83,17 @@ fun CommentMentionNodeHeader(
 fun CommentMentionNodeHeaderPreview() {
     CommentMentionNodeHeader(
         personMentionView = samplePersonMentionView,
-        score = 23,
-        myVote = 26,
+        instantScores = InstantScores(
+            score = 23,
+            myVote = 26,
+            upvotes = 21,
+            downvotes = 2,
+        ),
+        voteDisplayMode = VoteDisplayMode.Full,
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
         showAvatar = true,
-        showScores = true,
     )
 }
 
@@ -110,11 +114,8 @@ fun CommentMentionNodeFooterLine(
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     myVote: Int,
-    upvotes: Long,
-    downvotes: Long,
     account: Account,
     enableDownvotes: Boolean,
-    showScores: Boolean,
     viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -157,18 +158,14 @@ fun CommentMentionNodeFooterLine(
         ) {
             VoteGeneric(
                 myVote = myVote,
-                votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0L) && showScores,
                 account = account,
             )
             if (enableDownvotes) {
                 VoteGeneric(
                     myVote = myVote,
-                    votes = downvotes,
                     type = VoteType.Downvote,
-                    showNumber = showScores,
                     onVoteClick = onDownvoteClick,
                     account = account,
                 )
@@ -264,13 +261,20 @@ fun CommentMentionNode(
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
     enableDownvotes: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     // These are necessary for instant comment voting
-    val score = personMentionView.counts.score
-    val myVote = personMentionView.my_vote
-    val upvotes = personMentionView.counts.upvotes
-    val downvotes = personMentionView.counts.downvotes
+    var instantScores by
+        remember {
+            mutableStateOf(
+                InstantScores(
+                    score = personMentionView.counts.score,
+                    myVote = personMentionView.my_vote,
+                    upvotes = personMentionView.counts.upvotes,
+                    downvotes = personMentionView.counts.downvotes,
+                ),
+            )
+        }
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
@@ -291,8 +295,8 @@ fun CommentMentionNode(
         CommentMentionNodeHeader(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
-            score = score,
-            myVote = myVote,
+            instantScores = instantScores,
+            voteDisplayMode = voteDisplayMode,
             onClick = {
                 isExpanded = !isExpanded
             },
@@ -300,7 +304,6 @@ fun CommentMentionNode(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
-            showScores = showScores,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -327,9 +330,13 @@ fun CommentMentionNode(
                         admins = admins,
                         moderators = moderators,
                         onUpvoteClick = {
+                            instantScores =
+                                instantScores.update(VoteType.Upvote)
                             onUpvoteClick(personMentionView)
                         },
                         onDownvoteClick = {
+                            instantScores =
+                                instantScores.update(VoteType.Downvote)
                             onDownvoteClick(personMentionView)
                         },
                         onPersonClick = onPersonClick,
@@ -343,13 +350,10 @@ fun CommentMentionNode(
                         onRemoveClick = onRemoveClick,
                         onLinkClick = onLinkClick,
                         onBlockCreatorClick = onBlockCreatorClick,
-                        myVote = myVote,
-                        upvotes = upvotes,
-                        downvotes = downvotes,
                         account = account,
                         enableDownvotes = enableDownvotes,
-                        showScores = showScores,
                         viewSource = viewSource,
+                        myVote = instantScores.myVote,
                     )
                 }
             }

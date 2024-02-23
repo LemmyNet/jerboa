@@ -15,6 +15,7 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.api.toApiState
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
@@ -130,7 +131,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         viewModelScope.launch {
             viewModelScope.launch {
                 unreadAppCountRes = ApiState.Loading
-                unreadAppCountRes = API.getInstance().getUnreadRegistrationApplicationCount().toApiState()
+                unreadAppCountRes =
+                    API.getInstance().getUnreadRegistrationApplicationCount().toApiState()
             }
         }
     }
@@ -199,7 +201,10 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     fun showAvatar(): Boolean {
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_avatars ?: true
+            is ApiState.Success ->
+                res.data.my_user?.local_user_view?.local_user?.show_avatars
+                    ?: true
+
             else -> true
         }
     }
@@ -211,10 +216,22 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun showScores(): Boolean {
+    // TODO this should probably be persisted rather than waited for
+    // For the current default, just use FullScores
+    fun voteDisplayMode(): VoteDisplayMode {
+        val defaultMode = VoteDisplayMode.Full
         return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
-            else -> true
+            is ApiState.Success ->
+                res.data.my_user?.let { mui ->
+                    if (mui.local_user_view.local_user.show_scores) {
+                        defaultMode
+                    } else {
+                        VoteDisplayMode.HideAll
+                    }
+                } ?: run {
+                    defaultMode
+                }
+            else -> defaultMode
         }
     }
 

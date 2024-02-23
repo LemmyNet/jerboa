@@ -47,6 +47,7 @@ import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
@@ -290,7 +291,7 @@ fun PersonProfileActivity(
                 showPostLinkPreviews = showPostLinkPreviews,
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
-                showScores = siteViewModel.showScores(),
+                voteDisplayMode = siteViewModel.voteDisplayMode(),
                 postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             )
@@ -326,7 +327,7 @@ fun UserTabs(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -644,7 +645,7 @@ fun UserTabs(
                                         }
                                     },
                                     showIfRead = false,
-                                    showScores = showScores,
+                                    voteDisplayMode = voteDisplayMode,
                                     postActionBarMode = postActionBarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
@@ -884,7 +885,7 @@ fun UserTabs(
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
-                                    showScores = showScores,
+                                    voteDisplayMode = voteDisplayMode,
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
