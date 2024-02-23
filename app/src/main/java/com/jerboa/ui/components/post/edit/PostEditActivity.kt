@@ -126,6 +126,10 @@ fun PostEditActivity(
                 isNsfw = isNsfw,
                 onIsNsfwChange = { isNsfw = it },
                 communitySelector = {},
+                error = when (val res = postEditViewModel.editPostRes) {
+                    is ApiState.Failure -> res.msg
+                    else -> null
+                },
             )
         },
     )

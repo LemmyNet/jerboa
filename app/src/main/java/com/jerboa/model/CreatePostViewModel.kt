@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadataResponse
@@ -25,7 +23,6 @@ class CreatePostViewModel : ViewModel() {
 
     fun createPost(
         form: CreatePost,
-        ctx: Context,
         onSuccess: (postId: PostId) -> Unit,
     ) {
         viewModelScope.launch {
@@ -35,10 +32,6 @@ class CreatePostViewModel : ViewModel() {
             when (val postRes = createPostRes) {
                 is ApiState.Success -> {
                     onSuccess(postRes.data.post_view.post.id)
-                }
-
-                is ApiState.Failure -> {
-                    apiErrorToast(ctx, postRes.msg)
                 }
 
                 else -> {}

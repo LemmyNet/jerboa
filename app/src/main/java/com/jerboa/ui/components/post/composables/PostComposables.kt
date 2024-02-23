@@ -34,6 +34,7 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage
+import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CheckboxField
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
@@ -65,6 +66,7 @@ fun CreateEditPostBody(
     communitySelector: @Composable () -> Unit,
     account: Account,
     padding: PaddingValues,
+    error: Throwable?,
 ) {
     val scrollState = rememberScrollState()
 
@@ -80,6 +82,9 @@ fun CreateEditPostBody(
                 .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
+        error?.let {
+            ApiErrorText(msg = error)
+        }
         /**
          * Post Name / Title TextField
          */
@@ -249,6 +254,7 @@ fun CreatePostBodyPreview() {
                 onClickCommunityList = {},
             )
         },
+        error = null,
     )
 }
 
@@ -277,6 +283,7 @@ fun CreatePostBodyPreviewNoCommunity() {
                 onClickCommunityList = {},
             )
         },
+        error = null,
     )
 }
 
@@ -298,5 +305,6 @@ fun EditPostBodyPreview() {
         onIsNsfwChange = {},
         padding = PaddingValues(),
         communitySelector = {},
+        error = null,
     )
 }
