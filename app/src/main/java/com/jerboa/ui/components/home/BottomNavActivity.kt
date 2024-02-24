@@ -132,6 +132,16 @@ enum class NavTab(
         userViewType = UserViewType.Normal,
         needsLogin = true,
     ),
+    ;
+
+    companion object {
+        fun getEntries(userViewType: UserViewType) =
+            when (userViewType) {
+                UserViewType.Normal -> NavTab.entries.filter { it.userViewType == UserViewType.Normal }
+                UserViewType.AdminOrMod -> NavTab.entries.filter { it.userViewType != UserViewType.AdminOnly }
+                UserViewType.AdminOnly -> NavTab.entries
+            }
+    }
 }
 
 @OptIn(
@@ -210,6 +220,7 @@ fun BottomNavActivity(
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
                         onClickLogin = appState::toLogin,
+                        userViewType = account.userViewType(),
                     )
                 },
             )
