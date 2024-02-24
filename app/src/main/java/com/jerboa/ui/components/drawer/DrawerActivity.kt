@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.feat.BlurNSFW
@@ -34,6 +35,7 @@ fun MainDrawer(
     onSelectTab: (NavTab) -> Unit,
     blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
+    userViewType: UserViewType,
 ) {
     val account = getCurrentAccount(accountViewModel)
 
@@ -108,5 +110,6 @@ fun MainDrawer(
         showBottomNav = showBottomNav,
         onSelectTab = onSelectTab,
         closeDrawer = { closeDrawer(scope, drawerState) },
+        userViewType = userViewType,
     )
 }

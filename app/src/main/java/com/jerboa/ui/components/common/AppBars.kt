@@ -131,14 +131,7 @@ fun BottomAppBarAll(
     NavigationBar(
         modifier = modifier,
     ) {
-        // Hide tabs according to permissions
-        val tabs = when (userViewType) {
-            UserViewType.Normal -> NavTab.entries.filter { it.userViewType == UserViewType.Normal }
-            UserViewType.AdminOrMod -> NavTab.entries.filter { it.userViewType != UserViewType.AdminOnly }
-            UserViewType.AdminOnly -> NavTab.entries
-        }
-
-        for (tab in tabs) {
+        for (tab in NavTab.getEntries(userViewType)) {
             val selected = tab == selectedTab
             val iconBadgeCount = when (tab) {
                 NavTab.Inbox -> unreadCounts
