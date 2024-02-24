@@ -146,6 +146,16 @@ fun ScoreAndTime(
                 LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
                 DotSpacer(style = MaterialTheme.typography.labelMedium)
                 if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
+                    SmallVoteIndicator(data = "${instantScores.upvotes}↑")
+                    DotSpacer(style = MaterialTheme.typography.labelMedium)
+                    SmallVoteIndicator(data = "${instantScores.downvotes}↓")
+                    DotSpacer(style = MaterialTheme.typography.labelMedium)
+                }
+            }
+            VoteDisplayMode.ScoreAndDownvote -> {
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
                     SmallVoteIndicator(data = "${instantScores.downvotes}↓")
                     DotSpacer(style = MaterialTheme.typography.labelMedium)
                 }
