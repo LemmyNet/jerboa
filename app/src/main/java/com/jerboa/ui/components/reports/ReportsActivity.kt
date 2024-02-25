@@ -140,10 +140,11 @@ fun ReportsActivity(
 
 enum class ReportsTab(
     @StringRes val textId: Int,
+    val adminOnly: Boolean = false,
 ) {
     Posts(R.string.person_profile_activity_posts),
     Comments(R.string.post_activity_comments),
-    Messages(R.string.inbox_activity_messages),
+    Messages(R.string.inbox_activity_messages, true),
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -159,7 +160,11 @@ fun ReportsTabs(
     padding: PaddingValues,
     blurNSFW: BlurNSFW,
 ) {
-    val pagerState = rememberPagerState { ReportsTab.entries.size }
+    val tabs = remember(account.isAdmin) {
+        ReportsTab.entries
+            .filter { account.isAdmin || !it.adminOnly }
+    }
+    val pagerState = rememberPagerState { tabs.size }
 
     Column(
         modifier = Modifier.padding(padding),
@@ -167,7 +172,7 @@ fun ReportsTabs(
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             tabs = {
-                ReportsTab.entries.forEachIndexed { index, tab ->
+                tabs.forEachIndexed { index, tab ->
                     Tab(
                         selected = pagerState.currentPage == index,
                         onClick = {
