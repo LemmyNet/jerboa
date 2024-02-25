@@ -160,7 +160,11 @@ fun ReportsTabs(
     padding: PaddingValues,
     blurNSFW: BlurNSFW,
 ) {
-    val pagerState = rememberPagerState { ReportsTab.entries.size }
+    val tabs = remember(account.isAdmin) {
+        ReportsTab.entries
+            .filter { account.isAdmin || !it.adminOnly }
+    }
+    val pagerState = rememberPagerState { tabs.size }
 
     Column(
         modifier = Modifier.padding(padding),
@@ -168,19 +172,17 @@ fun ReportsTabs(
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             tabs = {
-                ReportsTab.entries
-                    .filter { account.isAdmin || !it.adminOnly }
-                    .forEachIndexed { index, tab ->
-                        Tab(
-                            selected = pagerState.currentPage == index,
-                            onClick = {
-                                scope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            },
-                            text = { Text(text = stringResource(id = tab.textId)) },
-                        )
-                    }
+                tabs.forEachIndexed { index, tab ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = { Text(text = stringResource(id = tab.textId)) },
+                    )
+                }
             },
         )
         HorizontalPager(
