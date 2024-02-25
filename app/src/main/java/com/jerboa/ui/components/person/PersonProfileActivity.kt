@@ -382,7 +382,12 @@ fun UserTabs(
                             pagerState.animateScrollToPage(index)
                         }
                     },
-                    text = { Text(text = title) },
+                    text = {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    },
                 )
             }
         }

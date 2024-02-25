@@ -19,6 +19,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
@@ -214,7 +215,12 @@ fun InboxTabs(
                                 pagerState.animateScrollToPage(index)
                             }
                         },
-                        text = { Text(text = stringResource(id = tab.textId)) },
+                        text = {
+                            Text(
+                                text = stringResource(id = tab.textId),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        },
                     )
                 }
             },
