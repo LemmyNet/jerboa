@@ -140,10 +140,11 @@ fun ReportsActivity(
 
 enum class ReportsTab(
     @StringRes val textId: Int,
+    val adminOnly: Boolean = false,
 ) {
     Posts(R.string.person_profile_activity_posts),
     Comments(R.string.post_activity_comments),
-    Messages(R.string.inbox_activity_messages),
+    Messages(R.string.inbox_activity_messages, true),
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -167,17 +168,19 @@ fun ReportsTabs(
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             tabs = {
-                ReportsTab.entries.forEachIndexed { index, tab ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        text = { Text(text = stringResource(id = tab.textId)) },
-                    )
-                }
+                ReportsTab.entries
+                    .filter { account.isAdmin || !it.adminOnly }
+                    .forEachIndexed { index, tab ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                            text = { Text(text = stringResource(id = tab.textId)) },
+                        )
+                    }
             },
         )
         HorizontalPager(
@@ -254,9 +257,9 @@ fun ReportsTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
@@ -351,9 +354,9 @@ fun ReportsTabs(
                         )
                     Box(
                         modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                        Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -374,9 +377,9 @@ fun ReportsTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
@@ -462,9 +465,9 @@ fun ReportsTabs(
                         )
                     Box(
                         modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                        Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -485,9 +488,9 @@ fun ReportsTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
