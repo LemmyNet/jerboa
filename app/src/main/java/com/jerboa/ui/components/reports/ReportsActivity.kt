@@ -257,9 +257,9 @@ fun ReportsTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                        Modifier
+                                            .fillMaxSize()
+                                            .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
@@ -354,9 +354,9 @@ fun ReportsTabs(
                         )
                     Box(
                         modifier =
-                        Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
+                            Modifier
+                                .pullRefresh(refreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -377,9 +377,9 @@ fun ReportsTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                        Modifier
+                                            .fillMaxSize()
+                                            .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
@@ -465,9 +465,9 @@ fun ReportsTabs(
                         )
                     Box(
                         modifier =
-                        Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
+                            Modifier
+                                .pullRefresh(refreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -488,9 +488,9 @@ fun ReportsTabs(
                                 LazyColumn(
                                     state = listState,
                                     modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                        Modifier
+                                            .fillMaxSize()
+                                            .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
