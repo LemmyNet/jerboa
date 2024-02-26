@@ -44,7 +44,6 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
@@ -101,7 +100,7 @@ fun CommentMentionNodeHeaderPreview() {
 fun CommentMentionNodeFooterLine(
     personMentionView: PersonMentionView,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
@@ -244,7 +243,7 @@ fun CommentMentionNodeFooterLine(
 fun CommentMentionNode(
     personMentionView: PersonMentionView,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     onUpvoteClick: (personMentionView: PersonMentionView) -> Unit,
     onDownvoteClick: (personMentionView: PersonMentionView) -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,

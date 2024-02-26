@@ -193,13 +193,13 @@ fun PersonProfileActivity(
                 }
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
-                    val canBan =
-                        canMod(
-                            creatorId = person.id,
-                            admins = siteViewModel.admins(),
-                            moderators = null,
-                            myId = account.id,
-                        )
+                    val canBan = canMod(
+                        creatorId = person.id,
+                        admins = siteViewModel.admins(),
+                        moderators = null,
+                        myId = account.id,
+                    )
+
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName =

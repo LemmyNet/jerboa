@@ -21,6 +21,7 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCount
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
@@ -209,6 +210,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
+    fun moderatedCommunities(): List<CommunityId>? {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.my_user?.moderates?.map { it.community.id }
+            else -> null
+        }
+    }
+
     fun enableDownvotes(): Boolean {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.site_view.local_site.enable_downvotes
@@ -231,6 +239,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                 } ?: run {
                     defaultMode
                 }
+
             else -> defaultMode
         }
     }
