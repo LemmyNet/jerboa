@@ -76,11 +76,11 @@ import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
-import com.jerboa.feat.amAdmin
 import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.feat.needBlur
+import com.jerboa.feat.simulateModerators
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
@@ -551,7 +551,7 @@ fun PreviewSourcePost() {
 fun PostFooterLine(
     postView: PostView,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -578,35 +578,34 @@ fun PostFooterLine(
     fromPostActivity: Boolean,
     scope: CoroutineScope,
 ) {
+    val ctx = LocalContext.current
     var showMoreOptions by remember { mutableStateOf(false) }
 
-    val canMod =
-        remember(admins) {
+    if (showMoreOptions) {
+        val fallbackModerators = remember(moderators) {
+            moderators ?: simulateModerators(
+                ctx = ctx,
+                account = account,
+                forCommunity = postView.community.id,
+            )
+        }
+
+        val amMod = remember(moderators) {
+            amMod(
+                moderators = fallbackModerators,
+                myId = account.id,
+            )
+        }
+
+        val canMod = remember(admins, moderators) {
             canMod(
                 creatorId = postView.creator.id,
                 admins = admins,
-                moderators = moderators,
+                moderators = fallbackModerators,
                 myId = account.id,
             )
         }
 
-    val amAdmin =
-        remember(admins) {
-            amAdmin(
-                admins = admins,
-                myId = account.id,
-            )
-        }
-
-    val amMod =
-        remember {
-            amMod(
-                moderators = moderators,
-                myId = account.id,
-            )
-        }
-
-    if (showMoreOptions) {
         PostOptionsDropdown(
             postView = postView,
             onDismissRequest = { showMoreOptions = false },
@@ -624,7 +623,7 @@ fun PostFooterLine(
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             canMod = canMod,
-            amAdmin = amAdmin,
+            amAdmin = account.isAdmin,
             amMod = amMod,
             viewSource = viewSource,
             showViewSource = fromPostActivity,
@@ -1044,7 +1043,7 @@ fun PreviewLinkNoThumbnailPostListing() {
 fun PostListing(
     postView: PostView,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
@@ -1603,7 +1602,7 @@ fun PostListingListWithThumbPreview() {
 fun PostListingCard(
     postView: PostView,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -1645,9 +1644,8 @@ fun PostListingCard(
                 .padding(vertical = MEDIUM_PADDING)
                 .clickable { onPostClick(postView) }
                 .testTag("jerboa:post"),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
-        // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+        // verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         // Header
         PostHeaderLine(
@@ -1662,6 +1660,8 @@ fun PostListingCard(
             voteDisplayMode = voteDisplayMode,
             fullBody = fullBody,
         )
+
+        Spacer(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
 
         //  Title + metadata
         PostBody(
@@ -1678,6 +1678,8 @@ fun PostListingCard(
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
         )
+
+        Spacer(modifier = Modifier.padding(vertical = MEDIUM_PADDING))
 
         // Footer bar
         PostFooterLine(

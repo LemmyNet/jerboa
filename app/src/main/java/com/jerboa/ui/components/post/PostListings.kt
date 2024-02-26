@@ -36,7 +36,6 @@ import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -47,7 +46,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 fun PostListings(
     posts: List<PostView>,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,

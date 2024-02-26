@@ -65,7 +65,6 @@ import com.jerboa.feat.InstantScores
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
-import com.jerboa.feat.amAdmin
 import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
@@ -88,7 +87,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -186,7 +184,7 @@ fun CommentBodyPreview() {
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -495,7 +493,7 @@ fun LazyListScope.commentNodeItem(
 fun LazyListScope.missingCommentNodeItem(
     node: MissingCommentNode,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -744,7 +742,7 @@ fun PostAndCommunityContextHeaderPreview() {
 fun CommentFooterLine(
     commentView: CommentView,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
@@ -770,31 +768,21 @@ fun CommentFooterLine(
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
-    val amAdmin =
-        remember(admins) {
-            amAdmin(
-                admins = admins,
-                myId = account.id,
-            )
-        }
+    val amMod = remember(moderators) {
+        amMod(
+            moderators = moderators,
+            myId = account.id,
+        )
+    }
 
-    val amMod =
-        remember {
-            amMod(
-                moderators = moderators,
-                myId = account.id,
-            )
-        }
-
-    val canMod =
-        remember(admins) {
-            canMod(
-                creatorId = commentView.comment.creator_id,
-                admins = admins,
-                moderators = moderators,
-                myId = account.id,
-            )
-        }
+    val canMod = remember(admins) {
+        canMod(
+            creatorId = commentView.comment.creator_id,
+            admins = admins,
+            moderators = moderators,
+            myId = account.id,
+        )
+    }
 
     if (showMoreOptions) {
         CommentOptionsDropdown(
@@ -815,7 +803,7 @@ fun CommentFooterLine(
             isCreator = account.id == commentView.creator.id,
             canMod = canMod,
             amMod = amMod,
-            amAdmin = amAdmin,
+            amAdmin = account.isAdmin,
             viewSource = viewSource,
         )
     }
