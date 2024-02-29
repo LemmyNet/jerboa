@@ -32,6 +32,7 @@ import com.jerboa.util.markwon.BetterLinkMovementMethod
 import com.jerboa.util.markwon.ForceHttpsPlugin
 import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
 import com.jerboa.util.markwon.MarkwonSpoilerPlugin
+import com.jerboa.util.markwon.ScriptRewriteSupportPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
@@ -92,6 +93,7 @@ object MarkdownHelper {
                 .usePlugin(ForceHttpsPlugin())
                 // email urls interfere with lemmy links
                 .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+                .usePlugin(ScriptRewriteSupportPlugin())
                 .usePlugin(MarkwonLemmyLinkPlugin())
                 .usePlugin(MarkwonSpoilerPlugin(true))
                 .usePlugin(StrikethroughPlugin.create())
@@ -127,6 +129,7 @@ object MarkdownHelper {
                 // email urls interfere with lemmy links
                 .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
                 .usePlugin(MarkwonLemmyLinkPlugin())
+                .usePlugin(ScriptRewriteSupportPlugin())
                 .usePlugin(StrikethroughPlugin.create())
                 .usePlugin(TablePlugin.create(context))
                 .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
