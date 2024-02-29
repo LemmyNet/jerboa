@@ -32,5 +32,6 @@ class ScriptRewriteSupportPluginTest {
             listOf("~2~\n~2~", "<sub>2</sub>\n<sub>2</sub>"),
             listOf("~2~\n~2~", "<sub>2</sub>\n<sub>2</sub>"),
             listOf("~ blah blah", "~ blah blah"),
+            listOf("", ""),
         )
 }
