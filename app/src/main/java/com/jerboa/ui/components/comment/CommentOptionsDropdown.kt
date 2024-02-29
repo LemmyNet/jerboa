@@ -33,8 +33,6 @@ import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
-import io.github.z4kn4fein.semver.toVersion
-import it.vercruysse.lemmyapi.FeatureFlags
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
@@ -215,7 +213,9 @@ fun CommentOptionsDropdown(
                             onRemoveClick(commentView)
                         },
                     )
-                    BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
+                    if (amAdmin) {
+                        BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
+                    }
 
                     // Only show ban from community button if its a local community
                     if (commentView.community.local) {
@@ -251,7 +251,7 @@ fun CommentOptionsDropdown(
                 }
 
                 // You can do these actions on mods above you
-                if (FeatureFlags(version = API.version.toVersion()).listAdminVotes()) {
+                if (amAdmin && API.getInstanceOrNull()?.FF?.listAdminVotes() == true) {
                     PopupMenuItem(
                         text = stringResource(R.string.view_votes),
                         icon = ImageVector.vectorResource(R.drawable.up_filled),

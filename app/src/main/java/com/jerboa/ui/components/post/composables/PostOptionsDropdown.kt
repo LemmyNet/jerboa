@@ -458,7 +458,9 @@ fun PostOptionsDropdown(
                             onRemoveClick(postView)
                         },
                     )
-                    BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+                    if (amAdmin) {
+                        BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+                    }
 
                     // Only show ban from community button if its a local community
                     if (postView.community.local) {
@@ -477,7 +479,7 @@ fun PostOptionsDropdown(
                 // You can do these actions on mods above you
 
                 // These are all amMod || amAdmin
-                if (getInstanceOrNull()?.FF?.listAdminVotes() == true) {
+                if (amAdmin && getInstanceOrNull()?.FF?.listAdminVotes() == true) {
                     PopupMenuItem(
                         text = stringResource(R.string.view_votes),
                         icon = ImageVector.vectorResource(R.drawable.up_filled),
