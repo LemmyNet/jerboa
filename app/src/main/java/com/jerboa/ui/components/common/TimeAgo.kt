@@ -100,10 +100,7 @@ fun dateStringToPretty(
     longTimeFormat: Boolean = false,
 ): String? {
     return try {
-        // TODO: v0.18.4_deprecated Remove this hack once backward API compatibility is implemented
-        // pre 0.19 Datetimes didn't have a timezone, so we add one here
-        val withTimezone = if (dateStr.last() == 'Z') dateStr else dateStr + "Z"
-        val publishedDate = Date.from(Instant.parse(withTimezone))
+        val publishedDate = Date.from(Instant.parse(dateStr))
         formatDuration(publishedDate, longTimeFormat)
     } catch (e: DateTimeParseException) {
         Log.d("TimeAgo", "Failed to parse date string: $dateStr", e)
