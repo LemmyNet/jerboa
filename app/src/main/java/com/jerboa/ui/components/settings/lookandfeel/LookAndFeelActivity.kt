@@ -1,11 +1,20 @@
 package com.jerboa.ui.components.settings.lookandfeel
 
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.automirrored.outlined.ViewList
+import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.LensBlur
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,14 +26,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import com.alorma.compose.settings.storage.disk.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.disk.rememberFloatSettingState
 import com.alorma.compose.settings.storage.disk.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.alorma.compose.settings.ui.SettingsListDropdown
+import com.alorma.compose.settings.ui.SettingsList
+import com.alorma.compose.settings.ui.SettingsSlider
+import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.ThemeColor
+import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.PostActionBarMode
+import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
@@ -197,161 +216,160 @@ fun LookAndFeelActivity(
                         .verticalScroll(scrollState)
                         .padding(padding),
             ) {
-//                SettingsListDropdown(
-//                    title = {
-//                        Text(text = stringResource(R.string.lang_language))
-//                    },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Language,
-//                            contentDescription = stringResource(R.string.lang_language),
-//                        )
-//                    },
-//                    state = langState,
-//                    items = localeMap.values.toList(),
-//                    onItemSelected = { i, _ ->
-//                        AppCompatDelegate.setApplicationLocales(
-//                            LocaleListCompat.create(localeMap.keys.elementAt(i)),
-//                        )
-//                    },
-//                )
-//                SettingsSlider(
-//                    modifier = Modifier.padding(top = 10.dp),
-//                    valueRange = 8f..48f,
-//                    state = fontSizeState,
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.FormatSize,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                    title = {
-//                        Text(
-//                            text =
-//                                stringResource(
-//                                    R.string.look_and_feel_font_size,
-//                                    fontSizeState.value.toInt(),
-//                                ),
-//                        )
-//                    },
-//                    onValueChangeFinished = { updateAppSettings() },
-//                )
-//                SettingsList(
-//                    state = themeState,
-//                    items = ThemeMode.entries.map { stringResource(it.mode) },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Palette,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                    title = {
-//                        Text(text = stringResource(R.string.look_and_feel_theme))
-//                    },
-//                    onItemSelected = { i, _ ->
-//                        themeState.value = i
-//                        updateAppSettings()
-//                    },
-//                )
-//                SettingsList(
-//                    state = themeColorState,
-//                    items = ThemeColor.entries.map { stringResource(it.mode) },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Colorize,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                    title = {
-//                        Text(text = stringResource(R.string.look_and_feel_theme_color))
-//                    },
-//                    onItemSelected = { i, _ ->
-//                        themeColorState.value = i
-//                        updateAppSettings()
-//                    },
-//                )
-//                SettingsList(
-//                    state = postViewModeState,
-//                    items = PostViewMode.entries.map { stringResource(it.mode) },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.AutoMirrored.Outlined.ViewList,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                    title = {
-//                        Text(text = stringResource(R.string.look_and_feel_post_view))
-//                    },
-//                    onItemSelected = { i, _ ->
-//                        postViewModeState.value = i
-//                        updateAppSettings()
-//                    },
-//                )
-//                SettingsList(
-//                    state = postNavigationGestureModeState,
-//                    items = PostNavigationGestureMode.entries.map { stringResource(it.mode) },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Swipe,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                    title = {
-//                        Text(text = stringResource(R.string.look_and_feel_post_navigation_gesture_mode))
-//                    },
-//                    onItemSelected = { i, _ ->
-//                        postNavigationGestureModeState.value = i
-//                        updateAppSettings()
-//                    },
-//                )
-//                SettingsList(
-//                    title = {
-//                        Text(text = stringResource(R.string.confirm_exit))
-//                    },
-//                    state = backConfirmationMode,
-//                    items = BackConfirmationMode.entries.map { stringResource(it.resId) },
-//                    onItemSelected = { i, _ ->
-//                        backConfirmationMode.value = i
-//                        updateAppSettings()
-//                    },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                )
-//                SettingsList(
-//                    title = {
-//                        Text(text = stringResource(R.string.post_actionbar))
-//                    },
-//                    state = postActionBarMode,
-//                    items = PostActionBarMode.entries.map { stringResource(it.resId) },
-//                    onItemSelected = { i, _ ->
-//                        postActionBarMode.value = i
-//                        updateAppSettings()
-//                    },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Forum,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                )
-//                SettingsListDropdown(
-//                    state = blurNSFW,
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Outlined.LensBlur,
-//                            contentDescription = null,
-//                        )
-//                    },
-//                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
-//                    items = BlurNSFW.entries.map { stringResource(it.resId) },
-//                    onItemSelected = { _, _ -> updateAppSettings() },
-//                )
-                SettingsListDropdown(
-//                    modifier = Modifier.heightIn(max = 88.dp),
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.lang_language))
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Language,
+                            contentDescription = stringResource(R.string.lang_language),
+                        )
+                    },
+                    state = langState,
+                    items = localeMap.values.toList(),
+                    onItemSelected = { i, _ ->
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.create(localeMap.keys.elementAt(i)),
+                        )
+                    },
+                )
+                SettingsSlider(
+                    modifier = Modifier.padding(top = 10.dp),
+                    valueRange = 8f..48f,
+                    state = fontSizeState,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.FormatSize,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(
+                            text =
+                                stringResource(
+                                    R.string.look_and_feel_font_size,
+                                    fontSizeState.value.toInt(),
+                                ),
+                        )
+                    },
+                    onValueChangeFinished = { updateAppSettings() },
+                )
+                SettingsList(
+                    state = themeState,
+                    items = ThemeMode.entries.map { stringResource(it.mode) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Palette,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_theme))
+                    },
+                    onItemSelected = { i, _ ->
+                        themeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    state = themeColorState,
+                    items = ThemeColor.entries.map { stringResource(it.mode) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Colorize,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_theme_color))
+                    },
+                    onItemSelected = { i, _ ->
+                        themeColorState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    state = postViewModeState,
+                    items = PostViewMode.entries.map { stringResource(it.mode) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ViewList,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_post_view))
+                    },
+                    onItemSelected = { i, _ ->
+                        postViewModeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    state = postNavigationGestureModeState,
+                    items = PostNavigationGestureMode.entries.map { stringResource(it.mode) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Swipe,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_post_navigation_gesture_mode))
+                    },
+                    onItemSelected = { i, _ ->
+                        postNavigationGestureModeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.confirm_exit))
+                    },
+                    state = backConfirmationMode,
+                    items = BackConfirmationMode.entries.map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        backConfirmationMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
+                            contentDescription = null,
+                        )
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.post_actionbar))
+                    },
+                    state = postActionBarMode,
+                    items = PostActionBarMode.entries.map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        postActionBarMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Forum,
+                            contentDescription = null,
+                        )
+                    },
+                )
+                SettingsList(
+                    state = blurNSFW,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.LensBlur,
+                            contentDescription = null,
+                        )
+                    },
+                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
+                    items = BlurNSFW.entries.map { stringResource(it.resId) },
+                    onItemSelected = { _, _ -> updateAppSettings() },
+                )
+                SettingsList(
                     state = swipeToActionPreset,
                     icon = {
                         Icon(

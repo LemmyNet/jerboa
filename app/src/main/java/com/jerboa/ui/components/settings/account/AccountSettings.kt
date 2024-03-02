@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.alorma.compose.settings.storage.disk.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.disk.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.alorma.compose.settings.ui.SettingsListDropdown
+import com.alorma.compose.settings.ui.SettingsList
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -283,7 +283,7 @@ fun SettingsForm(
                 )
             }
         }
-        SettingsListDropdown(
+        SettingsList(
             state = defaultListingType,
             title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
             items =
@@ -293,7 +293,7 @@ fun SettingsForm(
                     stringResource(R.string.account_settings_subscribed),
                 ),
         )
-        SettingsListDropdown(
+        SettingsList(
             state = defaultSortType,
             title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
             items = sortTypeNames,
