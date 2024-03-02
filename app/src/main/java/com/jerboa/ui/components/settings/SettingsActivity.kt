@@ -4,8 +4,9 @@ package com.jerboa.ui.components.settings
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.ManageAccounts
@@ -26,7 +27,6 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
 
 @Composable
 fun SettingsActivity(
@@ -40,6 +40,7 @@ fun SettingsActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
+    val scrollState = rememberScrollState()
 
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
@@ -47,9 +48,11 @@ fun SettingsActivity(
             SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), onClickBack = onBack)
         },
         content = { padding ->
-            Column(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier.padding(padding)
+                    .verticalScroll(scrollState),
+            ) {
                 SettingsMenuLink(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
                     icon = {
                         Icon(
@@ -61,7 +64,6 @@ fun SettingsActivity(
                 )
                 if (!account.isAnon()) {
                     SettingsMenuLink(
-                        modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                         title = {
                             Text(
                                 stringResource(
@@ -80,7 +82,6 @@ fun SettingsActivity(
                     )
                 }
                 SettingsMenuLink(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
                     title = { Text(stringResource(R.string.settings_activity_about)) },
                     icon = {
                         Icon(

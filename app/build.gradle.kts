@@ -109,7 +109,8 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.github.alorma:compose-settings-ui-m3:1.0.3")
+    implementation("com.github.alorma:compose-settings-ui-android:1.2.0")
+    implementation("com.github.alorma:compose-settings-storage-disk:1.2.0")
 
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.12")
 
