@@ -37,7 +37,6 @@ subprojects {
                 )
             }
             val configPath = "${project.projectDir.absolutePath}/../compose_compiler_config.conf"
-            println(configPath)
             freeCompilerArgs.addAll(
                 "-P",
                 "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=$configPath"
