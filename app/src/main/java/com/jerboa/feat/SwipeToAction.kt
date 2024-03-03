@@ -18,7 +18,7 @@ enum class SwipeToActionType {
     ;
 
     companion object {
-        const val START_THRESHOLD = 0.05f
+        const val START_THRESHOLD = 0.10f
 
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {
             val start = START_THRESHOLD + 0.05f
