@@ -35,9 +35,9 @@ class UtilsKtTest {
 
     @Test
     fun testCalculateCommentOffset() {
-        assertEquals(0.dp, calculateCommentOffset(0, 0))
-        assertEquals(3.dp + SMALL_PADDING, calculateCommentOffset(2, 3))
-        assertEquals(6.dp + SMALL_PADDING, calculateCommentOffset(-1, 3))
+        assertEquals(0.dp, calculateCommentOffset(0))
+        assertEquals(4.dp + SMALL_PADDING, calculateCommentOffset(2))
+        assertEquals(8.dp + SMALL_PADDING, calculateCommentOffset(-1))
     }
 
     @Test
