@@ -41,7 +41,7 @@ val APP_SETTINGS_DEFAULT =
         showPostLinkPreviews = true,
         postActionBarMode = 0,
         autoPlayGifs = false,
-        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.DISABLED.ordinal,
     )
 
 @Database(
