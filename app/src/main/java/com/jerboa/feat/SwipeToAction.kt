@@ -74,7 +74,7 @@ enum class SwipeToActionPreset(
     val resId: Int,
 ) {
     DISABLED(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
-    DEFAULT(
+    TWO_SIDES(
         listOf(SwipeToActionType.Reply, SwipeToActionType.Save),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Downvote),
         R.string.swipe_action_preset_default,
@@ -104,9 +104,14 @@ enum class SwipeToActionPreset(
         emptyList(),
         R.string.only_left_swipe_action_preset,
     ),
-    ONLY_VOTES(
+    ONLY_VOTES_MIRRORED(
         listOf(SwipeToActionType.Downvote),
         listOf(SwipeToActionType.Upvote),
+        R.string.swipe_action_preset_only_votes_mirrored,
+    ),
+    ONLY_VOTES(
+        listOf(SwipeToActionType.Upvote),
+        listOf(SwipeToActionType.Downvote),
         R.string.swipe_action_preset_only_votes,
     ),
 }

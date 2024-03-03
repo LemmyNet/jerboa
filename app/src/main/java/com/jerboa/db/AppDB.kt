@@ -41,11 +41,11 @@ val APP_SETTINGS_DEFAULT =
         showPostLinkPreviews = true,
         postActionBarMode = 0,
         autoPlayGifs = false,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT.ordinal,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES.ordinal,
     )
 
 @Database(
-    version = 29,
+    version = 30,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

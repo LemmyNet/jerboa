@@ -929,7 +929,7 @@ fun CommentNodesPreview() {
         blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
         voteDisplayMode = VoteDisplayMode.Full,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
     )
 }
 

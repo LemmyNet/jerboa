@@ -371,6 +371,53 @@ val MIGRATION_28_29 =
         }
     }
 
+val MIGRATION_29_30 =
+    object : Migration(29, 30) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Add new default swipe_to_action_preset to 0
+
+            db.execSQL(
+                """
+                   CREATE TABLE IF NOT EXISTS AppSettingsBackup (
+                      `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                      `font_size` INTEGER NOT NULL DEFAULT 16, 
+                      `theme` INTEGER NOT NULL DEFAULT 0, 
+                      `theme_color` INTEGER NOT NULL DEFAULT 0, 
+                      `viewed_changelog` INTEGER NOT NULL DEFAULT 0, 
+                      `post_view_mode` INTEGER NOT NULL DEFAULT 0, 
+                      `show_bottom_nav` INTEGER NOT NULL DEFAULT 1, 
+                      `post_navigation_gesture_mode` INTEGER NOT NULL DEFAULT 0, 
+                      `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0, 
+                      `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1, 
+                      `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1, 
+                      `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 0, 
+                      `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0, 
+                      `use_custom_tabs` INTEGER NOT NULL DEFAULT 1, 
+                      `use_private_tabs` INTEGER NOT NULL DEFAULT 0, 
+                      `secure_window` INTEGER NOT NULL DEFAULT 0, 
+                      `blur_nsfw` INTEGER NOT NULL DEFAULT 1, 
+                      `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT 1, 
+                      `markAsReadOnScroll` INTEGER NOT NULL DEFAULT 0, 
+                      `backConfirmationMode` INTEGER NOT NULL DEFAULT 1, 
+                      `show_post_link_previews` INTEGER NOT NULL DEFAULT 1, 
+                      `post_actionbar_mode` INTEGER NOT NULL DEFAULT 0, 
+                      `auto_play_gifs` INTEGER NOT NULL DEFAULT 0, 
+                      `swipe_to_action_preset` INTEGER NOT NULL DEFAULT 0, 
+                      `last_version_code_viewed` INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent(),
+            )
+
+            db.execSQL(
+                """
+            INSERT INTO AppSettingsBackup SELECT * FROM AppSettings
+            """,
+            )
+            db.execSQL("DROP TABLE AppSettings")
+            db.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -402,4 +449,5 @@ val MIGRATIONS_LIST =
         MIGRATION_26_27,
         MIGRATION_27_28,
         MIGRATION_28_29,
+        MIGRATION_29_30,
     )

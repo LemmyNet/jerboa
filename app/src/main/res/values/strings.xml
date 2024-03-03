@@ -437,6 +437,7 @@
     <string name="unfeature_in_local">Unfeature in Local</string>
     <string name="swipe_to_action_presets">Preset for swipe gesture</string>
     <string name="swipe_action_preset_only_votes">Only votes</string>
+    <string name="swipe_action_preset_only_votes_mirrored">Only votes (Mirrored)</string>
     <string name="view_votes">View votes</string>
     <string name="post_votes">Post votes</string>
     <string name="comment_votes">Comment votes</string>
