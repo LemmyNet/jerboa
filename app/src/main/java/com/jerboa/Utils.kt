@@ -1221,12 +1221,12 @@ fun findAndUpdateCommentReply(
 
 fun calculateCommentOffset(
     depth: Int,
-    multiplier: Int,
+    padding: Dp = SMALL_PADDING,
 ): Dp {
     return if (depth == 0) {
         0.dp
     } else {
-        (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
+        (abs((depth.minus(1) * padding.value.toInt())).dp + padding)
     }
 }
 
