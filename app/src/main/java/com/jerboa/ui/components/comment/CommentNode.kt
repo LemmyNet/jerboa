@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -77,6 +76,7 @@ import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.community.CommunityLink
+import com.jerboa.ui.theme.BORDER_WIDTH
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -251,7 +251,7 @@ fun LazyListScope.commentNodeItem(
 
         val backgroundColor = MaterialTheme.colorScheme.background
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
-        val border = Border(SMALL_PADDING, borderColor)
+        val border = Border(BORDER_WIDTH, borderColor)
 
         val ctx = LocalContext.current
 
@@ -308,10 +308,6 @@ fun LazyListScope.commentNodeItem(
                             .border(start = border)
                             .padding(bottom = MEDIUM_PADDING),
                 ) {
-                    if (node.depth == 0) {
-                        HorizontalDivider()
-                    }
-
                     Column(
                         modifier =
                             Modifier.padding(
@@ -552,7 +548,7 @@ fun LazyListScope.missingCommentNodeItem(
     item(key = commentId) {
         val backgroundColor = MaterialTheme.colorScheme.background
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
-        val border = Border(SMALL_PADDING, borderColor)
+        val border = Border(BORDER_WIDTH, borderColor)
 
         AnimatedVisibility(
             visible = !isCollapsedByParent,
@@ -566,9 +562,6 @@ fun LazyListScope.missingCommentNodeItem(
                             start = offset,
                         ).border(start = border),
             ) {
-                if (node.depth == 0) {
-                    HorizontalDivider()
-                }
                 Column(
                     modifier =
                         Modifier.padding(
@@ -658,7 +651,7 @@ private fun ShowMoreChildrenNode(
 
     val backgroundColor = MaterialTheme.colorScheme.background
     val borderColor = calculateBorderColor(backgroundColor, newDepth)
-    val border = Border(SMALL_PADDING, borderColor)
+    val border = Border(BORDER_WIDTH, borderColor)
 
     AnimatedVisibility(
         visible = !isCollapsedByParent,
