@@ -227,7 +227,7 @@ fun LazyListScope.commentNodeItem(
     val commentView = node.commentView
     val commentId = commentView.comment.id
 
-    val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
+    val offset = calculateCommentOffset(node.depth) // The ones with a border on
     val offset2 =
         if (node.depth == 0) {
             MEDIUM_PADDING
@@ -293,7 +293,6 @@ fun LazyListScope.commentNodeItem(
                 }
             }
         }
-
         val swipeableContent: @Composable RowScope.() -> Unit = {
             AnimatedVisibility(
                 visible = !isCollapsedByParent,
@@ -305,113 +304,113 @@ fun LazyListScope.commentNodeItem(
                         Modifier
                             .padding(
                                 start = offset,
-                            ),
+                            )
+                            .border(start = border)
+                            .padding(bottom = MEDIUM_PADDING),
                 ) {
+                    if (node.depth == 0) {
+                        HorizontalDivider()
+                    }
+
                     Column(
-                        modifier = Modifier.border(start = border)
-                            .padding(bottom = LARGE_PADDING),
+                        modifier =
+                            Modifier.padding(
+                                start = offset2,
+                                end = MEDIUM_PADDING,
+                            ),
                     ) {
-                        HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
-                        Column(
-                            modifier =
-                                Modifier.padding(
-                                    start = offset2,
-                                    end = MEDIUM_PADDING,
-                                ),
-                        ) {
-                            if (showPostAndCommunityContext) {
-                                PostAndCommunityContextHeader(
-                                    post = commentView.post,
-                                    community = commentView.community,
-                                    onCommunityClick = onCommunityClick,
-                                    onPostClick = onPostClick,
-                                    blurNSFW = blurNSFW,
-                                    showAvatar = showAvatar,
-                                )
-                            }
-                            CommentNodeHeader(
-                                commentView = commentView,
-                                onPersonClick = onPersonClick,
-                                instantScores = instantScores,
-                                voteDisplayMode = voteDisplayMode,
-                                onClick = {
-                                    onHeaderClick(commentView)
-                                },
-                                onLongClick = {
-                                    onHeaderLongClick(commentView)
-                                },
-                                collapsedCommentsCount = commentView.counts.child_count,
-                                isExpanded = isExpanded(commentId),
+                        if (showPostAndCommunityContext) {
+                            PostAndCommunityContextHeader(
+                                post = commentView.post,
+                                community = commentView.community,
+                                onCommunityClick = onCommunityClick,
+                                onPostClick = onPostClick,
+                                blurNSFW = blurNSFW,
                                 showAvatar = showAvatar,
                             )
-                            AnimatedVisibility(
-                                visible = isExpanded(commentId) || showCollapsedCommentContent,
-                                enter = expandVertically(),
-                                exit = shrinkVertically(),
-                            ) {
-                                Column {
-                                    CommentBody(
-                                        comment = commentView.comment,
-                                        viewSource = viewSource,
-                                        onClick = { onCommentClick(commentView) },
-                                        onLongClick = { v ->
-                                            if (v is TextView) {
-                                                // Also triggers for long click on links, so we check if link was hit
-                                                // Can have selection in viewSource but there are no links there
-                                                if (viewSource || (v.selectionStart == -1 && v.selectionEnd == -1)) {
-                                                    toggleActionBar(commentId)
-                                                }
-                                            }
-                                            true
-                                        },
-                                    )
-                                    AnimatedVisibility(
-                                        visible = showActionBar(commentId),
-                                        enter = expandVertically(),
-                                        exit = shrinkVertically(),
-                                    ) {
-                                        CommentFooterLine(
-                                            commentView = commentView,
-                                            admins = admins,
-                                            moderators = moderators,
-                                            instantScores = instantScores,
-                                            onUpvoteClick = {
-                                                instantScores =
-                                                    instantScores.update(VoteType.Upvote)
-                                                onUpvoteClick(commentView)
-                                            },
-                                            onDownvoteClick = {
-                                                instantScores =
-                                                    instantScores.update(VoteType.Downvote)
-                                                onDownvoteClick(commentView)
-                                            },
-                                            onViewSourceClick = {
-                                                viewSource = !viewSource
-                                            },
-                                            onEditCommentClick = onEditCommentClick,
-                                            onDeleteCommentClick = onDeleteCommentClick,
-                                            onReplyClick = onReplyClick,
-                                            onSaveClick = onSaveClick,
-                                            onReportClick = onReportClick,
-                                            onRemoveClick = onRemoveClick,
-                                            onDistinguishClick = onDistinguishClick,
-                                            onBanPersonClick = onBanPersonClick,
-                                            onBanFromCommunityClick = onBanFromCommunityClick,
-                                            onCommentLinkClick = onCommentLinkClick,
-                                            onPersonClick = onPersonClick,
-                                            onViewVotesClick = onViewVotesClick,
-                                            onBlockCreatorClick = onBlockCreatorClick,
-                                            onClick = {
-                                                toggleExpanded(commentId)
-                                            },
-                                            onLongClick = {
+                        }
+                        CommentNodeHeader(
+                            commentView = commentView,
+                            onPersonClick = onPersonClick,
+                            instantScores = instantScores,
+                            voteDisplayMode = voteDisplayMode,
+                            onClick = {
+                                onHeaderClick(commentView)
+                            },
+                            onLongClick = {
+                                onHeaderLongClick(commentView)
+                            },
+                            collapsedCommentsCount = commentView.counts.child_count,
+                            isExpanded = isExpanded(commentId),
+                            showAvatar = showAvatar,
+                        )
+                        AnimatedVisibility(
+                            visible = isExpanded(commentId) || showCollapsedCommentContent,
+                            enter = expandVertically(),
+                            exit = shrinkVertically(),
+                        ) {
+                            Column {
+                                CommentBody(
+                                    comment = commentView.comment,
+                                    viewSource = viewSource,
+                                    onClick = { onCommentClick(commentView) },
+                                    onLongClick = { v ->
+                                        if (v is TextView) {
+                                            // Also triggers for long click on links, so we check if link was hit
+                                            // Can have selection in viewSource but there are no links there
+                                            if (viewSource || (v.selectionStart == -1 && v.selectionEnd == -1)) {
                                                 toggleActionBar(commentId)
-                                            },
-                                            account = account,
-                                            enableDownVotes = enableDownVotes,
-                                            viewSource = viewSource,
-                                        )
-                                    }
+                                            }
+                                        }
+                                        true
+                                    },
+                                )
+                                AnimatedVisibility(
+                                    visible = showActionBar(commentId),
+                                    enter = expandVertically(),
+                                    exit = shrinkVertically(),
+                                ) {
+                                    CommentFooterLine(
+                                        commentView = commentView,
+                                        admins = admins,
+                                        moderators = moderators,
+                                        instantScores = instantScores,
+                                        onUpvoteClick = {
+                                            instantScores =
+                                                instantScores.update(VoteType.Upvote)
+                                            onUpvoteClick(commentView)
+                                        },
+                                        onDownvoteClick = {
+                                            instantScores =
+                                                instantScores.update(VoteType.Downvote)
+                                            onDownvoteClick(commentView)
+                                        },
+                                        onViewSourceClick = {
+                                            viewSource = !viewSource
+                                        },
+                                        onEditCommentClick = onEditCommentClick,
+                                        onDeleteCommentClick = onDeleteCommentClick,
+                                        onReplyClick = onReplyClick,
+                                        onSaveClick = onSaveClick,
+                                        onReportClick = onReportClick,
+                                        onRemoveClick = onRemoveClick,
+                                        onDistinguishClick = onDistinguishClick,
+                                        onBanPersonClick = onBanPersonClick,
+                                        onBanFromCommunityClick = onBanFromCommunityClick,
+                                        onCommentLinkClick = onCommentLinkClick,
+                                        onPersonClick = onPersonClick,
+                                        onViewVotesClick = onViewVotesClick,
+                                        onBlockCreatorClick = onBlockCreatorClick,
+                                        onClick = {
+                                            toggleExpanded(commentId)
+                                        },
+                                        onLongClick = {
+                                            toggleActionBar(commentId)
+                                        },
+                                        account = account,
+                                        enableDownVotes = enableDownVotes,
+                                        viewSource = viewSource,
+                                    )
                                 }
                             }
                         }
@@ -535,7 +534,7 @@ fun LazyListScope.missingCommentNodeItem(
 ) {
     val commentId = node.missingCommentView.commentId
 
-    val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
+    val offset = calculateCommentOffset(node.depth) // The ones with a border on
     val offset2 =
         if (node.depth == 0) {
             MEDIUM_PADDING
@@ -565,30 +564,28 @@ fun LazyListScope.missingCommentNodeItem(
                     Modifier
                         .padding(
                             start = offset,
-                        ),
+                        ).border(start = border),
             ) {
+                if (node.depth == 0) {
+                    HorizontalDivider()
+                }
                 Column(
-                    modifier = Modifier.border(start = border),
+                    modifier =
+                        Modifier.padding(
+                            start = offset2,
+                            end = MEDIUM_PADDING,
+                        ),
                 ) {
-                    HorizontalDivider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
-                    Column(
-                        modifier =
-                            Modifier.padding(
-                                start = offset2,
-                                end = MEDIUM_PADDING,
-                            ),
+                    AnimatedVisibility(
+                        visible = isExpanded(commentId) || showCollapsedCommentContent,
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
                     ) {
-                        AnimatedVisibility(
-                            visible = isExpanded(commentId) || showCollapsedCommentContent,
-                            enter = expandVertically(),
-                            exit = shrinkVertically(),
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.comment_gone),
-                                fontStyle = FontStyle.Italic,
-                                modifier = Modifier.padding(vertical = SMALL_PADDING),
-                            )
-                        }
+                        Text(
+                            text = stringResource(id = R.string.comment_gone),
+                            fontStyle = FontStyle.Italic,
+                            modifier = Modifier.padding(vertical = SMALL_PADDING),
+                        )
                     }
                 }
             }
@@ -651,7 +648,7 @@ private fun ShowMoreChildrenNode(
 ) {
     val newDepth = depth + 1
 
-    val offset = calculateCommentOffset(newDepth, 4) // The ones with a border on
+    val offset = calculateCommentOffset(newDepth) // The ones with a border on
     val offset2 =
         if (newDepth == 0) {
             MEDIUM_PADDING
@@ -675,7 +672,6 @@ private fun ShowMoreChildrenNode(
                         start = offset,
                     ),
         ) {
-            HorizontalDivider()
             Column(
                 modifier = Modifier.border(start = border),
             ) {
