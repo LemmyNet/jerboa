@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -487,6 +488,10 @@ fun PostActivity(
                                 item(contentType = "loadingbar") {
                                     LoadingBar()
                                 }
+                            }
+
+                            item(contentType = "horizontalDivider") {
+                                HorizontalDivider()
                             }
 
                             when (val commentsRes = postViewModel.commentsRes) {
