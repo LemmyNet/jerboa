@@ -21,6 +21,7 @@ import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
+import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.exception.LemmyBadRequestException
 import it.vercruysse.lemmyapi.v0x19.LemmyApi
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
@@ -427,8 +428,11 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                         }
 
                         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion {
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true).invokeOnCompletion { err ->
                                 appState.toLogin()
+                                if (err != null) {
+                                    apiErrorToast(ctx, err)
+                                }
                             }
                         }
 
