@@ -80,28 +80,28 @@ enum class SwipeToActionPreset(
         R.string.swipe_action_preset_default,
     ),
     LEFT_DOWNVOTE_RIGHT_UPVOTE(
-        listOf(SwipeToActionType.Downvote, SwipeToActionType.Reply),
-        listOf(SwipeToActionType.Upvote, SwipeToActionType.Save),
+        listOf(SwipeToActionType.Upvote, SwipeToActionType.Reply),
+        listOf(SwipeToActionType.Downvote, SwipeToActionType.Save),
         R.string.swipe_action_preset_downvote_on_left_upvote_on_right,
     ),
     ONLY_RIGHT(
-        emptyList(),
         listOf(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
             SwipeToActionType.Reply,
             SwipeToActionType.Save,
         ),
+        emptyList(),
         R.string.only_right_swipe_action_preset,
     ),
     ONLY_LEFT(
+        emptyList(),
         listOf(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
             SwipeToActionType.Reply,
             SwipeToActionType.Save,
         ),
-        emptyList(),
         R.string.only_left_swipe_action_preset,
     ),
     ONLY_VOTES_MIRRORED(
