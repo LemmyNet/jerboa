@@ -7,6 +7,7 @@ import coil.ImageLoaderFactory
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
+import coil.decode.VideoFrameDecoder
 import com.jerboa.api.API
 import com.jerboa.db.AppDBContainer
 import com.jerboa.util.downloadprogress.DownloadProgress
@@ -30,12 +31,14 @@ class JerboaApplication : Application(), ImageLoaderFactory {
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .components {
                     add(SvgDecoder.Factory())
+                    add(VideoFrameDecoder.Factory())
                 }
                 .build()
 
         imageGifLoader =
             imageLoader.newBuilder()
                 .components {
+                    add(SvgDecoder.Factory())
                     if (Build.VERSION.SDK_INT >= 28) {
                         add(ImageDecoderDecoder.Factory())
                     } else {

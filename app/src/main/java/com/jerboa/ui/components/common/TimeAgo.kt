@@ -25,8 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jerboa.R
+import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.feat.InstantScores
+import com.jerboa.feat.formatPercent
+import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SCORE_SIZE_ADD
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -95,10 +100,7 @@ fun dateStringToPretty(
     longTimeFormat: Boolean = false,
 ): String? {
     return try {
-        // TODO: v0.18.4_deprecated Remove this hack once backward API compatibility is implemented
-        // pre 0.19 Datetimes didn't have a timezone, so we add one here
-        val withTimezone = if (dateStr.last() == 'Z') dateStr else dateStr + "Z"
-        val publishedDate = Date.from(Instant.parse(withTimezone))
+        val publishedDate = Date.from(Instant.parse(dateStr))
         formatDuration(publishedDate, longTimeFormat)
     } catch (e: DateTimeParseException) {
         Log.d("TimeAgo", "Failed to parse date string: $dateStr", e)
@@ -117,14 +119,13 @@ fun TimeAgoPreview() {
 
 @Composable
 fun ScoreAndTime(
-    score: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     published: String,
     updated: String?,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     isNsfw: Boolean = false,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -133,29 +134,140 @@ fun ScoreAndTime(
         NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
-        if (showScores) {
-            Text(
-                text = score.toString(),
-                color = scoreColor(myVote = myVote),
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontSize = MaterialTheme.typography.labelMedium.fontSize.value.plus(SCORE_SIZE_ADD).sp,
-                ),
-            )
+        val upvotePct = upvotePercent(
+            upvotes = instantScores.upvotes,
+            downvotes = instantScores.downvotes,
+        )
+        when (voteDisplayMode) {
+            VoteDisplayMode.Full -> {
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
+                    SmallVoteIndicator(data = "${instantScores.downvotes}↓")
+                    DotSpacer(style = MaterialTheme.typography.labelMedium)
+                }
+            }
+            VoteDisplayMode.ScoreAndUpvotePercentage -> {
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
+                    SmallVoteIndicator(data = formatPercent(upvotePct))
+                    DotSpacer(style = MaterialTheme.typography.labelMedium)
+                }
+            }
+            VoteDisplayMode.UpvotePercentage -> {
+                LargeVoteIndicator(data = formatPercent(upvotePct), myVote = instantScores.myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
+            VoteDisplayMode.Score -> {
+                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
+            VoteDisplayMode.HideAll -> {}
         }
-        DotSpacer(style = MaterialTheme.typography.labelMedium)
         TimeAgo(published = published, updated = updated)
     }
+}
+
+@Composable
+private fun LargeVoteIndicator(
+    data: String,
+    myVote: Int,
+) {
+    Text(
+        text = data,
+        color = scoreColor(myVote = myVote),
+        style = MaterialTheme.typography.labelMedium,
+        fontSize = MaterialTheme.typography.labelMedium.fontSize.value.plus(SCORE_SIZE_ADD).sp,
+    )
+}
+
+@Composable
+private fun SmallVoteIndicator(data: String) {
+    Text(
+        text = data,
+        color = MaterialTheme.colorScheme.onBackground.muted,
+        style = MaterialTheme.typography.labelMedium,
+    )
+}
+
+@Preview
+@Composable
+fun ScoreFullAndTimePreview() {
+    ScoreAndTime(
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.Full,
+    )
+}
+
+@Preview
+@Composable
+fun ScoreAndUpvotePctAndTimePreview() {
+    ScoreAndTime(
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.ScoreAndUpvotePercentage,
+    )
+}
+
+@Preview
+@Composable
+fun UpvotePctAndTimePreview() {
+    ScoreAndTime(
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.UpvotePercentage,
+    )
 }
 
 @Preview
 @Composable
 fun ScoreAndTimePreview() {
     ScoreAndTime(
-        score = 23,
-        myVote = -1,
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Score,
+    )
+}
+
+@Preview
+@Composable
+fun HideAllAndTimePreview() {
+    ScoreAndTime(
+        instantScores = InstantScores(
+            score = 25,
+            myVote = -1,
+            upvotes = 10,
+            downvotes = 15,
+        ),
+        published = samplePost.published,
+        updated = samplePost.updated,
+        voteDisplayMode = VoteDisplayMode.HideAll,
     )
 }
 

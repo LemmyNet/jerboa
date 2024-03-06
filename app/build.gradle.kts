@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.22"
 
 }
 
@@ -20,8 +20,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 59
-        versionName = "0.0.59"
+        versionCode = 60
+        versionName = "0.0.60"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -130,14 +130,15 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     // Images
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("io.coil-kt:coil-gif:2.5.0")
-    implementation("io.coil-kt:coil-svg:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-gif:2.6.0")
+    implementation("io.coil-kt:coil-svg:2.6.0")
+    implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.8.0")
     // Animated dropdowns
@@ -160,7 +161,7 @@ dependencies {
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
-    implementation("io.arrow-kt:arrow-core:1.2.1")
+    implementation("io.arrow-kt:arrow-core:1.2.3")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
@@ -170,19 +171,19 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.compose.ui:ui:1.6.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.1")
-    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+    implementation("androidx.compose.ui:ui:1.6.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+    implementation("androidx.compose.material:material-icons-extended:1.6.2")
 
     implementation("androidx.activity:activity-compose:1.8.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    testImplementation("org.mockito:mockito-core:5.10.0")
+    testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
     implementation("androidx.browser:browser:1.7.0")
@@ -190,7 +191,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.9-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.10-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Ktor uses SLF4J
     implementation("org.slf4j:slf4j-api:2.0.12")

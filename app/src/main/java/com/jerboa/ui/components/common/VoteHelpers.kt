@@ -14,10 +14,8 @@ import com.jerboa.ui.theme.muted
 @Composable
 fun VoteGeneric(
     myVote: Int,
-    votes: Long,
     type: VoteType,
     onVoteClick: () -> Unit,
-    showNumber: Boolean = true,
     account: Account,
 ) {
     val iconAndColor =
@@ -26,16 +24,6 @@ fun VoteGeneric(
             else -> downvoteIconAndColor(myVote = myVote)
         }
 
-    val votesStr =
-        if (showNumber) {
-            if (type == VoteType.Downvote && votes == 0L) {
-                null
-            } else {
-                votes.toString()
-            }
-        } else {
-            null
-        }
     val contentDescription: String =
         if (type == VoteType.Upvote) {
             if (myVote == 1) {
@@ -55,7 +43,6 @@ fun VoteGeneric(
         contentColor = iconAndColor.second,
         icon = iconAndColor.first,
         contentDescription = contentDescription,
-        text = votesStr,
         account = account,
     )
 }

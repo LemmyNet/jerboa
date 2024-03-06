@@ -309,7 +309,7 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val moderators = postRes.data.moderators
+                        val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
 
                         if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
@@ -477,7 +477,7 @@ fun PostActivity(
                                     appState = appState,
                                     showPostLinkPreview = showPostLinkPreview,
                                     showIfRead = false,
-                                    showScores = siteViewModel.showScores(),
+                                    voteDisplayMode = siteViewModel.voteDisplayMode(),
                                     postActionBarMode = postActionBarMode,
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
@@ -726,7 +726,7 @@ fun PostActivity(
                                                 )
                                         },
                                         blurNSFW = blurNSFW,
-                                        showScores = siteViewModel.showScores(),
+                                        voteDisplayMode = siteViewModel.voteDisplayMode(),
                                         swipeToActionPreset = swipeToActionPreset,
                                     )
                                     item {

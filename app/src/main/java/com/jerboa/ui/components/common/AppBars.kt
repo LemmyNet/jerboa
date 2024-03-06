@@ -48,10 +48,12 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.InstantScores
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
@@ -63,7 +65,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -129,14 +131,7 @@ fun BottomAppBarAll(
     NavigationBar(
         modifier = modifier,
     ) {
-        // Hide tabs according to permissions
-        val tabs = when (userViewType) {
-            UserViewType.Normal -> NavTab.entries.filter { it.userViewType == UserViewType.Normal }
-            UserViewType.AdminOrMod -> NavTab.entries.filter { it.userViewType != UserViewType.AdminOnly }
-            UserViewType.AdminOnly -> NavTab.entries
-        }
-
-        for (tab in tabs) {
+        for (tab in NavTab.getEntries(userViewType)) {
             val selected = tab == selectedTab
             val iconBadgeCount = when (tab) {
                 NavTab.Inbox -> unreadCounts
@@ -241,8 +236,7 @@ fun CommentNavigationBottomAppBar(
 @Composable
 fun CommentOrPostNodeHeader(
     creator: Person,
-    score: Long,
-    myVote: Int,
+    instantScores: InstantScores,
     published: String,
     updated: String?,
     deleted: Boolean,
@@ -255,7 +249,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     showAvatar: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -298,13 +292,12 @@ fun CommentOrPostNodeHeader(
             )
         }
         ScoreAndTime(
-            score = score,
-            myVote = myVote,
+            instantScores = instantScores,
             published = published,
             updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
-            showScores = showScores,
+            voteDisplayMode = voteDisplayMode,
         )
     }
 }
@@ -314,8 +307,12 @@ fun CommentOrPostNodeHeader(
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
         creator = samplePerson,
-        score = 23,
-        myVote = 1,
+        instantScores = InstantScores(
+            score = 23,
+            upvotes = 21,
+            downvotes = 2,
+            myVote = 1,
+        ),
         published = samplePost.published,
         updated = samplePost.updated,
         deleted = false,
@@ -326,7 +323,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
     )
 }
 
@@ -427,7 +424,7 @@ fun ActionBarButtonAndBadge(
             Text(
                 text = text,
                 color = contentColor,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
             )
         }
         iconBadgeCount?.also {
@@ -435,7 +432,7 @@ fun ActionBarButtonAndBadge(
             TextBadge(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 text = iconBadgeCount,
-                textStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                textStyle = MaterialTheme.typography.labelSmall.copy(fontStyle = FontStyle.Italic),
                 textColor = contentColor,
                 verticalTextPadding = 2f,
                 horizontalTextPadding = 4f,

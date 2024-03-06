@@ -226,7 +226,7 @@ fun CommunityActivity(
                         PostListings(
                             posts = postsRes.data.posts,
                             admins = siteViewModel.admins(),
-                            moderators = moderators,
+                            moderators = remember(moderators) { moderators?.map { it.moderator.id } },
                             contentAboveListings = {
                                 when (communityRes) {
                                     is ApiState.Success -> {
@@ -426,7 +426,7 @@ fun CommunityActivity(
                                 }
                             },
                             showIfRead = true,
-                            showScores = siteViewModel.showScores(),
+                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                             postActionBarMode = postActionBarMode,
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                             swipeToActionPreset = swipeToActionPreset,

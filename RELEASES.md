@@ -1,3 +1,16 @@
+# Jerboa 0.0.60 (2024-02-23)
+
+## What's Changed in 0.0.60
+
+- Adding additional vote display modes by @dessalines in [#1378](https://github.com/dessalines/jerboa/pull/1378)
+- Show full error on post creation failing by @MV-GH in [#1396](https://github.com/dessalines/jerboa/pull/1396)
+- Adding mod ability to distinguish comment. by @dessalines in [#1381](https://github.com/dessalines/jerboa/pull/1381)
+- Delaying marquee for 4 seconds. #1390 by @dessalines in [#1391](https://github.com/dessalines/jerboa/pull/1391)
+- Fix sizing by not using multipliers. Fixes #1385 by @dessalines in [#1386](https://github.com/dessalines/jerboa/pull/1386)
+- Bump deps + Update baselines profiles by @MV-GH in [#1389](https://github.com/dessalines/jerboa/pull/1389)
+- Adding legal / privacy policy info. by @dessalines in [#1382](https://github.com/dessalines/jerboa/pull/1382)
+- Upgrading git-cliff init. by @dessalines in [#1387](https://github.com/dessalines/jerboa/pull/1387)
+
 # Jerboa 0.0.59 (2024-02-15)
 
 ## What's Changed

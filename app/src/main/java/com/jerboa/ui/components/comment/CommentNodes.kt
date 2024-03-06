@@ -12,13 +12,13 @@ import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -28,7 +28,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
 fun CommentNodes(
     nodes: List<CommentNodeData>,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -66,7 +66,7 @@ fun CommentNodes(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(state = listState) {
@@ -110,7 +110,7 @@ fun CommentNodes(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-            showScores = showScores,
+            voteDisplayMode = voteDisplayMode,
             swipeToActionPreset = swipeToActionPreset,
         )
         item {
@@ -122,7 +122,7 @@ fun CommentNodes(
 fun LazyListScope.commentNodeItems(
     nodes: List<CommentNodeData>,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -159,7 +159,7 @@ fun LazyListScope.commentNodeItems(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     nodes.forEach { node ->
@@ -205,7 +205,7 @@ fun LazyListScope.commentNodeItems(
                     enableDownVotes = enableDownVotes,
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
-                    showScores = showScores,
+                    voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
                 )
 
@@ -250,7 +250,7 @@ fun LazyListScope.commentNodeItems(
                     enableDownVotes = enableDownVotes,
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
-                    showScores = showScores,
+                    voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
                 )
         }

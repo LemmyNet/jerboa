@@ -22,6 +22,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
+import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
@@ -35,7 +36,6 @@ import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -46,7 +46,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 fun PostListings(
     posts: List<PostView>,
     admins: List<PersonView>,
-    moderators: List<CommunityModeratorView>?,
+    moderators: List<PersonId>?,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -81,7 +81,7 @@ fun PostListings(
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
-    showScores: Boolean,
+    voteDisplayMode: VoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
@@ -136,7 +136,7 @@ fun PostListings(
                 appState = appState,
                 showPostLinkPreview = showPostLinkPreviews,
                 showIfRead = showIfRead,
-                showScores = showScores,
+                voteDisplayMode = voteDisplayMode,
                 postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
             ).let {
@@ -212,7 +212,7 @@ fun PreviewPostListings() {
         markAsReadOnScroll = false,
         onMarkAsRead = {},
         showIfRead = true,
-        showScores = true,
+        voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.DEFAULT,

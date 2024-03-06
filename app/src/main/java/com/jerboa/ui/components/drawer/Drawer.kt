@@ -44,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.db.entity.Account
@@ -92,6 +93,7 @@ fun Drawer(
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
+    userViewType: UserViewType,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -124,6 +126,7 @@ fun Drawer(
         closeDrawer = closeDrawer,
         onSelectTab = onSelectTab,
         onSwitchAnon = onSwitchAnon,
+        userViewType = userViewType,
     )
 }
 
@@ -147,6 +150,7 @@ fun DrawerContent(
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
     onSwitchAnon: () -> Unit,
+    userViewType: UserViewType,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -177,6 +181,7 @@ fun DrawerContent(
         showBottomNav = showBottomNav,
         onSelectTab = onSelectTab,
         closeDrawer = closeDrawer,
+        userViewType = userViewType,
     )
 }
 
@@ -194,6 +199,7 @@ fun DrawerItemsMain(
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
+    userViewType: UserViewType,
 ) {
     val listState = rememberLazyListState()
 
@@ -238,7 +244,7 @@ fun DrawerItemsMain(
         }
 
         if (!showBottomNav) {
-            items(NavTab.entries) {
+            items(NavTab.getEntries(userViewType)) {
                 IconAndTextDrawerItem(
                     text = stringResource(it.textId),
                     icon = it.iconOutlined,
@@ -314,6 +320,7 @@ fun DrawerItemsMainPreview() {
         showBottomNav = false,
         closeDrawer = {},
         onSelectTab = {},
+        userViewType = UserViewType.Normal,
     )
 }
 
