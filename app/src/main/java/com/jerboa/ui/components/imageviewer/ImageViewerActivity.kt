@@ -109,7 +109,9 @@ fun ImageViewer(
     }
 
     val image = remember {
-        ImageRequest.Builder(ctx).placeholder(null).data(url)
+        ImageRequest.Builder(ctx)
+            .placeholder(null)
+            .data(url)
             .setParameter("retry_hash", retryHash, memoryCacheKey = null).listener(
                 onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
                 onError = { _, _ -> imageState = ImageState.FAILED },
@@ -168,7 +170,6 @@ fun ImageViewer(
                         state = zoomableImageState,
                         onClick = {
                             showTopBar = !showTopBar
-                            // systemUiController.isSystemBarsVisible = showTopBar
                             if (showTopBar) {
                                 controller.show(WindowInsetsCompat.Type.systemBars())
                             } else {
@@ -179,7 +180,6 @@ fun ImageViewer(
                             // and show it again upon user's touch. We just want the user to be able to show the
                             // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                             // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                            // systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                             controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                         },
                         modifier = Modifier.fillMaxSize(),
