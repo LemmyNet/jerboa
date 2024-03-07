@@ -127,10 +127,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
@@ -163,20 +162,20 @@ dependencies {
 
     implementation("io.arrow-kt:arrow-core:1.2.3")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    implementation("androidx.compose.material3:material3:1.2.0")
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.compose.ui:ui:1.6.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.2")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
-    implementation("androidx.compose.material:material-icons-extended:1.6.2")
+    implementation("androidx.compose.ui:ui:1.6.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.3")
+    implementation("androidx.compose.material:material-icons-extended:1.6.3")
 
     implementation("androidx.activity:activity-compose:1.8.2")
     testImplementation("junit:junit:4.13.2")
@@ -186,7 +185,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
-    implementation("androidx.browser:browser:1.7.0")
+    implementation("androidx.browser:browser:1.8.0")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))

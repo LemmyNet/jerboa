@@ -12,7 +12,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.graphics.ColorUtils
@@ -20,6 +19,7 @@ import androidx.core.view.WindowCompat
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.toEnum
 
 // Defines a provider for custom color scheme use; initializes it to a default scheme that will
 // be overridden by JerboaTheme
@@ -30,8 +30,8 @@ fun JerboaTheme(
     appSettings: AppSettings,
     content: @Composable () -> Unit,
 ) {
-    val themeMode = ThemeMode.entries[appSettings.theme]
-    val themeColor = ThemeColor.entries[appSettings.themeColor]
+    val themeMode = appSettings.theme.toEnum<ThemeMode>()
+    val themeColor = appSettings.themeColor.toEnum<ThemeColor>()
     val fontSize = appSettings.fontSize
 
     val ctx = LocalContext.current
@@ -55,7 +55,7 @@ fun JerboaTheme(
                 ),
             )
         } else {
-            pink()
+            blue()
         }
 
     val colorPair =
@@ -122,12 +122,9 @@ fun JerboaTheme(
         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 
-//    window.statusBarColor = colors.material.background.toArgb()
-//    // The navigation bar color is also set on BottomAppBarAll
-//    window.navigationBarColor = colors.material.background.toArgb()
-//
-//    insets.isAppearanceLightStatusBars = isLight
-//    insets.isAppearanceLightNavigationBars = isLight
+    // The navigation bar color is set on BottomAppBarAll
+    insets.isAppearanceLightStatusBars = isLight
+    insets.isAppearanceLightNavigationBars = isLight
 
     // Set up a provider to allow access to the custom color scheme from any child element
     CompositionLocalProvider(LocalColorScheme provides colors) {

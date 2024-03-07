@@ -1,10 +1,7 @@
 package com.jerboa.ui.components.imageviewer
 
 import android.app.Activity
-import android.os.Build.VERSION.SDK_INT
-import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-import androidx.activity.ComponentActivity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -51,10 +48,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
-import com.jerboa.MainActivity
 import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.feat.shareMedia
@@ -79,59 +74,31 @@ fun ImageViewer(
     var showTopBar by remember { mutableStateOf(true) }
 
     val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewerLoader
-    val systemUiController = rememberSystemUiController()
 
     val window = (ctx as Activity).window
     val controller = WindowCompat.getInsetsController(window, LocalView.current)
 
-    val activity = LocalContext.current as ComponentActivity
-
-
-    val oldBarColor = Color(window.statusBarColor)
+    val oldBarColor = window.statusBarColor
     val oldIcons = controller.isAppearanceLightStatusBars
 
-//    DisposableEffect(systemUiController) {
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//        window.clearFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-//
-//        // Unable to get the bottom navbar transparent without this
-//        @Suppress("DEPRECATION")
-//        window.addFlags(FLAG_TRANSLUCENT_NAVIGATION)
-//
-        systemUiController.setStatusBarColor(
-            color = Color.Transparent,
-            darkIcons = false,
-        )
-
-//        onDispose { // Restore previous system bars
-
-//            // Does weird behaviour on android 10 and below
-//            if (SDK_INT >= 30) {
-//                WindowCompat.setDecorFitsSystemWindows(window, true)
-//            }
-//
-//            systemUiController.setStatusBarColor(
-//                color = oldBarColor,
-//                darkIcons = oldIcons,
-//            )
-//
-//            if (!showTopBar) {
-//                systemUiController.isSystemBarsVisible = true
-//            }
-//
-//            window.addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-//            @Suppress("DEPRECATION")
-//            window.clearFlags(FLAG_TRANSLUCENT_NAVIGATION)
-//        }
-//    }
-
-
-
     DisposableEffect(Unit) {
+        controller.isAppearanceLightStatusBars = false
+        window.statusBarColor = Color.Transparent.toArgb()
+
+        // Unable to get the bottom navbar transparent without this
+        @Suppress("DEPRECATION")
+        window.addFlags(FLAG_TRANSLUCENT_NAVIGATION)
+
         onDispose {
             if (!showTopBar) {
                 controller.show(WindowInsetsCompat.Type.systemBars())
             }
+
+            controller.isAppearanceLightStatusBars = oldIcons
+            window.statusBarColor = oldBarColor
+
+            @Suppress("DEPRECATION")
+            window.clearFlags(FLAG_TRANSLUCENT_NAVIGATION)
         }
     }
 
@@ -141,17 +108,13 @@ fun ImageViewer(
         mutableStateOf(ImageState.LOADING)
     }
 
-    val image =
-        remember {
-            ImageRequest.Builder(ctx)
-                .placeholder(null)
-                .data(url)
-                .setParameter("retry_hash", retryHash, memoryCacheKey = null)
-                .listener(
-                    onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
-                    onError = { _, _ -> imageState = ImageState.FAILED },
-                ).build()
-        }
+    val image = remember {
+        ImageRequest.Builder(ctx).placeholder(null).data(url)
+            .setParameter("retry_hash", retryHash, memoryCacheKey = null).listener(
+                onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
+                onError = { _, _ -> imageState = ImageState.FAILED },
+            ).build()
+    }
 
     val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
     val zoomableImageState = rememberZoomableImageState(zoomableState)
@@ -162,8 +125,7 @@ fun ImageViewer(
         },
         content = {
             Box(
-                Modifier
-                    .background(backColor),
+                Modifier.background(backColor),
             ) {
                 if (imageState == ImageState.FAILED) {
                     Column(
@@ -189,8 +151,7 @@ fun ImageViewer(
                         if (currentProgress.value.progressAvailable) {
                             LinearProgressIndicator(
                                 progress = { currentProgress.value.progress },
-                                modifier =
-                                Modifier
+                                modifier = Modifier
                                     .padding(it)
                                     .fillMaxWidth(),
                             )
@@ -207,10 +168,9 @@ fun ImageViewer(
                         state = zoomableImageState,
                         onClick = {
                             showTopBar = !showTopBar
-                            //systemUiController.isSystemBarsVisible = showTopBar
+                            // systemUiController.isSystemBarsVisible = showTopBar
                             if (showTopBar) {
                                 controller.show(WindowInsetsCompat.Type.systemBars())
-
                             } else {
                                 controller.hide(WindowInsetsCompat.Type.systemBars())
                             }
@@ -219,7 +179,7 @@ fun ImageViewer(
                             // and show it again upon user's touch. We just want the user to be able to show the
                             // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                             // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                            //systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                            // systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                             controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                         },
                         modifier = Modifier.fillMaxSize(),
@@ -286,6 +246,7 @@ fun ViewerHeader(
                 )
             }
         },
+        // pzv9dPd8iL
     )
 }
 

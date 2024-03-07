@@ -21,7 +21,6 @@ class JerboaApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-
         container = AppDBContainer(this)
         imageLoader =
             ImageLoader.Builder(this)
