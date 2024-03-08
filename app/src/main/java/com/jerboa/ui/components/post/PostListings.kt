@@ -212,7 +212,7 @@ fun PreviewPostListings() {
         voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
         showPostAppendRetry = false,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
         onReplyClick = {},
     )
 }

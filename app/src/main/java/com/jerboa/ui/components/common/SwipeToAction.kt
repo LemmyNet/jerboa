@@ -90,7 +90,7 @@ fun SwipeToAction(
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         lastSwipeAction.value = currentAction?.second
                     }
-                    spring(stiffness = 1800f)
+                    spring(stiffness = 2000F)
                 },
                 label = "swipe color animation",
                 targetValueByState = { state ->
