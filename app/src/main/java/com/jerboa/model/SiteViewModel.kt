@@ -227,7 +227,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     // TODO this should probably be persisted rather than waited for
     // For the current default, just use FullScores
     fun voteDisplayMode(): VoteDisplayMode {
-        val defaultMode = VoteDisplayMode.Full
+        val defaultMode = VoteDisplayMode.ScoreAndUpvotePercentage
         return when (val res = siteRes) {
             is ApiState.Success ->
                 res.data.my_user?.let { mui ->

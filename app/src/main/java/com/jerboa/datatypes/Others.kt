@@ -184,6 +184,7 @@ data class PostFeatureData(
 // TODO this should be got rid of after https://github.com/LemmyNet/lemmy/issues/4449
 enum class VoteDisplayMode {
     Full,
+    ScoreAndDownvote,
     ScoreAndUpvotePercentage,
     UpvotePercentage,
     Score,
