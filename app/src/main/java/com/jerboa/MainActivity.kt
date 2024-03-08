@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.TextView
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.EnterTransition
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
         setContent {
             val ctx = LocalContext.current
 
@@ -119,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 DisposableEffect(appSettings.backConfirmationMode) {
-                    when (BackConfirmationMode.entries[appSettings.backConfirmationMode]) {
+                    when (appSettings.backConfirmationMode.toEnum<BackConfirmationMode>()) {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(appState.navController, ctx)
                         }

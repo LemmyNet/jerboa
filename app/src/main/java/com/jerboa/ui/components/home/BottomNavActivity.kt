@@ -1,9 +1,6 @@
 package com.jerboa.ui.components.home
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.padding
+import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bookmarks
@@ -39,7 +36,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -144,8 +140,8 @@ enum class NavTab(
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(
-    ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class,
 )
 @Composable
@@ -242,18 +238,10 @@ fun BottomNavActivity(
                         )
                     }
                 },
-            ) { padding ->
-                val bottomPadding =
-                    if (selectedTab == NavTab.Search && WindowInsets.isImeVisible) {
-                        0.dp
-                    } else {
-                        padding.calculateBottomPadding()
-                    }
-
+            ) { _ ->
                 NavHost(
                     navController = bottomNavController,
                     startDestination = NavTab.Home.name,
-                    modifier = Modifier.padding(bottom = bottomPadding),
                 ) {
                     composable(route = NavTab.Home.name) {
                         HomeActivity(
