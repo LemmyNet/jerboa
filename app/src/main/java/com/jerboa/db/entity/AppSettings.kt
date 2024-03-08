@@ -122,7 +122,7 @@ data class AppSettings(
     val autoPlayGifs: Boolean,
     @ColumnInfo(
         name = "swipe_to_action_preset",
-        defaultValue = "1",
+        defaultValue = "0",
     )
     val swipeToActionPreset: Int,
     @ColumnInfo(

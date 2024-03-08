@@ -236,7 +236,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, url, PostType.Image)
+                    storeMedia(appState.coroutineScope, ctx, url, PostType.fromURL(url))
                 },
             ) {
                 Icon(

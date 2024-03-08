@@ -812,7 +812,7 @@ enum class PostType {
         return when (this) {
             Image -> Environment.DIRECTORY_PICTURES
             Video -> Environment.DIRECTORY_MOVIES
-            Link -> Environment.DIRECTORY_DOCUMENTS
+            Link -> Environment.DIRECTORY_DOWNLOADS
         }
     }
 }
@@ -1226,7 +1226,7 @@ fun calculateCommentOffset(
     return if (depth == 0) {
         0.dp
     } else {
-        (abs((depth.minus(1) * padding.value.toInt())).dp + padding)
+        (abs((depth.minus(1) * padding.value)).dp + padding)
     }
 }
 
@@ -1453,7 +1453,7 @@ fun Context.getInputStream(url: String): InputStream {
 
 val videoRgx =
     Regex(
-        pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov))",
+        pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov|webm))",
     )
 
 fun isVideo(url: String): Boolean {

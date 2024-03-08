@@ -18,7 +18,7 @@ enum class SwipeToActionType {
     ;
 
     companion object {
-        const val START_THRESHOLD = 0.05f
+        const val START_THRESHOLD = 0.10f
 
         fun getActionToRangeList(actions: List<SwipeToActionType>): List<Pair<OpenEndRange<Float>, SwipeToActionType>> {
             val start = START_THRESHOLD + 0.05f
@@ -74,39 +74,44 @@ enum class SwipeToActionPreset(
     val resId: Int,
 ) {
     DISABLED(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
-    DEFAULT(
+    TWO_SIDES(
         listOf(SwipeToActionType.Reply, SwipeToActionType.Save),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Downvote),
         R.string.swipe_action_preset_default,
     ),
     LEFT_DOWNVOTE_RIGHT_UPVOTE(
-        listOf(SwipeToActionType.Downvote, SwipeToActionType.Reply),
-        listOf(SwipeToActionType.Upvote, SwipeToActionType.Save),
+        listOf(SwipeToActionType.Upvote, SwipeToActionType.Reply),
+        listOf(SwipeToActionType.Downvote, SwipeToActionType.Save),
         R.string.swipe_action_preset_downvote_on_left_upvote_on_right,
     ),
     ONLY_RIGHT(
-        emptyList(),
         listOf(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
             SwipeToActionType.Reply,
             SwipeToActionType.Save,
         ),
+        emptyList(),
         R.string.only_right_swipe_action_preset,
     ),
     ONLY_LEFT(
+        emptyList(),
         listOf(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
             SwipeToActionType.Reply,
             SwipeToActionType.Save,
         ),
-        emptyList(),
         R.string.only_left_swipe_action_preset,
     ),
-    ONLY_VOTES(
+    ONLY_VOTES_MIRRORED(
         listOf(SwipeToActionType.Downvote),
         listOf(SwipeToActionType.Upvote),
+        R.string.swipe_action_preset_only_votes_mirrored,
+    ),
+    ONLY_VOTES(
+        listOf(SwipeToActionType.Upvote),
+        listOf(SwipeToActionType.Downvote),
         R.string.swipe_action_preset_only_votes,
     ),
 }

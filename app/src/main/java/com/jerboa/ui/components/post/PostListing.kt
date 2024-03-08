@@ -870,7 +870,7 @@ fun PreviewPostListingCard() {
         showIfRead = true,
         voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
     )
 }
 
@@ -911,7 +911,7 @@ fun PreviewLinkPostListing() {
         showIfRead = true,
         voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
     )
 }
 
@@ -952,7 +952,7 @@ fun PreviewImagePostListingCard() {
         showIfRead = true,
         voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
     )
 }
 
@@ -993,7 +993,7 @@ fun PreviewImagePostListingSmallCard() {
         showIfRead = true,
         voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
     )
 }
 
@@ -1034,7 +1034,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showIfRead = true,
         voteDisplayMode = VoteDisplayMode.Full,
         postActionBarMode = PostActionBarMode.Long,
-        swipeToActionPreset = SwipeToActionPreset.DEFAULT,
+        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
     )
 }
 
