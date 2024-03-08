@@ -1226,7 +1226,7 @@ fun calculateCommentOffset(
     return if (depth == 0) {
         0.dp
     } else {
-        (abs((depth.minus(1) * padding.value.toInt())).dp + padding)
+        (abs((depth.minus(1) * padding.value)).dp + padding)
     }
 }
 
