@@ -30,8 +30,12 @@ val DONATION_MARKDOWN =
     """
     ### Support Jerboa
     
-    Jerboa is free, open-source software, meaning no advertising, monetizing, or venture capital, 
-    ever. Your donations directly support full-time development of the project.
+    [Jerboa](https://github.com/dessalines/jerboa) is free, open-source software, meaning no advertising, monetizing, or venture capital,
+    ever.
+
+    No one likes recurring donations, but they've proven to be the only
+    way open-source software like Lemmy can stay alive. If you find
+    yourself using Lemmy every day, please consider donating:
 
     - [Support on Liberapay](https://liberapay.com/Lemmy).
     - [Support on Patreon](https://www.patreon.com/dessalines).
