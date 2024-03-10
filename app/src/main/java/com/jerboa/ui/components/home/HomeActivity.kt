@@ -155,9 +155,9 @@ fun HomeActivity(
                 onClickSiteInfo = appState::toSiteSideBar,
             )
         },
-        content = { padding ->
+        content = { innerPadding ->
             MainPostListingsContent(
-                padding = padding,
+                padding = innerPadding,
                 homeViewModel = homeViewModel,
                 siteViewModel = siteViewModel,
                 appSettingsViewModel = appSettingsViewModel,
