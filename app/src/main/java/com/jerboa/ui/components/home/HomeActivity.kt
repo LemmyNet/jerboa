@@ -98,6 +98,7 @@ fun HomeActivity(
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -125,9 +126,16 @@ fun HomeActivity(
         }
     }
 
+    val baseModifier = if (padding == null) {
+        Modifier
+    } else {
+        // Only do bottom padding else it will apply status bar padding twice due nested scaffold
+        Modifier.padding(bottom = padding.calculateBottomPadding())
+    }
+
     Scaffold(
         modifier =
-            Modifier
+            baseModifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .semantics { testTagsAsResourceId = true },
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },

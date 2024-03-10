@@ -128,6 +128,7 @@ fun PersonProfileActivity(
     postActionBarMode: PostActionBarMode,
     onBack: (() -> Unit)? = null,
     swipeToActionPreset: SwipeToActionPreset,
+    padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -165,8 +166,15 @@ fun PersonProfileActivity(
         }
     }
 
+    val baseModifier = if (padding == null) {
+        Modifier
+    } else {
+        // Only do bottom padding else it will apply status bar padding twice due nested scaffold
+        Modifier.padding(bottom = padding.calculateBottomPadding())
+    }
+
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = baseModifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
