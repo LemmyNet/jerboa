@@ -544,6 +544,19 @@ val MIGRATION_31_32 =
         }
     }
 
+val MIGRATION_32_33 =
+    object : Migration(32, 33) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Force update a few wrong defaults
+            db.execSQL("UPDATE AppSettings SET show_comment_action_bar_by_default = 1")
+            db.execSQL("UPDATE AppSettings SET markAsReadOnScroll = 0")
+            db.execSQL("UPDATE AppSettings SET show_post_link_previews = 1")
+            db.execSQL("UPDATE AppSettings SET backConfirmationMode = 1")
+            db.execSQL("UPDATE AppSettings SET use_private_tabs = 0")
+            db.execSQL("UPDATE AppSettings SET use_custom_tabs = 1")
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -578,4 +591,5 @@ val MIGRATIONS_LIST =
         MIGRATION_29_30,
         MIGRATION_30_31,
         MIGRATION_31_32,
+        MIGRATION_32_33,
     )
