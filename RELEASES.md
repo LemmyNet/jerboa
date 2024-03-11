@@ -1,8 +1,18 @@
+# Jerboa 0.0.62 (2024-03-11)
+
+## What's Changed in 0.0.62
+
+- Fix migration changing the the app settings by @MV-GH in [#1442](https://github.com/dessalines/jerboa/pull/1442)
+- Fix issues caused by edge to edge by @MV-GH in [#1443](https://github.com/dessalines/jerboa/pull/1443)
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.61...0.0.62
+
 # Jerboa 0.0.61 (2024-03-09)
 
 ## What's Changed in 0.0.61
 
-- Fix generate changelog line.
+- Upping version. by @dessalines
+- Fix generate changelog line. by @dessalines
 - Fixing donation line. by @dessalines in [#1435](https://github.com/dessalines/jerboa/pull/1435)
 - Adding distinct Full Score, and ScoreAndDownvote vote display modes. by @dessalines in [#1402](https://github.com/dessalines/jerboa/pull/1402)
 - Upgrading deps. by @dessalines in [#1434](https://github.com/dessalines/jerboa/pull/1434)
