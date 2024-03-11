@@ -501,14 +501,40 @@ val MIGRATION_31_32 =
                       `post_actionbar_mode` INTEGER NOT NULL DEFAULT ${DEFAULT_POST_ACTION_BAR_MODE},
                       `auto_play_gifs` INTEGER NOT NULL DEFAULT ${DEFAULT_AUTO_PLAY_GIFS},
                       `swipe_to_action_preset` INTEGER NOT NULL DEFAULT ${DEFAULT_SWIPE_TO_ACTION_PRESET},
-                      `last_version_code_viewed` INTEGER NOT NULL DEFAULT $DEFAULT_LAST_VERSION_CODE_VIEWED,
+                      `last_version_code_viewed` INTEGER NOT NULL DEFAULT $DEFAULT_LAST_VERSION_CODE_VIEWED
                     )
                 """.trimIndent(),
             )
 
+            // Need to select explicitly, because mark_changelog_viewed was dropped
             db.execSQL(
                 """
-            INSERT INTO AppSettingsBackup SELECT * FROM AppSettings
+            INSERT INTO AppSettingsBackup SELECT
+                      `id`,
+                      `font_size`,
+                      `theme`,
+                      `theme_color`,
+                      `post_view_mode`,
+                      `show_bottom_nav`,
+                      `post_navigation_gesture_mode`,
+                      `show_collapsed_comment_content`,
+                      `show_comment_action_bar_by_default`,
+                      `show_voting_arrows_in_list_view`,
+                      `show_parent_comment_navigation_buttons`,
+                      `navigate_parent_comments_with_volume_buttons`,
+                      `use_custom_tabs`,
+                      `use_private_tabs`,
+                      `secure_window`,
+                      `blur_nsfw`,
+                      `show_text_descriptions_in_navbar`,
+                      `markAsReadOnScroll`,
+                      `backConfirmationMode`,
+                      `show_post_link_previews`,
+                      `post_actionbar_mode`,
+                      `auto_play_gifs`,
+                      `swipe_to_action_preset`,
+                      `last_version_code_viewed`
+             FROM AppSettings
             """,
             )
             db.execSQL("DROP TABLE AppSettings")
