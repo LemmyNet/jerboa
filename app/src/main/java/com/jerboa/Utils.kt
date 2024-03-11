@@ -1544,3 +1544,5 @@ fun Context.getVersionCode(): Int =
         @Suppress("DEPRECATION")
         getPackageInfo().versionCode
     }
+
+fun Int.toBool() = if (this > 0) true else false
