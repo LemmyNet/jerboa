@@ -415,7 +415,7 @@ fun LazyListScope.commentNodeItem(
             }
         }
 
-        if (swipeToActionPreset != SwipeToActionPreset.DISABLED) {
+        if (swipeToActionPreset != SwipeToActionPreset.Disabled) {
             SwipeToAction(
                 swipeToActionPreset = swipeToActionPreset,
                 enableDownVotes = enableDownVotes,
@@ -918,7 +918,7 @@ fun CommentNodesPreview() {
         blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
         voteDisplayMode = VoteDisplayMode.Full,
-        swipeToActionPreset = SwipeToActionPreset.TWO_SIDES,
+        swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
 }
 

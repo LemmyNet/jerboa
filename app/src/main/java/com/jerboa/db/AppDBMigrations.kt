@@ -469,6 +469,81 @@ val MIGRATION_30_31 =
         }
     }
 
+val MIGRATION_31_32 =
+    object : Migration(31, 32) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Fix wrong ordering and defaults in previous migration
+
+            db.execSQL(
+                """
+                   CREATE TABLE IF NOT EXISTS AppSettingsBackup (
+                      `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                      `font_size` INTEGER NOT NULL DEFAULT 16,
+                      `theme` INTEGER NOT NULL DEFAULT 0,
+                      `theme_color` INTEGER NOT NULL DEFAULT 0,
+                      `post_view_mode` INTEGER NOT NULL DEFAULT 0,
+                      `show_bottom_nav` INTEGER NOT NULL DEFAULT 1,
+                      `post_navigation_gesture_mode` INTEGER NOT NULL DEFAULT 0,
+                      `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0,
+                      `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1,
+                      `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1,
+                      `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 0,
+                      `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0,
+                      `use_custom_tabs` INTEGER NOT NULL DEFAULT 1,
+                      `use_private_tabs` INTEGER NOT NULL DEFAULT 0,
+                      `secure_window` INTEGER NOT NULL DEFAULT 0,
+                      `blur_nsfw` INTEGER NOT NULL DEFAULT 1,
+                      `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT 1,
+                      `markAsReadOnScroll` INTEGER NOT NULL DEFAULT 0,
+                      `backConfirmationMode` INTEGER NOT NULL DEFAULT 1,
+                      `show_post_link_previews` INTEGER NOT NULL DEFAULT 1,
+                      `post_actionbar_mode` INTEGER NOT NULL DEFAULT 0,
+                      `auto_play_gifs` INTEGER NOT NULL DEFAULT 0,
+                      `swipe_to_action_preset` INTEGER NOT NULL DEFAULT 0,
+                      `last_version_code_viewed` INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent(),
+            )
+
+            // Need to select explicitly, because mark_changelog_viewed was dropped
+            db.execSQL(
+                """
+            INSERT INTO AppSettingsBackup SELECT
+                      `id`,
+                      `font_size`,
+                      `theme`,
+                      `theme_color`,
+                      `post_view_mode`,
+                      `show_bottom_nav`,
+                      `post_navigation_gesture_mode`,
+                      `show_collapsed_comment_content`,
+                      `show_comment_action_bar_by_default`,
+                      `show_voting_arrows_in_list_view`,
+                      `show_parent_comment_navigation_buttons`,
+                      `navigate_parent_comments_with_volume_buttons`,
+                      `use_custom_tabs`,
+                      `use_private_tabs`,
+                      `secure_window`,
+                      `blur_nsfw`,
+                      `show_text_descriptions_in_navbar`,
+                      `markAsReadOnScroll`,
+                      `backConfirmationMode`,
+                      `show_post_link_previews`,
+                      `post_actionbar_mode`,
+                      `auto_play_gifs`,
+                      `swipe_to_action_preset`,
+                      `last_version_code_viewed`
+             FROM AppSettings
+            """,
+            )
+            db.execSQL("DROP TABLE AppSettings")
+            db.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
+
+            // Reset a few messups to default
+            db.execSQL("UPDATE AppSettings SET post_actionbar_mode = 0")
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -502,4 +577,5 @@ val MIGRATIONS_LIST =
         MIGRATION_28_29,
         MIGRATION_29_30,
         MIGRATION_30_31,
+        MIGRATION_31_32,
     )

@@ -73,18 +73,18 @@ enum class SwipeToActionPreset(
     val rightActions: List<SwipeToActionType>,
     val resId: Int,
 ) {
-    DISABLED(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
-    TWO_SIDES(
+    Disabled(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
+    TwoSides(
         listOf(SwipeToActionType.Reply, SwipeToActionType.Save),
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Downvote),
         R.string.swipe_action_preset_default,
     ),
-    LEFT_DOWNVOTE_RIGHT_UPVOTE(
+    LeftDownvoteRightUpvote(
         listOf(SwipeToActionType.Upvote, SwipeToActionType.Reply),
         listOf(SwipeToActionType.Downvote, SwipeToActionType.Save),
         R.string.swipe_action_preset_downvote_on_left_upvote_on_right,
     ),
-    ONLY_RIGHT(
+    OnlyRight(
         listOf(
             SwipeToActionType.Upvote,
             SwipeToActionType.Downvote,
@@ -94,7 +94,7 @@ enum class SwipeToActionPreset(
         emptyList(),
         R.string.only_right_swipe_action_preset,
     ),
-    ONLY_LEFT(
+    OnlyLeft(
         emptyList(),
         listOf(
             SwipeToActionType.Upvote,
@@ -104,12 +104,12 @@ enum class SwipeToActionPreset(
         ),
         R.string.only_left_swipe_action_preset,
     ),
-    ONLY_VOTES_MIRRORED(
+    OnlyVotesMirrored(
         listOf(SwipeToActionType.Downvote),
         listOf(SwipeToActionType.Upvote),
         R.string.swipe_action_preset_only_votes_mirrored,
     ),
-    ONLY_VOTES(
+    OnlyVotes(
         listOf(SwipeToActionType.Upvote),
         listOf(SwipeToActionType.Downvote),
         R.string.swipe_action_preset_only_votes,

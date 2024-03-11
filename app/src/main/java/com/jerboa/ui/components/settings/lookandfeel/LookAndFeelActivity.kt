@@ -116,7 +116,6 @@ fun LookAndFeelActivity(
         appSettingsViewModel.update(
             AppSettings(
                 id = 1,
-                viewedChangelog = settings.viewedChangelog,
                 lastVersionCodeViewed = settings.lastVersionCodeViewed,
                 theme = themeState.value,
                 themeColor = themeColorState.value,
