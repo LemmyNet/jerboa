@@ -2,7 +2,6 @@ package com.jerboa.db
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.jerboa.ui.theme.DEFAULT_FONT_SIZE
 
 const val UPDATE_APP_CHANGELOG_UNVIEWED = "UPDATE AppSettings SET viewed_changelog = 0"
 
