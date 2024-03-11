@@ -479,29 +479,29 @@ val MIGRATION_31_32 =
                 """
                    CREATE TABLE IF NOT EXISTS AppSettingsBackup (
                       `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                      `font_size` INTEGER NOT NULL DEFAULT ${DEFAULT_FONT_SIZE},
-                      `theme` INTEGER NOT NULL DEFAULT ${DEFAULT_THEME},
-                      `theme_color` INTEGER NOT NULL DEFAULT ${DEFAULT_THEME_COLOR},
-                      `post_view_mode` INTEGER NOT NULL DEFAULT ${DEFAULT_POST_VIEW_MODE},
-                      `show_bottom_nav` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_BOTTOM_NAV},
-                      `post_navigation_gesture_mode` INTEGER NOT NULL DEFAULT ${DEFAULT_POST_NAVIGATION_GESTURE_MODE},
-                      `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_COLLAPSED_COMMENT_CONTENT},
-                      `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_COMMENT_ACTION_BAR_BY_DEFAULT},
-                      `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_VOTING_ARROWS_IN_LIST_VIEW},
-                      `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_PARENT_COMMENT_NAVIGATION_BUTTONS},
-                      `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT ${DEFAULT_NAVIGATE_PARENT_COMMENTS_WITH_VOLUME_BUTTONS},
-                      `use_custom_tabs` INTEGER NOT NULL DEFAULT ${DEFAULT_USE_CUSTOM_TABS},
-                      `use_private_tabs` INTEGER NOT NULL DEFAULT ${DEFAULT_USE_PRIVATE_TABS},
-                      `secure_window` INTEGER NOT NULL DEFAULT ${DEFAULT_SECURE_WINDOW},
-                      `blur_nsfw` INTEGER NOT NULL DEFAULT ${DEFAULT_BLUR_NSFW},
-                      `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_TEXT_DESCRIPTIONS_IN_NAVBAR},
-                      `markAsReadOnScroll` INTEGER NOT NULL DEFAULT ${DEFAULT_MARK_AS_READ_ON_SCROLL},
-                      `backConfirmationMode` INTEGER NOT NULL DEFAULT ${DEFAULT_BACK_CONFIRMATION_MODE},
-                      `show_post_link_previews` INTEGER NOT NULL DEFAULT ${DEFAULT_SHOW_POST_LINK_PREVIEWS},
-                      `post_actionbar_mode` INTEGER NOT NULL DEFAULT ${DEFAULT_POST_ACTION_BAR_MODE},
-                      `auto_play_gifs` INTEGER NOT NULL DEFAULT ${DEFAULT_AUTO_PLAY_GIFS},
-                      `swipe_to_action_preset` INTEGER NOT NULL DEFAULT ${DEFAULT_SWIPE_TO_ACTION_PRESET},
-                      `last_version_code_viewed` INTEGER NOT NULL DEFAULT $DEFAULT_LAST_VERSION_CODE_VIEWED
+                      `font_size` INTEGER NOT NULL DEFAULT 16,
+                      `theme` INTEGER NOT NULL DEFAULT 0,
+                      `theme_color` INTEGER NOT NULL DEFAULT 0,
+                      `post_view_mode` INTEGER NOT NULL DEFAULT 0,
+                      `show_bottom_nav` INTEGER NOT NULL DEFAULT 1,
+                      `post_navigation_gesture_mode` INTEGER NOT NULL DEFAULT 0,
+                      `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0,
+                      `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1,
+                      `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1,
+                      `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 0,
+                      `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0,
+                      `use_custom_tabs` INTEGER NOT NULL DEFAULT 1,
+                      `use_private_tabs` INTEGER NOT NULL DEFAULT 0,
+                      `secure_window` INTEGER NOT NULL DEFAULT 0,
+                      `blur_nsfw` INTEGER NOT NULL DEFAULT 1,
+                      `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT 1,
+                      `markAsReadOnScroll` INTEGER NOT NULL DEFAULT 0,
+                      `backConfirmationMode` INTEGER NOT NULL DEFAULT 1,
+                      `show_post_link_previews` INTEGER NOT NULL DEFAULT 1,
+                      `post_actionbar_mode` INTEGER NOT NULL DEFAULT 0,
+                      `auto_play_gifs` INTEGER NOT NULL DEFAULT 0,
+                      `swipe_to_action_preset` INTEGER NOT NULL DEFAULT 0,
+                      `last_version_code_viewed` INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent(),
             )
@@ -541,7 +541,7 @@ val MIGRATION_31_32 =
             db.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
 
             // Reset a few messups to default
-            db.execSQL("UPDATE AppSettings SET post_actionbar_mode = $DEFAULT_POST_ACTION_BAR_MODE")
+            db.execSQL("UPDATE AppSettings SET post_actionbar_mode = 0")
         }
     }
 
