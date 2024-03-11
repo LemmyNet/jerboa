@@ -15,7 +15,7 @@ class ScriptRewriteSupportPlugin : AbstractMarkwonPlugin() {
 
     companion object {
         val SUPERSCRIPT_RGX = Regex("""\^([^\n^]+)\^""")
-        val SUBSCRIPT_RGX = Regex("""~([^\n~]+)~""")
+        val SUBSCRIPT_RGX = Regex("""(?<!~)~([^\n~]+)~""")
 
         fun rewriteLemmyScriptToMarkwonScript(text: String): String {
             return text
