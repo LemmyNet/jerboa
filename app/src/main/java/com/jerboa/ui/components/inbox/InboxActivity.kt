@@ -85,6 +85,7 @@ fun InboxActivity(
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: BlurNSFW,
+    padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -97,8 +98,15 @@ fun InboxActivity(
 
     val inboxViewModel: InboxViewModel = viewModel(factory = InboxViewModel.Companion.Factory(account, siteViewModel))
 
+    val baseModifier = if (padding == null) {
+        Modifier
+    } else {
+        // Only do bottom padding else it will apply status bar padding twice due nested scaffold
+        Modifier.padding(bottom = padding.calculateBottomPadding())
+    }
+
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = baseModifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             InboxHeader(

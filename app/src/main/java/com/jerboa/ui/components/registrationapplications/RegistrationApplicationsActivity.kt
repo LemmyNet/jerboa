@@ -1,6 +1,8 @@
 package com.jerboa.ui.components.registrationapplications
 
 import android.util.Log
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -32,6 +34,7 @@ fun RegistrationApplicationsActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
+    padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to registration applications activity")
 
@@ -45,8 +48,15 @@ fun RegistrationApplicationsActivity(
     val registrationApplicationsViewModel: RegistrationApplicationsViewModel =
         viewModel(factory = RegistrationApplicationsViewModel.Companion.Factory(account, siteViewModel))
 
+    val baseModifier = if (padding == null) {
+        Modifier
+    } else {
+        // Only do bottom padding else it will apply status bar padding twice due nested scaffold
+        Modifier.padding(bottom = padding.calculateBottomPadding())
+    }
+
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = baseModifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             RegistrationApplicationsHeader(
@@ -77,9 +87,9 @@ fun RegistrationApplicationsActivity(
                 },
             )
         },
-        content = { padding ->
+        content = { innerPadding ->
             RegistrationApplications(
-                padding = padding,
+                padding = innerPadding,
                 appState = appState,
                 registrationApplicationsViewModel = registrationApplicationsViewModel,
                 siteViewModel = siteViewModel,

@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.home
 
-import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bookmarks
@@ -140,7 +139,6 @@ enum class NavTab(
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(
     ExperimentalComposeUiApi::class,
 )
@@ -238,7 +236,7 @@ fun BottomNavActivity(
                         )
                     }
                 },
-            ) { _ ->
+            ) { padding ->
                 NavHost(
                     navController = bottomNavController,
                     startDestination = NavTab.Home.name,
@@ -259,6 +257,7 @@ fun BottomNavActivity(
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = padding,
                         )
                     }
 
@@ -270,6 +269,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                             showAvatar = siteViewModel.showAvatar(),
+                            padding = padding,
                         )
                     }
 
@@ -280,6 +280,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
+                            padding = padding,
                         )
                     }
 
@@ -289,6 +290,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            padding = padding,
                         )
                     }
 
@@ -298,6 +300,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            padding = padding,
                         )
                     }
 
@@ -308,6 +311,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            padding = padding,
                         )
                     }
 
@@ -328,6 +332,7 @@ fun BottomNavActivity(
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = padding,
                         )
                     }
 
@@ -348,6 +353,7 @@ fun BottomNavActivity(
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = padding,
                         )
                     }
                 }

@@ -1,8 +1,12 @@
 package com.jerboa.ui.components.community.list
 
 import android.util.Log
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -45,6 +49,7 @@ fun CommunityListActivity(
     blurNSFW: BlurNSFW,
     drawerState: DrawerState,
     showAvatar: Boolean,
+    padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -55,8 +60,20 @@ fun CommunityListActivity(
 
     val scope = rememberCoroutineScope()
 
+    val baseModifier = if (padding == null) {
+        Modifier
+    } else {
+        // https://issuetracker.google.com/issues/249727298
+        // Else it also applies the padding above the ime (keyboard)
+        Modifier.padding(padding)
+            .consumeWindowInsets(padding)
+            .systemBarsPadding()
+    }
+
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            modifier = baseModifier,
             topBar = {
                 CommunityListHeader(
                     openDrawer = {
