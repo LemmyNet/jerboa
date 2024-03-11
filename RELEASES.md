@@ -1,7 +1,18 @@
+# Jerboa 0.0.63 (2024-03-11)
+
+## What's Changed in 0.0.63
+
+- Correcting a few wrong defaults. by @dessalines in [#1448](https://github.com/dessalines/jerboa/pull/1448)
+- Fix migrations 1 by @dessalines in [#1446](https://github.com/dessalines/jerboa/pull/1446)
+- Fix Strikethrough rendering by @MV-GH in [#1445](https://github.com/dessalines/jerboa/pull/1445)
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.62...0.0.63
+
 # Jerboa 0.0.62 (2024-03-11)
 
 ## What's Changed in 0.0.62
 
+- Upping version. by @dessalines
 - Fix migration changing the the app settings by @MV-GH in [#1442](https://github.com/dessalines/jerboa/pull/1442)
 - Fix issues caused by edge to edge by @MV-GH in [#1443](https://github.com/dessalines/jerboa/pull/1443)
 
