@@ -64,8 +64,8 @@ fun LookAndFeelActivity(
 
     val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
 
-    val themeState = remember { mutableStateOf(ThemeMode.entries[settings.theme]) }
-    val themeColorState = remember { mutableStateOf(ThemeColor.entries[settings.themeColor]) }
+    val themeState by remember { mutableStateOf(ThemeMode.entries[settings.theme]) }
+    val themeColorState by remember { mutableStateOf(ThemeColor.entries[settings.themeColor]) }
 
     val localeMap =
         remember {
@@ -105,8 +105,8 @@ fun LookAndFeelActivity(
             AppSettings(
                 id = 1,
                 lastVersionCodeViewed = settings.lastVersionCodeViewed,
-                theme = themeState.value.ordinal,
-                themeColor = themeColorState.value.ordinal,
+                theme = themeState.ordinal,
+                themeColor = themeColorState.ordinal,
                 fontSize = fontSizeState.toInt(),
                 postViewMode = postViewModeState.ordinal,
                 showBottomNav = showBottomNavState,
