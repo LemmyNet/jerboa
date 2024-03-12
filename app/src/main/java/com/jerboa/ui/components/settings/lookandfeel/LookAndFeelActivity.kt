@@ -3,7 +3,6 @@ package com.jerboa.ui.components.settings.lookandfeel
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,19 +22,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.AnnotatedString
 import androidx.core.os.LocaleListCompat
-import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
-import com.alorma.compose.settings.storage.base.rememberFloatSettingState
-import com.alorma.compose.settings.storage.base.rememberIntSettingState
-import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.alorma.compose.settings.ui.SettingsList
-import com.alorma.compose.settings.ui.SettingsListDropdown
-import com.alorma.compose.settings.ui.SettingsSlider
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
@@ -52,7 +47,11 @@ import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
+import me.zhanghai.compose.preference.ListPreference
+import me.zhanghai.compose.preference.ListPreferenceType
+import me.zhanghai.compose.preference.ProvidePreferenceTheme
+import me.zhanghai.compose.preference.SliderPreference
+import me.zhanghai.compose.preference.SwitchPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,8 +63,9 @@ fun LookAndFeelActivity(
     val ctx = LocalContext.current
 
     val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
-    val themeState = rememberIntSettingState(settings.theme)
-    val themeColorState = rememberIntSettingState(settings.themeColor)
+
+    val themeState = remember { mutableStateOf(ThemeMode.entries[settings.theme]) }
+    val themeColorState = remember { mutableStateOf(ThemeColor.entries[settings.themeColor]) }
 
     val localeMap =
         remember {
@@ -73,72 +73,60 @@ fun LookAndFeelActivity(
         }
 
     val currentAppLocale = matchLocale(localeMap)
-    val langState = rememberIntSettingState(localeMap.keys.indexOf(currentAppLocale))
+    var fontSizeState by remember { mutableStateOf(settings.fontSize.toFloat()) }
+    var fontSizeSliderState by remember { mutableStateOf(fontSizeState) }
+    var postViewModeState by remember { mutableStateOf(PostViewMode.entries[settings.postViewMode]) }
+    var postNavigationGestureModeState by remember { mutableStateOf(PostNavigationGestureMode.entries[settings.postNavigationGestureMode]) }
+    var backConfirmationModeState by remember { mutableStateOf(BackConfirmationMode.entries[settings.backConfirmationMode]) }
+    var postActionBarModeState by remember { mutableStateOf(PostActionBarMode.entries[settings.postActionBarMode]) }
+    var blurNsfwState by remember { mutableStateOf(BlurNSFW.entries[settings.blurNSFW]) }
+    var swipeToActionPresetState by remember { mutableStateOf(SwipeToActionPreset.entries[settings.swipeToActionPreset]) }
 
-    val fontSizeState =
-        rememberFloatSettingState(
-            settings.fontSize.toFloat(),
-        )
-    val postViewModeState = rememberIntSettingState(settings.postViewMode)
-    val postNavigationGestureModeState = rememberIntSettingState(settings.postNavigationGestureMode)
-    val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
-    val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
-    val showCollapsedCommentContentState = rememberBooleanSettingState(settings.showCollapsedCommentContent)
-    val showCommentActionBarByDefaultState = rememberBooleanSettingState(settings.showCommentActionBarByDefault)
-    val showVotingArrowsInListViewState = rememberBooleanSettingState(settings.showVotingArrowsInListView)
-    val showParentCommentNavigationButtonsState =
-        rememberBooleanSettingState(
-            settings.showParentCommentNavigationButtons,
-        )
-    val navigateParentCommentsWithVolumeButtonsState =
-        rememberBooleanSettingState(
-            settings.navigateParentCommentsWithVolumeButtons,
-        )
-    val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs)
-    val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
-
-    val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
-    val blurNSFW = rememberIntSettingState(settings.blurNSFW)
-    val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
-    val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
-    val postActionBarMode = rememberIntSettingState(settings.postActionBarMode)
+    var showBottomNavState by remember { mutableStateOf(settings.showBottomNav) }
+    var showTextDescriptionsInNavbarState by remember { mutableStateOf(settings.showTextDescriptionsInNavbar) }
+    var showCollapsedCommentContentState by remember { mutableStateOf(settings.showCollapsedCommentContent) }
+    var showCommentActionBarByDefaultState by remember { mutableStateOf(settings.showCommentActionBarByDefault) }
+    var showVotingArrowsInListViewState by remember { mutableStateOf(settings.showVotingArrowsInListView) }
+    var showParentCommentNavigationButtonsState by remember { mutableStateOf(settings.showParentCommentNavigationButtons) }
+    var navigateParentCommentsWithVolumeButtonsState by remember { mutableStateOf(settings.navigateParentCommentsWithVolumeButtons) }
+    var useCustomTabsState by remember { mutableStateOf(settings.useCustomTabs) }
+    var usePrivateTabsState by remember { mutableStateOf(settings.usePrivateTabs) }
+    var secureWindowState by remember { mutableStateOf(settings.secureWindow) }
+    var showPostLinkPreviewModeState by remember { mutableStateOf(settings.showPostLinkPreviews) }
+    var markAsReadOnScrollState by remember { mutableStateOf(settings.markAsReadOnScroll) }
+    var autoPlayGifsState by remember { mutableStateOf(settings.autoPlayGifs) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
     val scrollState = rememberScrollState()
-
-    val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
-    val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
-
-    val swipeToActionPreset = rememberIntSettingState(settings.swipeToActionPreset)
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
             AppSettings(
                 id = 1,
                 lastVersionCodeViewed = settings.lastVersionCodeViewed,
-                theme = themeState.value,
-                themeColor = themeColorState.value,
-                fontSize = fontSizeState.value.toInt(),
-                postViewMode = postViewModeState.value,
-                showBottomNav = showBottomNavState.value,
-                showCollapsedCommentContent = showCollapsedCommentContentState.value,
-                showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
-                showVotingArrowsInListView = showVotingArrowsInListViewState.value,
-                showParentCommentNavigationButtons = showParentCommentNavigationButtonsState.value,
-                navigateParentCommentsWithVolumeButtons = navigateParentCommentsWithVolumeButtonsState.value,
-                useCustomTabs = useCustomTabsState.value,
-                usePrivateTabs = usePrivateTabsState.value,
-                secureWindow = secureWindowState.value,
-                showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
-                blurNSFW = blurNSFW.value,
-                backConfirmationMode = backConfirmationMode.value,
-                showPostLinkPreviews = showPostLinkPreviewMode.value,
-                markAsReadOnScroll = markAsReadOnScroll.value,
-                postActionBarMode = postActionBarMode.value,
-                autoPlayGifs = autoPlayGifs.value,
-                postNavigationGestureMode = postNavigationGestureModeState.value,
-                swipeToActionPreset = swipeToActionPreset.value,
+                theme = themeState.value.ordinal,
+                themeColor = themeColorState.value.ordinal,
+                fontSize = fontSizeState.toInt(),
+                postViewMode = postViewModeState.ordinal,
+                showBottomNav = showBottomNavState,
+                showCollapsedCommentContent = showCollapsedCommentContentState,
+                showCommentActionBarByDefault = showCommentActionBarByDefaultState,
+                showVotingArrowsInListView = showVotingArrowsInListViewState,
+                showParentCommentNavigationButtons = showParentCommentNavigationButtonsState,
+                navigateParentCommentsWithVolumeButtons = navigateParentCommentsWithVolumeButtonsState,
+                useCustomTabs = useCustomTabsState,
+                usePrivateTabs = usePrivateTabsState,
+                secureWindow = secureWindowState,
+                showTextDescriptionsInNavbar = showTextDescriptionsInNavbarState,
+                blurNSFW = blurNsfwState.ordinal,
+                backConfirmationMode = backConfirmationModeState.ordinal,
+                showPostLinkPreviews = showPostLinkPreviewModeState,
+                markAsReadOnScroll = markAsReadOnScrollState,
+                postActionBarMode = postActionBarModeState.ordinal,
+                autoPlayGifs = autoPlayGifsState,
+                postNavigationGestureMode = postNavigationGestureModeState.ordinal,
+                swipeToActionPreset = swipeToActionPresetState.ordinal,
             ),
         )
     }
@@ -155,285 +143,384 @@ fun LookAndFeelActivity(
                         .verticalScroll(scrollState)
                         .padding(padding),
             ) {
-                SettingsListDropdown(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    title = {
-                        Text(text = stringResource(R.string.lang_language))
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Language,
-                            contentDescription = stringResource(R.string.lang_language),
-                        )
-                    },
-                    state = langState,
-                    items = localeMap.values.toList(),
-                    onItemSelected = { i, _ ->
-                        AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.create(localeMap.keys.elementAt(i)),
-                        )
-                    },
-                )
-                SettingsSlider(
-                    modifier = Modifier.padding(top = 10.dp).height(SETTINGS_MENU_LINK_HEIGHT),
-                    valueRange = 8f..48f,
-                    state = fontSizeState,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.FormatSize,
-                            contentDescription = null,
-                        )
-                    },
-                    title = {
-                        Text(
-                            text =
-                                stringResource(
-                                    R.string.look_and_feel_font_size,
-                                    fontSizeState.value.toInt(),
-                                ),
-                        )
-                    },
-                    onValueChangeFinished = { updateAppSettings() },
-                )
-                SettingsList(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = themeState,
-                    items = ThemeMode.entries.map { stringResource(it.mode) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Palette,
-                            contentDescription = null,
-                        )
-                    },
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_theme))
-                    },
-                    onItemSelected = { i, _ ->
-                        themeState.value = i
-                        updateAppSettings()
-                    },
-                )
-                SettingsList(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = themeColorState,
-                    items = ThemeColor.entries.map { stringResource(it.mode) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Colorize,
-                            contentDescription = null,
-                        )
-                    },
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_theme_color))
-                    },
-                    onItemSelected = { i, _ ->
-                        themeColorState.value = i
-                        updateAppSettings()
-                    },
-                )
-                SettingsList(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = postViewModeState,
-                    items = PostViewMode.entries.map { stringResource(it.mode) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ViewList,
-                            contentDescription = null,
-                        )
-                    },
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_post_view))
-                    },
-                    onItemSelected = { i, _ ->
-                        postViewModeState.value = i
-                        updateAppSettings()
-                    },
-                )
-                SettingsList(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = postNavigationGestureModeState,
-                    items = PostNavigationGestureMode.entries.map { stringResource(it.mode) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Swipe,
-                            contentDescription = null,
-                        )
-                    },
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_post_navigation_gesture_mode))
-                    },
-                    onItemSelected = { i, _ ->
-                        postNavigationGestureModeState.value = i
-                        updateAppSettings()
-                    },
-                )
-                SettingsList(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    title = {
-                        Text(text = stringResource(R.string.confirm_exit))
-                    },
-                    state = backConfirmationMode,
-                    items = BackConfirmationMode.entries.map { stringResource(it.resId) },
-                    onItemSelected = { i, _ ->
-                        backConfirmationMode.value = i
-                        updateAppSettings()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
-                            contentDescription = null,
-                        )
-                    },
-                )
-                SettingsList(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    title = {
-                        Text(text = stringResource(R.string.post_actionbar))
-                    },
-                    state = postActionBarMode,
-                    items = PostActionBarMode.entries.map { stringResource(it.resId) },
-                    onItemSelected = { i, _ ->
-                        postActionBarMode.value = i
-                        updateAppSettings()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Forum,
-                            contentDescription = null,
-                        )
-                    },
-                )
-                SettingsListDropdown(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = blurNSFW,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.LensBlur,
-                            contentDescription = null,
-                        )
-                    },
-                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
-                    items = BlurNSFW.entries.map { stringResource(it.resId) },
-                    onItemSelected = { _, _ -> updateAppSettings() },
-                )
-                SettingsListDropdown(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = swipeToActionPreset,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Swipe,
-                            contentDescription = null,
-                        )
-                    },
-                    title = { Text(stringResource(id = R.string.swipe_to_action_presets)) },
-                    items = SwipeToActionPreset.entries.map { stringResource(it.resId) },
-                    onItemSelected = { _, _ -> updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showBottomNavState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_show_navigation_bar))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showTextDescriptionsInNavbar,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                    enabled = showBottomNavState.value,
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showCollapsedCommentContentState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showCommentActionBarByDefaultState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_show_action_bar_for_comments))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showVotingArrowsInListViewState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_show_voting_arrows_list_view))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showParentCommentNavigationButtonsState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_show_parent_comment_navigation_buttons))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = navigateParentCommentsWithVolumeButtonsState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_navigate_parent_comments_with_volume_buttons))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = useCustomTabsState,
-                    title = {
-                        Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = usePrivateTabsState,
-                    title = {
-                        Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = secureWindowState,
-                    title = {
-                        Text(text = stringResource(R.string.look_and_feel_secure_window))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = showPostLinkPreviewMode,
-                    title = {
-                        Text(stringResource(id = R.string.show_post_link_previews))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = markAsReadOnScroll,
-                    title = {
-                        Text(stringResource(id = R.string.mark_as_read_on_scroll))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    state = autoPlayGifs,
-                    title = {
-                        Text(stringResource(id = R.string.settings_autoplaygifs))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
+                ProvidePreferenceTheme {
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = currentAppLocale.displayName,
+                        onValueChange = { name ->
+                            val entry = localeMap.entries.find { it.value == name }
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.create(entry?.key),
+                            )
+                        },
+                        values = localeMap.values.toList(),
+                        title = {
+                            Text(text = stringResource(R.string.lang_language))
+                        },
+                        summary = { Text(currentAppLocale.displayName) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Language,
+                                contentDescription = stringResource(R.string.lang_language),
+                            )
+                        },
+                    )
+
+                    SliderPreference(
+                        value = fontSizeState,
+                        sliderValue = fontSizeSliderState,
+                        onValueChange = {
+                            fontSizeState = it
+                            updateAppSettings()
+                        },
+                        onSliderValueChange = { fontSizeSliderState = it },
+                        valueRange = 8f..48f,
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.FormatSize,
+                                contentDescription = null,
+                            )
+                        },
+                        title = {
+                            Text(
+                                text =
+                                    stringResource(
+                                        R.string.look_and_feel_font_size,
+                                        fontSizeSliderState.toInt(),
+                                    ),
+                            )
+                        },
+                    )
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = themeState.value,
+                        onValueChange = {
+                            themeState.value = it
+                            updateAppSettings()
+                        },
+                        values = ThemeMode.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Palette,
+                                contentDescription = null,
+                            )
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_theme))
+                        },
+                        summary = {
+                            Text(stringResource(themeState.value.resId))
+                        },
+                    )
+
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = themeColorState.value,
+                        onValueChange = {
+                            themeColorState.value = it
+                            updateAppSettings()
+                        },
+                        values = ThemeColor.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Colorize,
+                                contentDescription = null,
+                            )
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_theme_color))
+                        },
+                        summary = {
+                            Text(stringResource(themeColorState.value.resId))
+                        },
+                    )
+
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = postViewModeState,
+                        onValueChange = {
+                            postViewModeState = it
+                            updateAppSettings()
+                        },
+                        values = PostViewMode.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.ViewList,
+                                contentDescription = null,
+                            )
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_post_view))
+                        },
+                        summary = {
+                            Text(stringResource(postViewModeState.resId))
+                        },
+                    )
+
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = postNavigationGestureModeState,
+                        onValueChange = {
+                            postNavigationGestureModeState = it
+                            updateAppSettings()
+                        },
+                        values = PostNavigationGestureMode.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Swipe,
+                                contentDescription = null,
+                            )
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_post_navigation_gesture_mode))
+                        },
+                        summary = {
+                            Text(stringResource(postNavigationGestureModeState.resId))
+                        },
+                    )
+
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = backConfirmationModeState,
+                        onValueChange = {
+                            backConfirmationModeState = it
+                            updateAppSettings()
+                        },
+                        values = BackConfirmationMode.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
+                                contentDescription = null,
+                            )
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.confirm_exit))
+                        },
+                        summary = {
+                            Text(stringResource(backConfirmationModeState.resId))
+                        },
+                    )
+
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = postActionBarModeState,
+                        onValueChange = {
+                            postActionBarModeState = it
+                            updateAppSettings()
+                        },
+                        values = PostActionBarMode.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.post_actionbar))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Forum,
+                                contentDescription = null,
+                            )
+                        },
+                        summary = {
+                            Text(stringResource(postActionBarModeState.resId))
+                        },
+                    )
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = blurNsfwState,
+                        onValueChange = {
+                            blurNsfwState = it
+                            updateAppSettings()
+                        },
+                        values = BlurNSFW.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        title = { Text(stringResource(id = R.string.blur_nsfw)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.LensBlur,
+                                contentDescription = null,
+                            )
+                        },
+                        summary = {
+                            Text(stringResource(blurNsfwState.resId))
+                        },
+                    )
+
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = swipeToActionPresetState,
+                        onValueChange = {
+                            swipeToActionPresetState = it
+                            updateAppSettings()
+                        },
+                        values = SwipeToActionPreset.entries,
+                        valueToText = {
+                            AnnotatedString(ctx.getString(it.resId))
+                        },
+                        title = { Text(stringResource(id = R.string.swipe_to_action_presets)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Swipe,
+                                contentDescription = null,
+                            )
+                        },
+                        summary = {
+                            Text(stringResource(swipeToActionPresetState.resId))
+                        },
+                    )
+                    SwitchPreference(
+                        value = showBottomNavState,
+                        onValueChange = {
+                            showBottomNavState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_show_navigation_bar))
+                        },
+                    )
+
+                    SwitchPreference(
+                        enabled = showBottomNavState,
+                        value = showTextDescriptionsInNavbarState,
+                        onValueChange = {
+                            showTextDescriptionsInNavbarState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
+                        },
+                    )
+
+                    SwitchPreference(
+                        value = showCollapsedCommentContentState,
+                        onValueChange = {
+                            showCollapsedCommentContentState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
+                        },
+                    )
+
+                    SwitchPreference(
+                        value = showCommentActionBarByDefaultState,
+                        onValueChange = {
+                            showCommentActionBarByDefaultState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_show_action_bar_for_comments))
+                        },
+                    )
+
+                    SwitchPreference(
+                        value = showVotingArrowsInListViewState,
+                        onValueChange = {
+                            showVotingArrowsInListViewState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_show_voting_arrows_list_view))
+                        },
+                    )
+                    SwitchPreference(
+                        value = showParentCommentNavigationButtonsState,
+                        onValueChange = {
+                            showParentCommentNavigationButtonsState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_show_parent_comment_navigation_buttons))
+                        },
+                    )
+                    SwitchPreference(
+                        value = navigateParentCommentsWithVolumeButtonsState,
+                        onValueChange = {
+                            navigateParentCommentsWithVolumeButtonsState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_navigate_parent_comments_with_volume_buttons))
+                        },
+                    )
+                    SwitchPreference(
+                        value = useCustomTabsState,
+                        onValueChange = {
+                            useCustomTabsState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
+                        },
+                    )
+                    SwitchPreference(
+                        value = usePrivateTabsState,
+                        onValueChange = {
+                            usePrivateTabsState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
+                        },
+                    )
+                    SwitchPreference(
+                        value = secureWindowState,
+                        onValueChange = {
+                            secureWindowState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_secure_window))
+                        },
+                    )
+                    SwitchPreference(
+                        value = showPostLinkPreviewModeState,
+                        onValueChange = {
+                            showPostLinkPreviewModeState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.show_post_link_previews))
+                        },
+                    )
+                    SwitchPreference(
+                        value = markAsReadOnScrollState,
+                        onValueChange = {
+                            markAsReadOnScrollState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.mark_as_read_on_scroll))
+                        },
+                    )
+                    SwitchPreference(
+                        value = autoPlayGifsState,
+                        onValueChange = {
+                            autoPlayGifsState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.settings_autoplaygifs))
+                        },
+                    )
+                }
             }
         },
     )

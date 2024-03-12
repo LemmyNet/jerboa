@@ -297,7 +297,7 @@ fun CommunityMoreDropdown(
             children = {
                 PostViewMode.entries.map {
                     DropdownMenuItem(
-                        text = { Text(text = stringResource(it.mode)) },
+                        text = { Text(text = stringResource(it.resId)) },
                         onClick = {
                             onDismissRequest()
                             onClickPostViewMode(it)
