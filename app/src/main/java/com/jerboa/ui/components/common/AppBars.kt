@@ -11,7 +11,9 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -61,8 +63,10 @@ import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -516,6 +520,10 @@ fun Sidebar(
     usersActiveWeek: Long,
     usersActiveMonth: Long,
     usersActiveHalfYear: Long,
+    moderators: List<CommunityModeratorView>,
+    admins: List<PersonView>,
+    showAvatar: Boolean,
+    onPersonClick: (PersonId) -> Unit,
     padding: PaddingValues,
 ) {
     val listState = rememberLazyListState()
@@ -587,6 +595,51 @@ fun Sidebar(
                     )
                 }
             }
+        }
+
+        moderatorOrAdminList(
+            titleResource = R.string.moderators,
+            persons = moderators.map { it.moderator },
+            onPersonClick = onPersonClick,
+            showAvatar = showAvatar,
+        )
+
+        moderatorOrAdminList(
+            titleResource = R.string.admins,
+            persons = admins.map { it.person },
+            onPersonClick = onPersonClick,
+            showAvatar = showAvatar,
+        )
+    }
+}
+
+private fun LazyListScope.moderatorOrAdminList(
+    titleResource: Int,
+    persons: List<Person>,
+    onPersonClick: (PersonId) -> Unit,
+    showAvatar: Boolean,
+) {
+    if (persons.isNotEmpty()) {
+        item {
+            HorizontalDivider()
+        }
+        item {
+            Text(
+                text = stringResource(titleResource),
+                modifier = Modifier.padding(MEDIUM_PADDING),
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+        items(
+            items = persons,
+            contentType = { "person" },
+        ) { person ->
+            PersonProfileLink(
+                person = person,
+                onClick = onPersonClick,
+                showAvatar = showAvatar,
+                modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+            )
         }
     }
 }
