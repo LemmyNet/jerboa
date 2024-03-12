@@ -69,9 +69,7 @@ fun SiteSidebarActivity(
                     SiteSidebar(
                         siteRes = siteRes.data,
                         showAvatar = siteViewModel.showAvatar(),
-                        onPersonClick = { personId ->
-                            appState.toProfile(id = personId)
-                        },
+                        onPersonClick = appState::toProfile,
                         padding = padding,
                     )
                 }

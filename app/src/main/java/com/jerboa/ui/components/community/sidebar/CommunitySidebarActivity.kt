@@ -41,9 +41,7 @@ fun CommunitySidebarActivity(
         content = { padding ->
             CommunitySidebar(
                 communityRes = communityRes,
-                onPersonClick = { personId ->
-                    appState.toProfile(id = personId)
-                },
+                onPersonClick = appState::toProfile,
                 showAvatar = showAvatar,
                 padding = padding,
             )

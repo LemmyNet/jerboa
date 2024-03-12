@@ -597,14 +597,14 @@ fun Sidebar(
             }
         }
 
-        moderatorOrAdminList(
+        personList(
             titleResource = R.string.moderators,
             persons = moderators.map { it.moderator },
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
         )
 
-        moderatorOrAdminList(
+        personList(
             titleResource = R.string.admins,
             persons = admins.map { it.person },
             onPersonClick = onPersonClick,
@@ -613,7 +613,7 @@ fun Sidebar(
     }
 }
 
-private fun LazyListScope.moderatorOrAdminList(
+private fun LazyListScope.personList(
     titleResource: Int,
     persons: List<Person>,
     onPersonClick: (PersonId) -> Unit,
