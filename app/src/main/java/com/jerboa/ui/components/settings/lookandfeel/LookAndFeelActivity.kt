@@ -64,8 +64,8 @@ fun LookAndFeelActivity(
 
     val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
 
-    val themeState by remember { mutableStateOf(ThemeMode.entries[settings.theme]) }
-    val themeColorState by remember { mutableStateOf(ThemeColor.entries[settings.themeColor]) }
+    var themeState by remember { mutableStateOf(ThemeMode.entries[settings.theme]) }
+    var themeColorState by remember { mutableStateOf(ThemeColor.entries[settings.themeColor]) }
 
     val localeMap =
         remember {
@@ -193,9 +193,9 @@ fun LookAndFeelActivity(
                     )
                     ListPreference(
                         type = ListPreferenceType.DROPDOWN_MENU,
-                        value = themeState.value,
+                        value = themeState,
                         onValueChange = {
-                            themeState.value = it
+                            themeState = it
                             updateAppSettings()
                         },
                         values = ThemeMode.entries,
@@ -212,15 +212,15 @@ fun LookAndFeelActivity(
                             Text(text = stringResource(R.string.look_and_feel_theme))
                         },
                         summary = {
-                            Text(stringResource(themeState.value.resId))
+                            Text(stringResource(themeState.resId))
                         },
                     )
 
                     ListPreference(
                         type = ListPreferenceType.DROPDOWN_MENU,
-                        value = themeColorState.value,
+                        value = themeColorState,
                         onValueChange = {
-                            themeColorState.value = it
+                            themeColorState = it
                             updateAppSettings()
                         },
                         values = ThemeColor.entries,
@@ -237,7 +237,7 @@ fun LookAndFeelActivity(
                             Text(text = stringResource(R.string.look_and_feel_theme_color))
                         },
                         summary = {
-                            Text(stringResource(themeColorState.value.resId))
+                            Text(stringResource(themeColorState.resId))
                         },
                     )
 
