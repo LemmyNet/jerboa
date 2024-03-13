@@ -291,6 +291,7 @@ class MainActivity : AppCompatActivity() {
                         CommunitySidebarActivity(
                             appState = appState,
                             onClickBack = appState::popBackStack,
+                            showAvatar = siteViewModel.showAvatar(),
                         )
                     }
 

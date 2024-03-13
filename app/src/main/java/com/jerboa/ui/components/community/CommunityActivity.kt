@@ -176,7 +176,7 @@ fun CommunityActivity(
                                     )
                                 }
                             },
-                            onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data.community_view) },
+                            onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data) },
                             onClickCommunityShare = {
                                 shareLink(
                                     communityRes.data.community_view.community.actor_id,
