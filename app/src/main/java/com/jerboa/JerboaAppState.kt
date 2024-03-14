@@ -29,7 +29,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.Post
@@ -157,8 +157,8 @@ class JerboaAppState(
         navController.navigate(Route.CommunityFromIdArgs.makeRoute(id = "$id"))
     }
 
-    fun toCommunitySideBar(communityView: CommunityView) {
-        sendReturnForwards(CommunityViewSidebar.COMMUNITY_VIEW, communityView)
+    fun toCommunitySideBar(communityRes: GetCommunityResponse) {
+        sendReturnForwards(CommunityViewSidebar.COMMUNITY_RES, communityRes)
         navController.navigate(Route.COMMUNITY_SIDEBAR)
     }
 

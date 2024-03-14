@@ -9,10 +9,10 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.hostName
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
 
 object CommunityViewSidebar {
-    const val COMMUNITY_VIEW = "side-bar::return(community-view)"
+    const val COMMUNITY_RES = "side-bar::return(community-res)"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,9 +20,11 @@ object CommunityViewSidebar {
 fun CommunitySidebarActivity(
     appState: JerboaAppState,
     onClickBack: () -> Unit,
+    showAvatar: Boolean,
 ) {
     Log.d("jerboa", "got to community sidebar activity")
-    val view = appState.getPrevReturn<CommunityView>(CommunityViewSidebar.COMMUNITY_VIEW)
+    val communityRes = appState.getPrevReturn<GetCommunityResponse>(CommunityViewSidebar.COMMUNITY_RES)
+    val community = communityRes.community_view.community
 
     Scaffold(
         topBar = {
@@ -30,14 +32,19 @@ fun CommunitySidebarActivity(
                 text =
                     stringResource(
                         R.string.actionbar_info_header,
-                        view.community.name,
-                        hostName(view.community.actor_id) ?: "invalid_actor_id",
+                        community.name,
+                        hostName(community.actor_id) ?: "invalid_actor_id",
                     ),
                 onClickBack = onClickBack,
             )
         },
         content = { padding ->
-            CommunitySidebar(communityView = view, padding = padding)
+            CommunitySidebar(
+                communityRes = communityRes,
+                onPersonClick = appState::toProfile,
+                showAvatar = showAvatar,
+                padding = padding,
+            )
         },
     )
 }
