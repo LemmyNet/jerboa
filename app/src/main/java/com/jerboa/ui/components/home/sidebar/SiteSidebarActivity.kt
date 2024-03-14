@@ -66,7 +66,12 @@ fun SiteSidebarActivity(
                 is ApiState.Failure -> ApiErrorText(siteRes.msg)
                 ApiState.Loading -> LoadingBar(padding)
                 is ApiState.Success -> {
-                    SiteSidebar(siteView = siteRes.data.site_view, padding = padding)
+                    SiteSidebar(
+                        siteRes = siteRes.data,
+                        showAvatar = siteViewModel.showAvatar(),
+                        onPersonClick = appState::toProfile,
+                        padding = padding,
+                    )
                 }
                 else -> {}
             }

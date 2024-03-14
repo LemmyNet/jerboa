@@ -3,17 +3,20 @@ package com.jerboa.ui.components.home.sidebar
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.datatypes.sampleSiteView
+import com.jerboa.datatypes.sampleGetSiteRes
 import com.jerboa.ui.components.common.Sidebar
-import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 
 @Composable
 fun SiteSidebar(
-    siteView: SiteView,
+    siteRes: GetSiteResponse,
+    showAvatar: Boolean,
+    onPersonClick: (PersonId) -> Unit,
     padding: PaddingValues,
 ) {
-    val site = siteView.site
-    val counts = siteView.counts
+    val site = siteRes.site_view.site
+    val counts = siteRes.site_view.counts
     Sidebar(
         title = site.description,
         banner = site.banner,
@@ -27,11 +30,20 @@ fun SiteSidebar(
         usersActiveMonth = counts.users_active_month,
         usersActiveHalfYear = counts.users_active_half_year,
         padding = padding,
+        showAvatar = showAvatar,
+        onPersonClick = onPersonClick,
+        admins = siteRes.admins,
+        moderators = emptyList(),
     )
 }
 
 @Preview
 @Composable
 fun SiteSidebarPreview() {
-    SiteSidebar(siteView = sampleSiteView, padding = PaddingValues())
+    SiteSidebar(
+        siteRes = sampleGetSiteRes,
+        onPersonClick = {},
+        showAvatar = false,
+        padding = PaddingValues(),
+    )
 }

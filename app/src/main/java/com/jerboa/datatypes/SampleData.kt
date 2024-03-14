@@ -15,6 +15,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSite
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSiteRateLimit
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUser
@@ -669,6 +670,17 @@ val sampleSiteView =
         local_site = sampleLocalSite,
         local_site_rate_limit = local_site_rate_limit,
     )
+
+val sampleGetSiteRes = GetSiteResponse(
+    site_view = sampleSiteView,
+    admins = listOf(samplePersonView),
+    my_user = null,
+    all_languages = emptyList(),
+    custom_emojis = emptyList(),
+    taglines = emptyList(),
+    discussion_languages = emptyList(),
+    version = "0.0.1",
+)
 
 val samplePendingRegistrationApplication =
     RegistrationApplication(
