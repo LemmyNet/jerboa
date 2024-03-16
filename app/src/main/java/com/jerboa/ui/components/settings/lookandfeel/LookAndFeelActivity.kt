@@ -23,6 +23,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -73,8 +74,8 @@ fun LookAndFeelActivity(
         }
 
     val currentAppLocale = matchLocale(localeMap)
-    var fontSizeState by remember { mutableStateOf(settings.fontSize.toFloat()) }
-    var fontSizeSliderState by remember { mutableStateOf(fontSizeState) }
+    var fontSizeState by remember { mutableFloatStateOf(settings.fontSize.toFloat()) }
+    var fontSizeSliderState by remember { mutableFloatStateOf(fontSizeState) }
     var postViewModeState by remember { mutableStateOf(PostViewMode.entries[settings.postViewMode]) }
     var postNavigationGestureModeState by remember { mutableStateOf(PostNavigationGestureMode.entries[settings.postNavigationGestureMode]) }
     var backConfirmationModeState by remember { mutableStateOf(BackConfirmationMode.entries[settings.backConfirmationMode]) }
