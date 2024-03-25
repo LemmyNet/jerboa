@@ -64,13 +64,13 @@ val SortType.data: SortData
         SortType.TopAll -> SortData(R.string.sorttype_topall, R.string.dialogs_top_all, Icons.Outlined.BarChart)
         SortType.MostComments -> SortData(
             R.string.sorttype_mostcomments,
-            R.string.sorttype_mostcomments,
+            R.string.sorttype_mostcomments_long,
             Icons.Outlined.FormatListNumbered,
         )
 
         SortType.NewComments -> SortData(
             R.string.sorttype_newcomments,
-            R.string.sorttype_newcomments,
+            R.string.sorttype_newcomments_long,
             Icons.Outlined.NewReleases,
         )
 

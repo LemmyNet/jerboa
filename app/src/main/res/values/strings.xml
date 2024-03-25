@@ -274,8 +274,10 @@
     <string name="sorttype_active">Active</string>
     <string name="sorttype_hot">Hot</string>
     <string name="sorttype_mostcomments">MostComments</string>
+    <string name="sorttype_mostcomments_long">Most Comments</string>
     <string name="sorttype_new">New</string>
     <string name="sorttype_newcomments">NewComments</string>
+    <string name="sorttype_newcomments_long">New Comments</string>
     <string name="sorttype_old">Old</string>
     <string name="sorttype_controversial">Controversial</string>
     <string name="sorttype_scaled">Scaled</string>
