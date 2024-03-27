@@ -6,6 +6,8 @@ steps:
     image: tmknom/prettier
     commands:
       - prettier -c "*.md" "*.yml"
+    when:
+      - event: pull_request
 
   check_formatting:
     image: *android_image
@@ -14,6 +16,8 @@ steps:
       - ./gradlew lintKotlin
     environment:
       GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
 
   build_project:
     image: *android_image
@@ -22,6 +26,8 @@ steps:
       - ./gradlew assembleRelease
     environment:
       GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
 
   run_tests:
     image: *android_image
@@ -30,6 +36,8 @@ steps:
       - ./gradlew testDebug
     environment:
       GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
 
   notify:
     image: alpine:3
@@ -37,4 +45,5 @@ steps:
       - apk add curl
       - "curl -d'Jerboa build ${CI_PIPELINE_STATUS}: ${CI_PIPELINE_URL}' ntfy.sh/jerboa_ci"
     when:
-      status: [failure, success]
+      - event: pull_request
+        status: [failure, success]
