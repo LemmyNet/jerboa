@@ -174,7 +174,7 @@ fun PostActivity(
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
-        postViewModel.getData()
+        postViewModel.getComments()
     }
 
     val selectedSortType = postViewModel.sortType
@@ -207,33 +207,33 @@ fun PostActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier =
-            Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .semantics { testTagsAsResourceId = true }
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .focusRequester(focusRequester)
-                .focusable()
-                .onKeyEvent { keyEvent ->
-                    if (navigateParentCommentsWithVolumeButtons) {
-                        when (keyEvent.key) {
-                            Key.VolumeUp -> {
-                                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                                true
-                            }
-
-                            Key.VolumeDown -> {
-                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                                true
-                            }
-
-                            else -> {
-                                false
-                            }
+        Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .focusRequester(focusRequester)
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (navigateParentCommentsWithVolumeButtons) {
+                    when (keyEvent.key) {
+                        Key.VolumeUp -> {
+                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                            true
                         }
-                    } else {
-                        false
+
+                        Key.VolumeDown -> {
+                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+
+                        else -> {
+                            false
+                        }
                     }
-                },
+                } else {
+                    false
+                }
+            },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
