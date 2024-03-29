@@ -127,7 +127,7 @@ fun SettingsForm(
     var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
     }
-    var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
+    var email by rememberSaveable { mutableStateOf(luv?.local_user?.email) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
     val interfaceLang by rememberSaveable {
@@ -205,7 +205,7 @@ fun SettingsForm(
 
         SettingsTextField(
             label = stringResource(R.string.account_settings_email),
-            text = email,
+            text = email ?: "",
             onValueChange = { email = it },
         )
         SettingsTextField(
@@ -318,7 +318,7 @@ fun SettingsForm(
             )
 
             SwitchPreference(
-                enabled = email.isNotEmpty(),
+                enabled = !email.isNullOrEmpty(),
                 state = sendNotificationsToEmailState,
                 title = {
                     Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
