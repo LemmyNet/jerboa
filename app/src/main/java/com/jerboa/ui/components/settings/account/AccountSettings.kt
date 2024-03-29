@@ -127,7 +127,7 @@ fun SettingsForm(
     var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
     }
-    var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
+    var email by rememberSaveable { mutableStateOf(luv?.local_user?.email) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
     val interfaceLang by rememberSaveable {
@@ -140,7 +140,8 @@ fun SettingsForm(
     val defaultSortTypeState = remember { mutableStateOf(defaultSortTypeInitial) }
 
     val supportedListingTypes = remember { getSupportedEntries<ListingType>(API.version) }
-    val defaultListingTypeState = remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
+    val defaultListingTypeState =
+        remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
 
     val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
@@ -148,7 +149,8 @@ fun SettingsForm(
     val showBotAccountState = remember { mutableStateOf(luv?.local_user?.show_bot_accounts ?: false) }
     val botAccountState = remember { mutableStateOf(luv?.person?.bot_account ?: false) }
     val showReadPostsState = remember { mutableStateOf(luv?.local_user?.show_read_posts ?: false) }
-    val sendNotificationsToEmailState = remember { mutableStateOf(luv?.local_user?.send_notifications_to_email ?: false) }
+    val sendNotificationsToEmailState =
+        remember { mutableStateOf(luv?.local_user?.send_notifications_to_email ?: false) }
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
@@ -205,7 +207,7 @@ fun SettingsForm(
 
         SettingsTextField(
             label = stringResource(R.string.account_settings_email),
-            text = email,
+            text = email ?: "",
             onValueChange = { email = it },
         )
         SettingsTextField(
@@ -318,7 +320,7 @@ fun SettingsForm(
             )
 
             SwitchPreference(
-                enabled = email.isNotEmpty(),
+                enabled = !email.isNullOrEmpty(),
                 state = sendNotificationsToEmailState,
                 title = {
                     Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
