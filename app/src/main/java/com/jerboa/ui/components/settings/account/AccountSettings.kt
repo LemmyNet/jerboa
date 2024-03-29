@@ -140,8 +140,7 @@ fun SettingsForm(
     val defaultSortTypeState = remember { mutableStateOf(defaultSortTypeInitial) }
 
     val supportedListingTypes = remember { getSupportedEntries<ListingType>(API.version) }
-    val defaultListingTypeState =
-        remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
+    val defaultListingTypeState = remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
 
     val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
