@@ -148,8 +148,7 @@ fun SettingsForm(
     val showBotAccountState = remember { mutableStateOf(luv?.local_user?.show_bot_accounts ?: false) }
     val botAccountState = remember { mutableStateOf(luv?.person?.bot_account ?: false) }
     val showReadPostsState = remember { mutableStateOf(luv?.local_user?.show_read_posts ?: false) }
-    val sendNotificationsToEmailState =
-        remember { mutableStateOf(luv?.local_user?.send_notifications_to_email ?: false) }
+    val sendNotificationsToEmailState = remember { mutableStateOf(luv?.local_user?.send_notifications_to_email ?: false) }
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
