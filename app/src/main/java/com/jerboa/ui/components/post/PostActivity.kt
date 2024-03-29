@@ -207,33 +207,32 @@ fun PostActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier =
-        Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true }
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .focusRequester(focusRequester)
-            .focusable()
-            .onKeyEvent { keyEvent ->
-                if (navigateParentCommentsWithVolumeButtons) {
-                    when (keyEvent.key) {
-                        Key.VolumeUp -> {
-                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true }
+                .focusRequester(focusRequester)
+                .focusable()
+                .onKeyEvent { keyEvent ->
+                    if (navigateParentCommentsWithVolumeButtons) {
+                        when (keyEvent.key) {
+                            Key.VolumeUp -> {
+                                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        Key.VolumeDown -> {
-                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+                            Key.VolumeDown -> {
+                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        else -> {
-                            false
+                            else -> {
+                                false
+                            }
                         }
+                    } else {
+                        false
                     }
-                } else {
-                    false
-                }
-            },
+                },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
@@ -304,9 +303,7 @@ fun PostActivity(
                         .zIndex(100f),
                 )
                 when (val postRes = postViewModel.postRes) {
-                    is ApiState.Loading ->
-                        LoadingBar(padding)
-
+                    is ApiState.Loading -> LoadingBar(padding)
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
