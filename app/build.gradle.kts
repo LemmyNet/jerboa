@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.23"
 
 }
 
@@ -103,7 +103,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 }
 
@@ -129,7 +129,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
@@ -170,12 +170,12 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.compose.ui:ui:1.6.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.3")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.3")
-    implementation("androidx.compose.material:material-icons-extended:1.6.3")
+    implementation("androidx.compose.ui:ui:1.6.4")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.4")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.4")
+    implementation("androidx.compose.material:material-icons-extended:1.6.4")
 
     implementation("androidx.activity:activity-compose:1.8.2")
     testImplementation("junit:junit:4.13.2")
