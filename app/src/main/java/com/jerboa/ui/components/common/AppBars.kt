@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.VoteDisplayMode
+import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
@@ -63,6 +64,7 @@ import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -811,3 +813,35 @@ fun ActionTopBar(
         },
     )
 }
+
+@Composable
+fun DualHeaderTitle(
+    topText: String,
+    bottomText: String,
+    @SuppressLint("ModifierParameter") topModifier: Modifier = Modifier,
+) {
+    Column {
+        Text(
+            text = topText,
+            maxLines = 1,
+            style = MaterialTheme.typography.titleSmall,
+            modifier = topModifier,
+        )
+        Text(
+            text = bottomText,
+            maxLines = 1,
+            style = MaterialTheme.typography.labelSmall,
+        )
+    }
+}
+
+@Composable
+fun DualHeaderTitle(
+    topText: String,
+    selectedSortType: SortType,
+    @SuppressLint("ModifierParameter") topModifier: Modifier = Modifier,
+) = DualHeaderTitle(
+    topText = topText,
+    bottomText = stringResource(selectedSortType.data.shortForm),
+    topModifier = topModifier,
+)

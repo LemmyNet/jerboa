@@ -2,7 +2,6 @@ package com.jerboa.ui.components.reports
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -31,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.getLocalizedUnreadOrAllName
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDropDown
 import com.jerboa.ui.components.person.PersonProfileLink
@@ -100,16 +100,7 @@ fun ReportsHeaderTitle(
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
-    Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Text(
-            text = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
+    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
 }
 
 @Composable

@@ -695,7 +695,7 @@ fun PostAndCommunityContextHeader(
     ) {
         Text(
             text = post.name,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.clickable { onPostClick(post.id) },
         )
         Row(

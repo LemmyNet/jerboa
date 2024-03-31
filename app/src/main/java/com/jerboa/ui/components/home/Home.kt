@@ -40,8 +40,8 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.datatypes.data
 import com.jerboa.datatypes.getLocalizedListingTypeName
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SortOptionsDropdown
@@ -50,24 +50,6 @@ import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import me.saket.cascade.CascadeDropdownMenu
-
-@Composable
-fun HomeHeaderTitle(
-    selectedSortType: SortType,
-    selectedListingType: ListingType,
-) {
-    val ctx = LocalContext.current
-    Column {
-        Text(
-            text = getLocalizedListingTypeName(ctx, selectedListingType),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Text(
-            text = ctx.getString(selectedSortType.data.shortForm),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,6 +65,7 @@ fun HomeHeader(
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+    val ctx = LocalContext.current
     var showSortOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -90,9 +73,9 @@ fun HomeHeader(
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
-            HomeHeaderTitle(
+            DualHeaderTitle(
                 selectedSortType = selectedSortType,
-                selectedListingType = selectedListingType,
+                topText = getLocalizedListingTypeName(ctx, selectedListingType),
             )
         },
         navigationIcon = {
