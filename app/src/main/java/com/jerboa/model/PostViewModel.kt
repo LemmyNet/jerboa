@@ -21,7 +21,28 @@ import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
 import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetComments
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommentsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6L
@@ -59,36 +80,41 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     }
 
     fun getData(state: ApiState<GetPostResponse> = ApiState.Loading) {
+        val postForm =
+            id.fold({
+                GetPost(id = it)
+            }, {
+                GetPost(comment_id = it)
+            })
+
+        postRes = state
         viewModelScope.launch {
-            // Set the commentId for the right case
-            val postForm =
-                id.fold({
-                    GetPost(id = it)
-                }, {
-                    GetPost(comment_id = it)
-                })
-
-            postRes = state
             postRes = API.getInstance().getPost(postForm).toApiState()
+        }
 
-            val commentsForm =
-                id.fold({
-                    GetComments(
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        post_id = it,
-                        sort = sortType,
-                    )
-                }, {
-                    GetComments(
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        parent_id = it,
-                        sort = sortType,
-                    )
-                })
+        getComments()
+    }
 
-            commentsRes = ApiState.Loading
+    fun getComments() {
+        val commentsForm =
+            id.fold({
+                GetComments(
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    post_id = it,
+                    sort = sortType,
+                )
+            }, {
+                GetComments(
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    parent_id = it,
+                    sort = sortType,
+                )
+            })
+
+        commentsRes = ApiState.Loading
+        viewModelScope.launch {
             commentsRes = API.getInstance().getComments(commentsForm).toApiState()
         }
     }

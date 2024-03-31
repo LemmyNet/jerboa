@@ -1,5 +1,6 @@
 package com.jerboa.feat
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Bookmark
@@ -71,7 +72,7 @@ data class ActionColor(
 enum class SwipeToActionPreset(
     val leftActions: List<SwipeToActionType>,
     val rightActions: List<SwipeToActionType>,
-    val resId: Int,
+    @StringRes val resId: Int,
 ) {
     Disabled(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
     TwoSides(

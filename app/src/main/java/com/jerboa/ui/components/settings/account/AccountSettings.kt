@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,17 +29,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
-import com.alorma.compose.settings.storage.base.rememberIntSettingState
-import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.data
+import com.jerboa.datatypes.getLocalizedListingTypeName
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.SiteViewModel
@@ -49,13 +46,16 @@ import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.getSupportedEntries
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
+import me.zhanghai.compose.preference.ListPreference
+import me.zhanghai.compose.preference.ListPreferenceType
+import me.zhanghai.compose.preference.ProvidePreferenceTheme
+import me.zhanghai.compose.preference.SwitchPreference
 
 @Composable
 fun SettingsTextField(
@@ -127,7 +127,7 @@ fun SettingsForm(
     var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
     }
-    var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
+    var email by rememberSaveable { mutableStateOf(luv?.local_user?.email) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
     val interfaceLang by rememberSaveable {
@@ -137,20 +137,18 @@ fun SettingsForm(
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
     val supportedSortTypes = remember { getSupportedEntries<SortType>(API.version) }
     val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
-    val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
-    val defaultListingType =
-        rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
-    val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
-    val showNsfw = rememberBooleanSettingState(luv?.local_user?.show_nsfw ?: false)
-    val showScores = rememberBooleanSettingState(luv?.local_user?.show_scores ?: false)
-    val showBotAccount = rememberBooleanSettingState(luv?.local_user?.show_bot_accounts ?: false)
-    val botAccount = rememberBooleanSettingState(luv?.person?.bot_account ?: false)
-    val showReadPosts = rememberBooleanSettingState(luv?.local_user?.show_read_posts ?: false)
-    val sendNotificationsToEmail =
-        rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
-    val curr2FAEnabled = luv?.local_user?.totp_2fa_enabled ?: false
-    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
-    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.data.shortForm) } }
+    val defaultSortTypeState = remember { mutableStateOf(defaultSortTypeInitial) }
+
+    val supportedListingTypes = remember { getSupportedEntries<ListingType>(API.version) }
+    val defaultListingTypeState = remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
+
+    val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
+    val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
+    val showScoresState = remember { mutableStateOf(luv?.local_user?.show_scores ?: false) }
+    val showBotAccountState = remember { mutableStateOf(luv?.local_user?.show_bot_accounts ?: false) }
+    val botAccountState = remember { mutableStateOf(luv?.person?.bot_account ?: false) }
+    val showReadPostsState = remember { mutableStateOf(luv?.local_user?.show_read_posts ?: false) }
+    val sendNotificationsToEmailState = remember { mutableStateOf(luv?.local_user?.send_notifications_to_email ?: false) }
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(
@@ -161,16 +159,16 @@ fun SettingsForm(
             banner = banner,
             matrix_user_id = matrixUserId,
             interface_language = interfaceLang,
-            bot_account = botAccount.value,
-            default_sort_type = supportedSortTypes[defaultSortType.value],
-            send_notifications_to_email = sendNotificationsToEmail.value,
-            show_avatars = showAvatars.value,
-            show_bot_accounts = showBotAccount.value,
-            show_nsfw = showNsfw.value,
-            default_listing_type = ListingType.entries[defaultListingType.value],
-            show_read_posts = showReadPosts.value,
+            bot_account = botAccountState.value,
+            default_sort_type = supportedSortTypes[defaultSortTypeState.value.ordinal],
+            send_notifications_to_email = sendNotificationsToEmailState.value,
+            show_avatars = showAvatarsState.value,
+            show_bot_accounts = showBotAccountState.value,
+            show_nsfw = showNsfwState.value,
+            default_listing_type = supportedListingTypes[defaultListingTypeState.value.ordinal],
+            show_read_posts = showReadPostsState.value,
             theme = theme,
-            show_scores = showScores.value,
+            show_scores = showScoresState.value,
             discussion_languages = null,
         )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
@@ -207,7 +205,7 @@ fun SettingsForm(
 
         SettingsTextField(
             label = stringResource(R.string.account_settings_email),
-            text = email,
+            text = email ?: "",
             onValueChange = { email = it },
         )
         SettingsTextField(
@@ -255,97 +253,77 @@ fun SettingsForm(
                 )
             }
         }
-        SettingsListDropdown(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = defaultListingType,
-            title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
-            items =
-                listOf(
-                    stringResource(R.string.account_settings_all),
-                    stringResource(R.string.account_settings_local),
-                    stringResource(R.string.account_settings_subscribed),
-                ),
-        )
-        SettingsListDropdown(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = defaultSortType,
-            title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
-            items = sortTypeNames,
-        )
+        ProvidePreferenceTheme {
+            ListPreference(
+                type = ListPreferenceType.DROPDOWN_MENU,
+                state = defaultListingTypeState,
+                values = supportedListingTypes,
+                valueToText = {
+                    AnnotatedString(getLocalizedListingTypeName(ctx, it))
+                },
+                title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
+                summary = {
+                    Text(getLocalizedListingTypeName(ctx, defaultListingTypeState.value))
+                },
+            )
 
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = showNsfw,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_nsfw))
-            },
-        )
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = showAvatars,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_avatars))
-            },
-        )
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = showReadPosts,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_read_posts))
-            },
-        )
+            ListPreference(
+                type = ListPreferenceType.DROPDOWN_MENU,
+                state = defaultSortTypeState,
+                values = supportedSortTypes,
+                valueToText = {
+                    AnnotatedString(ctx.getString(it.data.longForm))
+                },
+                title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
+                summary = {
+                    Text(ctx.getString(defaultSortTypeState.value.data.longForm))
+                },
+            )
 
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = botAccount,
-            title = {
-                Text(text = stringResource(R.string.account_settings_bot_account))
-            },
-        )
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = showBotAccount,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_bot_accounts))
-            },
-        )
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            state = showScores,
-            title = {
-                Text(text = stringResource(R.string.account_settings_show_scores))
-            },
-        )
-        SettingsCheckbox(
-            modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-            enabled = email.isNotEmpty(),
-            state = sendNotificationsToEmail,
-            title = {
-                Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
-            },
-        )
-        // TODO
-//        SettingsCheckbox(
-//            title = {
-//                Text(text = stringResource(R.string.settings_enable_2fa))
-//            },
-//            state = enable2FA,
-//        )
-//
-//        if (curr2FAEnabled) {
-//            Row(
-//                horizontalArrangement = Arrangement.Center,
-//                modifier = Modifier.fillMaxWidth(),
-//            ) {
-//                OutlinedButton(
-//                    onClick = {
-//                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
-//                        ctx.startActivitySafe(intent)
-//                    },
-//                ) {
-//                    Text(stringResource(R.string.settings_2fa_link))
-//                }
-//            }
-//        }
+            SwitchPreference(
+                state = showNsfwState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_show_nsfw))
+                },
+            )
+            SwitchPreference(
+                state = showAvatarsState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_show_avatars))
+                },
+            )
+            SwitchPreference(
+                state = showReadPostsState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_show_read_posts))
+                },
+            )
+            SwitchPreference(
+                state = botAccountState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_bot_account))
+                },
+            )
+            SwitchPreference(
+                state = showBotAccountState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_show_bot_accounts))
+                },
+            )
+            SwitchPreference(
+                state = showScoresState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_show_scores))
+                },
+            )
+
+            SwitchPreference(
+                enabled = !email.isNullOrEmpty(),
+                state = sendNotificationsToEmailState,
+                title = {
+                    Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
+                },
+            )
+        }
     }
 }

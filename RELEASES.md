@@ -1,7 +1,19 @@
+# Jerboa 0.0.64 (2024-03-27)
+
+## What's Changed in 0.0.64
+
+- Fixing woodpecker. by @dessalines in [#1460](https://github.com/dessalines/jerboa/pull/1460)
+- Moving to a new preferences library. by @dessalines in [#1451](https://github.com/dessalines/jerboa/pull/1451)
+- Subscriptions list ignores case when sorting by @MV-GH in [#1457](https://github.com/dessalines/jerboa/pull/1457)
+- Add community mods and admins to sidebars. Fixes #1343 by @dessalines in [#1450](https://github.com/dessalines/jerboa/pull/1450)
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.63...0.0.64
+
 # Jerboa 0.0.63 (2024-03-11)
 
 ## What's Changed in 0.0.63
 
+- Upping version. by @dessalines
 - Correcting a few wrong defaults. by @dessalines in [#1448](https://github.com/dessalines/jerboa/pull/1448)
 - Fix migrations 1 by @dessalines in [#1446](https://github.com/dessalines/jerboa/pull/1446)
 - Fix Strikethrough rendering by @MV-GH in [#1445](https://github.com/dessalines/jerboa/pull/1445)

@@ -4,7 +4,6 @@ package com.jerboa.ui.components.settings
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -19,14 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.theme.SETTINGS_MENU_LINK_HEIGHT
+import me.zhanghai.compose.preference.Preference
+import me.zhanghai.compose.preference.ProvidePreferenceTheme
 
 @Composable
 fun SettingsActivity(
@@ -48,48 +47,48 @@ fun SettingsActivity(
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
-                SettingsMenuLink(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Palette,
-                            contentDescription = null,
-                        )
-                    },
-                    onClick = onClickLookAndFeel,
-                )
-                if (!account.isAnon()) {
-                    SettingsMenuLink(
-                        modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                        title = {
-                            Text(
-                                stringResource(
-                                    R.string.settings_activity_account_settings,
-                                    account.name,
-                                ),
-                            )
-                        },
+                ProvidePreferenceTheme {
+                    Preference(
+                        title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
                         icon = {
                             Icon(
-                                imageVector = Icons.Outlined.ManageAccounts,
+                                imageVector = Icons.Outlined.Palette,
                                 contentDescription = null,
                             )
                         },
-                        onClick = onClickAccountSettings,
+                        onClick = onClickLookAndFeel,
+                    )
+
+                    if (!account.isAnon()) {
+                        Preference(
+                            title = {
+                                Text(
+                                    stringResource(
+                                        R.string.settings_activity_account_settings,
+                                        account.name,
+                                    ),
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.ManageAccounts,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = onClickAccountSettings,
+                        )
+                    }
+                    Preference(
+                        title = { Text(stringResource(R.string.settings_activity_about)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = onClickAbout,
                     )
                 }
-                SettingsMenuLink(
-                    modifier = Modifier.height(SETTINGS_MENU_LINK_HEIGHT),
-                    title = { Text(stringResource(R.string.settings_activity_about)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = null,
-                        )
-                    },
-                    onClick = onClickAbout,
-                )
             }
         },
     )

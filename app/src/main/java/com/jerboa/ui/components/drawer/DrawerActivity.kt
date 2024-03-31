@@ -4,8 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
@@ -18,7 +16,6 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import kotlinx.coroutines.CoroutineScope
 
@@ -39,8 +36,6 @@ fun MainDrawer(
 ) {
     val account = getCurrentAccount(accountViewModel)
 
-    var follows by remember { mutableStateOf(listOf<CommunityFollowerView>()) }
-
     BackHandler(drawerState.isOpen) {
         closeDrawer(scope, drawerState)
     }
@@ -53,7 +48,6 @@ fun MainDrawer(
                     if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
                         accountViewModel.invalidateAccount(account)
                     }
-                    follows = res.data.my_user?.follows?.sortedBy { it.community.title }.orEmpty()
                     res.data.my_user
                 }
                 is ApiState.Failure -> {
@@ -66,7 +60,12 @@ fun MainDrawer(
                 }
                 else -> null
             },
-        follows = follows.toList(),
+        follows = when (val res = siteViewModel.siteRes) {
+            is ApiState.Success -> {
+                res.data.my_user?.follows?.sortedBy { it.community.title.lowercase() }.orEmpty()
+            }
+            else -> emptyList()
+        },
         unreadCount = siteViewModel.unreadCount,
         unreadAppCount = siteViewModel.unreadAppCount,
         unreadReportCount = siteViewModel.unreadReportCount,

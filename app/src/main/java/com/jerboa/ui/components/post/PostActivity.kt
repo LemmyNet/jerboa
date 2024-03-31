@@ -174,7 +174,7 @@ fun PostActivity(
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
-        postViewModel.getData()
+        postViewModel.getComments()
     }
 
     val selectedSortType = postViewModel.sortType
@@ -210,7 +210,6 @@ fun PostActivity(
             Modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .semantics { testTagsAsResourceId = true }
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .focusRequester(focusRequester)
                 .focusable()
                 .onKeyEvent { keyEvent ->
@@ -304,9 +303,7 @@ fun PostActivity(
                         .zIndex(100f),
                 )
                 when (val postRes = postViewModel.postRes) {
-                    is ApiState.Loading ->
-                        LoadingBar(padding)
-
+                    is ApiState.Loading -> LoadingBar(padding)
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view

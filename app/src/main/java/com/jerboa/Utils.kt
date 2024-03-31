@@ -26,6 +26,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.lazy.LazyListState
@@ -734,7 +735,9 @@ fun Context.findActivity(): Activity? =
         else -> null
     }
 
-enum class ThemeMode(val mode: Int) {
+enum class ThemeMode(
+    @StringRes val resId: Int,
+) {
     System(R.string.look_and_feel_theme_system),
     SystemBlack(R.string.look_and_feel_theme_system_black),
     Light(R.string.look_and_feel_theme_light),
@@ -742,7 +745,9 @@ enum class ThemeMode(val mode: Int) {
     Black(R.string.look_and_feel_theme_black),
 }
 
-enum class ThemeColor(val mode: Int) {
+enum class ThemeColor(
+    @StringRes val resId: Int,
+) {
     Dynamic(R.string.look_and_feel_theme_color_dynamic),
     Beach(R.string.look_and_feel_theme_color_beach),
     Blue(R.string.look_and_feel_theme_color_blue),
@@ -755,7 +760,9 @@ enum class ThemeColor(val mode: Int) {
     Dracula(R.string.look_and_feel_theme_color_dracula),
 }
 
-enum class PostViewMode(val mode: Int) {
+enum class PostViewMode(
+    @StringRes val resId: Int,
+) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
      * link posts, the thumbnail is shown to the right of the title.
