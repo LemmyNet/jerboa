@@ -238,7 +238,7 @@ fun PostHeaderLine(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PostHeaderLinePreview() {
     val postView = sampleLinkPostView
@@ -511,7 +511,7 @@ fun PostBody(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
@@ -529,7 +529,7 @@ fun PreviewStoryTitleAndMetadata() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSourcePost() {
     PostBody(
@@ -786,13 +786,13 @@ fun CommentNewCount(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun CommentCountPreview() {
     CommentNewCountRework(42, 0, account = AnonAccount)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PostFooterLinePreview() {
     val postView = samplePostView
@@ -833,7 +833,7 @@ fun PostFooterLinePreview() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewPostListingCard() {
     PostListing(
@@ -874,7 +874,7 @@ fun PreviewPostListingCard() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewLinkPostListing() {
     PostListing(
@@ -915,7 +915,7 @@ fun PreviewLinkPostListing() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewImagePostListingCard() {
     PostListing(
@@ -956,7 +956,7 @@ fun PreviewImagePostListingCard() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewImagePostListingSmallCard() {
     PostListing(
@@ -997,7 +997,7 @@ fun PreviewImagePostListingSmallCard() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
@@ -1540,7 +1540,7 @@ private fun ThumbnailTile(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PostListingListPreview() {
     val postView = samplePostView
@@ -1569,7 +1569,7 @@ fun PostListingListPreview() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PostListingListWithThumbPreview() {
     val postView = sampleImagePostView
@@ -1716,7 +1716,7 @@ fun PostListingCard(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PostListingHeaderPreview() {
     SimpleTopAppBar("Post", onClickBack = {})

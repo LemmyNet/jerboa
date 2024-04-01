@@ -252,7 +252,7 @@ object MarkdownHelper {
                 )
             },
             update = { textView ->
-                previewMarkwon!!.setMarkdown(textView, markdown)
+                previewMarkwon?.setMarkdown(textView, markdown)
             },
             modifier = modifier,
         )
