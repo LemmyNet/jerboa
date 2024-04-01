@@ -479,9 +479,9 @@ fun PostBody(
                 colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier =
-                    Modifier
-                        .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                        .fillMaxWidth(),
+                Modifier
+                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .fillMaxWidth(),
                 content = {
                     if (fullBody) {
                         Column(
@@ -649,9 +649,9 @@ fun PostFooterLine(
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = Alignment.Bottom,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(bottom = SMALL_PADDING),
+        modifier
+            .fillMaxWidth()
+            .padding(bottom = SMALL_PADDING),
     ) {
         // Right handside shows the comments on the left side
         if (postActionBarMode == PostActionBarMode.RightHandShort) {
@@ -1250,6 +1250,7 @@ fun PostListing(
                         },
                         onPostClick = onPostClick,
                         showCommunityName = showCommunityName,
+                        onCommunityClick = onCommunityClick,
                         account = account,
                         showVotingArrowsInListView = showVotingArrowsInListView,
                         useCustomTabs = useCustomTabs,
@@ -1336,6 +1337,7 @@ fun PostListingList(
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onPostClick: (postView: PostView) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     showCommunityName: Boolean = true,
     account: Account,
     showVotingArrowsInListView: Boolean,
@@ -1359,6 +1361,7 @@ fun PostListingList(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
+            val centerMod = Modifier.align(Alignment.CenterVertically)
             if (showVotingArrowsInListView) {
                 PostVotingTile(
                     instantScores = instantScores,
@@ -1375,18 +1378,19 @@ fun PostListingList(
                     .clickable { onPostClick(postView) },
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
                 ) {
                     if (showCommunityName) {
-                        postView.community.icon?.let { icon ->
+                        val community = postView.community
+                        community.icon?.let { icon ->
                             CircularIcon(
                                 icon = icon,
                                 contentDescription = stringResource(R.string.postListing_goToCommunity),
                                 size = SMALL_ICON_SIZE,
-                                modifier = Modifier.clickable { },
+                                modifier = Modifier.clickable { onCommunityClick(community) },
                                 thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                                blur = blurNSFW.needBlur(false, false),
+                                blur = blurNSFW.needBlur(community.nsfw),
                             )
                         }
                         CommunityLink(
@@ -1396,16 +1400,20 @@ fun PostListingList(
                             showDefaultIcon = false,
                             showAvatar = false,
                             blurNSFW = blurNSFW,
-                            modifier = Modifier.align(Alignment.CenterVertically),
+                            modifier = centerMod,
                         )
                     }
+                    TimeAgo(
+                        published = postView.post.published,
+                        updated = postView.post.updated,
+                        modifier = centerMod,
+                    )
                 }
                 PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
                 ) {
                     // You must use a center align modifier for each of these
-                    val centerMod = Modifier.align(Alignment.CenterVertically)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
                             val hostName = hostName(postUrl)
@@ -1416,15 +1424,9 @@ fun PostListingList(
                                     style = MaterialTheme.typography.bodyMedium,
                                     modifier = centerMod,
                                 )
-                                DotSpacer(modifier = centerMod)
                             }
                         }
                     }
-                    TimeAgo(
-                        published = postView.post.published,
-                        updated = postView.post.updated,
-                        modifier = centerMod,
-                    )
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING),
@@ -1535,9 +1537,9 @@ private fun ThumbnailTile(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
                     modifier =
-                        Modifier
-                            .size(THUMBNAIL_CARET_SIZE)
-                            .align(Alignment.BottomEnd),
+                    Modifier
+                        .size(THUMBNAIL_CARET_SIZE)
+                        .align(Alignment.BottomEnd),
                     tint =
                         when (postType) {
                             PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
@@ -1575,6 +1577,7 @@ fun PostListingListPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = VoteDisplayMode.Full,
+        onCommunityClick = {}
     )
 }
 
@@ -1604,6 +1607,7 @@ fun PostListingListWithThumbPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = VoteDisplayMode.Full,
+        onCommunityClick = {}
     )
 }
 
@@ -1737,9 +1741,9 @@ fun MetadataCard(post: Post) {
         OutlinedCard(
             shape = MaterialTheme.shapes.medium,
             modifier =
-                Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                    .fillMaxWidth(),
+            Modifier
+                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                .fillMaxWidth(),
             content = {
                 Column(
                     modifier = Modifier.padding(MEDIUM_PADDING),
