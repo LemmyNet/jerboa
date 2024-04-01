@@ -118,12 +118,19 @@ import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALLER_PADDING
+import com.jerboa.ui.theme.SMALL_ICON_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -1283,10 +1290,9 @@ fun PostVotingTile(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        modifier =
-            Modifier
-                .fillMaxHeight()
-                .padding(end = MEDIUM_PADDING),
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(end = MEDIUM_PADDING),
     ) {
         VoteGeneric(
             myVote = instantScores.myVote,
@@ -1342,20 +1348,16 @@ fun PostListingList(
     voteDisplayMode: VoteDisplayMode,
 ) {
     Column(
-        modifier =
-            Modifier
-                .padding(
-                    horizontal = MEDIUM_PADDING,
-                    vertical = MEDIUM_PADDING,
-                )
-                .testTag("jerboa:post"),
+        modifier = Modifier
+            .padding(
+                horizontal = MEDIUM_PADDING,
+                vertical = MEDIUM_PADDING,
+            )
+            .testTag("jerboa:post"),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement =
-                Arrangement.spacedBy(
-                    SMALL_PADDING,
-                ),
+            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
             if (showVotingArrowsInListView) {
                 PostVotingTile(
@@ -1368,19 +1370,25 @@ fun PostListingList(
                 )
             }
             Column(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .clickable { onPostClick(postView) },
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { onPostClick(postView) },
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                PostName(postView = postView, showIfRead = showIfRead)
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
                 ) {
-                    // You must use a center align modifier for each of these
-                    val centerMod = Modifier.align(Alignment.CenterVertically)
                     if (showCommunityName) {
+                        postView.community.icon?.let { icon ->
+                            CircularIcon(
+                                icon = icon,
+                                contentDescription = stringResource(R.string.postListing_goToCommunity),
+                                size = SMALL_ICON_SIZE,
+                                modifier = Modifier.clickable { },
+                                thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
+                                blur = blurNSFW.needBlur(false, false),
+                            )
+                        }
                         CommunityLink(
                             community = postView.community,
                             onClick = {},
@@ -1388,19 +1396,16 @@ fun PostListingList(
                             showDefaultIcon = false,
                             showAvatar = false,
                             blurNSFW = blurNSFW,
-                            modifier = centerMod,
+                            modifier = Modifier.align(Alignment.CenterVertically),
                         )
-                        DotSpacer(modifier = centerMod)
                     }
-                    PersonProfileLink(
-                        person = postView.creator,
-                        onClick = {},
-                        clickable = false,
-                        color = MaterialTheme.colorScheme.onSurface.muted,
-                        showAvatar = false,
-                        modifier = centerMod,
-                    )
-                    DotSpacer(modifier = centerMod)
+                }
+                PostName(postView = postView, showIfRead = showIfRead)
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
+                ) {
+                    // You must use a center align modifier for each of these
+                    val centerMod = Modifier.align(Alignment.CenterVertically)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
                             val hostName = hostName(postUrl)
@@ -1434,11 +1439,10 @@ fun PostListingList(
                         DotSpacer()
                     }
                     Text(
-                        text =
-                            stringResource(
-                                R.string.post_listing_comments_count,
-                                postView.counts.comments,
-                            ),
+                        text = stringResource(
+                            R.string.post_listing_comments_count,
+                            postView.counts.comments,
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.muted,
                     )
@@ -1450,13 +1454,18 @@ fun PostListingList(
                     NsfwBadge(nsfwCheck(postView))
                 }
             }
-            ThumbnailTile(
-                postView = postView,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                appState = appState,
-            )
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically),
+            ) {
+                ThumbnailTile(
+                    postView = postView,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
+                    appState = appState,
+                )
+            }
         }
     }
 }
@@ -1639,11 +1648,10 @@ fun PostListingCard(
     postActionBarMode: PostActionBarMode,
 ) {
     Column(
-        modifier =
-            Modifier
-                .padding(vertical = MEDIUM_PADDING)
-                .clickable { onPostClick(postView) }
-                .testTag("jerboa:post"),
+        modifier = Modifier
+            .padding(vertical = MEDIUM_PADDING)
+            .clickable { onPostClick(postView) }
+            .testTag("jerboa:post"),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
