@@ -479,9 +479,9 @@ fun PostBody(
                 colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier =
-                Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                    .fillMaxWidth(),
+                    Modifier
+                        .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                        .fillMaxWidth(),
                 content = {
                     if (fullBody) {
                         Column(
@@ -649,9 +649,9 @@ fun PostFooterLine(
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = Alignment.Bottom,
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(bottom = SMALL_PADDING),
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = SMALL_PADDING),
     ) {
         // Right handside shows the comments on the left side
         if (postActionBarMode == PostActionBarMode.RightHandShort) {
@@ -1537,9 +1537,9 @@ private fun ThumbnailTile(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
                     modifier =
-                    Modifier
-                        .size(THUMBNAIL_CARET_SIZE)
-                        .align(Alignment.BottomEnd),
+                        Modifier
+                            .size(THUMBNAIL_CARET_SIZE)
+                            .align(Alignment.BottomEnd),
                     tint =
                         when (postType) {
                             PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
@@ -1577,7 +1577,7 @@ fun PostListingListPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = VoteDisplayMode.Full,
-        onCommunityClick = {}
+        onCommunityClick = {},
     )
 }
 
@@ -1607,7 +1607,7 @@ fun PostListingListWithThumbPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = VoteDisplayMode.Full,
-        onCommunityClick = {}
+        onCommunityClick = {},
     )
 }
 
@@ -1741,9 +1741,9 @@ fun MetadataCard(post: Post) {
         OutlinedCard(
             shape = MaterialTheme.shapes.medium,
             modifier =
-            Modifier
-                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                .fillMaxWidth(),
+                Modifier
+                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .fillMaxWidth(),
             content = {
                 Column(
                     modifier = Modifier.padding(MEDIUM_PADDING),
