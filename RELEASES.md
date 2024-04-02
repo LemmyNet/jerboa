@@ -1,7 +1,24 @@
+# Jerboa 0.0.65 (2024-04-02)
+
+## What's Changed in 0.0.65
+
+- Fixing a few other top app bar title sizes. by @dessalines in [#1466](https://github.com/dessalines/jerboa/pull/1466)
+- Rework fontsize, better defaults by @MV-GH in [#1452](https://github.com/dessalines/jerboa/pull/1452)
+- Upgrading deps. by @dessalines in [#1464](https://github.com/dessalines/jerboa/pull/1464)
+- Fix email required error when saving user settings when no email set on email required instance by @MV-GH in [#1463](https://github.com/dessalines/jerboa/pull/1463)
+- Prevents posts from reloading when changing the comments sorting by @rodrigo-fm in [#1462](https://github.com/dessalines/jerboa/pull/1462)
+
+## New Contributors
+
+- @rodrigo-fm made their first contribution in [#1462](https://github.com/dessalines/jerboa/pull/1462)
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.64...0.0.65
+
 # Jerboa 0.0.64 (2024-03-27)
 
 ## What's Changed in 0.0.64
 
+- Upping version. by @dessalines
 - Fixing woodpecker. by @dessalines in [#1460](https://github.com/dessalines/jerboa/pull/1460)
 - Moving to a new preferences library. by @dessalines in [#1451](https://github.com/dessalines/jerboa/pull/1451)
 - Subscriptions list ignores case when sorting by @MV-GH in [#1457](https://github.com/dessalines/jerboa/pull/1457)
