@@ -84,6 +84,7 @@ fun SimpleTopAppBar(
         title = {
             Text(
                 text = text,
+                style = MaterialTheme.typography.titleSmall,
                 maxLines = 1,
                 modifier = Modifier.customMarquee(),
             )
@@ -782,6 +783,7 @@ fun ActionTopBar(
         title = {
             Text(
                 text = title,
+                style = MaterialTheme.typography.titleSmall,
             )
         },
         actions = {

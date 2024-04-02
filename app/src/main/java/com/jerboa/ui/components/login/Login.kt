@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
@@ -29,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -266,35 +264,5 @@ fun LoginForm(
 fun LoginFormPreview() {
     LoginForm(
         onClickLogin = { _: Login, _: String -> },
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoginHeader(onClickBack: () -> Unit) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.login_login),
-            )
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onClickBack,
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.topAppBar_back),
-                )
-            }
-        },
-    )
-}
-
-@Preview
-@Composable
-fun LoginHeaderPreview() {
-    LoginHeader(
-        onClickBack = {},
     )
 }
