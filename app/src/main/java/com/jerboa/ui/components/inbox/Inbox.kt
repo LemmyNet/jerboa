@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.inbox
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.FilterList
@@ -9,8 +8,6 @@ import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -23,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.getLocalizedUnreadOrAllName
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDropDown
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,19 +88,11 @@ fun InboxHeaderTitle(
     selectedUnreadOrAll: UnreadOrAll,
     unreadCount: Long? = null,
 ) {
-    var title = stringResource(R.string.inbox_inbox)
     val ctx = LocalContext.current
+    var title = stringResource(R.string.inbox_inbox)
+
     if (unreadCount != null && unreadCount > 0) {
-        title = "$title ($unreadCount)"
+        title += " ($unreadCount)"
     }
-    Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Text(
-            text = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
+    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
 }

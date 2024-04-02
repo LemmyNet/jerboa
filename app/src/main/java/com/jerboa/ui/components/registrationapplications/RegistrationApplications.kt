@@ -64,6 +64,7 @@ import com.jerboa.model.RegistrationApplicationsViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.MarkdownTextField
@@ -143,16 +144,7 @@ fun RegistrationApplicationsHeaderTitle(
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
-    Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Text(
-            text = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
+    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
 }
 
 @OptIn(ExperimentalMaterialApi::class)

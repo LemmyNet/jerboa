@@ -41,10 +41,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.feat.openMatrix
 import com.jerboa.ui.components.common.DotSpacer
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
@@ -103,7 +103,7 @@ fun PersonProfileTopSection(
         ) {
             PersonName(
                 person = personView.person,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
             )
 
             TimeAgo(
@@ -181,8 +181,8 @@ fun PersonProfileHeader(
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
-            PersonProfileHeaderTitle(
-                personName = personName,
+            DualHeaderTitle(
+                topText = personName,
                 selectedSortType = selectedSortType,
             )
         },
@@ -268,23 +268,6 @@ fun PersonProfileHeader(
             }
         },
     )
-}
-
-@Composable
-fun PersonProfileHeaderTitle(
-    personName: String,
-    selectedSortType: SortType,
-) {
-    Column {
-        Text(
-            text = personName,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Text(
-            text = LocalContext.current.getString(selectedSortType.data.shortForm),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
 }
 
 @Composable

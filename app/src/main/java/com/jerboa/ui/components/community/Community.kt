@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.community
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,16 +39,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.datatypes.data
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.needBlur
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDropdown
@@ -100,7 +98,7 @@ fun CommunityTopSection(
             ) {
                 Text(
                     text = communityView.community.title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
@@ -185,9 +183,10 @@ fun CommunityHeader(
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
-            CommunityHeaderTitle(
-                communityName = communityName,
+            DualHeaderTitle(
+                topText = communityName,
                 selectedSortType = selectedSortType,
+                topModifier = Modifier.customMarquee(),
             )
         },
         navigationIcon = {
@@ -243,27 +242,6 @@ fun CommunityHeader(
             }
         },
     )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun CommunityHeaderTitle(
-    communityName: String,
-    selectedSortType: SortType,
-) {
-    val ctx = LocalContext.current
-    Column {
-        Text(
-            text = communityName,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            modifier = Modifier.customMarquee(),
-        )
-        Text(
-            text = ctx.getString(selectedSortType.data.shortForm),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
 }
 
 @Composable

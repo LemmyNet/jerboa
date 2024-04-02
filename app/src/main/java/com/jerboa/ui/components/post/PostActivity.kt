@@ -20,10 +20,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -83,6 +81,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDropdown
+import com.jerboa.ui.components.common.DualHeaderTitle
 import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
@@ -113,21 +112,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
-}
-
-@Composable
-fun CommentsHeaderTitle(selectedSortType: CommentSortType) {
-    val ctx = LocalContext.current
-    Column {
-        Text(
-            text = stringResource(R.string.post_activity_comments),
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Text(
-            text = getLocalizedCommentSortTypeName(ctx, selectedSortType),
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }
 }
 
 @OptIn(
@@ -246,8 +230,9 @@ fun PostActivity(
             Column {
                 TopAppBar(
                     title = {
-                        CommentsHeaderTitle(
-                            selectedSortType = selectedSortType,
+                        DualHeaderTitle(
+                            topText = stringResource(R.string.post_activity_comments),
+                            bottomText = getLocalizedCommentSortTypeName(ctx, selectedSortType),
                         )
                     },
                     navigationIcon = {
