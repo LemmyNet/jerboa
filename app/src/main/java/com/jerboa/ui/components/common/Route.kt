@@ -50,6 +50,7 @@ object Route {
     val POST_LIKES = PostLikesArgs.route
 
     const val SETTINGS = "settings"
+    const val BLOCKS = "blocks"
     const val LOOK_AND_FEEL = "lookAndFeel"
     const val ACCOUNT_SETTINGS = "accountSettings"
     const val ABOUT = "about"

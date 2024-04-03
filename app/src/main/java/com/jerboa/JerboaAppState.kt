@@ -102,6 +102,8 @@ class JerboaAppState(
 
     fun toSettings() = navController.navigate(Route.SETTINGS)
 
+    fun toBlocks() = navController.navigate(Route.BLOCKS)
+
     fun toAccountSettings() = navController.navigate(Route.ACCOUNT_SETTINGS)
 
     fun toLookAndFeel() = navController.navigate(Route.LOOK_AND_FEEL)

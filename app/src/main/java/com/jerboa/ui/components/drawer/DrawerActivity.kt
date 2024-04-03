@@ -27,6 +27,7 @@ fun MainDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
     onSettingsClick: () -> Unit,
+    onBlockClick: () -> Unit,
     onCommunityClick: (CommunityId) -> Unit,
     onClickLogin: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -103,6 +104,10 @@ fun MainDrawer(
         },
         onClickSettings = {
             onSettingsClick()
+            closeDrawer(scope, drawerState)
+        },
+        onClickBlocks = {
+            onBlockClick()
             closeDrawer(scope, drawerState)
         },
         blurNSFW = blurNSFW,

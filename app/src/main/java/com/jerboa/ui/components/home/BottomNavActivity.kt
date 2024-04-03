@@ -213,6 +213,7 @@ fun BottomNavActivity(
                         showBottomNav = appSettings.showBottomNav,
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
+                        onBlockClick = appState::toBlocks,
                         onClickLogin = appState::toLogin,
                         userViewType = account.userViewType(),
                     )

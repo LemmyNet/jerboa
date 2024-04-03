@@ -42,6 +42,7 @@ import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.ban.BanFromCommunityActivity
 import com.jerboa.ui.components.ban.BanPersonActivity
+import com.jerboa.ui.components.blocks.BlocksActivity
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.common.LinkDropDownMenu
@@ -716,6 +717,16 @@ class MainActivity : AppCompatActivity() {
                             onClickAbout = appState::toAbout,
                             onClickAccountSettings = appState::toAccountSettings,
                             onClickLookAndFeel = appState::toLookAndFeel,
+                        )
+                    }
+
+                    composable(route = Route.BLOCKS) {
+                        BlocksActivity(
+                            accountViewModel = accountViewModel,
+                            onBack = appState::popBackStack,
+                            onClickUsers = {},
+                            onClickCommunities = {},
+                            onClickInstances = {},
                         )
                     }
 

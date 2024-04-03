@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ExpandLess
@@ -88,6 +89,7 @@ fun Drawer(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
+    onClickBlocks: () -> Unit,
     isOpen: Boolean,
     blurNSFW: BlurNSFW,
     showBottomNav: Boolean,
@@ -121,6 +123,7 @@ fun Drawer(
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
         onClickSettings = onClickSettings,
+        onClickBlocks = onClickBlocks,
         blurNSFW = blurNSFW,
         showBottomNav = showBottomNav,
         closeDrawer = closeDrawer,
@@ -141,6 +144,7 @@ fun DrawerContent(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
+    onClickBlocks: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Long,
     unreadAppCount: Long?,
@@ -177,6 +181,7 @@ fun DrawerContent(
         unreadAppCount = unreadAppCount,
         unreadReportCount = unreadReportCount,
         onClickSettings = onClickSettings,
+        onClickBlocks = onClickBlocks,
         blurNSFW = blurNSFW,
         showBottomNav = showBottomNav,
         onSelectTab = onSelectTab,
@@ -190,6 +195,7 @@ fun DrawerItemsMain(
     myUserInfo: MyUserInfo?,
     follows: List<CommunityFollowerView>,
     onClickSettings: () -> Unit,
+    onClickBlocks: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Long,
@@ -273,6 +279,15 @@ fun DrawerItemsMain(
                 onClick = onClickSettings,
             )
         }
+        // TODO: display this only to authenticated users
+        //  maybe use the userViewType argument from this Composable
+        item("blocks") {
+            IconAndTextDrawerItem(
+                text = stringResource(R.string.home_blocks),
+                icon = Icons.Outlined.Block,
+                onClick = onClickBlocks,
+            )
+        }
         myUserInfo?.also {
             item(contentType = "divider") {
                 HorizontalDivider()
@@ -321,6 +336,7 @@ fun DrawerItemsMainPreview() {
         closeDrawer = {},
         onSelectTab = {},
         userViewType = UserViewType.Normal,
+        onClickBlocks = { },
     )
 }
 
