@@ -30,7 +30,7 @@ val DONATION_MARKDOWN =
     """
     ### Support Jerboa
     
-    [Jerboa](https://github.com/dessalines/jerboa) is free, open-source software, meaning no advertising, monetizing, or venture capital,
+    [Jerboa](https://github.com/LemmyNet/jerboa) is free, open-source software, meaning no advertising, monetizing, or venture capital,
     ever.
 
     No one likes recurring donations, but they've proven to be the only
