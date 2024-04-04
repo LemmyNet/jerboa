@@ -2,7 +2,7 @@
 # https://git-cliff.org/docs/configuration
 
 [remote.github]
-owner = "dessalines"
+owner = "LemmyNet"
 repo = "jerboa"
 # token = ""
 

@@ -178,7 +178,7 @@ fun buildCommentsTree(
  * This function is given a node and adds it to the parent's children
  * If the parent doesn't exist it is missing, then it creates a placeholder node
  * and passes it to this function again so that it can be added to the parent's children (recursively)
- * TODO: Remove this once missing comments issue is fixed by Lemmy, see https://github.com/dessalines/jerboa/pull/1240
+ * TODO: Remove this once missing comments issue is fixed by Lemmy, see https://github.com/LemmyNet/jerboa/pull/1240
  */
 fun recCreateAndGenMissingCommentData(
     map: LinkedHashMap<Number, CommentNodeData>,
