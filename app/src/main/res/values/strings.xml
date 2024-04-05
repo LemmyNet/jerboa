@@ -255,6 +255,10 @@
     <string name="private_message_to">"to "</string>
     <string name="removeBookmark">Remove from bookmarks</string>
     <string name="selectSort">Sort by</string>
+    <string name="blocks">Blocks</string>
+    <string name="blocks_users">Blocked users</string>
+    <string name="blocks_communities">Blocked communities</string>
+    <string name="blocks_instances">Blocked instances</string>
     <string name="settings_about_about">About</string>
     <string name="settings_about_developer_matrix_chatroom">Developer Matrix chatroom</string>
     <string name="settings_about_donate_to_jerboa_development">Donate to Jerboa development</string>

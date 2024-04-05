@@ -722,11 +722,8 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.BLOCKS) {
                         BlocksActivity(
-                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                             onBack = appState::popBackStack,
-                            onClickUsers = {},
-                            onClickCommunities = {},
-                            onClickInstances = {},
                         )
                     }
 

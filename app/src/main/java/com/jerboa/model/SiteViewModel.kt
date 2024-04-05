@@ -121,29 +121,23 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     fun fetchUnreadCounts() {
         viewModelScope.launch {
-            viewModelScope.launch {
-                unreadCountRes = ApiState.Loading
-                unreadCountRes = API.getInstance().getUnreadCount().toApiState()
-            }
+            unreadCountRes = ApiState.Loading
+            unreadCountRes = API.getInstance().getUnreadCount().toApiState()
         }
     }
 
     fun fetchUnreadAppCount() {
         viewModelScope.launch {
-            viewModelScope.launch {
-                unreadAppCountRes = ApiState.Loading
-                unreadAppCountRes =
-                    API.getInstance().getUnreadRegistrationApplicationCount().toApiState()
-            }
+            unreadAppCountRes = ApiState.Loading
+            unreadAppCountRes =
+                API.getInstance().getUnreadRegistrationApplicationCount().toApiState()
         }
     }
 
     fun fetchUnreadReportCount() {
         viewModelScope.launch {
-            viewModelScope.launch {
-                unreadReportCountRes = ApiState.Loading
-                unreadReportCountRes = API.getInstance().getReportCount(GetReportCount()).toApiState()
-            }
+            unreadReportCountRes = ApiState.Loading
+            unreadReportCountRes = API.getInstance().getReportCount(GetReportCount()).toApiState()
         }
     }
 
