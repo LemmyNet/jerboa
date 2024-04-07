@@ -1,5 +1,9 @@
 package com.jerboa.ui.components.blocks
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,19 +12,74 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+
+@Composable
+fun BlockedElementListItem(
+    name: String,
+    icon: String?,
+    onUnblock: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CircularIcon(
+            icon = icon ?: "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
+            contentDescription = "",
+            size = 26.dp,
+        )
+        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+        Text(name)
+        Spacer(modifier = Modifier.weight(1f))
+        TextButton(onUnblock) {
+            Text(
+                text = "X",
+                style = TextStyle(
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                ),
+            )
+        }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+fun BlockedElementListItemPreview() {
+    BlockedElementListItem(
+        name = "placeholder",
+        icon = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
+        onUnblock = {},
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +88,9 @@ fun BlocksActivity(
     onBack: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val listState = rememberLazyListState()
+    val blockedUsersListState = rememberLazyListState()
+    val blockedCommunitiesListState = rememberLazyListState()
+    val blockedInstancesListState = rememberLazyListState()
     var key = 0
 
     Scaffold(
@@ -45,37 +106,74 @@ fun BlocksActivity(
                 is ApiState.Failure -> ApiErrorText(siteRes.msg)
 
                 is ApiState.Success -> {
-                    siteRes.data.my_user?.person_blocks?.let { personBlocks ->
-                        LazyColumn(
-                            state = listState,
-                            modifier = Modifier
-                                .padding(padding)
-                                .simpleVerticalScrollbar(listState),
-                        ) {
-                            items(
-                                personBlocks,
-                                key = { ++key },
-                                contentType = { "personBlock" },
-                            ) { person ->
-                                Text(person.target.name)
+                    Column {
+                        Text("Blocked users")
+                        siteRes.data.my_user?.person_blocks?.let { personBlocks ->
+                            LazyColumn(
+                                state = blockedUsersListState,
+                                userScrollEnabled = false,
+                                modifier = Modifier.simpleVerticalScrollbar(blockedUsersListState),
+                            ) {
+                                items(
+                                    personBlocks,
+                                    key = { ++key },
+                                    contentType = { "personBlock" },
+                                ) { person ->
+                                    val blockedPerson = person.target
+                                    BlockedElementListItem(
+                                        name = blockedPerson.name,
+                                        icon = blockedPerson.avatar,
+                                    ) {
+                                    }
+                                }
                             }
-                        }
-                    }
-                    siteRes.data.my_user?.community_blocks?.let { communityBlocks ->
-                        LazyColumn(
-                            state = listState,
-                            modifier = Modifier
-                                .padding(padding)
-                                .simpleVerticalScrollbar(listState),
-                        ) {
-                            items(
-                                communityBlocks,
-                                key = { ++key },
-                                contentType = { "communityBlock" },
-                            ) { community ->
-                                Text(community.community.title)
+                        } ?: Text("You have no blocked users")
+                        Text("Blocked communities")
+                        siteRes.data.my_user?.community_blocks?.let { communityBlocks ->
+                            LazyColumn(
+                                state = blockedCommunitiesListState,
+                                userScrollEnabled = false,
+                                modifier = Modifier.simpleVerticalScrollbar(
+                                    blockedCommunitiesListState,
+                                ),
+                            ) {
+                                items(
+                                    communityBlocks,
+                                    key = { ++key },
+                                    contentType = { "communityBlock" },
+                                ) { communityView ->
+                                    val community = communityView.community
+                                    BlockedElementListItem(
+                                        name = community.title,
+                                        icon = community.icon,
+                                    ) {
+                                    }
+                                }
                             }
-                        }
+                        } ?: Text("You have no blocked communities")
+                        Text("Blocked instances")
+                        siteRes.data.my_user?.instance_blocks?.let { instanceBlocks ->
+                            LazyColumn(
+                                state = blockedInstancesListState,
+                                userScrollEnabled = false,
+                                modifier = Modifier.simpleVerticalScrollbar(
+                                    blockedInstancesListState,
+                                ),
+                            ) {
+                                items(
+                                    instanceBlocks,
+                                    key = { ++key },
+                                    contentType = { "communityBlock" },
+                                ) { instanceBlock ->
+                                    val instance = instanceBlock.instance
+                                    BlockedElementListItem(
+                                        name = instance.domain,
+                                        icon = null,
+                                    ) {
+                                    }
+                                }
+                            }
+                        } ?: Text("You have no blocked instances")
                     }
                 }
 
