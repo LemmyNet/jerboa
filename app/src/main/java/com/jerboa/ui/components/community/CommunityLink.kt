@@ -88,7 +88,7 @@ fun CommunityLink(
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier =
             if (clickable) {
-                modifier.clickable { onClick(community) }
+                Modifier.clickable { onClick(community) }.then(modifier)
             } else {
                 modifier
             },
