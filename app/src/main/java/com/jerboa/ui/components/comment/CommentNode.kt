@@ -397,8 +397,14 @@ fun LazyListScope.commentNodeItem(
                                         onPersonClick = onPersonClick,
                                         onViewVotesClick = onViewVotesClick,
                                         onBlockCreatorClick = onBlockCreatorClick,
-                                        onClick = {
-                                            toggleExpanded(commentId)
+                                        onClick = if (isFlat) {
+                                            {
+                                                onCommentClick(commentView)
+                                            }
+                                        } else {
+                                            {
+                                                toggleExpanded(commentId)
+                                            }
                                         },
                                         onLongClick = {
                                             toggleActionBar(commentId)
