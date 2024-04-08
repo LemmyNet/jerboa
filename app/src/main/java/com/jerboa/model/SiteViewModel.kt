@@ -20,6 +20,12 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstanceResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCount
@@ -37,6 +43,9 @@ import kotlinx.coroutines.launch
 class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
     // Can't be private, because it needs to be set by the login viewmodel
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
+    var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
+    var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    var blockInstanceRes: ApiState<BlockInstanceResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
     private var unreadAppCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
@@ -249,6 +258,30 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.admins
             else -> emptyList()
+        }
+    }
+
+    fun unblockCommunity(communityId: Long) {
+        val form = BlockCommunity(communityId, false)
+        blockCommunityRes = ApiState.Loading
+        viewModelScope.launch {
+            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
+        }
+    }
+
+    fun unblockPerson(personId: Long) {
+        val form = BlockPerson(personId, false)
+        blockPersonRes = ApiState.Loading
+        viewModelScope.launch {
+            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
+        }
+    }
+
+    fun unblockInstance(instanceId: Long) {
+        val form = BlockInstance(instanceId, false)
+        blockInstanceRes = ApiState.Loading
+        viewModelScope.launch {
+            blockInstanceRes = API.getInstance().blockInstance(form).toApiState()
         }
     }
 

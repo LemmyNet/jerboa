@@ -37,9 +37,10 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 
 @Composable
 fun BlockedElementListItem(
+    id: Long,
     name: String,
     icon: String?,
-    onUnblock: () -> Unit,
+    onUnblock: (id: Long) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -55,7 +56,7 @@ fun BlockedElementListItem(
         Spacer(modifier = Modifier.padding(horizontal = 4.dp))
         Text(name)
         Spacer(modifier = Modifier.weight(1f))
-        TextButton(onUnblock) {
+        TextButton(onClick = { onUnblock(id) }) {
             Text(
                 text = "X",
                 style = TextStyle(
@@ -75,6 +76,7 @@ fun BlockedElementListItem(
 @Composable
 fun BlockedElementListItemPreview() {
     BlockedElementListItem(
+        id = 1,
         name = "placeholder",
         icon = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
         onUnblock = {},
@@ -85,6 +87,9 @@ fun BlockedElementListItemPreview() {
 @Composable
 fun BlocksActivity(
     siteViewModel: SiteViewModel,
+    onUnblockUser: (userId: Long) -> Unit,
+    onUnblockCommunity: (communityId: Long) -> Unit,
+    onUnblockInstance: (instanceId: Long) -> Unit,
     onBack: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -121,10 +126,11 @@ fun BlocksActivity(
                                 ) { person ->
                                     val blockedPerson = person.target
                                     BlockedElementListItem(
+                                        id = blockedPerson.id,
                                         name = blockedPerson.name,
                                         icon = blockedPerson.avatar,
-                                    ) {
-                                    }
+                                        onUnblock = onUnblockUser,
+                                    )
                                 }
                             }
                         } ?: Text("You have no blocked users")
@@ -144,16 +150,19 @@ fun BlocksActivity(
                                 ) { communityView ->
                                     val community = communityView.community
                                     BlockedElementListItem(
+                                        id = community.id,
                                         name = community.title,
                                         icon = community.icon,
-                                    ) {
-                                    }
+                                        onUnblock = onUnblockCommunity,
+                                    )
                                 }
                             }
                         } ?: Text("You have no blocked communities")
                         Text("Blocked instances")
-                        siteRes.data.my_user?.instance_blocks?.let { instanceBlocks ->
-                            LazyColumn(
+                        val instanceBlocks = siteRes.data.my_user?.instance_blocks
+                        when (instanceBlocks.isNullOrEmpty()) {
+                            true -> Text("You have no blocked instances")
+                            false -> LazyColumn(
                                 state = blockedInstancesListState,
                                 userScrollEnabled = false,
                                 modifier = Modifier.simpleVerticalScrollbar(
@@ -163,17 +172,18 @@ fun BlocksActivity(
                                 items(
                                     instanceBlocks,
                                     key = { ++key },
-                                    contentType = { "communityBlock" },
+                                    contentType = { "instanceBlock" },
                                 ) { instanceBlock ->
                                     val instance = instanceBlock.instance
                                     BlockedElementListItem(
+                                        id = instance.id,
                                         name = instance.domain,
                                         icon = null,
-                                    ) {
-                                    }
+                                        onUnblock = onUnblockInstance,
+                                    )
                                 }
                             }
-                        } ?: Text("You have no blocked instances")
+                        }
                     }
                 }
 
