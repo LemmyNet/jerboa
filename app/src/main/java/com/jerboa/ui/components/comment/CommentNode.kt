@@ -397,8 +397,14 @@ fun LazyListScope.commentNodeItem(
                                         onPersonClick = onPersonClick,
                                         onViewVotesClick = onViewVotesClick,
                                         onBlockCreatorClick = onBlockCreatorClick,
-                                        onClick = {
-                                            toggleExpanded(commentId)
+                                        onClick = if (isFlat) {
+                                            {
+                                                onCommentClick(commentView)
+                                            }
+                                        } else {
+                                            {
+                                                toggleExpanded(commentId)
+                                            }
                                         },
                                         onLongClick = {
                                             toggleActionBar(commentId)
@@ -691,12 +697,14 @@ fun PostAndCommunityContextHeader(
     showAvatar: Boolean,
 ) {
     Column(
-        modifier = Modifier.padding(top = LARGE_PADDING),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onPostClick(post.id) }
+            .padding(top = LARGE_PADDING),
     ) {
         Text(
             text = post.name,
             style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.clickable { onPostClick(post.id) },
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
