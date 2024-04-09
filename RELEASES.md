@@ -1,7 +1,25 @@
+# Jerboa 0.0.66 (2024-04-09)
+
+## What's Changed in 0.0.66
+
+- Bump deps by @MV-GH in [#1475](https://github.com/LemmyNet/jerboa/pull/1475)
+- Fix Saved comments footer empty space doesn't open post by @MV-GH in [#1472](https://github.com/LemmyNet/jerboa/pull/1472)
+- Fix Saved comments header does nothing by @MV-GH in [#1473](https://github.com/LemmyNet/jerboa/pull/1473)
+- Add tr locales by @mikropsoft in [#1477](https://github.com/LemmyNet/jerboa/pull/1477)
+- Moving to new LemmyNet repo. by @dessalines in [#1470](https://github.com/LemmyNet/jerboa/pull/1470)
+- Removing cardano, this was never used. by @dessalines in [#1467](https://github.com/LemmyNet/jerboa/pull/1467)
+
+## New Contributors
+
+- @mikropsoft made their first contribution in [#1477](https://github.com/LemmyNet/jerboa/pull/1477)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.65...0.0.66
+
 # Jerboa 0.0.65 (2024-04-02)
 
 ## What's Changed in 0.0.65
 
+- Upping version. by @dessalines
 - Fixing a few other top app bar title sizes. by @dessalines in [#1466](https://github.com/LemmyNet/jerboa/pull/1466)
 - Rework fontsize, better defaults by @MV-GH in [#1452](https://github.com/LemmyNet/jerboa/pull/1452)
 - Upgrading deps. by @dessalines in [#1464](https://github.com/LemmyNet/jerboa/pull/1464)
@@ -361,13 +379,6 @@
 - Upping version. by @dessalines
 - Fix appbar rework by @MV-GH in [#1160](https://github.com/LemmyNet/jerboa/pull/1160)
 - Adding release notes. by @dessalines
-
-**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.43...0.0.44
-
-# Jerboa 0.0.43 (2023-08-08)
-
-## What's Changed in 0.0.43
-
 - Upping version. by @dessalines
 - Post actionbar design rework and options for it. by @MV-GH in [#1155](https://github.com/LemmyNet/jerboa/pull/1155)
 - Increase the zoom capability of the imageviewer by @MV-GH in [#1159](https://github.com/LemmyNet/jerboa/pull/1159)
@@ -384,7 +395,7 @@
 - Small changes by @MV-GH in [#1133](https://github.com/LemmyNet/jerboa/pull/1133)
 - Adding release notes. by @dessalines
 
-**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.42...0.0.43
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.42...0.0.44
 
 # Jerboa 0.0.42 (2023-08-03)
 
@@ -880,7 +891,7 @@
 - Collapse comments by @dessalines in [#419](https://github.com/LemmyNet/jerboa/pull/419)
 - Collapse comments by tapping directly on the comment body by @dessalines in [#398](https://github.com/LemmyNet/jerboa/pull/398)
 - Fix dropdowns on Account Settings-screen not working by @oscarnylander in [#387](https://github.com/LemmyNet/jerboa/pull/387)
-- Added Black and System Black theme modes, fixes https://github.com/LemmyNet/jerboa/issues/376 by @dessalines in [#393](https://github.com/LemmyNet/jerboa/pull/393)
+- Added Black and System Black theme modes, fixes https://github.com/dessalines/jerboa/issues/376 by @dessalines in [#393](https://github.com/LemmyNet/jerboa/pull/393)
 - Fixing lint. by @dessalines
 - Save listing and sort type-preferences in app DB by @dessalines in [#407](https://github.com/LemmyNet/jerboa/pull/407)
 - Ktlint 2 by @dessalines in [#409](https://github.com/LemmyNet/jerboa/pull/409)
