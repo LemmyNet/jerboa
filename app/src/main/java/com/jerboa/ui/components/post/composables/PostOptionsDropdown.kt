@@ -40,7 +40,7 @@ import com.jerboa.feat.blockPerson
 import com.jerboa.feat.getInstanceFromCommunityUrl
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
-import com.jerboa.feat.showBlockCommunityToast
+import com.jerboa.feat.showBlockInstanceToast
 import com.jerboa.isMedia
 import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
@@ -417,7 +417,7 @@ fun PostOptionsDropdown(
                                         ),
                                     )
                                 withContext(Dispatchers.Main) {
-                                    showBlockCommunityToast(resp, instance, ctx)
+                                    showBlockInstanceToast(resp, instance, ctx)
                                 }
                             }
                         },

@@ -384,6 +384,7 @@
     <string name="community_unblock_community">Unblock Community</string>
     <string name="blocked_community_toast">%1$s is blocked</string>
     <string name="unblocked_community_toast">%1$s is unblocked</string>
+    <string name="user_block_toast_failure">Failed to (un)block this user</string>
     <string name="community_block_toast_failure">Failed to (un)block this community</string>
     <string name="instance_block_toast_failure">Failed to (un)block this instance</string>
     <string name="saving_media">Saving media…</string>

@@ -45,7 +45,7 @@ fun blockPerson(
     }
 }
 
-fun showBlockCommunityToast(
+fun showBlockInstanceToast(
     blockInstanceResp: Result<BlockInstanceResponse>,
     instance: String,
     ctx: Context,

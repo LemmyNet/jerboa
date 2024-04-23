@@ -1046,13 +1046,56 @@ fun showBlockPersonToast(
         is ApiState.Success -> {
             Toast.makeText(
                 ctx,
-                "${blockPersonRes.data.person_view.person.name} Blocked",
+                ctx.getString(
+                    if (blockPersonRes.data.blocked) {
+                        R.string.blocked_community_toast
+                    } else {
+                        R.string.unblocked_community_toast
+                    },
+                    blockPersonRes.data.person_view.person.name
+                ),
                 Toast.LENGTH_SHORT,
-            )
-                .show()
+            ).show()
         }
 
-        else -> {}
+        else -> {
+            Toast.makeText(
+                ctx,
+                ctx.getText(R.string.user_block_toast_failure),
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+    }
+}
+
+fun showBlockInstanceToast(
+    blockInstanceResponse: ApiState<BlockInstanceResponse>,
+    instance: Instance,
+    ctx: Context,
+) {
+    when (blockInstanceResponse) {
+        is ApiState.Success -> {
+            Toast.makeText(
+                ctx,
+                ctx.getString(
+                    if (blockInstanceResponse.data.blocked) {
+                        R.string.blocked_community_toast
+                    } else {
+                        R.string.unblocked_community_toast
+                    },
+                    instance.domain
+                ),
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+
+        else -> {
+            Toast.makeText(
+                ctx,
+                ctx.getText(R.string.instance_block_toast_failure),
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
     }
 }
 

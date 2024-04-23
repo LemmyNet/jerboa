@@ -723,9 +723,6 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.BLOCKS) {
                         BlocksActivity(
                             siteViewModel = siteViewModel,
-                            onUnblockCommunity = siteViewModel::unblockCommunity,
-                            onUnblockUser = siteViewModel::unblockPerson,
-                            onUnblockInstance = siteViewModel::unblockInstance,
                             onBack = appState::popBackStack,
                         )
                     }
