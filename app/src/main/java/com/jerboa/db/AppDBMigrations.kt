@@ -54,7 +54,7 @@ val MIGRATION_4_5 =
             // Material v3 migration
             // Remove dark_theme and light_theme
             // Add theme_color
-            // SQLITE for android cant drop columns, you have to redo the table
+            // SQLITE for android can't drop columns, you have to redo the table
             db.execSQL(
                 """
                 CREATE TABLE IF NOT EXISTS AppSettingsBackup(
@@ -104,7 +104,7 @@ val MIGRATION_8_9 =
     object : Migration(8, 9) {
         override fun migrate(db: SupportSQLiteDatabase) {
             // Add new default_font_size of 16
-            // SQLITE for android cant drop columns or redo defaults, you have to redo the table
+            // SQLITE for android can't drop columns or redo defaults, you have to redo the table
             db.execSQL(
                 """
                 CREATE TABLE IF NOT EXISTS AppSettingsBackup(

@@ -20,8 +20,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 65
-        versionName = "0.0.65"
+        versionCode = 66
+        versionName = "0.0.66"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -129,7 +129,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.4")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
@@ -139,7 +139,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.6.0")
     implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.8.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.9.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -160,7 +160,7 @@ dependencies {
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
-    implementation("io.arrow-kt:arrow-core:1.2.3")
+    implementation("io.arrow-kt:arrow-core:1.2.4")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
@@ -170,12 +170,12 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.compose.ui:ui:1.6.4")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.4")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.4")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.4")
-    implementation("androidx.compose.material:material-icons-extended:1.6.4")
+    implementation("androidx.compose.ui:ui:1.6.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.5")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
+    implementation("androidx.compose.material:material-icons-extended:1.6.5")
 
     implementation("androidx.activity:activity-compose:1.8.2")
     testImplementation("junit:junit:4.13.2")
@@ -190,7 +190,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.10-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.11-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Ktor uses SLF4J
     implementation("org.slf4j:slf4j-api:2.0.12")

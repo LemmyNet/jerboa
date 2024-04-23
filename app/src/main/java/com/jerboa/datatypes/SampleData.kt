@@ -598,7 +598,6 @@ val sampleSite =
         inbox_url = "https://lemmy.ml",
         last_refreshed_at = "2023-01-01",
         instance_id = 0,
-        public_key = "bleh",
         private_key = null,
     )
 

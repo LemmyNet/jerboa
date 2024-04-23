@@ -34,7 +34,7 @@ import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.PreferenceCategory
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
 
-const val GITHUB_URL = "https://github.com/dessalines/jerboa"
+const val GITHUB_URL = "https://github.com/LemmyNet/jerboa"
 const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
 const val DONATE_LINK = "https://join-lemmy.org/donate"
 const val JERBOA_LEMMY_ML_LINK = "https://lemmy.ml/c/jerboa"

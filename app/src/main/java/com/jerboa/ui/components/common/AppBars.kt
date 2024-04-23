@@ -264,15 +264,15 @@ fun CommentOrPostNodeHeader(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(
-                    top = LARGE_PADDING,
-                    bottom = MEDIUM_PADDING,
-                )
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onLongClick = onLongCLick,
                     onClick = onClick,
+                )
+                .padding(
+                    top = LARGE_PADDING,
+                    bottom = MEDIUM_PADDING,
                 ),
     ) {
         Row(

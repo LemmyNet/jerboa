@@ -1,35 +1,35 @@
 <div align="center">
 
-![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/dessalines/jerboa.svg)
-[![status-badge](https://woodpecker.join-lemmy.org/api/badges/dessalines/jerboa/status.svg)](https://woodpecker.join-lemmy.org/dessalines/jerboa)
-[![GitHub issues](https://img.shields.io/github/issues-raw/dessalines/jerboa.svg)](https://github.com/dessalines/jerboa/issues)
-[![License](https://img.shields.io/github/license/dessalines/jerboa.svg)](LICENSE)
-![GitHub stars](https://img.shields.io/github/stars/dessalines/jerboa?style=social)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/LemmyNet/jerboa.svg)
+[![status-badge](https://woodpecker.join-lemmy.org/api/badges/LemmyNet/jerboa/status.svg)](https://woodpecker.join-lemmy.org/LemmyNet/jerboa)
+[![GitHub issues](https://img.shields.io/github/issues-raw/LemmyNet/jerboa.svg)](https://github.com/LemmyNet/jerboa/issues)
+[![License](https://img.shields.io/github/license/LemmyNet/jerboa.svg)](LICENSE)
+![GitHub stars](https://img.shields.io/github/stars/LemmyNet/jerboa?style=social)
 
 </div>
 
 <p align="center">
-  <a href="https://github.com/dessalines/jerboa" rel="noopener">
-  <img width=200px height=200px src="https://raw.githubusercontent.com/dessalines/jerboa/main/app/src/main/res/jerboa.svg"></a>
+  <a href="https://github.com/LemmyNet/jerboa" rel="noopener">
+  <img width=200px height=200px src="https://raw.githubusercontent.com/LemmyNet/jerboa/main/app/src/main/res/jerboa.svg"></a>
 
-  <h3 align="center"><a href="https://github.com/dessalines/jerboa">Jerboa</a></h3>
+  <h3 align="center"><a href="https://github.com/LemmyNet/jerboa">Jerboa</a></h3>
   <p align="center">
     An Android client for <a href="https://github.com/LemmyNet/lemmy">Lemmy</a>, a federated reddit alternative
     <br />
     <br />
     <a href="https://join-lemmy.org">Join Lemmy</a>
     ·
-    <a href="https://github.com/dessalines/jerboa/issues">Report Bug</a>
+    <a href="https://github.com/LemmyNet/jerboa/issues">Report Bug</a>
     ·
-    <a href="https://github.com/dessalines/jerboa/issues">Request Feature</a>
+    <a href="https://github.com/LemmyNet/jerboa/issues">Request Feature</a>
     ·
-    <a href="https://github.com/dessalines/jerboa/blob/main/RELEASES.md">Releases</a>
+    <a href="https://github.com/LemmyNet/jerboa/blob/main/RELEASES.md">Releases</a>
   </p>
   <p align="center">
     <a href="https://apt.izzysoft.de/fdroid/index/apk/com.jerboa"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"></a>
     <a href="https://f-droid.org/packages/com.jerboa"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
     <a href="https://play.google.com/store/apps/details?id=com.jerboa"><img src="https://cdn.rawgit.com/steverichey/google-play-badge-svg/master/img/en_get.svg" height="80"></a>
-    <a href="https://github.com/dessalines/jerboa/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
+    <a href="https://github.com/LemmyNet/jerboa/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
   </p>
 </p>
 
@@ -55,7 +55,7 @@ Jerboa is a native-android client for Lemmy, built using the native Android Tool
 
 ## Installation / Releases
 
-- [Releases](https://github.com/dessalines/jerboa/releases)
+- [Releases](https://github.com/LemmyNet/jerboa/releases)
 - [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.jerboa)
 - [F-Droid](https://f-droid.org/en/packages/com.jerboa/)
 - [Google Play](https://play.google.com/store/apps/details?id=com.jerboa)
