@@ -103,7 +103,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
+        kotlinCompilerExtensionVersion = "1.5.12"
     }
 }
 
@@ -111,7 +111,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("me.zhanghai.compose.preference:library:1.0.0")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.12")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
@@ -122,14 +122,13 @@ dependencies {
     implementation("io.noties.markwon:linkify:4.6.2")
 
     // Accompanist
-    val accompanistVersion = "0.34.0"
-    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-pager:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
@@ -139,7 +138,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.6.0")
     implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.9.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -170,20 +169,20 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.compose.ui:ui:1.6.5")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.5")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
-    implementation("androidx.compose.material:material-icons-extended:1.6.5")
+    implementation("androidx.compose.ui:ui:1.6.6")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.6")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.6")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.6")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.6")
+    implementation("androidx.compose.material:material-icons-extended:1.6.6")
 
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     testImplementation("org.mockito:mockito-core:5.11.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 
     implementation("androidx.browser:browser:1.8.0")
 
@@ -193,6 +192,6 @@ dependencies {
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.11-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Ktor uses SLF4J
-    implementation("org.slf4j:slf4j-api:2.0.12")
-    implementation("uk.uuid.slf4j:slf4j-android:2.0.12-0")
+    implementation("org.slf4j:slf4j-api:2.0.13")
+    implementation("uk.uuid.slf4j:slf4j-android:2.0.13-0")
 }
