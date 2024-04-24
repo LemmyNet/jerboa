@@ -279,15 +279,17 @@ fun DrawerItemsMain(
                 onClick = onClickSettings,
             )
         }
-        // TODO: display this only to authenticated users
-        //  maybe use the userViewType argument from this Composable
-        item("blocks") {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_blocks),
-                icon = Icons.Outlined.Block,
-                onClick = onClickBlocks,
-            )
+
+        myUserInfo?.also {
+            item("blocks") {
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.home_blocks),
+                    icon = Icons.Outlined.Block,
+                    onClick = onClickBlocks,
+                )
+            }
         }
+
         myUserInfo?.also {
             item(contentType = "divider") {
                 HorizontalDivider()

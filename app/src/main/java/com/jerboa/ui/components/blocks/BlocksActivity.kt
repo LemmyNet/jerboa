@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -30,7 +29,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jerboa.R
@@ -48,6 +46,7 @@ import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.theme.Title
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
@@ -69,12 +68,14 @@ private fun BlockedElementListItem(
     onSuccessfulUnblock: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        CircularIcon(
-            icon = icon ?: "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
-            contentDescription = "",
-            size = 26.dp,
-        )
-        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+        icon?.let {
+            CircularIcon(
+                icon = it,
+                contentDescription = "",
+                size = 26.dp,
+            )
+            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+        }
         Text(name, modifier = Modifier.weight(1f))
         TextButton(onClick = onUnblock, colors= ButtonDefaults.buttonColors(Color.Transparent)) {
             when (apiState) {
@@ -134,11 +135,11 @@ fun BlocksActivity(
                             .simpleVerticalScrollbar(listState),
                     ) {
 
-                        item { Text("Blocked users") }
+                        item { Title(stringResource(R.string.blocked_users)) }
                         item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
                         if (personBlocks.isNullOrEmpty()) item {
-                            Text("You have no blocked users")
+                            Text(stringResource(R.string.you_have_no_blocked_users))
                         } else {
                             items(
                                 personBlocks,
@@ -173,11 +174,11 @@ fun BlocksActivity(
                         }
 
                         item { Spacer(modifier = Modifier.padding(vertical = 8.dp)) }
-                        item { Text("Blocked communities") }
+                        item { Title(stringResource(R.string.blocked_communities)) }
                         item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
                         if (communityBlocks.isNullOrEmpty()) item {
-                            Text("You have no blocked communities")
+                            Text(stringResource(R.string.you_have_no_blocked_communities))
                         } else {
                             items(
                                 communityBlocks,
@@ -212,11 +213,11 @@ fun BlocksActivity(
                         }
 
                         item { Spacer(modifier = Modifier.padding(vertical = 8.dp)) }
-                        item { Text("Blocked instances") }
+                        item { Title(stringResource(R.string.blocked_instances)) }
                         item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
                         if (instanceBlocks.isNullOrEmpty()) item {
-                            Text("You have no blocked instances")
+                            Text(stringResource(R.string.you_have_no_blocked_instances))
                         } else {
                             items(
                                 instanceBlocks,

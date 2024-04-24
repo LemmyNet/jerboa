@@ -387,6 +387,12 @@
     <string name="user_block_toast_failure">Failed to (un)block this user</string>
     <string name="community_block_toast_failure">Failed to (un)block this community</string>
     <string name="instance_block_toast_failure">Failed to (un)block this instance</string>
+    <string name="blocked_users">Blocked users</string>
+    <string name="blocked_communities">Blocked communities</string>
+    <string name="blocked_instances">Blocked instances</string>
+    <string name="you_have_no_blocked_users">You have no blocked users</string>
+    <string name="you_have_no_blocked_communities">You have no blocked communities</string>
+    <string name="you_have_no_blocked_instances">You have no blocked instances</string>
     <string name="saving_media">Saving media…</string>
     <string name="saved_media">Saved media</string>
     <string name="share_image">Share image</string>
