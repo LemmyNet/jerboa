@@ -1,13 +1,15 @@
 package com.jerboa.ui.components.blocks
 
-import android.content.Context
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -52,162 +54,46 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstanceResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.Instance
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@Composable
-private fun BlockedPersonListItem(
-    blockedPerson: Person,
-    context: Context,
-    onSuccessfulUnblock: () -> Unit,
-) {
-    val form = BlockPerson(blockedPerson.id, false)
-    val scope = rememberCoroutineScope()
-    var res: ApiState<BlockPersonResponse> by remember { mutableStateOf(ApiState.Empty) }
+private const val UNBLOCK_BUTTON_SIZE = 18
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+@Composable
+private fun BlockedElementListItem(
+    apiState: ApiState<*>,
+    icon: String?,
+    name: String,
+    onUnblock: () -> Unit,
+    onSuccessfulUnblock: () -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         CircularIcon(
-            icon = blockedPerson.avatar ?: "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
+            icon = icon ?: "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
             contentDescription = "",
             size = 26.dp,
         )
         Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-        Text(blockedPerson.name)
-        Spacer(modifier = Modifier.weight(1f))
-        TextButton(
-            onClick = {
-                res = ApiState.Loading
-                scope.launch {
-                    res = API.getInstance().blockPerson(form).toApiState()
-                    withContext(Dispatchers.Main) { showBlockPersonToast(res, context) }
-                }
-            }
-        ) {
-            when (res) {
-                ApiState.Loading -> Text("O")
+        Text(name, modifier = Modifier.weight(1f))
+        TextButton(onClick = onUnblock, colors= ButtonDefaults.buttonColors(Color.Transparent)) {
+            when (apiState) {
+                ApiState.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.size(UNBLOCK_BUTTON_SIZE.dp),
+                    color = Color.Gray,
+                )
                 is ApiState.Success -> onSuccessfulUnblock()
                 else -> Text(
                     text = "X",
                     style = TextStyle(
                         color = Color.Red,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
+                        fontSize = UNBLOCK_BUTTON_SIZE.sp,
                     ),
                 )
             }
         }
     }
-}
-
-@Composable
-private fun BlockedCommunityListItem(
-    blockedCommunity: Community,
-    context: Context,
-    onSuccessfulUnblock: () -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-    var res: ApiState<BlockCommunityResponse> by remember { mutableStateOf(ApiState.Empty) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        CircularIcon(
-            icon = blockedCommunity.icon ?: "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
-            contentDescription = "",
-            size = 26.dp,
-        )
-        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-        Text(blockedCommunity.name)
-        Spacer(modifier = Modifier.weight(1f))
-        TextButton(
-            onClick = {
-                val form = BlockCommunity(blockedCommunity.id, false)
-                res = ApiState.Loading
-                scope.launch {
-                    res = API.getInstance().blockCommunity(form).toApiState()
-                    withContext(Dispatchers.Main) { showBlockCommunityToast(res, context) }
-                }
-            }
-        ) {
-            when (res) {
-                ApiState.Loading -> Text("O")
-                is ApiState.Success -> onSuccessfulUnblock()
-                else -> Text(
-                    text = "X",
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                    ),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun BlockedInstanceListItem(
-    blockedInstance: Instance,
-    context: Context,
-    onSuccessfulUnblock: () -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-    var res: ApiState<BlockInstanceResponse> by remember { mutableStateOf(ApiState.Empty) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(blockedInstance.domain)
-        Spacer(modifier = Modifier.weight(1f))
-        TextButton(
-            onClick = {
-                val form = BlockInstance(blockedInstance.id, false)
-                res = ApiState.Loading
-                scope.launch {
-                    res = API.getInstance().blockInstance(form).toApiState()
-                    withContext(Dispatchers.Main) {
-                        showBlockInstanceToast(res, blockedInstance, context)
-                    }
-                }
-            }
-        ) {
-            when (res) {
-                ApiState.Loading -> Text("O")
-                is ApiState.Success -> onSuccessfulUnblock()
-                else -> Text(
-                    text = "X",
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                    ),
-                )
-            }
-        }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    widthDp = 360,
-)
-@Composable
-fun BlockedElementListItemPreview() {
-//    BlockedElementListItem(
-//        id = 1,
-//        name = "placeholder",
-//        icon = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
-//        onUnblock = {},
-//    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -221,9 +107,7 @@ fun BlocksActivity(
     val listState = rememberLazyListState()
     var key = 0
 
-    LaunchedEffect(Unit) {
-        siteViewModel.getSite()
-    }
+    LaunchedEffect(Unit) { siteViewModel.getSite() }
 
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
@@ -239,7 +123,8 @@ fun BlocksActivity(
 
                 is ApiState.Success -> {
                     val personBlocks = siteRes.data.my_user?.person_blocks?.toMutableStateList()
-                    val communityBlocks = siteRes.data.my_user?.community_blocks?.toMutableStateList()
+                    val communityBlocks =
+                        siteRes.data.my_user?.community_blocks?.toMutableStateList()
                     val instanceBlocks = siteRes.data.my_user?.instance_blocks?.toMutableStateList()
                     LazyColumn(
                         state = listState,
@@ -248,7 +133,10 @@ fun BlocksActivity(
                             .padding(start = 8.dp)
                             .simpleVerticalScrollbar(listState),
                     ) {
+
                         item { Text("Blocked users") }
+                        item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
+
                         if (personBlocks.isNullOrEmpty()) item {
                             Text("You have no blocked users")
                         } else {
@@ -258,16 +146,35 @@ fun BlocksActivity(
                                 contentType = { "personBlock" },
                             ) { person ->
                                 val blockedPerson = person.target
-                                BlockedPersonListItem(
-                                    blockedPerson = blockedPerson,
-                                    context = context,
-                                ) {
-                                    personBlocks.removeIf { it.target.id == blockedPerson.id }
+                                val scope = rememberCoroutineScope()
+                                var apiState: ApiState<BlockPersonResponse> by remember {
+                                    mutableStateOf(ApiState.Empty)
                                 }
+                                BlockedElementListItem(
+                                    apiState = apiState,
+                                    icon = blockedPerson.avatar,
+                                    name = blockedPerson.name,
+                                    onUnblock = {
+                                        apiState = ApiState.Loading
+                                        val form = BlockPerson(blockedPerson.id, false)
+                                        scope.launch {
+                                            apiState =
+                                                API.getInstance().blockPerson(form).toApiState()
+                                            withContext(Dispatchers.Main) {
+                                                showBlockPersonToast(apiState, context)
+                                            }
+                                        }
+                                    },
+                                    onSuccessfulUnblock = {
+                                        personBlocks.removeIf { it.target.id == blockedPerson.id }
+                                    }
+                                )
                             }
                         }
 
+                        item { Spacer(modifier = Modifier.padding(vertical = 8.dp)) }
                         item { Text("Blocked communities") }
+                        item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
                         if (communityBlocks.isNullOrEmpty()) item {
                             Text("You have no blocked communities")
@@ -277,18 +184,36 @@ fun BlocksActivity(
                                 key = { ++key },
                                 contentType = { "communityBlock" },
                             ) { communityView ->
-                                val community = communityView.community
-                                BlockedCommunityListItem(
-                                    blockedCommunity = community,
-                                    context = context,
+                                val blockedCommunity = communityView.community
+                                val scope = rememberCoroutineScope()
+                                var apiState: ApiState<BlockCommunityResponse> by remember {
+                                    mutableStateOf(ApiState.Empty)
+                                }
+                                BlockedElementListItem(
+                                    apiState = apiState,
+                                    icon = blockedCommunity.icon,
+                                    name = blockedCommunity.name,
+                                    onUnblock = {
+                                        apiState = ApiState.Loading
+                                        val form = BlockCommunity(blockedCommunity.id, false)
+                                        scope.launch {
+                                            apiState =
+                                                API.getInstance().blockCommunity(form).toApiState()
+                                            withContext(Dispatchers.Main) {
+                                                showBlockCommunityToast(apiState, context)
+                                            }
+                                        }
+                                    },
                                     onSuccessfulUnblock = {
-                                        communityBlocks.removeIf { it.community.id == community.id }
+                                        communityBlocks.removeIf { it.community.id == blockedCommunity.id }
                                     }
                                 )
                             }
                         }
 
+                        item { Spacer(modifier = Modifier.padding(vertical = 8.dp)) }
                         item { Text("Blocked instances") }
+                        item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
                         if (instanceBlocks.isNullOrEmpty()) item {
                             Text("You have no blocked instances")
@@ -299,9 +224,25 @@ fun BlocksActivity(
                                 contentType = { "instanceBlock" },
                             ) { instanceBlock ->
                                 val instance = instanceBlock.instance
-                                BlockedInstanceListItem(
-                                    blockedInstance = instance,
-                                    context = context,
+                                val scope = rememberCoroutineScope()
+                                var apiState: ApiState<BlockInstanceResponse> by remember {
+                                    mutableStateOf(ApiState.Empty)
+                                }
+                                BlockedElementListItem(
+                                    apiState = apiState,
+                                    icon = null,
+                                    name = instance.domain,
+                                    onUnblock = {
+                                        apiState = ApiState.Loading
+                                        val form = BlockInstance(instance.id, false)
+                                        scope.launch {
+                                            apiState =
+                                                API.getInstance().blockInstance(form).toApiState()
+                                            withContext(Dispatchers.Main) {
+                                                showBlockInstanceToast(apiState, instance, context)
+                                            }
+                                        }
+                                    },
                                     onSuccessfulUnblock = {
                                         instanceBlocks.removeIf { it.instance.id == instance.id }
                                     }
