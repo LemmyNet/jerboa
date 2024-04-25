@@ -140,7 +140,7 @@ dependencies {
 
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
-
+    
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
