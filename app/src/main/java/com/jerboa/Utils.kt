@@ -1052,7 +1052,7 @@ fun showBlockPersonToast(
                     } else {
                         R.string.unblocked_community_toast
                     },
-                    blockPersonRes.data.person_view.person.name
+                    blockPersonRes.data.person_view.person.name,
                 ),
                 Toast.LENGTH_SHORT,
             ).show()
@@ -1083,7 +1083,7 @@ fun showBlockInstanceToast(
                     } else {
                         R.string.unblocked_community_toast
                     },
-                    instance.domain
+                    instance.domain,
                 ),
                 Toast.LENGTH_SHORT,
             ).show()

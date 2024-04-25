@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -27,10 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -65,7 +66,7 @@ private fun BlockedElementListItem(
     icon: String?,
     name: String,
     onUnblock: () -> Unit,
-    onSuccessfulUnblock: () -> Unit
+    onSuccessfulUnblock: () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         icon?.let {
@@ -77,24 +78,37 @@ private fun BlockedElementListItem(
             Spacer(modifier = Modifier.padding(horizontal = 4.dp))
         }
         Text(name, modifier = Modifier.weight(1f))
-        TextButton(onClick = onUnblock, colors= ButtonDefaults.buttonColors(Color.Transparent)) {
+        TextButton(onClick = onUnblock, colors = ButtonDefaults.buttonColors(Color.Transparent)) {
             when (apiState) {
                 ApiState.Loading -> CircularProgressIndicator(
                     modifier = Modifier.size(UNBLOCK_BUTTON_SIZE.dp),
                     color = Color.Gray,
                 )
                 is ApiState.Success -> onSuccessfulUnblock()
-                else -> Text(
-                    text = "X",
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = UNBLOCK_BUTTON_SIZE.sp,
-                    ),
+                else -> Icon(
+                    imageVector = Icons.Rounded.Close,
+                    modifier = Modifier.size(UNBLOCK_BUTTON_SIZE.dp),
+                    tint = Color.Red,
+                    contentDescription = "",
                 )
             }
         }
     }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+)
+@Composable
+private fun BlockedElementListItemPreview() {
+    BlockedElementListItem(
+        apiState = ApiState.Empty,
+        icon = null,
+        name = "Element name",
+        onUnblock = { },
+        onSuccessfulUnblock = { },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,7 +120,6 @@ fun BlocksActivity(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyListState()
-    var key = 0
 
     LaunchedEffect(Unit) { siteViewModel.getSite() }
 
@@ -134,16 +147,16 @@ fun BlocksActivity(
                             .padding(start = 8.dp)
                             .simpleVerticalScrollbar(listState),
                     ) {
-
                         item { Title(stringResource(R.string.blocked_users)) }
                         item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
-                        if (personBlocks.isNullOrEmpty()) item {
-                            Text(stringResource(R.string.you_have_no_blocked_users))
+                        if (personBlocks.isNullOrEmpty()) {
+                            item {
+                                Text(stringResource(R.string.you_have_no_blocked_users))
+                            }
                         } else {
                             items(
-                                personBlocks,
-                                key = { ++key },
+                                items = personBlocks,
                                 contentType = { "personBlock" },
                             ) { person ->
                                 val blockedPerson = person.target
@@ -168,7 +181,7 @@ fun BlocksActivity(
                                     },
                                     onSuccessfulUnblock = {
                                         personBlocks.removeIf { it.target.id == blockedPerson.id }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -177,12 +190,13 @@ fun BlocksActivity(
                         item { Title(stringResource(R.string.blocked_communities)) }
                         item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
-                        if (communityBlocks.isNullOrEmpty()) item {
-                            Text(stringResource(R.string.you_have_no_blocked_communities))
+                        if (communityBlocks.isNullOrEmpty()) {
+                            item {
+                                Text(stringResource(R.string.you_have_no_blocked_communities))
+                            }
                         } else {
                             items(
-                                communityBlocks,
-                                key = { ++key },
+                                items = communityBlocks,
                                 contentType = { "communityBlock" },
                             ) { communityView ->
                                 val blockedCommunity = communityView.community
@@ -207,7 +221,7 @@ fun BlocksActivity(
                                     },
                                     onSuccessfulUnblock = {
                                         communityBlocks.removeIf { it.community.id == blockedCommunity.id }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -216,12 +230,13 @@ fun BlocksActivity(
                         item { Title(stringResource(R.string.blocked_instances)) }
                         item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
 
-                        if (instanceBlocks.isNullOrEmpty()) item {
-                            Text(stringResource(R.string.you_have_no_blocked_instances))
+                        if (instanceBlocks.isNullOrEmpty()) {
+                            item {
+                                Text(stringResource(R.string.you_have_no_blocked_instances))
+                            }
                         } else {
                             items(
-                                instanceBlocks,
-                                key = { ++key },
+                                items = instanceBlocks,
                                 contentType = { "instanceBlock" },
                             ) { instanceBlock ->
                                 val instance = instanceBlock.instance
@@ -246,7 +261,7 @@ fun BlocksActivity(
                                     },
                                     onSuccessfulUnblock = {
                                         instanceBlocks.removeIf { it.instance.id == instance.id }
-                                    }
+                                    },
                                 )
                             }
                         }
