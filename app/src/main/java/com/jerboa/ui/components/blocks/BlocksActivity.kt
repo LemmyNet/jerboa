@@ -13,6 +13,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -47,6 +48,9 @@ import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.theme.ICON_SIZE
+import com.jerboa.ui.theme.SMALL_ICON_SIZE
+import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.Title
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
@@ -57,8 +61,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-private const val UNBLOCK_BUTTON_SIZE = 18
 
 @Composable
 private fun BlockedElementListItem(
@@ -73,22 +75,22 @@ private fun BlockedElementListItem(
             CircularIcon(
                 icon = it,
                 contentDescription = null,
-                size = 26.dp,
+                size = SMALL_ICON_SIZE,
             )
-            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+            Spacer(modifier = Modifier.padding(horizontal = SMALL_PADDING))
         }
         Text(name, modifier = Modifier.weight(1f))
         TextButton(onClick = onUnblock, colors = ButtonDefaults.buttonColors(Color.Transparent)) {
             when (apiState) {
                 ApiState.Loading -> CircularProgressIndicator(
-                    modifier = Modifier.size(UNBLOCK_BUTTON_SIZE.dp),
-                    color = Color.Gray,
+                    modifier = Modifier.size(ICON_SIZE),
+                    color = MaterialTheme.colorScheme.secondary,
                 )
                 is ApiState.Success -> onSuccessfulUnblock()
                 else -> Icon(
                     imageVector = Icons.Rounded.Close,
-                    modifier = Modifier.size(UNBLOCK_BUTTON_SIZE.dp),
-                    tint = Color.Red,
+                    modifier = Modifier.size(ICON_SIZE),
+                    tint = MaterialTheme.colorScheme.error,
                     contentDescription = null,
                 )
             }
@@ -104,7 +106,7 @@ private fun BlockedElementListItem(
 private fun BlockedElementListItemPreview() {
     BlockedElementListItem(
         apiState = ApiState.Empty,
-        icon = null,
+        icon = "",
         name = "Element name",
         onUnblock = { },
         onSuccessfulUnblock = { },
