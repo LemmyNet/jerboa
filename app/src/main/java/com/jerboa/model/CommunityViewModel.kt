@@ -13,8 +13,8 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.db.repository.AccountRepository
+import com.jerboa.feat.showBlockCommunityToast
 import com.jerboa.jerboaApplication
-import com.jerboa.showBlockCommunityToast
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId

@@ -366,8 +366,8 @@
     <string name="post_actionbar">وضع شريط إجراءات الموضوعات</string>
     <string name="settings_autoplaygifs">شغِّل الصور المتحركة تلقائيًّا</string>
     <string name="community_unblock_community">ألغِ حظر المجتمع</string>
-    <string name="blocked_community_toast">%1$s محظور</string>
-    <string name="unblocked_community_toast">%1$s أُلغيَ حظره</string>
+    <string name="blocked_element_toast">%1$s محظور</string>
+    <string name="unblocked_element_toast">%1$s أُلغيَ حظره</string>
     <string name="community_block_toast_failure">فشل إلغاء حظر هذا المجتمع</string>
     <string name="saving_media">تُحفَظ الوسائط…</string>
     <string name="saved_media">حُفِظت الوسائط</string>

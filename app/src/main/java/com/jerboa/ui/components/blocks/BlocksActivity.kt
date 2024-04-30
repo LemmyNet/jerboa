@@ -36,10 +36,10 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.feat.showBlockCommunityToast
+import com.jerboa.feat.showBlockInstanceToast
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.model.SiteViewModel
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockInstanceToast
-import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CircularIcon
@@ -72,7 +72,7 @@ private fun BlockedElementListItem(
         icon?.let {
             CircularIcon(
                 icon = it,
-                contentDescription = "",
+                contentDescription = null,
                 size = 26.dp,
             )
             Spacer(modifier = Modifier.padding(horizontal = 4.dp))
@@ -89,7 +89,7 @@ private fun BlockedElementListItem(
                     imageVector = Icons.Rounded.Close,
                     modifier = Modifier.size(UNBLOCK_BUTTON_SIZE.dp),
                     tint = Color.Red,
-                    contentDescription = "",
+                    contentDescription = null,
                 )
             }
         }

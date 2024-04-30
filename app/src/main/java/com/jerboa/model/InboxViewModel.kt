@@ -14,13 +14,13 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.showBlockCommunityToast
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateCommentReply
 import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch

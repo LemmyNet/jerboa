@@ -15,10 +15,10 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.appendData
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdateCommentCreator
 import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson

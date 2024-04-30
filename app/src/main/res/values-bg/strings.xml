@@ -375,8 +375,8 @@
     <string name="post_actionbar">Post actionbar mode</string>
     <string name="settings_autoplaygifs">Auto play GIFs</string>
     <string name="community_unblock_community">Отблокиране на общността</string>
-    <string name="blocked_community_toast">%1$s е блокирана</string>
-    <string name="unblocked_community_toast">%1$s е отблокирана</string>
+    <string name="blocked_element_toast">%1$s е блокирана</string>
+    <string name="unblocked_element_toast">%1$s е отблокирана</string>
     <string name="community_block_toast_failure">Неуспешно (от)блокиране на тази общност</string>
     <string name="instance_block_toast_failure">Неуспешно (от)блокиране на тази инстанция</string>
     <string name="saving_media">Запазване на мултимедията…</string>

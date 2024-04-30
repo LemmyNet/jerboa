@@ -53,7 +53,6 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.jerboa.api.API
-import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
@@ -1035,97 +1034,6 @@ fun findAndUpdatePrivateMessageReport(
         mutable.toList()
     } else {
         reports
-    }
-}
-
-fun showBlockPersonToast(
-    blockPersonRes: ApiState<BlockPersonResponse>,
-    ctx: Context,
-) {
-    when (blockPersonRes) {
-        is ApiState.Success -> {
-            Toast.makeText(
-                ctx,
-                ctx.getString(
-                    if (blockPersonRes.data.blocked) {
-                        R.string.blocked_community_toast
-                    } else {
-                        R.string.unblocked_community_toast
-                    },
-                    blockPersonRes.data.person_view.person.name,
-                ),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
-
-        else -> {
-            Toast.makeText(
-                ctx,
-                ctx.getText(R.string.user_block_toast_failure),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
-    }
-}
-
-fun showBlockInstanceToast(
-    blockInstanceResponse: ApiState<BlockInstanceResponse>,
-    instance: Instance,
-    ctx: Context,
-) {
-    when (blockInstanceResponse) {
-        is ApiState.Success -> {
-            Toast.makeText(
-                ctx,
-                ctx.getString(
-                    if (blockInstanceResponse.data.blocked) {
-                        R.string.blocked_community_toast
-                    } else {
-                        R.string.unblocked_community_toast
-                    },
-                    instance.domain,
-                ),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
-
-        else -> {
-            Toast.makeText(
-                ctx,
-                ctx.getText(R.string.instance_block_toast_failure),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
-    }
-}
-
-fun showBlockCommunityToast(
-    blockCommunityRes: ApiState<BlockCommunityResponse>,
-    ctx: Context,
-) {
-    when (blockCommunityRes) {
-        is ApiState.Success -> {
-            Toast.makeText(
-                ctx,
-                ctx.getString(
-                    if (blockCommunityRes.data.blocked) {
-                        R.string.blocked_community_toast
-                    } else {
-                        R.string.unblocked_community_toast
-                    },
-                    blockCommunityRes.data.community_view.community.name,
-                ),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
-
-        else -> {
-            Toast.makeText(
-                ctx,
-                ctx.getText(R.string.community_block_toast_failure),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
     }
 }
 

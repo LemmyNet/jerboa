@@ -377,8 +377,8 @@
     <string name="post_actionbar">Eylem çubuğu modu sonrası</string>
     <string name="settings_autoplaygifs">GIF\'leri otomatik oynat</string>
     <string name="community_unblock_community">Topluluğun Engelini Kaldır</string>
-    <string name="blocked_community_toast">%1$s engellendi</string>
-    <string name="unblocked_community_toast">%1$s adlı kişinin engeli kaldırıldı</string>
+    <string name="blocked_element_toast">%1$s engellendi</string>
+    <string name="unblocked_element_toast">%1$s adlı kişinin engeli kaldırıldı</string>
     <string name="community_block_toast_failure">Bu topluluk engellenemedi (kaldırılamadı)</string>
     <string name="instance_block_toast_failure">Bu örneği engelleme (kaldırma) başarısız oldu</string>
     <string name="saving_media">Medya kaydediliyor...</string>

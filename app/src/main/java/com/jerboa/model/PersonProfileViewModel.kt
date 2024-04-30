@@ -15,6 +15,8 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.feat.showBlockCommunityToast
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdateCommentCreator
 import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
@@ -22,8 +24,6 @@ import com.jerboa.findAndUpdatePost
 import com.jerboa.findAndUpdatePostCreator
 import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
