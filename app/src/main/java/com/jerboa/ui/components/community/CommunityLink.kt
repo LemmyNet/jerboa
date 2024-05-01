@@ -29,11 +29,11 @@ import com.jerboa.feat.needBlur
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
-import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
+import com.jerboa.ui.theme.SMALL_ICON_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
@@ -74,7 +74,7 @@ fun CommunityLink(
     usersPerMonth: Long? = null,
     color: Color = MaterialTheme.colorScheme.primary,
     spacing: Dp = SMALL_PADDING,
-    size: Dp = ICON_SIZE,
+    size: Dp = SMALL_ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: Community) -> Unit,

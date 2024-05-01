@@ -16,8 +16,8 @@ val LARGE_PADDING = 12.dp
 val XL_PADDING = 16.dp
 val XXL_PADDING = 20.dp
 
-val ICON_SIZE = 20.dp
-val SMALL_ICON_SIZE = 26.dp
+val SMALL_ICON_SIZE = 20.dp
+val ICON_SIZE = 26.dp
 val MEDIUM_ICON_SIZE = 48.dp
 val LARGER_ICON_SIZE = 80.dp
 val DRAWER_BANNER_SIZE = 96.dp

@@ -75,7 +75,7 @@ private fun BlockedElementListItem(
             CircularIcon(
                 icon = it,
                 contentDescription = null,
-                size = SMALL_ICON_SIZE,
+                size = ICON_SIZE,
             )
             Spacer(modifier = Modifier.padding(horizontal = SMALL_PADDING))
         }
@@ -83,13 +83,13 @@ private fun BlockedElementListItem(
         TextButton(onClick = onUnblock, colors = ButtonDefaults.buttonColors(Color.Transparent)) {
             when (apiState) {
                 ApiState.Loading -> CircularProgressIndicator(
-                    modifier = Modifier.size(ICON_SIZE),
+                    modifier = Modifier.size(SMALL_ICON_SIZE),
                     color = MaterialTheme.colorScheme.secondary,
                 )
                 is ApiState.Success -> onSuccessfulUnblock()
                 else -> Icon(
                     imageVector = Icons.Rounded.Close,
-                    modifier = Modifier.size(ICON_SIZE),
+                    modifier = Modifier.size(SMALL_ICON_SIZE),
                     tint = MaterialTheme.colorScheme.error,
                     contentDescription = null,
                 )

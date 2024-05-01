@@ -40,8 +40,8 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.SMALL_ICON_SIZE
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
@@ -188,7 +188,7 @@ fun PostCommunitySelector(
                         CircularIcon(
                             icon = it,
                             contentDescription = stringResource(R.string.community_icon),
-                            size = ICON_SIZE,
+                            size = SMALL_ICON_SIZE,
                             thumbnailSize = THUMBNAIL_SIZE,
                         )
                     }

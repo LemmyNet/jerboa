@@ -32,11 +32,11 @@ import coil.request.ImageRequest
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.pictrsImageThumbnail
-import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.MAX_IMAGE_SIZE
+import com.jerboa.ui.theme.SMALL_ICON_SIZE
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
 import com.jerboa.util.BlurTransformation
@@ -46,7 +46,7 @@ fun CircularIcon(
     modifier: Modifier = Modifier,
     icon: String,
     contentDescription: String?,
-    size: Dp = ICON_SIZE,
+    size: Dp = SMALL_ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     blur: Boolean = false,
 ) {
