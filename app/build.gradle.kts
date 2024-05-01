@@ -128,7 +128,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
+    implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
@@ -138,7 +138,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.6.0")
     implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.11.2")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -160,21 +160,26 @@ dependencies {
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
     implementation("io.arrow-kt:arrow-core:1.2.4")
+
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
+    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-
-    implementation("androidx.compose.ui:ui:1.6.6")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.6")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.6")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.6")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.6")
-    implementation("androidx.compose.material:material-icons-extended:1.6.6")
 
     implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
