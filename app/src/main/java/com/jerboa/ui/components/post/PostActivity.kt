@@ -191,32 +191,32 @@ fun PostActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier =
-        Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true }
-            .focusRequester(focusRequester)
-            .focusable()
-            .onKeyEvent { keyEvent ->
-                if (navigateParentCommentsWithVolumeButtons) {
-                    when (keyEvent.key) {
-                        Key.VolumeUp -> {
-                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true }
+                .focusRequester(focusRequester)
+                .focusable()
+                .onKeyEvent { keyEvent ->
+                    if (navigateParentCommentsWithVolumeButtons) {
+                        when (keyEvent.key) {
+                            Key.VolumeUp -> {
+                                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        Key.VolumeDown -> {
-                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                            true
-                        }
+                            Key.VolumeDown -> {
+                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                                true
+                            }
 
-                        else -> {
-                            false
+                            else -> {
+                                false
+                            }
                         }
+                    } else {
+                        false
                     }
-                } else {
-                    false
-                }
-            },
+                },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
@@ -272,9 +272,9 @@ fun PostActivity(
         content = { padding ->
             Box(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
+                    Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState),
             ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
@@ -303,10 +303,10 @@ fun PostActivity(
                         LazyColumn(
                             state = listState,
                             modifier =
-                            Modifier
-                                .padding(top = padding.calculateTopPadding())
-                                .simpleVerticalScrollbar(listState)
-                                .testTag("jerboa:comments"),
+                                Modifier
+                                    .padding(top = padding.calculateTopPadding())
+                                    .simpleVerticalScrollbar(listState)
+                                    .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
@@ -717,9 +717,9 @@ fun PostActivity(
                                         showCollapsedCommentContent = showCollapsedCommentContent,
                                         showActionBar = { commentId ->
                                             showActionBarByDefault xor
-                                                    commentsWithToggledActionBar.contains(
-                                                        commentId,
-                                                    )
+                                                commentsWithToggledActionBar.contains(
+                                                    commentId,
+                                                )
                                         },
                                         blurNSFW = blurNSFW,
                                         voteDisplayMode = siteViewModel.voteDisplayMode(),
