@@ -31,7 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 
 // Order is important, as it classifies in which order it does the checks
@@ -96,7 +95,7 @@ suspend fun checkInstance(instance: String): CheckState {
         try {
             val response =
                 API.httpClient
-                    .newCall(Request("https://$instance".toHttpUrlOrNull()!!))
+                    .newCall(Request.Builder().url("https://$instance").build())
                     .execute()
             response.close()
 

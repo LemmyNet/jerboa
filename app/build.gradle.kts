@@ -111,7 +111,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("me.zhanghai.compose.preference:library:1.0.0")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
+//    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
@@ -194,9 +194,9 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.11-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.14-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    // Ktor uses SLF4J
-    implementation("org.slf4j:slf4j-api:2.0.13")
-    implementation("uk.uuid.slf4j:slf4j-android:2.0.13-0")
+
+    // For custom logging plugin
+    implementation("io.ktor:ktor-client-logging:2.3.10")
 }

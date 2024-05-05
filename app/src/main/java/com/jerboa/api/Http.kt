@@ -5,8 +5,12 @@ import android.net.TrafficStats
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.toastException
+import io.ktor.client.plugins.UserAgent
+import io.ktor.client.plugins.logging.*
+import io.ktor.http.HttpHeaders
 import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
+import it.vercruysse.lemmyapi.setDefaultClientConfig
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,12 +22,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
-
-// TODO: regressed functionality: -> logging redactions + actual logging
-// Remove global error handler? do we need this anymore?
-// httpAgent is now LemmyApi, not sure how to make this configurable
-// Timeout is 20s, not 30s not configurable, need to figure this out
-// Reuse httpClient
 
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val DEFAULT_VERSION = "0.19.0"
@@ -44,7 +42,6 @@ object API {
     // TODO add check for this
     val apiFailState: StateFlow<Boolean> = _apiFailState
 
-    // TODO make this to be passed to LemmyApi
     val httpClient: OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -58,6 +55,28 @@ object API {
                     .let(chain::proceed)
             }
             .build()
+
+    init {
+        LemmyApi.setDefaultClientConfig {
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Log.d("LemmyAPI", message)
+                    }
+                }
+                level = LogLevel.ALL
+                sanitizeHeader { header -> header == HttpHeaders.Authorization }
+            }
+
+            install(UserAgent) {
+                agent = "Jerboa"
+            }
+
+            engine {
+                preconfigured = httpClient
+            }
+        }
+    }
 
     suspend fun getInstance(): LemmyApiV19 {
         initialized.await()
@@ -140,7 +159,10 @@ object API {
         try {
             val host = URL(url).host
 
-            if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+            if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(
+                    host,
+                )
+            ) {
                 return true
             } else if (TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
                 return false

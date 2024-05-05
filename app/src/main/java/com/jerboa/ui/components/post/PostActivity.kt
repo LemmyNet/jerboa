@@ -147,9 +147,18 @@ fun PostActivity(
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, postViewModel::updatePost)
-    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
-    appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
+    appState.ConsumeReturn<CommentView>(
+        CommentReplyReturn.COMMENT_VIEW,
+        postViewModel::appendComment,
+    )
+    appState.ConsumeReturn<CommentView>(
+        CommentEditReturn.COMMENT_VIEW,
+        postViewModel::updateComment,
+    )
+    appState.ConsumeReturn<CommentView>(
+        CommentRemoveReturn.COMMENT_VIEW,
+        postViewModel::updateComment,
+    )
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, postViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(
         BanFromCommunityReturn.BAN_DATA_VIEW,
@@ -292,9 +301,15 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
+                        val moderators =
+                            remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
 
-                        if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
+                        if (!account.isAnon()) {
+                            appState.addReturn(
+                                PostViewReturn.POST_VIEW,
+                                postView.copy(read = true),
+                            )
+                        }
                         LazyColumn(
                             state = listState,
                             modifier =
@@ -320,11 +335,7 @@ fun PostActivity(
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score =
-                                                        newVote(
-                                                            postView.my_vote,
-                                                            VoteType.Upvote,
-                                                        ).toLong(),
+                                                    score = newVote(pv.my_vote, VoteType.Upvote),
                                                 ),
                                             )
                                         }
@@ -341,10 +352,7 @@ fun PostActivity(
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score = newVote(
-                                                        postView.my_vote,
-                                                        VoteType.Downvote,
-                                                    ).toLong(),
+                                                    score = newVote(pv.my_vote, VoteType.Downvote),
                                                 ),
                                             )
                                         }
@@ -495,32 +503,40 @@ fun PostActivity(
                                             ),
                                         )
 
-                                    val toggleExpanded: (CommentId) -> Unit = { commentId: CommentId ->
-                                        if (unExpandedComments.contains(commentId)) {
-                                            unExpandedComments.remove(commentId)
-                                        } else {
-                                            unExpandedComments.add(commentId)
+                                    val toggleExpanded: (CommentId) -> Unit =
+                                        { commentId: CommentId ->
+                                            if (unExpandedComments.contains(commentId)) {
+                                                unExpandedComments.remove(commentId)
+                                            } else {
+                                                unExpandedComments.add(commentId)
+                                            }
                                         }
-                                    }
 
-                                    val toggleActionBar: (CommentId) -> Unit = { commentId: CommentId ->
-                                        if (commentsWithToggledActionBar.contains(commentId)) {
-                                            commentsWithToggledActionBar.remove(commentId)
-                                        } else {
-                                            commentsWithToggledActionBar.add(commentId)
+                                    val toggleActionBar: (CommentId) -> Unit =
+                                        { commentId: CommentId ->
+                                            if (commentsWithToggledActionBar.contains(commentId)) {
+                                                commentsWithToggledActionBar.remove(commentId)
+                                            } else {
+                                                commentsWithToggledActionBar.add(commentId)
+                                            }
                                         }
-                                    }
 
-                                    item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
+                                    item(
+                                        key = "${postView.post.id}_is_comment_view",
+                                        contentType = "contextButtons",
+                                    ) {
                                         if (postViewModel.isCommentView()) {
                                             val firstCommentNodeData = commentTree.firstOrNull()
 
                                             val firstCommentPath = firstCommentNodeData?.getPath()
 
                                             val hasParent =
-                                                firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
+                                                firstCommentPath != null && getDepthFromComment(
+                                                    firstCommentPath,
+                                                ) > 0
 
-                                            val commentParentId = firstCommentPath?.let(::getCommentParentId)
+                                            val commentParentId =
+                                                firstCommentPath?.let(::getCommentParentId)
 
                                             ShowCommentContextButtons(
                                                 postView.post.id,
@@ -564,11 +580,10 @@ fun PostActivity(
                                                 postViewModel.likeComment(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
-                                                        score =
-                                                            newVote(
-                                                                cv.my_vote,
-                                                                VoteType.Upvote,
-                                                            ).toLong(),
+                                                        score = newVote(
+                                                            cv.my_vote,
+                                                            VoteType.Upvote,
+                                                        ),
                                                     ),
                                                 )
                                             }
@@ -588,7 +603,7 @@ fun PostActivity(
                                                         score = newVote(
                                                             cv.my_vote,
                                                             VoteType.Downvote,
-                                                        ).toLong(),
+                                                        ),
                                                     ),
                                                 )
                                             }
@@ -618,7 +633,11 @@ fun PostActivity(
                                         onPersonClick = appState::toProfile,
                                         onViewVotesClick = appState::toCommentLikes,
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
-                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView ->
+                                            toggleActionBar(
+                                                commentView.comment.id,
+                                            )
+                                        },
                                         onEditCommentClick = { cv ->
                                             appState.toCommentEdit(
                                                 commentView = cv,

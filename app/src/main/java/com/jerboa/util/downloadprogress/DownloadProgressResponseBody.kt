@@ -11,20 +11,20 @@ class DownloadProgressResponseBody(
     val responseBody: ResponseBody,
     val downloadFlow: MutableStateFlow<ProgressEvent>,
 ) : ResponseBody() {
-    private var bufferedSource: BufferedSource? = null
+    private lateinit var bufferedSource: BufferedSource
 
     override fun contentLength(): Long = responseBody.contentLength()
 
     override fun contentType(): MediaType? = responseBody.contentType()
 
     override fun source(): BufferedSource {
-        if (bufferedSource == null) {
-            bufferedSource = getforwardSource(responseBody.source()).buffer()
+        if (!this::bufferedSource.isInitialized) {
+            bufferedSource = getForwardSource(responseBody.source()).buffer()
         }
-        return bufferedSource!!
+        return bufferedSource
     }
 
-    private fun getforwardSource(source: Source): Source =
+    private fun getForwardSource(source: Source): Source =
         object : ForwardingSource(source) {
             var totalBytesRead = 0L
 

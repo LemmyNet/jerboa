@@ -603,7 +603,6 @@ val sampleSite =
         inbox_url = "https://lemmy.ml",
         last_refreshed_at = "2023-01-01",
         instance_id = 0,
-        private_key = null,
     )
 
 val sampleLocalSite =
