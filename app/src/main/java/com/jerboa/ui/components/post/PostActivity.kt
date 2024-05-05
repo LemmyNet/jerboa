@@ -147,18 +147,9 @@ fun PostActivity(
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, postViewModel::updatePost)
-    appState.ConsumeReturn<CommentView>(
-        CommentReplyReturn.COMMENT_VIEW,
-        postViewModel::appendComment,
-    )
-    appState.ConsumeReturn<CommentView>(
-        CommentEditReturn.COMMENT_VIEW,
-        postViewModel::updateComment,
-    )
-    appState.ConsumeReturn<CommentView>(
-        CommentRemoveReturn.COMMENT_VIEW,
-        postViewModel::updateComment,
-    )
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
+    appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, postViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(
         BanFromCommunityReturn.BAN_DATA_VIEW,
@@ -200,32 +191,32 @@ fun PostActivity(
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier =
-            Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .semantics { testTagsAsResourceId = true }
-                .focusRequester(focusRequester)
-                .focusable()
-                .onKeyEvent { keyEvent ->
-                    if (navigateParentCommentsWithVolumeButtons) {
-                        when (keyEvent.key) {
-                            Key.VolumeUp -> {
-                                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                                true
-                            }
-
-                            Key.VolumeDown -> {
-                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                                true
-                            }
-
-                            else -> {
-                                false
-                            }
+        Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
+            .focusRequester(focusRequester)
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (navigateParentCommentsWithVolumeButtons) {
+                    when (keyEvent.key) {
+                        Key.VolumeUp -> {
+                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                            true
                         }
-                    } else {
-                        false
+
+                        Key.VolumeDown -> {
+                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+
+                        else -> {
+                            false
+                        }
                     }
-                },
+                } else {
+                    false
+                }
+            },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
@@ -281,9 +272,9 @@ fun PostActivity(
         content = { padding ->
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .pullRefresh(pullRefreshState),
+                Modifier
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState),
             ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
@@ -301,8 +292,7 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        val moderators =
-                            remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
+                        val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
 
                         if (!account.isAnon()) {
                             appState.addReturn(
@@ -313,10 +303,10 @@ fun PostActivity(
                         LazyColumn(
                             state = listState,
                             modifier =
-                                Modifier
-                                    .padding(top = padding.calculateTopPadding())
-                                    .simpleVerticalScrollbar(listState)
-                                    .testTag("jerboa:comments"),
+                            Modifier
+                                .padding(top = padding.calculateTopPadding())
+                                .simpleVerticalScrollbar(listState)
+                                .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
@@ -727,9 +717,9 @@ fun PostActivity(
                                         showCollapsedCommentContent = showCollapsedCommentContent,
                                         showActionBar = { commentId ->
                                             showActionBarByDefault xor
-                                                commentsWithToggledActionBar.contains(
-                                                    commentId,
-                                                )
+                                                    commentsWithToggledActionBar.contains(
+                                                        commentId,
+                                                    )
                                         },
                                         blurNSFW = blurNSFW,
                                         voteDisplayMode = siteViewModel.voteDisplayMode(),
