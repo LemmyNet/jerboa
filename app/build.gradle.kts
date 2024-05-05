@@ -111,8 +111,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("me.zhanghai.compose.preference:library:1.0.0")
 
-//    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
-
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
     implementation("io.noties.markwon:ext-strikethrough:4.6.2")
