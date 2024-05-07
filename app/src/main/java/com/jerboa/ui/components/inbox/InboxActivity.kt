@@ -353,7 +353,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Upvote).toLong(),
+                                                            score = newVote(cr.my_vote, VoteType.Upvote),
                                                         ),
                                                     )
                                                 }
@@ -369,7 +369,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Downvote).toLong(),
+                                                            score = newVote(cr.my_vote, VoteType.Downvote),
                                                         ),
                                                     )
                                                 }
@@ -549,7 +549,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Upvote).toLong(),
+                                                            score = newVote(pm.my_vote, VoteType.Upvote),
                                                         ),
                                                     )
                                                 }
@@ -565,7 +565,7 @@ fun InboxTabs(
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Downvote).toLong(),
+                                                            score = newVote(pm.my_vote, VoteType.Downvote),
                                                         ),
                                                     )
                                                 }
