@@ -20,11 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,14 +28,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
-import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.toApiState
-import com.jerboa.feat.showBlockCommunityToast
-import com.jerboa.feat.showBlockInstanceToast
-import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -49,18 +40,13 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.ICON_SIZE
+import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_ICON_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.Title
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstance
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstanceResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
+import it.vercruysse.lemmyapi.v0x19.datatypes.Instance
+import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 
 @Composable
 private fun BlockedElementListItem(
@@ -86,6 +72,7 @@ private fun BlockedElementListItem(
                     modifier = Modifier.size(SMALL_ICON_SIZE),
                     color = MaterialTheme.colorScheme.secondary,
                 )
+
                 is ApiState.Success -> onSuccessfulUnblock()
                 else -> Icon(
                     imageVector = Icons.Rounded.Close,
@@ -146,11 +133,11 @@ fun BlocksActivity(
                         state = listState,
                         modifier = Modifier
                             .padding(padding)
-                            .padding(start = 8.dp)
+                            .padding(start = MEDIUM_PADDING)
                             .simpleVerticalScrollbar(listState),
                     ) {
                         item { Title(stringResource(R.string.blocked_users)) }
-                        item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
+                        item { Spacer(modifier = Modifier.padding(vertical = SMALL_PADDING)) }
 
                         if (personBlocks.isNullOrEmpty()) {
                             item {
@@ -162,25 +149,14 @@ fun BlocksActivity(
                                 contentType = { "personBlock" },
                             ) { person ->
                                 val blockedPerson = person.target
-                                val scope = rememberCoroutineScope()
-                                var apiState: ApiState<BlockPersonResponse> by remember {
-                                    mutableStateOf(ApiState.Empty)
-                                }
+                                val id = blockedPerson.id
+                                val viewModel = makeBlockedPersonViewModel(id)
+
                                 BlockedElementListItem(
-                                    apiState = apiState,
+                                    apiState = viewModel.blockPersonRes,
                                     icon = blockedPerson.avatar,
                                     name = blockedPerson.name,
-                                    onUnblock = {
-                                        apiState = ApiState.Loading
-                                        val form = BlockPerson(blockedPerson.id, false)
-                                        scope.launch {
-                                            apiState =
-                                                API.getInstance().blockPerson(form).toApiState()
-                                            withContext(Dispatchers.Main) {
-                                                showBlockPersonToast(apiState, context)
-                                            }
-                                        }
-                                    },
+                                    onUnblock = { viewModel.blockPerson(false, context) },
                                     onSuccessfulUnblock = {
                                         personBlocks.removeIf { it.target.id == blockedPerson.id }
                                     },
@@ -188,9 +164,9 @@ fun BlocksActivity(
                             }
                         }
 
-                        item { Spacer(modifier = Modifier.padding(vertical = 8.dp)) }
+                        item { Spacer(modifier = Modifier.padding(vertical = MEDIUM_PADDING)) }
                         item { Title(stringResource(R.string.blocked_communities)) }
-                        item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
+                        item { Spacer(modifier = Modifier.padding(vertical = SMALL_PADDING)) }
 
                         if (communityBlocks.isNullOrEmpty()) {
                             item {
@@ -202,25 +178,14 @@ fun BlocksActivity(
                                 contentType = { "communityBlock" },
                             ) { communityView ->
                                 val blockedCommunity = communityView.community
-                                val scope = rememberCoroutineScope()
-                                var apiState: ApiState<BlockCommunityResponse> by remember {
-                                    mutableStateOf(ApiState.Empty)
-                                }
+                                val id = blockedCommunity.id
+                                val viewModel = makeBlockedCommunityViewModel(id)
+
                                 BlockedElementListItem(
-                                    apiState = apiState,
+                                    apiState = viewModel.blockCommunityRes,
                                     icon = blockedCommunity.icon,
                                     name = blockedCommunity.name,
-                                    onUnblock = {
-                                        apiState = ApiState.Loading
-                                        val form = BlockCommunity(blockedCommunity.id, false)
-                                        scope.launch {
-                                            apiState =
-                                                API.getInstance().blockCommunity(form).toApiState()
-                                            withContext(Dispatchers.Main) {
-                                                showBlockCommunityToast(apiState, context)
-                                            }
-                                        }
-                                    },
+                                    onUnblock = { viewModel.blockCommunity(false, context) },
                                     onSuccessfulUnblock = {
                                         communityBlocks.removeIf { it.community.id == blockedCommunity.id }
                                     },
@@ -228,9 +193,9 @@ fun BlocksActivity(
                             }
                         }
 
-                        item { Spacer(modifier = Modifier.padding(vertical = 8.dp)) }
+                        item { Spacer(modifier = Modifier.padding(vertical = MEDIUM_PADDING)) }
                         item { Title(stringResource(R.string.blocked_instances)) }
-                        item { Spacer(modifier = Modifier.padding(vertical = 4.dp)) }
+                        item { Spacer(modifier = Modifier.padding(vertical = SMALL_PADDING)) }
 
                         if (instanceBlocks.isNullOrEmpty()) {
                             item {
@@ -242,25 +207,13 @@ fun BlocksActivity(
                                 contentType = { "instanceBlock" },
                             ) { instanceBlock ->
                                 val instance = instanceBlock.instance
-                                val scope = rememberCoroutineScope()
-                                var apiState: ApiState<BlockInstanceResponse> by remember {
-                                    mutableStateOf(ApiState.Empty)
-                                }
+                                val viewModel = makeBlockedInstanceViewModel(instance)
+
                                 BlockedElementListItem(
-                                    apiState = apiState,
+                                    apiState = viewModel.blockInstanceRes,
                                     icon = null,
                                     name = instance.domain,
-                                    onUnblock = {
-                                        apiState = ApiState.Loading
-                                        val form = BlockInstance(instance.id, false)
-                                        scope.launch {
-                                            apiState =
-                                                API.getInstance().blockInstance(form).toApiState()
-                                            withContext(Dispatchers.Main) {
-                                                showBlockInstanceToast(apiState, instance, context)
-                                            }
-                                        }
-                                    },
+                                    onUnblock = { viewModel.blockInstance(false, context) },
                                     onSuccessfulUnblock = {
                                         instanceBlocks.removeIf { it.instance.id == instance.id }
                                     },
@@ -275,3 +228,15 @@ fun BlocksActivity(
         },
     )
 }
+
+@Composable
+private fun makeBlockedPersonViewModel(blockedPersonId: PersonId): BlockedPersonViewModel =
+    viewModel(factory = BlockedPersonViewModel.Companion.Factory(blockedPersonId))
+
+@Composable
+private fun makeBlockedCommunityViewModel(blockedCommunityId: CommunityId): BlockedCommunityViewModel =
+    viewModel(factory = BlockedCommunityViewModel.Companion.Factory(blockedCommunityId))
+
+@Composable
+private fun makeBlockedInstanceViewModel(blockedInstance: Instance): BlockedInstanceViewModel =
+    viewModel(factory = BlockedInstanceViewModel.Companion.Factory(blockedInstance))
