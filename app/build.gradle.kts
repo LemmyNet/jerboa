@@ -128,7 +128,7 @@ dependencies {
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 
     // Images
     implementation("io.coil-kt:coil-compose:2.6.0")
