@@ -174,7 +174,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.compose.material:material-icons-extended")
 
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
