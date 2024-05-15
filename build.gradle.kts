@@ -4,7 +4,6 @@ plugins {
     id("com.android.application") version "8.4.0" apply false
     id("com.android.library") version "8.4.0" apply false
     id("org.jetbrains.kotlin.android") version "1.9.24" apply false
-    id("com.github.ben-manes.versions") version "0.42.0"
     id("org.jmailen.kotlinter") version "4.3.0" apply false
     id("com.google.devtools.ksp") version "1.9.24-1.0.20" apply false
     id("com.android.test") version "8.4.0" apply false
