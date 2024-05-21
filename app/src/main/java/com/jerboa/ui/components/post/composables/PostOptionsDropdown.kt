@@ -68,6 +68,7 @@ fun PostOptionsDropdown(
     onPersonClick: (PersonId) -> Unit,
     onEditPostClick: (PostView) -> Unit,
     onDeletePostClick: (PostView) -> Unit,
+    onHidePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
     onRemoveClick: (PostView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
