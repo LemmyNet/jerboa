@@ -4,3 +4,4 @@
 # wrong symbols would be generated. The generated Baseline Profile will be properly applied when generated
 # without obfuscation and your app is being obfuscated.
 -dontobfuscate
+-dontwarn org.slf4j.impl.StaticLoggerBinder
