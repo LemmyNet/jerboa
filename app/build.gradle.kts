@@ -105,6 +105,10 @@ android {
     }
 }
 
+composeCompiler {
+    enableStrongSkippingMode = true
+}
+
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("me.zhanghai.compose.preference:library:1.0.0")
