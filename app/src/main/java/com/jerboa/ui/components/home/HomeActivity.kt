@@ -24,8 +24,10 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -104,10 +106,10 @@ fun HomeActivity(
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+   // val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     // Used for benchmarks TODO: make a .benchmark build that correctly filters
     //  out the benchmark stuff from the actual app, like testtags
-    // val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
@@ -118,11 +120,21 @@ fun HomeActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
+    appState.ConsumeReturn<BanFromCommunityData>(
+        BanFromCommunityReturn.BAN_DATA_VIEW,
+        homeViewModel::updateBannedFromCommunity
+    )
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
-            account.doIfReadyElseDisplayInfo(appState, ctx, snackbarHostState, scope, siteViewModel, accountViewModel) {}
+            account.doIfReadyElseDisplayInfo(
+                appState,
+                ctx,
+                snackbarHostState,
+                scope,
+                siteViewModel,
+                accountViewModel
+            ) {}
         }
     }
 
@@ -135,9 +147,10 @@ fun HomeActivity(
 
     Scaffold(
         modifier =
-            baseModifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .semantics { testTagsAsResourceId = true },
+        baseModifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
+        ,
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
@@ -234,18 +247,18 @@ fun MainPostListingsContent(
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
+
         else -> {}
     }
 
     ReportDrawn()
 
-    val pullRefreshState =
-        rememberPullRefreshState(
-            refreshing = homeViewModel.postsRes.isRefreshing(),
-            onRefresh = {
-                homeViewModel.refreshPosts()
-            },
-        )
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = homeViewModel.postsRes.isRefreshing(),
+        onRefresh = {
+            homeViewModel.refreshPosts()
+        },
+    )
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
@@ -262,71 +275,79 @@ fun MainPostListingsContent(
             LoadingBar(padding = padding)
         }
 
-        val posts =
+        val posts: List<PostView> = remember(homeViewModel.postsRes) {
             when (val postsRes = homeViewModel.postsRes) {
                 is ApiState.Failure -> {
                     apiErrorToast(ctx, postsRes.msg)
-                    emptyList()
+                    mutableStateListOf()
                 }
-                is ApiState.Holder -> postsRes.data.posts.toList()
-                else -> emptyList()
+
+                is ApiState.Holder -> postsRes.data
+                else -> mutableStateListOf()
             }
+        }
 
         PostListings(
             posts = posts,
             admins = siteViewModel.admins(),
             // No community moderators available here
             moderators = null,
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toList()) },
-            onUpvoteClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.likePost(
-                        CreatePostLike(
-                            post_id = postView.post.id,
-                            score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
-                        ),
-                    )
+            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
+            onUpvoteClick = remember {
+                { postView ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                    ) {
+                        homeViewModel.likePost(
+                            CreatePostLike(
+                                post_id = postView.post.id,
+                                score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
+                            ),
+                        )
+                    }
                 }
             },
-            onDownvoteClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.likePost(
-                        CreatePostLike(
-                            post_id = postView.post.id,
-                            score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
-                        ),
-                    )
+            onDownvoteClick = remember {
+                { postView ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                    ) {
+                        homeViewModel.likePost(
+                            CreatePostLike(
+                                post_id = postView.post.id,
+                                score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
+                            ),
+                        )
+                    }
                 }
             },
             onPostClick = { postView ->
                 appState.toPost(id = postView.post.id)
             },
-            onSaveClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.savePost(
-                        SavePost(
-                            post_id = postView.post.id,
-                            save = !postView.saved,
-                        ),
-                    )
+            onSaveClick = remember {
+                { postView ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                    ) {
+                        homeViewModel.savePost(
+                            SavePost(
+                                post_id = postView.post.id,
+                                save = !postView.saved,
+                            ),
+                        )
+                    }
                 }
             },
             onReplyClick = { pv ->
@@ -339,20 +360,22 @@ fun MainPostListingsContent(
                     postView = postView,
                 )
             },
-            onDeletePostClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.deletePost(
-                        DeletePost(
-                            post_id = postView.post.id,
-                            deleted = !postView.post.deleted,
-                        ),
-                    )
+            onDeletePostClick = remember {
+                { postView ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                    ) {
+                        homeViewModel.deletePost(
+                            DeletePost(
+                                post_id = postView.post.id,
+                                deleted = !postView.post.deleted,
+                            ),
+                        )
+                    }
                 }
             },
             onReportClick = { postView ->
@@ -367,37 +390,41 @@ fun MainPostListingsContent(
             onBanFromCommunityClick = { d ->
                 appState.toBanFromCommunity(banData = d)
             },
-            onLockPostClick = { pv ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.lockPost(
-                        LockPost(
-                            post_id = pv.post.id,
-                            locked = !pv.post.locked,
-                        ),
-                    )
+            onLockPostClick = remember {
+                { pv ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                    ) {
+                        homeViewModel.lockPost(
+                            LockPost(
+                                post_id = pv.post.id,
+                                locked = !pv.post.locked,
+                            ),
+                        )
+                    }
                 }
             },
-            onFeaturePostClick = { data ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.featurePost(
-                        FeaturePost(
-                            post_id = data.post.id,
-                            featured = !data.featured,
-                            feature_type = data.type,
-                        ),
-                    )
+            onFeaturePostClick = remember {
+                { data ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                    ) {
+                        homeViewModel.featurePost(
+                            FeaturePost(
+                                post_id = data.post.id,
+                                featured = !data.featured,
+                                feature_type = data.type,
+                            ),
+                        )
+                    }
                 }
             },
             onViewPostVotesClick = appState::toPostLikes,

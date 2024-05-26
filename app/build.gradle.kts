@@ -28,7 +28,7 @@ android {
             useSupportLibrary = true
         }
         ksp {
-           arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -104,6 +104,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.11"
+
     }
 }
 
@@ -139,7 +140,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.6.0")
     implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.9.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 

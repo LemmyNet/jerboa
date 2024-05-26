@@ -224,7 +224,7 @@ fun CommunityActivity(
                             }
 
                         PostListings(
-                            posts = postsRes.data.posts,
+                            posts = postsRes.data,
                             admins = siteViewModel.admins(),
                             moderators = remember(moderators) { moderators?.map { it.moderator.id } },
                             contentAboveListings = {
