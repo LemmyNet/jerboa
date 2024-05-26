@@ -504,7 +504,7 @@ fun UserTabs(
                                                         newVote(
                                                             pv.my_vote,
                                                             VoteType.Upvote,
-                                                        ).toLong(),
+                                                        ),
                                                 ),
                                             )
                                         }
@@ -523,7 +523,7 @@ fun UserTabs(
                                                     score = newVote(
                                                         pv.my_vote,
                                                         VoteType.Downvote,
-                                                    ).toLong(),
+                                                    ),
                                                 ),
                                             )
                                         }
@@ -761,7 +761,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Upvote).toLong(),
+                                                    score = newVote(cv.my_vote, VoteType.Upvote),
                                                 ),
                                             )
                                         }
@@ -777,7 +777,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Downvote).toLong(),
+                                                    score = newVote(cv.my_vote, VoteType.Downvote),
                                                 ),
                                             )
                                         }

@@ -5,7 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    kotlin("plugin.serialization") version "1.9.23"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
 
 }
 
@@ -102,17 +103,15 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
+}
 
-    }
+composeCompiler {
+    enableStrongSkippingMode = true
 }
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("me.zhanghai.compose.preference:library:1.0.0")
-
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.12")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
@@ -123,16 +122,15 @@ dependencies {
     implementation("io.noties.markwon:linkify:4.6.2")
 
     // Accompanist
-    val accompanistVersion = "0.34.0"
-    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-pager:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 
     // Images
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -140,6 +138,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.6.0")
     implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
+    implementation("me.saket.telephoto:zoomable-image-coil:0.11.2")
     implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
@@ -162,38 +161,43 @@ dependencies {
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
     implementation("io.arrow-kt:arrow-core:1.2.4")
+
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
+    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
 
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.7")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.compose.ui:ui:1.6.5")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.5")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.5")
-    implementation("androidx.compose.material:material-icons-extended:1.6.5")
-
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    testImplementation("org.mockito:mockito-core:5.11.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 
     implementation("androidx.browser:browser:1.8.0")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.11-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.15-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    // Ktor uses SLF4J
-    implementation("org.slf4j:slf4j-api:2.0.12")
-    implementation("uk.uuid.slf4j:slf4j-android:2.0.12-0")
+
+    // For custom logging plugin
+    implementation("io.ktor:ktor-client-logging:2.3.11")
 }

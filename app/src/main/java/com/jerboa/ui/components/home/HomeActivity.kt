@@ -120,10 +120,7 @@ fun HomeActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(
-        BanFromCommunityReturn.BAN_DATA_VIEW,
-        homeViewModel::updateBannedFromCommunity
-    )
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -147,10 +144,9 @@ fun HomeActivity(
 
     Scaffold(
         modifier =
-        baseModifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true }
-        ,
+            baseModifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true },
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
@@ -305,28 +301,26 @@ fun MainPostListingsContent(
                         homeViewModel.likePost(
                             CreatePostLike(
                                 post_id = postView.post.id,
-                                score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
+                                score = newVote(postView.my_vote, VoteType.Upvote),
                             ),
                         )
                     }
                 }
             },
-            onDownvoteClick = remember {
-                { postView ->
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                    ) {
-                        homeViewModel.likePost(
-                            CreatePostLike(
-                                post_id = postView.post.id,
-                                score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
-                            ),
-                        )
-                    }
+            onDownvoteClick = { postView ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.likePost(
+                        CreatePostLike(
+                            post_id = postView.post.id,
+                            score = newVote(postView.my_vote, VoteType.Downvote),
+                        ),
+                    )
                 }
             },
             onPostClick = { postView ->

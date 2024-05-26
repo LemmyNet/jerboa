@@ -60,7 +60,8 @@ val samplePost =
         embed_video_url = null,
         thumbnail_url = null,
         language_id = 0,
-        ap_id = "https://lemmy.ml/post/135129", local = true,
+        ap_id = "https://lemmy.ml/post/135129",
+        local = true,
     )
 
 val sampleLinkPost =
@@ -83,7 +84,8 @@ val sampleLinkPost =
         embed_description = "Just like previous variants, omicron is hospitalizing people, and it is killing people.",
         embed_video_url = null,
         thumbnail_url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
-        ap_id = "https://lemmy.ml/post/135129", local = true,
+        ap_id = "https://lemmy.ml/post/135129",
+        local = true,
         language_id = 0,
     )
 
@@ -107,7 +109,8 @@ val sampleLinkNoThumbnailPost =
         embed_description = "Just like previous variants, omicron is hospitalizing people, and it is killing people.",
         embed_video_url = null,
         thumbnail_url = null,
-        ap_id = "https://lemmy.ml/post/135129", local = true,
+        ap_id = "https://lemmy.ml/post/135129",
+        local = true,
         language_id = 0,
     )
 
@@ -131,7 +134,8 @@ val sampleImagePost =
         embed_description = "Just like previous variants, omicron is hospitalizing people, and it is killing people.",
         embed_video_url = null,
         thumbnail_url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
-        ap_id = "https://lemmy.ml/post/135129", local = true,
+        ap_id = "https://lemmy.ml/post/135129",
+        local = true,
         language_id = 0,
     )
 
@@ -156,7 +160,8 @@ val sampleMarkdownPost =
         embed_video_url = null,
         thumbnail_url = null,
         language_id = 0,
-        ap_id = "https://lemmy.ml/post/135129", local = true,
+        ap_id = "https://lemmy.ml/post/135129",
+        local = true,
     )
 
 val samplePerson =
@@ -598,7 +603,6 @@ val sampleSite =
         inbox_url = "https://lemmy.ml",
         last_refreshed_at = "2023-01-01",
         instance_id = 0,
-        private_key = null,
     )
 
 val sampleLocalSite =

@@ -211,7 +211,7 @@ fun recCreateAndGenMissingCommentData(
             map[parentId] = missingNode
             missingNode.children.add(currCommentNodeData)
             currCommentNodeData.parent = missingNode
-            // The the missing parent needs to be correctly weaved into the tree
+            // The missing parent needs to be correctly weaved into the tree
             // It needs a parent, and it needs to be added to the parent's children
             // The parent may also be missing, so we need to recursively call this function
             recCreateAndGenMissingCommentData(map, tree, parentPath, missingNode, rootCommentId)
@@ -1454,7 +1454,7 @@ fun Context.getInputStream(url: String): InputStream {
             Request.Builder()
                 .url(url)
                 .build(),
-        ).execute().body.byteStream()
+        ).execute().body?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }
 

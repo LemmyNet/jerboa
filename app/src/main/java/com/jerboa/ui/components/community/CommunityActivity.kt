@@ -272,7 +272,7 @@ fun CommunityActivity(
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
-                                            score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
+                                            score = newVote(postView.my_vote, VoteType.Upvote),
                                         ),
                                     )
                                 }
@@ -289,7 +289,7 @@ fun CommunityActivity(
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
-                                            score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
+                                            score = newVote(postView.my_vote, VoteType.Downvote),
                                         ),
                                     )
                                 }
