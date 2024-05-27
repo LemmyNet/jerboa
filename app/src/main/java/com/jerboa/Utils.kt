@@ -869,7 +869,10 @@ fun nsfwCheck(postView: PostView): Boolean {
     return nsfwCheck(postView.post, postView.community)
 }
 
-fun nsfwCheck(post: Post, community: Community): Boolean {
+fun nsfwCheck(
+    post: Post,
+    community: Community,
+): Boolean {
     return post.nsfw || community.nsfw
 }
 

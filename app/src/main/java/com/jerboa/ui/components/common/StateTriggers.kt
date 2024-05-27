@@ -9,7 +9,11 @@ import androidx.compose.runtime.remember
 import com.jerboa.isScrolledToEnd
 
 @Composable
-fun TriggerWhenReachingEnd(listState: LazyListState, loadMorePosts: () -> Unit, showPostAppendRetry: Boolean) {
+fun TriggerWhenReachingEnd(
+    listState: LazyListState,
+    loadMorePosts: () -> Unit,
+    showPostAppendRetry: Boolean,
+) {
     // observer when reached end of list
     val endOfListReached by remember {
         derivedStateOf {

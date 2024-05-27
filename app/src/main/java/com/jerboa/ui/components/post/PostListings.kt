@@ -26,8 +26,8 @@ import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.rememberJerboaAppState
-import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.RetryLoadingPosts
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -152,7 +152,6 @@ fun PostListings(
 
     TriggerWhenReachingEnd(listState, loadMorePosts, showPostAppendRetry)
 }
-
 
 @Preview
 @Composable

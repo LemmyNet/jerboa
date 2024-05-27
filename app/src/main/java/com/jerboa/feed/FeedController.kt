@@ -5,11 +5,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 
 open class FeedController<T> {
-
     protected val items = mutableStateListOf<T>()
 
     val feed: SnapshotStateList<T> = items
-
 
     fun updateALl(
         selector: (List<T>) -> List<Int>,
@@ -42,7 +40,10 @@ open class FeedController<T> {
      * Example: a network request to update an item succeeded after the list has changed.
      * So, we ignore it
      */
-    fun update(index: Int, new: T) {
+    fun update(
+        index: Int,
+        new: T,
+    ) {
         if (index >= 0 && index < items.size) {
             items[index] = new
         } else {
@@ -66,7 +67,10 @@ open class FeedController<T> {
         items.addAll(newItems)
     }
 
-    protected inline fun <E> Iterable<E>.indexesOf(predicate: (E) -> Boolean)
-            = mapIndexedNotNull{ index, elem -> index.takeIf{ predicate(elem) } }
-
+    protected inline fun <E> Iterable<E>.indexesOf(predicate: (E) -> Boolean) =
+        mapIndexedNotNull { index, elem ->
+            index.takeIf {
+                predicate(elem)
+            }
+        }
 }

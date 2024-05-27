@@ -84,7 +84,7 @@ fun PostReportItem(
                 .clickable { onPostClick(postView) },
         ) {
             PostHeaderLine(
-                post =  postView.post,
+                post = postView.post,
                 creator = postView.creator,
                 community = postView.community,
                 creatorBannedFromCommunity = postView.creator_banned_from_community,

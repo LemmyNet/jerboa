@@ -11,7 +11,7 @@ class PaginationController(
         pageCursor = null
     }
 
-    fun nextPage(pageCursor: PaginationCursor?){
+    fun nextPage(pageCursor: PaginationCursor?)  {
         page++
         this.pageCursor = pageCursor
     }
