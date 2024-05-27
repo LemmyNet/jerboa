@@ -173,7 +173,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.7")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
