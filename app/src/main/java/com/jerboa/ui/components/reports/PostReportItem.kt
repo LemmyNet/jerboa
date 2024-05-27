@@ -16,6 +16,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
+import com.jerboa.feat.needBlur
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.post.PostBody
 import com.jerboa.ui.components.post.PostHeaderLine
@@ -83,7 +84,10 @@ fun PostReportItem(
                 .clickable { onPostClick(postView) },
         ) {
             PostHeaderLine(
-                postView = postView,
+                post =  postView.post,
+                creator = postView.creator,
+                community = postView.community,
+                creatorBannedFromCommunity = postView.creator_banned_from_community,
                 instantScores = InstantScores(
                     myVote = postView.my_vote,
                     score = postView.counts.score,
@@ -102,14 +106,15 @@ fun PostReportItem(
 
         //  Title + metadata
         PostBody(
-            postView = postView,
+            post = postView.post,
+            read = postView.read,
             fullBody = false,
             viewSource = false,
             expandedImage = false,
             account = account,
             useCustomTabs = false,
             usePrivateTabs = false,
-            blurNSFW = blurNSFW,
+            blurEnabled = blurNSFW.needBlur(postView),
             showPostLinkPreview = true,
             appState = appState,
             clickBody = { onPostClick(postView) },

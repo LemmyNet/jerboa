@@ -128,7 +128,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 
@@ -139,7 +139,6 @@ dependencies {
     implementation("io.coil-kt:coil-video:2.6.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.11.2")
-    implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 

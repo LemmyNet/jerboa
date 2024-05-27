@@ -7,7 +7,6 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 
 class HomeViewModel(accountRepository: AccountRepository) : PostsViewModel(accountRepository) {
-    val lazyListState = LazyListState()
 
     init {
         init()

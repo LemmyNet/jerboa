@@ -1,6 +1,8 @@
 package com.jerboa.model
 
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,6 +20,7 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.toEnumSafe
 import com.jerboa.feed.PaginationController
 import com.jerboa.feed.PostController
+import com.jerboa.isScrolledToEnd
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
@@ -33,6 +36,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 open class PostsViewModel(protected val accountRepository: AccountRepository) : ViewModel() {
+    val lazyListState = LazyListState()
     var postsRes: ApiState<List<PostView>> by mutableStateOf(ApiState.Empty)
         private set
     var sortType by mutableStateOf(SortType.Active)
@@ -93,11 +97,11 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
                 is ApiState.Success -> {
                     pageController.nextPage(newRes.data.next_page)
                     postController.addAll(newRes.data.posts)
-                    postsRes = ApiState.Success(postsList)
+                      postsRes = ApiState.Success(postsList)
                 }
 
                 else -> {
-                    postsRes = ApiState.AppendingFailure(oldRes.data)
+                        postsRes = ApiState.AppendingFailure(oldRes.data)
                 }
             }
         }

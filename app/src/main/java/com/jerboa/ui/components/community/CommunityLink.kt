@@ -41,12 +41,14 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 @Composable
 fun CommunityName(
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     ItemAndInstanceTitle(
         title = community.title,
+        onClick = onClick,
         actorId = community.actor_id,
         local = community.local,
         modifier = modifier,

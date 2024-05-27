@@ -5,16 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +25,9 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.RetryLoadingPosts
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -88,8 +81,7 @@ fun PostListings(
 ) {
     LazyColumn(
         state = listState,
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(padding)
             .fillMaxSize()
             .testTag("jerboa:posts"),
@@ -158,20 +150,9 @@ fun PostListings(
         }
     }
 
-    // observer when reached end of list
-    val endOfListReached by remember {
-        derivedStateOf {
-            listState.isScrolledToEnd()
-        }
-    }
-
-    // Act when end of list reached
-    if (endOfListReached && !showPostAppendRetry) {
-        LaunchedEffect(Unit) {
-            loadMorePosts()
-        }
-    }
+    TriggerWhenReachingEnd(listState, loadMorePosts, showPostAppendRetry)
 }
+
 
 @Preview
 @Composable
