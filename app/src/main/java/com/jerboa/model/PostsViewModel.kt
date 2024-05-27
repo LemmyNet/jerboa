@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
@@ -63,7 +62,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
 
     private fun initPosts(
         form: GetPosts,
-        state: ApiState<SnapshotStateList<PostView>> = ApiState.Loading,
+        state: ApiState<List<PostView>> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             postsRes = state
@@ -112,7 +111,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         postController.findAndUpdatePostCreatorBannedFromCommunity(banData)
     }
 
-    fun resetPosts(state: ApiState<SnapshotStateList<PostView>> = ApiState.Loading) {
+    fun resetPosts(state: ApiState<List<PostView>> = ApiState.Loading) {
         pageController.reset()
         postsList.clear()
         initPosts(

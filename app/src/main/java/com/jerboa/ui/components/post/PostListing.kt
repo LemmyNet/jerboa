@@ -236,7 +236,7 @@ fun CommunityIcon(
     community: Community,
     onCommunityClick: (community: Community) -> Unit,
     blurNSFW: BlurNSFW,
-)  {
+) {
     community.icon?.let {
         CircularIcon(
             icon = it,
