@@ -20,6 +20,8 @@ import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -308,6 +310,27 @@ fun PostOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     shareLink(postView.post.ap_id, ctx)
+                },
+            )
+        }
+
+        // Hide / unhide post
+        if (postView.hidden) {
+            PopupMenuItem(
+                text = stringResource(R.string.unhide_post),
+                icon = Icons.Outlined.Visibility,
+                onClick = {
+                    onDismissRequest()
+                    onHidePostClick(postView)
+                },
+            )
+        } else {
+            PopupMenuItem(
+                text = stringResource(R.string.hide_post),
+                icon = Icons.Outlined.VisibilityOff,
+                onClick = {
+                    onDismissRequest()
+                    onHidePostClick(postView)
                 },
             )
         }

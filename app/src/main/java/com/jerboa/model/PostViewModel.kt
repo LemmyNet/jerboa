@@ -39,7 +39,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommentsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.SuccessResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
@@ -68,7 +67,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var hidePostRes: ApiState<SuccessResponse> by mutableStateOf(ApiState.Empty)
+    private var hidePostRes: ApiState<(Unit)> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
@@ -266,12 +265,12 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
 
     fun hidePost(
         form: HidePost,
-                 ctx: Context,
-                 ) {
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             hidePostRes = ApiState.Loading
             hidePostRes = API.getInstance().hidePost(form).toApiState()
-            val msg = if (form.hide) R.string.hide_post else R.string.unhide_post
+            val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
             when (hidePostRes) {
                 is ApiState.Success -> {
                     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()

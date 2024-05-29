@@ -1,6 +1,8 @@
 package com.jerboa.model
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.jerboa.JerboaAppState
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
@@ -27,6 +30,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
@@ -224,6 +228,18 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         viewModelScope.launch {
             API.getInstance().deletePost(form).onSuccess {
                 updatePost(it.post_view)
+            }
+        }
+    }
+
+    fun hidePost(
+        form: HidePost,
+        ctx: Context,
+    ) {
+        viewModelScope.launch {
+            val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
+            API.getInstance().hidePost(form).onSuccess {
+                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
             }
         }
     }
