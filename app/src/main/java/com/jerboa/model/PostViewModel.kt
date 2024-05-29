@@ -273,6 +273,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
             when (hidePostRes) {
                 is ApiState.Success -> {
+                    updatePostHidden(form.hide)
                     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 }
                 else -> {}
@@ -354,6 +355,18 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         when (val existing = postRes) {
             is ApiState.Success -> {
                 val newRes = ApiState.Success(existing.data.copy(post_view = postView))
+                postRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updatePostHidden(hidden: Boolean) {
+        when (val existing = postRes) {
+            is ApiState.Success -> {
+                val newPostView = existing.data.post_view.copy(hidden = hidden)
+                val newRes = ApiState.Success(existing.data.copy(post_view = newPostView))
                 postRes = newRes
             }
 

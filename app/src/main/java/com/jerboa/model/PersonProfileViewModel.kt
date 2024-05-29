@@ -23,6 +23,7 @@ import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
 import com.jerboa.findAndUpdatePost
 import com.jerboa.findAndUpdatePostCreator
 import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
+import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.getDeduplicateMerge
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
@@ -202,6 +203,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
             when (hidePostRes) {
                 is ApiState.Success -> {
+                    updatePostHidden(form)
                     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 }
                 else -> {}
@@ -324,6 +326,18 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             is ApiState.Success -> {
                 val newPosts =
                     findAndUpdatePost(existing.data.posts, postView)
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                personDetailsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updatePostHidden(form: HidePost) {
+        when (val existing = personDetailsRes) {
+            is ApiState.Success -> {
+                val newPosts = findAndUpdatePostHidden(existing.data.posts, form)
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 personDetailsRes = newRes
             }

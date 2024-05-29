@@ -21,6 +21,7 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
 import com.jerboa.findAndUpdatePostCreator
 import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
+import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.mergePosts
 import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.dto.ListingType
@@ -140,6 +141,18 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         }
     }
 
+    private fun updatePostHidden(form: HidePost) {
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                val newPosts = findAndUpdatePostHidden(existing.data.posts, form)
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                postsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
     fun updateBanned(personView: PersonView) {
         when (val existing = postsRes) {
             is ApiState.Success -> {
@@ -239,6 +252,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         viewModelScope.launch {
             val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
             API.getInstance().hidePost(form).onSuccess {
+                updatePostHidden(form)
                 Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
             }
         }
