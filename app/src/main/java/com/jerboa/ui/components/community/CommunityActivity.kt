@@ -193,19 +193,18 @@ fun CommunityActivity(
             }
         },
         content = { padding ->
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            Box(modifier = Modifier.pullRefresh(pullRefreshState).padding(padding)) {
                 // zIndex needed bc some elements of a post get drawn above it.
                 JerboaPullRefreshIndicator(
                     communityViewModel.postsRes.isRefreshing(),
                     pullRefreshState,
                     Modifier
-                        .padding(padding)
                         .align(Alignment.TopCenter)
                         .zIndex(100F),
                 )
                 // Can't be in ApiState.Loading, because of infinite scrolling
                 if (communityViewModel.postsRes.isLoading()) {
-                    LoadingBar(padding = padding)
+                    LoadingBar()
                 }
                 when (val postsRes = communityViewModel.postsRes) {
                     ApiState.Empty -> ApiEmptyText()
@@ -400,7 +399,6 @@ fun CommunityActivity(
                             },
                             account = account,
                             showCommunityName = false,
-                            padding = padding,
                             listState = postListState,
                             postViewMode = getPostViewMode(appSettingsViewModel),
                             showVotingArrowsInListView = showVotingArrowsInListView,

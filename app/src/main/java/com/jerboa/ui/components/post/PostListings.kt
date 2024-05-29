@@ -1,8 +1,6 @@
 package com.jerboa.ui.components.post
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -12,7 +10,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.BanFromCommunityData
@@ -60,7 +57,6 @@ fun PostListings(
     loadMorePosts: () -> Unit,
     account: Account,
     showCommunityName: Boolean = true,
-    padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
@@ -82,7 +78,6 @@ fun PostListings(
     LazyColumn(
         state = listState,
         modifier = Modifier
-            .padding(padding)
             .fillMaxSize()
             .testTag("jerboa:posts"),
     ) {

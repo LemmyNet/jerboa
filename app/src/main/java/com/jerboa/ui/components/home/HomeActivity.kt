@@ -164,24 +164,25 @@ fun HomeActivity(
             )
         },
         content = { innerPadding ->
-            MainPostListingsContent(
-                padding = innerPadding,
-                homeViewModel = homeViewModel,
-                siteViewModel = siteViewModel,
-                appSettingsViewModel = appSettingsViewModel,
-                account = account,
-                appState = appState,
-                postListState = postListState,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreviews = showPostLinkPreviews,
-                markAsReadOnScroll = markAsReadOnScroll,
-                snackbarHostState = snackbarHostState,
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-            )
+            Box(modifier = Modifier.padding(innerPadding)) {
+                MainPostListingsContent(
+                    homeViewModel = homeViewModel,
+                    siteViewModel = siteViewModel,
+                    appSettingsViewModel = appSettingsViewModel,
+                    account = account,
+                    appState = appState,
+                    postListState = postListState,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
+                    showPostLinkPreviews = showPostLinkPreviews,
+                    markAsReadOnScroll = markAsReadOnScroll,
+                    snackbarHostState = snackbarHostState,
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                )
+            }
         },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
@@ -218,7 +219,6 @@ fun MainPostListingsContent(
     siteViewModel: SiteViewModel,
     account: Account,
     appState: JerboaAppState,
-    padding: PaddingValues,
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
@@ -236,9 +236,9 @@ fun MainPostListingsContent(
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading -> LoadingBar(padding)
+        ApiState.Loading -> LoadingBar()
         ApiState.Empty -> ApiEmptyText()
-        is ApiState.Failure -> ApiErrorText(siteRes.msg, padding)
+        is ApiState.Failure -> ApiErrorText(siteRes.msg)
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
@@ -261,13 +261,12 @@ fun MainPostListingsContent(
             homeViewModel.postsRes.isRefreshing(),
             pullRefreshState,
             Modifier
-                .padding(padding)
                 .align(Alignment.TopCenter)
                 .zIndex(100f),
         )
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (homeViewModel.postsRes.isLoading()) {
-            LoadingBar(padding = padding)
+            LoadingBar()
         }
 
         val posts: List<PostView> = remember(homeViewModel.postsRes) {
@@ -429,7 +428,6 @@ fun MainPostListingsContent(
                 homeViewModel.appendPosts()
             },
             account = account,
-            padding = padding,
             listState = postListState,
             postViewMode = getPostViewMode(appSettingsViewModel),
             showVotingArrowsInListView = showVotingArrowsInListView,
