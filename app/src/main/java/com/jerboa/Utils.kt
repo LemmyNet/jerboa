@@ -659,6 +659,7 @@ fun validatePostName(
 fun validateUrl(
     ctx: Context,
     url: String,
+    label: String = ctx.getString(R.string.url),
 ): InputField {
     return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
@@ -667,7 +668,7 @@ fun validateUrl(
         )
     } else {
         InputField(
-            label = ctx.getString(R.string.url),
+            label = label,
             hasError = false,
         )
     }

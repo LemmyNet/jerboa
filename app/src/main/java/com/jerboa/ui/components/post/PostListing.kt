@@ -372,6 +372,7 @@ fun PostTitleAndImageLink(
         PictrsUrlImage(
             url = cUrl,
             blur = blurNSFW.needBlur(postView),
+            contentDescription = postView.post.alt_text,
             modifier =
                 Modifier
                     .combinedClickable(
@@ -1499,6 +1500,7 @@ private fun ThumbnailTile(
                     thumbnail = thumbnail,
                     blur = blurNSFW.needBlur(postView),
                     roundBottomEndCorner = postType != PostType.Link,
+                    contentDescription = postView.post.alt_text,
                     modifier = postLinkPicMod,
                 )
             } ?: run {
