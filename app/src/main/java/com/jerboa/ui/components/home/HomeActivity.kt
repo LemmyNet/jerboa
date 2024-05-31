@@ -119,7 +119,10 @@ fun HomeActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
+    appState.ConsumeReturn<BanFromCommunityData>(
+        BanFromCommunityReturn.BAN_DATA_VIEW,
+        homeViewModel::updateBannedFromCommunity
+    )
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -143,9 +146,9 @@ fun HomeActivity(
 
     Scaffold(
         modifier =
-            baseModifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .semantics { testTagsAsResourceId = true },
+        baseModifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true },
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
@@ -268,16 +271,14 @@ fun MainPostListingsContent(
             LoadingBar()
         }
 
-        val posts: List<PostView> = remember(homeViewModel.postsRes) {
-            when (val postsRes = homeViewModel.postsRes) {
-                is ApiState.Failure -> {
-                    apiErrorToast(ctx, postsRes.msg)
-                    mutableStateListOf()
-                }
-
-                is ApiState.Holder -> postsRes.data
-                else -> mutableStateListOf()
+        val posts: List<PostView> = when (val postsRes = homeViewModel.postsRes) {
+            is ApiState.Failure -> {
+                apiErrorToast(ctx, postsRes.msg)
+                listOf()
             }
+
+            is ApiState.Holder -> postsRes.data
+            else -> listOf()
         }
 
         PostListings(
