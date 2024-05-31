@@ -30,7 +30,7 @@ open class PostController : FeedController<PostView>() {
         ) { it.copy(creator = banData.person) }
     }
 
-    fun findAndUpdatePostHidden(hidePost: HidePost)  {
+    fun findAndUpdatePostHidden(hidePost: HidePost) {
         updateAll(
             {
                 it.indexesOf { postView ->

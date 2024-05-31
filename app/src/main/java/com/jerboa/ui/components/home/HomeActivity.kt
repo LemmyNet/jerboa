@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -121,7 +120,7 @@ fun HomeActivity(
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(
         BanFromCommunityReturn.BAN_DATA_VIEW,
-        homeViewModel::updateBannedFromCommunity
+        homeViewModel::updateBannedFromCommunity,
     )
 
     LaunchedEffect(account) {
@@ -146,9 +145,9 @@ fun HomeActivity(
 
     Scaffold(
         modifier =
-        baseModifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true },
+            baseModifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true },
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
