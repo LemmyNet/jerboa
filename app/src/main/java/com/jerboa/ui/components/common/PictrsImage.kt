@@ -133,6 +133,7 @@ fun PictrsThumbnailImage(
     blur: Boolean,
     roundBottomEndCorner: Boolean,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
 ) {
     val ctx = LocalContext.current
     val imageRequest =
@@ -148,7 +149,7 @@ fun PictrsThumbnailImage(
     AsyncImage(
         model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = null,
+        contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier =
             modifier
@@ -172,6 +173,7 @@ fun PictrsUrlImage(
     url: String,
     blur: Boolean,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
 ) {
     val ctx = LocalContext.current
     val imageRequest =
@@ -187,7 +189,7 @@ fun PictrsUrlImage(
     AsyncImage(
         model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = null,
+        contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier =
             modifier
