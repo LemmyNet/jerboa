@@ -63,10 +63,13 @@ fun PostEditActivity(
         )
     }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
+    var altText by rememberSaveable { mutableStateOf(postView.post.alt_text.orEmpty()) }
+    var customThumbnail by rememberSaveable { mutableStateOf("") }
 
     val nameField = validatePostName(ctx, name)
     val urlField = validateUrl(ctx, url)
-    val formValid = !nameField.hasError && !urlField.hasError
+    val customThumbnailField = validateUrl(ctx, customThumbnail, ctx.getString(R.string.custom_thumbnail))
+    val formValid = !nameField.hasError && !urlField.hasError && !customThumbnailField.hasError
 
     Scaffold(
         topBar = {
@@ -88,6 +91,8 @@ fun PostEditActivity(
                                 name = name,
                                 body = body,
                                 url = url,
+                                altText = altText,
+                                customThumbnail = customThumbnail,
                                 postEditViewModel = postEditViewModel,
                                 isNsfw = isNsfw,
                                 appState = appState,
@@ -110,6 +115,11 @@ fun PostEditActivity(
                 url = url,
                 urlField = urlField,
                 onUrlChange = { url = it },
+                altText = altText,
+                onAltTextChange = { altText = it },
+                customThumbnailField = customThumbnailField,
+                customThumbnail = customThumbnail,
+                onCustomThumbnailChange = { customThumbnail = it },
                 onImagePicked = { uri ->
                     if (!account.isAnon()) {
                         val imageIs = imageInputStreamFromUri(ctx, uri)
@@ -140,6 +150,8 @@ fun onSubmitClick(
     name: String,
     body: TextFieldValue,
     url: String,
+    altText: String,
+    customThumbnail: String,
     postEditViewModel: PostEditViewModel,
     isNsfw: Boolean,
     appState: JerboaAppState,
@@ -148,6 +160,8 @@ fun onSubmitClick(
     val nameOut = name.trim()
     val bodyOut = body.text.trim().ifEmpty { null }
     val urlOut = url.trim().ifEmpty { null }
+    val altTextOut = altText.trim().ifEmpty { null }
+    val customThumbnailOut = customThumbnail.trim().ifEmpty { null }
 
     postEditViewModel.editPost(
         form =
@@ -155,6 +169,8 @@ fun onSubmitClick(
                 post_id = postId,
                 name = nameOut,
                 url = urlOut,
+                alt_text = altTextOut,
+                custom_thumbnail = customThumbnailOut,
                 body = bodyOut,
                 nsfw = isNsfw,
             ),
