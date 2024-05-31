@@ -50,13 +50,13 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.InstantScores
+import com.jerboa.feat.default
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
@@ -66,6 +66,7 @@ import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -256,7 +257,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -330,7 +331,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
 

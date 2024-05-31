@@ -21,7 +21,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
@@ -29,11 +28,13 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.feat.default
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -80,7 +81,7 @@ fun PostListings(
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
@@ -212,7 +213,7 @@ fun PreviewPostListings() {
         markAsReadOnScroll = false,
         onMarkAsRead = {},
         showIfRead = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,

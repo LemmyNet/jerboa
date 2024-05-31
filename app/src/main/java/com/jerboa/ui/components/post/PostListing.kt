@@ -62,7 +62,6 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -78,6 +77,7 @@ import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
+import com.jerboa.feat.default
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.feat.needBlur
 import com.jerboa.feat.simulateModerators
@@ -137,7 +137,7 @@ fun PostHeaderLine(
     showAvatar: Boolean,
     fullBody: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val community = postView.community
     Column(modifier = modifier) {
@@ -255,7 +255,7 @@ fun PostHeaderLinePreview() {
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         fullBody = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
 
@@ -265,7 +265,7 @@ fun PostNodeHeader(
     instantScores: InstantScores,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
@@ -872,7 +872,7 @@ fun PreviewPostListingCard() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
@@ -914,7 +914,7 @@ fun PreviewLinkPostListing() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
@@ -956,7 +956,7 @@ fun PreviewImagePostListingCard() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
@@ -998,7 +998,7 @@ fun PreviewImagePostListingSmallCard() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
@@ -1040,7 +1040,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
@@ -1083,7 +1083,7 @@ fun PostListing(
     appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
@@ -1289,7 +1289,7 @@ fun PostVotingTile(
     onDownvoteClick: () -> Unit,
     account: Account,
     enableDownVotes: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -1350,7 +1350,7 @@ fun PostListingList(
     appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(
         modifier =
@@ -1576,7 +1576,7 @@ fun PostListingListPreview() {
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
 
@@ -1605,7 +1605,7 @@ fun PostListingListWithThumbPreview() {
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
 
@@ -1647,7 +1647,7 @@ fun PostListingCard(
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean = false,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
 ) {
     Column(

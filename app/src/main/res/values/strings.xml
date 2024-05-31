@@ -473,4 +473,8 @@
     <string name="post_unhidden">Post unhidden</string>
     <string name="hide_post">Hide Post</string>
     <string name="unhide_post">Unhide Post</string>
+    <string name="show_upvotes">Show Upvotes</string>
+    <string name="show_downvotes">Show Downvotes</string>
+    <string name="show_upvote_percentage">Show Upvote %</string>
+    <string name="score">Score</string>
 </resources>

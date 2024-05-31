@@ -47,7 +47,6 @@ import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.BanFromCommunityData
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.getLocalizedStringForUserTab
 import com.jerboa.db.entity.Account
@@ -100,6 +99,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -336,7 +336,7 @@ fun UserTabs(
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {

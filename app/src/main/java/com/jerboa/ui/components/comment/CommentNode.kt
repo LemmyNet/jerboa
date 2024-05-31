@@ -50,7 +50,6 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.datatypes.BanFromCommunityData
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
@@ -66,6 +65,7 @@ import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
+import com.jerboa.feat.default
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
@@ -87,6 +87,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -103,7 +104,7 @@ fun CommentNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -135,7 +136,7 @@ fun CommentNodeHeaderPreview() {
             downvotes = 2,
             myVote = 26,
         ),
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
@@ -221,7 +222,7 @@ fun LazyListScope.commentNodeItem(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentView = node.commentView
@@ -531,7 +532,7 @@ fun LazyListScope.missingCommentNodeItem(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentId = node.missingCommentView.commentId
@@ -925,7 +926,7 @@ fun CommentNodesPreview() {
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
 }
