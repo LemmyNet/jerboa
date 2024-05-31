@@ -70,5 +70,5 @@ fun Modifier.onAutofill(
 
 @OptIn(ExperimentalFoundationApi::class)
 fun Modifier.customMarquee(): Modifier {
-    return this.basicMarquee(delayMillis = 4_000)
+    return this.basicMarquee(initialDelayMillis = 4_000)
 }
