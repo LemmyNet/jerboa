@@ -110,7 +110,18 @@ composeCompiler {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
+    // This is the "official" composeBom, but it breaks the imageviewer until 1.7 is released. See:
+    // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
+    // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+
+    val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.05.00-alpha03")
+    implementation(composeBom)
+    implementation("androidx.activity:activity-compose")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    androidTestImplementation(composeBom)
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
     implementation("me.zhanghai.compose.preference:library:1.0.0")
 
     // Markdown support
@@ -129,8 +140,8 @@ dependencies {
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx")
 
     // Images
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -161,13 +172,9 @@ dependencies {
 
     implementation("io.arrow-kt:arrow-core:1.2.4")
 
-    // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
 
-    implementation("androidx.compose.material3:material3:1.2.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -177,21 +184,19 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit")
+    androidTestImplementation("androidx.test.espresso:espresso-core")
 
     testImplementation("org.mockito:mockito-core:5.12.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 
     implementation("androidx.browser:browser:1.8.0")
 
-    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.15-SNAPSHOT")

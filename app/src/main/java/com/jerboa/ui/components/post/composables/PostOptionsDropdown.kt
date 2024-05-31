@@ -88,9 +88,9 @@ fun PostOptionsDropdown(
     scope: CoroutineScope,
 ) {
     val ctx = LocalContext.current
+    val api = getInstanceOrNull()
     val localClipboardManager = LocalClipboardManager.current
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
-    val api = getInstanceOrNull()
 
     CascadeCenteredDropdownMenu(
         expanded = true,
@@ -315,8 +315,8 @@ fun PostOptionsDropdown(
             )
         }
 
-        if (api?.FF?.hidePost() == true) {
-            // Hide / unhide post
+        // Hide / unhide post
+        if (api != null && api.FF.hidePost()) {
             if (postView.hidden) {
                 PopupMenuItem(
                     text = stringResource(R.string.unhide_post),

@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -76,7 +77,7 @@ fun MyTextField(
             KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
                 keyboardType = KeyboardType.Text,
-                autoCorrect = false,
+                autoCorrectEnabled = false,
             ),
         modifier =
             modifier
@@ -153,7 +154,7 @@ fun InstancePicker(
         OutlinedTextField(
             modifier =
                 Modifier
-                    .menuAnchor()
+                    .menuAnchor(MenuAnchorType.PrimaryEditable, true)
                     .width(OutlinedTextFieldDefaults.MinWidth),
             label = { Text(stringResource(R.string.login_instance)) },
             placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
@@ -166,7 +167,7 @@ fun InstancePicker(
             trailingIcon = {
                 TrailingIcon(expanded = expand)
             },
-            keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
+            keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, keyboardType = KeyboardType.Uri),
         )
 
         DropdownMenu(
