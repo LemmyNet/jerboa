@@ -79,7 +79,7 @@ fun SettingsTextField(
                 KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.None,
                     keyboardType = KeyboardType.Text,
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                 ),
         )
     }
