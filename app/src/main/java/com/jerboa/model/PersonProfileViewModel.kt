@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
 import com.jerboa.JerboaAppState
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
@@ -21,6 +23,7 @@ import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
 import com.jerboa.findAndUpdatePost
 import com.jerboa.findAndUpdatePostCreator
 import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
+import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.getDeduplicateMerge
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
@@ -35,6 +38,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var hidePostRes: ApiState<(Unit)> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
@@ -189,6 +193,24 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
+    fun hidePost(
+        form: HidePost,
+        ctx: Context,
+    ) {
+        viewModelScope.launch {
+            hidePostRes = ApiState.Loading
+            hidePostRes = API.getInstance().hidePost(form).toApiState()
+            val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
+            when (hidePostRes) {
+                is ApiState.Success -> {
+                    updatePostHidden(form)
+                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+    }
+
     fun lockPost(form: LockPost) {
         viewModelScope.launch {
             lockPostRes = ApiState.Loading
@@ -304,6 +326,18 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             is ApiState.Success -> {
                 val newPosts =
                     findAndUpdatePost(existing.data.posts, postView)
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                personDetailsRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updatePostHidden(form: HidePost) {
+        when (val existing = personDetailsRes) {
+            is ApiState.Success -> {
+                val newPosts = findAndUpdatePostHidden(existing.data.posts, form)
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 personDetailsRes = newRes
             }

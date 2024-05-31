@@ -1,6 +1,8 @@
 package com.jerboa.model
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.jerboa.JerboaAppState
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
@@ -95,7 +98,18 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
                 else -> {
                     postsRes = ApiState.AppendingFailure(oldRes.data)
                 }
+        }
+    }
+
+    private fun updatePostHidden(form: HidePost) {
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                val newPosts = findAndUpdatePostHidden(existing.data.posts, form)
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                postsRes = newRes
             }
+
+            else -> {}
         }
     }
 
@@ -167,6 +181,19 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         viewModelScope.launch {
             API.getInstance().deletePost(form).onSuccess {
                 updatePost(it.post_view)
+            }
+        }
+    }
+
+    fun hidePost(
+        form: HidePost,
+        ctx: Context,
+    ) {
+        viewModelScope.launch {
+            val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
+            API.getInstance().hidePost(form).onSuccess {
+                updatePostHidden(form)
+                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
             }
         }
     }

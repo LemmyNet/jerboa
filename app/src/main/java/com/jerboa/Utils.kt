@@ -1165,6 +1165,21 @@ fun findAndUpdatePostCreator(
     return newPosts
 }
 
+fun findAndUpdatePostHidden(
+    posts: List<PostView>,
+    form: HidePost,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (form.post_ids.contains(it.post.id)) {
+            it.copy(hidden = form.hide)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
 fun findAndUpdatePostCreatorBannedFromCommunity(
     posts: List<PostView>,
     banData: BanFromCommunityData,

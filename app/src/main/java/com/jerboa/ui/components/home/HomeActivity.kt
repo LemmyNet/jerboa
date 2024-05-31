@@ -73,6 +73,7 @@ import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -359,6 +360,23 @@ fun MainPostListingsContent(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
                         ),
+                    )
+                }
+            },
+            onHidePostClick = { postView ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.hidePost(
+                        HidePost(
+                            post_ids = listOf(postView.post.id),
+                            hide = !postView.hidden,
+                        ),
+                        ctx,
                     )
                 }
             },

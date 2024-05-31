@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
@@ -36,6 +38,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetComments
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommentsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
@@ -62,6 +65,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var hidePostRes: ApiState<(Unit)> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
@@ -257,6 +261,24 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         }
     }
 
+    fun hidePost(
+        form: HidePost,
+        ctx: Context,
+    ) {
+        viewModelScope.launch {
+            hidePostRes = ApiState.Loading
+            hidePostRes = API.getInstance().hidePost(form).toApiState()
+            val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
+            when (hidePostRes) {
+                is ApiState.Success -> {
+                    updatePostHidden(form.hide)
+                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+    }
+
     fun lockPost(form: LockPost) {
         viewModelScope.launch {
             lockPostRes = ApiState.Loading
@@ -331,6 +353,18 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         when (val existing = postRes) {
             is ApiState.Success -> {
                 val newRes = ApiState.Success(existing.data.copy(post_view = postView))
+                postRes = newRes
+            }
+
+            else -> {}
+        }
+    }
+
+    fun updatePostHidden(hidden: Boolean) {
+        when (val existing = postRes) {
+            is ApiState.Success -> {
+                val newPostView = existing.data.post_view.copy(hidden = hidden)
+                val newRes = ApiState.Success(existing.data.copy(post_view = newPostView))
                 postRes = newRes
             }
 
