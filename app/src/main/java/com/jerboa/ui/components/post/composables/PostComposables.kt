@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.InputField
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
@@ -73,6 +74,7 @@ fun CreateEditPostBody(
     padding: PaddingValues,
     error: Throwable?,
 ) {
+    val api = API.getInstanceOrNull()
     val scrollState = rememberScrollState()
 
     Column(
@@ -152,29 +154,33 @@ fun CreateEditPostBody(
             /**
              * Alt text field. Only show if its a url image.
              */
-            OutlinedTextField(
-                value = altText,
-                onValueChange = onAltTextChange,
-                label = {
-                    Text(text = stringResource(R.string.alt_text))
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
+            if (api != null && api.FF.hidePost()) {
+                OutlinedTextField(
+                    value = altText,
+                    onValueChange = onAltTextChange,
+                    label = {
+                        Text(text = stringResource(R.string.alt_text))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
 
         /**
          * Post custom thumbnail
          */
-        OutlinedTextField(
-            value = customThumbnail,
-            onValueChange = onCustomThumbnailChange,
-            label = {
-                Text(text = customThumbnailField.label)
-            },
-            isError = customThumbnailField.hasError,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-            modifier = Modifier.fillMaxWidth(),
-        )
+        if (api != null && api.FF.hidePost()) {
+            OutlinedTextField(
+                value = customThumbnail,
+                onValueChange = onCustomThumbnailChange,
+                label = {
+                    Text(text = customThumbnailField.label)
+                },
+                isError = customThumbnailField.hasError,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
 
         /**
          * Markdown field for post body
