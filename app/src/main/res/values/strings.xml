@@ -471,4 +471,8 @@
     <string name="admins">Admins</string>
     <string name="custom_thumbnail">Custom Thumbnail</string>
     <string name="alt_text">Alt Text</string>
+    <string name="post_hidden">Post hidden</string>
+    <string name="post_unhidden">Post unhidden</string>
+    <string name="hide_post">Hide Post</string>
+    <string name="unhide_post">Unhide Post</string>
 </resources>

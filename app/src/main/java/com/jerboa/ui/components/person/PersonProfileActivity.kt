@@ -99,6 +99,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -570,6 +571,23 @@ fun UserTabs(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
                                                 ),
+                                            )
+                                        }
+                                    },
+                                    onHidePostClick = { pv ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
+                                            personProfileViewModel.hidePost(
+                                                HidePost(
+                                                    post_ids = listOf(pv.post.id),
+                                                    hide = !pv.hidden,
+                                                ),
+                                                ctx,
                                             )
                                         }
                                     },
