@@ -90,6 +90,7 @@ fun PostOptionsDropdown(
     val ctx = LocalContext.current
     val localClipboardManager = LocalClipboardManager.current
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
+    val api = getInstanceOrNull()
 
     CascadeCenteredDropdownMenu(
         expanded = true,
@@ -314,25 +315,27 @@ fun PostOptionsDropdown(
             )
         }
 
-        // Hide / unhide post
-        if (postView.hidden) {
-            PopupMenuItem(
-                text = stringResource(R.string.unhide_post),
-                icon = Icons.Outlined.Visibility,
-                onClick = {
-                    onDismissRequest()
-                    onHidePostClick(postView)
-                },
-            )
-        } else {
-            PopupMenuItem(
-                text = stringResource(R.string.hide_post),
-                icon = Icons.Outlined.VisibilityOff,
-                onClick = {
-                    onDismissRequest()
-                    onHidePostClick(postView)
-                },
-            )
+        if (api?.FF?.hidePost() == true) {
+            // Hide / unhide post
+            if (postView.hidden) {
+                PopupMenuItem(
+                    text = stringResource(R.string.unhide_post),
+                    icon = Icons.Outlined.Visibility,
+                    onClick = {
+                        onDismissRequest()
+                        onHidePostClick(postView)
+                    },
+                )
+            } else {
+                PopupMenuItem(
+                    text = stringResource(R.string.hide_post),
+                    icon = Icons.Outlined.VisibilityOff,
+                    onClick = {
+                        onDismissRequest()
+                        onHidePostClick(postView)
+                    },
+                )
+            }
         }
 
         // Only visible from PostActivity
@@ -422,8 +425,6 @@ fun PostOptionsDropdown(
                         )
                     },
                 )
-
-                val api = getInstanceOrNull()
 
                 if (api != null && api.FF.instanceBlock()) {
                     val instance = getInstanceFromCommunityUrl(postView.community.actor_id)

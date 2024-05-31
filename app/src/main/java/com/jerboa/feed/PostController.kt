@@ -1,6 +1,7 @@
 package com.jerboa.feed
 
 import com.jerboa.datatypes.BanFromCommunityData
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 
@@ -27,5 +28,15 @@ open class PostController : FeedController<PostView>() {
                 }
             },
         ) { it.copy(creator = banData.person) }
+    }
+
+    fun findAndUpdatePostHidden(hidePost: HidePost)  {
+        updateAll(
+            {
+                it.indexesOf { postView ->
+                    hidePost.post_ids.contains(postView.post.id)
+                }
+            },
+        ) { it.copy(hidden = hidePost.hide) }
     }
 }

@@ -20,6 +20,7 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feed.PaginationController
 import com.jerboa.feed.PostController
+import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
@@ -27,6 +28,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
@@ -98,18 +100,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
                 else -> {
                     postsRes = ApiState.AppendingFailure(oldRes.data)
                 }
-        }
-    }
-
-    private fun updatePostHidden(form: HidePost) {
-        when (val existing = postsRes) {
-            is ApiState.Success -> {
-                val newPosts = findAndUpdatePostHidden(existing.data.posts, form)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
-                postsRes = newRes
             }
-
-            else -> {}
         }
     }
 
@@ -192,7 +183,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         viewModelScope.launch {
             val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
             API.getInstance().hidePost(form).onSuccess {
-                updatePostHidden(form)
+                postController.findAndUpdatePostHidden(form)
                 Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
             }
         }
