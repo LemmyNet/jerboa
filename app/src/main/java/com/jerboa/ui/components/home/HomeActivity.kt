@@ -285,22 +285,20 @@ fun MainPostListingsContent(
             // No community moderators available here
             moderators = null,
             contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
-            onUpvoteClick = remember {
-                { postView ->
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                    ) {
-                        homeViewModel.likePost(
-                            CreatePostLike(
-                                post_id = postView.post.id,
-                                score = newVote(postView.my_vote, VoteType.Upvote),
-                            ),
-                        )
-                    }
+            onUpvoteClick = { postView ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.likePost(
+                        CreatePostLike(
+                            post_id = postView.post.id,
+                            score = newVote(postView.my_vote, VoteType.Upvote),
+                        ),
+                    )
                 }
             },
             onDownvoteClick = { postView ->
@@ -322,22 +320,20 @@ fun MainPostListingsContent(
             onPostClick = { postView ->
                 appState.toPost(id = postView.post.id)
             },
-            onSaveClick = remember {
-                { postView ->
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                    ) {
-                        homeViewModel.savePost(
-                            SavePost(
-                                post_id = postView.post.id,
-                                save = !postView.saved,
-                            ),
-                        )
-                    }
+            onSaveClick = { postView ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.savePost(
+                        SavePost(
+                            post_id = postView.post.id,
+                            save = !postView.saved,
+                        ),
+                    )
                 }
             },
             onReplyClick = { pv ->
@@ -350,22 +346,20 @@ fun MainPostListingsContent(
                     postView = postView,
                 )
             },
-            onDeletePostClick = remember {
-                { postView ->
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                    ) {
-                        homeViewModel.deletePost(
-                            DeletePost(
-                                post_id = postView.post.id,
-                                deleted = !postView.post.deleted,
-                            ),
-                        )
-                    }
+            onDeletePostClick = { postView ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.deletePost(
+                        DeletePost(
+                            post_id = postView.post.id,
+                            deleted = !postView.post.deleted,
+                        ),
+                    )
                 }
             },
             onReportClick = { postView ->
@@ -380,41 +374,37 @@ fun MainPostListingsContent(
             onBanFromCommunityClick = { d ->
                 appState.toBanFromCommunity(banData = d)
             },
-            onLockPostClick = remember {
-                { pv ->
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                    ) {
-                        homeViewModel.lockPost(
-                            LockPost(
-                                post_id = pv.post.id,
-                                locked = !pv.post.locked,
-                            ),
-                        )
-                    }
+            onLockPostClick = { pv ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.lockPost(
+                        LockPost(
+                            post_id = pv.post.id,
+                            locked = !pv.post.locked,
+                        ),
+                    )
                 }
             },
-            onFeaturePostClick = remember {
-                { data ->
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                    ) {
-                        homeViewModel.featurePost(
-                            FeaturePost(
-                                post_id = data.post.id,
-                                featured = !data.featured,
-                                feature_type = data.type,
-                            ),
-                        )
-                    }
+            onFeaturePostClick = { data ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.featurePost(
+                        FeaturePost(
+                            post_id = data.post.id,
+                            featured = !data.featured,
+                            feature_type = data.type,
+                        ),
+                    )
                 }
             },
             onViewPostVotesClick = appState::toPostLikes,

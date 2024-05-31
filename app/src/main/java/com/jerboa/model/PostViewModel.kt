@@ -45,8 +45,6 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 import kotlinx.coroutines.launch
 
-const val COMMENTS_DEPTH_MAX = 6L
-
 class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -408,5 +406,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
                 return PostViewModel(id) as T
             }
         }
+
+        const val COMMENTS_DEPTH_MAX = 6L
     }
 }

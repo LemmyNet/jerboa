@@ -59,7 +59,7 @@ fun ItemAndInstanceTitle(
     title: String,
     actorId: String?,
     local: Boolean,
-    onClick: (() -> Unit)? = null,
+    onClick: (() -> Unit)?,
     itemColor: Color = MaterialTheme.colorScheme.primary,
     itemStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     instanceColor: Color = MaterialTheme.colorScheme.onSurface.muted,

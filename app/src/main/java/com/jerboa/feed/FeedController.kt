@@ -2,34 +2,33 @@ package com.jerboa.feed
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 
 open class FeedController<T> {
     protected val items = mutableStateListOf<T>()
 
-    val feed: SnapshotStateList<T> = items
+    val feed: List<T> = items
 
-    fun updateALl(
+    fun updateAll(
         selector: (List<T>) -> List<Int>,
         transformer: (T) -> T,
     ) {
         selector(items).forEach {
-            update(it, transformer)
+            safeUpdate(it, transformer)
         }
     }
 
-    fun update(
+    fun safeUpdate(
         index: Int,
         transformer: (T) -> T,
     ) {
-        update(index, transformer(items[index]))
+        safeUpdate(index, transformer(items[index]))
     }
 
-    fun update(
+    fun safeUpdate(
         selector: (List<T>) -> Int,
         transformer: (T) -> T,
     ) {
-        update(selector(items), transformer)
+        safeUpdate(selector(items), transformer)
     }
 
     /**
@@ -40,7 +39,7 @@ open class FeedController<T> {
      * Example: a network request to update an item succeeded after the list has changed.
      * So, we ignore it
      */
-    fun update(
+    fun safeUpdate(
         index: Int,
         new: T,
     ) {
@@ -51,21 +50,13 @@ open class FeedController<T> {
         }
     }
 
-    fun add(item: T) {
-        items.add(item)
-    }
+    fun add(item: T) = items.add(item)
 
-    fun remove(item: T) {
-        items.remove(item)
-    }
+    fun remove(item: T) = items.remove(item)
 
-    fun clear() {
-        items.clear()
-    }
+    fun clear() = items.clear()
 
-    fun addAll(newItems: List<T>) {
-        items.addAll(newItems)
-    }
+    fun addAll(newItems: List<T>) = items.addAll(newItems)
 
     protected inline fun <E> Iterable<E>.indexesOf(predicate: (E) -> Boolean) =
         mapIndexedNotNull { index, elem ->

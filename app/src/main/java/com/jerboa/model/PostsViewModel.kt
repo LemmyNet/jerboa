@@ -44,8 +44,6 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
     private val pageController = PaginationController()
     private val postController = PostController()
 
-    private val postsList = postController.feed
-
     protected fun init() {
         viewModelScope.launch {
             accountRepository.currentAccount
@@ -66,16 +64,14 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
     ) {
         viewModelScope.launch {
             postsRes = state
-            val k = API.getInstance().getPosts(form).fold(
+            postsRes = API.getInstance().getPosts(form).fold(
                 onSuccess = {
                     pageController.nextPage(it.next_page)
                     postController.addAll(it.posts)
-                    ApiState.Success(postsList)
+                    ApiState.Success(postController.feed)
                 },
                 onFailure = { ApiState.Failure(it) },
             )
-
-            postsRes = k
         }
     }
 
@@ -93,7 +89,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
                 is ApiState.Success -> {
                     pageController.nextPage(newRes.data.next_page)
                     postController.addAll(newRes.data.posts)
-                    postsRes = ApiState.Success(postsList)
+                    postsRes = ApiState.Success(postController.feed)
                 }
 
                 else -> {
@@ -113,7 +109,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
 
     fun resetPosts(state: ApiState<List<PostView>> = ApiState.Loading) {
         pageController.reset()
-        postsList.clear()
+        postController.clear()
         initPosts(
             getForm(),
             state,

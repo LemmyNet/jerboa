@@ -89,7 +89,6 @@ import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
@@ -273,6 +272,7 @@ fun PostActivity(
             Box(
                 modifier =
                     Modifier
+                        .padding(padding)
                         .fillMaxSize()
                         .pullRefresh(pullRefreshState),
             ) {
@@ -283,13 +283,12 @@ fun PostActivity(
                     pullRefreshState,
                     // zIndex needed bc some elements of a post get drawn above it.
                     Modifier
-                        .padding(padding)
                         .align(Alignment.TopCenter)
                         .zIndex(100f),
                 )
                 when (val postRes = postViewModel.postRes) {
-                    is ApiState.Loading -> LoadingBar(padding)
-                    is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
+                    is ApiState.Loading -> LoadingBar()
+                    is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
                         val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
@@ -302,11 +301,7 @@ fun PostActivity(
                         }
                         LazyColumn(
                             state = listState,
-                            modifier =
-                                Modifier
-                                    .padding(top = padding.calculateTopPadding())
-                                    .simpleVerticalScrollbar(listState)
-                                    .testTag("jerboa:comments"),
+                            modifier = Modifier.testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
@@ -732,6 +727,8 @@ fun PostActivity(
 
                                 else -> {}
                             }
+
+                            // TODO is this necessary?
                             if (showParentCommentNavigationButtons) {
                                 item {
                                     Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))

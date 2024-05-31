@@ -6,7 +6,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 
 open class PostController : FeedController<PostView>() {
     fun findAndUpdatePost(updatedPostView: PostView) {
-        update({ posts ->
+        safeUpdate({ posts ->
             posts.indexOfFirst {
                 it.post.id == updatedPostView.post.id
             }
@@ -14,13 +14,13 @@ open class PostController : FeedController<PostView>() {
     }
 
     fun findAndUpdateCreator(person: Person) {
-        updateALl(
+        updateAll(
             { it.indexesOf { postView -> postView.creator.id == person.id } },
         ) { it.copy(creator = person) }
     }
 
     fun findAndUpdatePostCreatorBannedFromCommunity(banData: BanFromCommunityData) {
-        updateALl(
+        updateAll(
             {
                 it.indexesOf { postView ->
                     postView.creator.id == banData.person.id && postView.community.id == banData.community.id
