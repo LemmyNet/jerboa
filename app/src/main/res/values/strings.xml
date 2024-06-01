@@ -155,7 +155,7 @@
     <string name="look_and_feel_look_and_feel">Look and feel</string>
     <string name="look_and_feel_post_navigation_gesture_mode">Post navigation gestures</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">Disabled</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe left to navigate back</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_swipe_right">Swipe right to navigate back</string>
     <string name="look_and_feel_post_view">Post View</string>
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>
