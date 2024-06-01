@@ -15,14 +15,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -49,6 +46,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
+import com.jerboa.api.ApiState
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.data
 import com.jerboa.datatypes.samplePerson
@@ -740,29 +738,11 @@ fun LoadingBar(padding: PaddingValues = PaddingValues(0.dp)) {
     )
 }
 
-/**
- * M3 doesn't have a built-in way to do this yet, so we have to do it ourselves.
- *
- * Supports M3 theming
- */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun JerboaPullRefreshIndicator(
-    refreshing: Boolean,
-    state: PullRefreshState,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    scale: Boolean = true,
-) {
-    PullRefreshIndicator(
-        refreshing,
-        state,
-        modifier,
-        backgroundColor,
-        contentColor,
-        scale,
-    )
+fun JerboaLoadingBar(apiState: ApiState<*>) {
+    if (apiState.isLoading()) {
+        LoadingBar()
+    }
 }
 
 /**

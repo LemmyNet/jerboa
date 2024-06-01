@@ -2,8 +2,6 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +21,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
@@ -72,13 +67,12 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
@@ -148,7 +142,10 @@ fun PersonProfileActivity(
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, personProfileViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, personProfileViewModel::updateBannedFromCommunity)
+    appState.ConsumeReturn<BanFromCommunityData>(
+        BanFromCommunityReturn.BAN_DATA_VIEW,
+        personProfileViewModel::updateBannedFromCommunity,
+    )
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         when (val res = personProfileViewModel.personDetailsRes) {
@@ -157,6 +154,7 @@ fun PersonProfileActivity(
                     personProfileViewModel.insertComment(cv)
                 }
             }
+
             else -> {}
         }
     }
@@ -200,6 +198,7 @@ fun PersonProfileActivity(
                         matrixId = null,
                     )
                 }
+
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
                     val canBan = canMod(
@@ -276,6 +275,7 @@ fun PersonProfileActivity(
                         matrixId = person.matrix_user_id,
                     )
                 }
+
                 else -> {}
             }
         },
@@ -314,7 +314,7 @@ enum class UserTab {
     Comments,
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserTabs(
     appState: JerboaAppState,
@@ -351,31 +351,7 @@ fun UserTabs(
         }
     val pagerState = rememberPagerState { tabTitles.size }
 
-    val loading = personProfileViewModel.personDetailsRes.isLoading()
-
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
-
-    val pullRefreshState =
-        rememberPullRefreshState(
-            refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
-            onRefresh = {
-                when (val profileRes = personProfileViewModel.personDetailsRes) {
-                    is ApiState.Success -> {
-                        personProfileViewModel.resetPage()
-                        personProfileViewModel.getPersonDetails(
-                            GetPersonDetails(
-                                person_id = profileRes.data.person_view.person.id,
-                                sort = personProfileViewModel.sortType,
-                                page = personProfileViewModel.page,
-                                saved_only = personProfileViewModel.savedOnly,
-                            ),
-                            ApiState.Refreshing,
-                        )
-                    }
-                    else -> {}
-                }
-            },
-        )
 
     Column(
         modifier = Modifier.padding(padding),
@@ -458,28 +434,17 @@ fun UserTabs(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
 
                 UserTab.Posts.ordinal -> {
-                    Box(
-                        modifier =
-                            Modifier
-                                .pullRefresh(pullRefreshState)
-                                .fillMaxSize(),
+                    PullToRefreshBox(
+                        isRefreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
+                        onRefresh = personProfileViewModel::refresh,
                     ) {
-                        JerboaPullRefreshIndicator(
-                            personProfileViewModel.personDetailsRes.isRefreshing(),
-                            pullRefreshState,
-                            // zIndex needed bc some elements of a post get drawn above it.
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100f),
-                        )
-                        if (loading) {
-                            LoadingBar()
-                        }
+                        JerboaLoadingBar(personProfileViewModel.personDetailsRes)
 
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -677,81 +642,68 @@ fun UserTabs(
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
+
                             else -> {}
                         }
                     }
                 }
 
                 UserTab.Comments.ordinal -> {
-                    when (val profileRes = personProfileViewModel.personDetailsRes) {
-                        ApiState.Empty -> ApiEmptyText()
-                        is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> LoadingBar()
-                        ApiState.Refreshing -> LoadingBar()
-                        is ApiState.Holder -> {
-                            val nodes = commentsToFlatNodes(profileRes.data.comments)
+                    PullToRefreshBox(
+                        isRefreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
+                        onRefresh = personProfileViewModel::refresh,
+                    ) {
+                        JerboaLoadingBar(personProfileViewModel.personDetailsRes)
+                        when (val profileRes = personProfileViewModel.personDetailsRes) {
+                            ApiState.Empty -> ApiEmptyText()
+                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            is ApiState.Holder -> {
+                                val nodes = commentsToFlatNodes(profileRes.data.comments)
 
-                            val listState = rememberLazyListState()
+                                val listState = rememberLazyListState()
 
-                            // observer when reached end of list
-                            val endOfListReached by remember {
-                                derivedStateOf {
-                                    listState.isScrolledToEnd()
-                                }
-                            }
-
-                            // Holds the un-expanded comment ids
-                            val unExpandedComments = remember { mutableStateListOf<Long>() }
-                            val commentsWithToggledActionBar = remember { mutableStateListOf<Long>() }
-
-                            val toggleExpanded = remember {
-                                { commentId: CommentId ->
-                                    if (unExpandedComments.contains(commentId)) {
-                                        unExpandedComments.remove(commentId)
-                                    } else {
-                                        unExpandedComments.add(commentId)
+                                // observer when reached end of list
+                                val endOfListReached by remember {
+                                    derivedStateOf {
+                                        listState.isScrolledToEnd()
                                     }
                                 }
-                            }
 
-                            val toggleActionBar = remember {
-                                { commentId: CommentId ->
-                                    if (commentsWithToggledActionBar.contains(commentId)) {
-                                        commentsWithToggledActionBar.remove(commentId)
-                                    } else {
-                                        commentsWithToggledActionBar.add(commentId)
+                                // Holds the un-expanded comment ids
+                                val unExpandedComments = remember { mutableStateListOf<Long>() }
+                                val commentsWithToggledActionBar = remember { mutableStateListOf<Long>() }
+
+                                val toggleExpanded = remember {
+                                    { commentId: CommentId ->
+                                        if (unExpandedComments.contains(commentId)) {
+                                            unExpandedComments.remove(commentId)
+                                        } else {
+                                            unExpandedComments.add(commentId)
+                                        }
                                     }
                                 }
-                            }
 
-                            val showActionBarByDefault = true
-
-                            // act when end of list reached
-                            if (endOfListReached) {
-                                LaunchedEffect(Unit) {
-                                    personProfileViewModel.appendData(
-                                        profileRes.data.person_view.person.id,
-                                    )
+                                val toggleActionBar = remember {
+                                    { commentId: CommentId ->
+                                        if (commentsWithToggledActionBar.contains(commentId)) {
+                                            commentsWithToggledActionBar.remove(commentId)
+                                        } else {
+                                            commentsWithToggledActionBar.add(commentId)
+                                        }
+                                    }
                                 }
-                            }
 
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .pullRefresh(pullRefreshState)
-                                        .fillMaxSize(),
-                            ) {
-                                JerboaPullRefreshIndicator(
-                                    personProfileViewModel.personDetailsRes.isRefreshing(),
-                                    pullRefreshState,
-                                    // zIndex needed bc some elements of a post get drawn above it.
-                                    Modifier
-                                        .align(Alignment.TopCenter)
-                                        .zIndex(100f),
-                                )
-                                if (loading) {
-                                    LoadingBar()
+                                val showActionBarByDefault = true
+
+                                // act when end of list reached
+                                if (endOfListReached) {
+                                    LaunchedEffect(Unit) {
+                                        personProfileViewModel.appendData(
+                                            profileRes.data.person_view.person.id,
+                                        )
+                                    }
                                 }
+
                                 CommentNodes(
                                     nodes = nodes,
                                     admins = siteViewModel.admins(),
@@ -915,6 +867,8 @@ fun UserTabs(
                                     swipeToActionPreset = swipeToActionPreset,
                                 )
                             }
+
+                            else -> {}
                         }
                     }
                 }

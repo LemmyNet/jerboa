@@ -3,8 +3,6 @@ package com.jerboa.ui.components.inbox
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,6 +20,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
@@ -58,7 +53,7 @@ import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeInbox
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -193,7 +188,7 @@ enum class InboxTab(
     Messages(R.string.inbox_activity_messages),
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxTabs(
     appState: JerboaAppState,
@@ -258,29 +253,6 @@ fun InboxTabs(
                         }
                     }
 
-                    val refreshing = inboxViewModel.repliesRes.isRefreshing()
-
-                    val refreshState =
-                        rememberPullRefreshState(
-                            refreshing = refreshing,
-                            onRefresh = {
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                ) {
-                                    inboxViewModel.resetPageReplies()
-                                    inboxViewModel.getReplies(
-                                        inboxViewModel.getFormReplies(),
-                                        ApiState.Refreshing,
-                                    )
-                                    siteViewModel.fetchUnreadCounts()
-                                }
-                            },
-                        )
-
                     val goToComment = { crv: CommentReplyView ->
                         // Go to the parent comment or post instead for context
                         val parent = getCommentParentId(crv.comment)
@@ -311,18 +283,27 @@ fun InboxTabs(
                         }
                     }
 
-                    Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        JerboaPullRefreshIndicator(
-                            refreshing,
-                            refreshState,
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100F),
-                        )
+                    PullToRefreshBox(
+                        isRefreshing = inboxViewModel.repliesRes.isRefreshing(),
+                        onRefresh = {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
+                                inboxViewModel.resetPageReplies()
+                                inboxViewModel.getReplies(
+                                    inboxViewModel.getFormReplies(),
+                                    ApiState.Refreshing,
+                                )
+                                siteViewModel.fetchUnreadCounts()
+                            }
+                        },
+                    ) {
+                        JerboaLoadingBar(inboxViewModel.repliesRes)
 
-                        if (inboxViewModel.repliesRes.isLoading()) {
-                            LoadingBar()
-                        }
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)
@@ -445,6 +426,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+
                             else -> {}
                         }
                     }
@@ -475,46 +457,26 @@ fun InboxTabs(
                         }
                     }
 
-                    val loading = inboxViewModel.mentionsRes.isLoading()
-
-                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
-
-                    val refreshState =
-                        rememberPullRefreshState(
-                            refreshing = refreshing,
-                            onRefresh = {
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                ) {
-                                    inboxViewModel.resetPageMentions()
-                                    inboxViewModel.getMentions(
-                                        inboxViewModel.getFormMentions(),
-                                        ApiState.Refreshing,
-                                    )
-                                    siteViewModel.fetchUnreadCounts()
-                                }
-                            },
-                        )
-                    Box(
-                        modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                    PullToRefreshBox(
+                        isRefreshing = inboxViewModel.mentionsRes.isRefreshing(),
+                        onRefresh = {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
+                                inboxViewModel.resetPageMentions()
+                                inboxViewModel.getMentions(
+                                    inboxViewModel.getFormMentions(),
+                                    ApiState.Refreshing,
+                                )
+                                siteViewModel.fetchUnreadCounts()
+                            }
+                        },
                     ) {
-                        JerboaPullRefreshIndicator(
-                            refreshing,
-                            refreshState,
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100F),
-                        )
-                        if (loading) {
-                            LoadingBar()
-                        }
+                        JerboaLoadingBar(inboxViewModel.mentionsRes)
 
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -660,6 +622,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+
                             else -> {}
                         }
                     }
@@ -690,44 +653,26 @@ fun InboxTabs(
                         }
                     }
 
-                    val loading = inboxViewModel.messagesRes.isLoading()
-                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
-
-                    val refreshState =
-                        rememberPullRefreshState(
-                            refreshing = refreshing,
-                            onRefresh = {
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                ) {
-                                    inboxViewModel.resetPageMessages()
-                                    inboxViewModel.getMessages(
-                                        inboxViewModel.getFormMessages(),
-                                        ApiState.Refreshing,
-                                    )
-                                    siteViewModel.fetchUnreadCounts()
-                                }
-                            },
-                        )
-                    Box(
-                        modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                    PullToRefreshBox(
+                        isRefreshing = inboxViewModel.messagesRes.isRefreshing(),
+                        onRefresh = {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
+                                inboxViewModel.resetPageMessages()
+                                inboxViewModel.getMessages(
+                                    inboxViewModel.getFormMessages(),
+                                    ApiState.Refreshing,
+                                )
+                                siteViewModel.fetchUnreadCounts()
+                            }
+                        },
                     ) {
-                        JerboaPullRefreshIndicator(
-                            refreshing,
-                            refreshState,
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100F),
-                        )
-
-                        if (loading) {
+                        if (inboxViewModel.messagesRes.isLoading()) {
                             LoadingBar()
                         }
                         when (val messagesRes = inboxViewModel.messagesRes) {
@@ -773,6 +718,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+
                             else -> {}
                         }
                     }

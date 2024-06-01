@@ -29,7 +29,7 @@ android {
             useSupportLibrary = true
         }
         ksp {
-           arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 

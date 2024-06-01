@@ -15,12 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -32,6 +29,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -47,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
@@ -65,13 +62,11 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.DualHeaderTitle
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
-import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDropDown
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.person.PersonProfileLink
@@ -147,7 +142,7 @@ fun RegistrationApplicationsHeaderTitle(
     DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationApplications(
     appState: JerboaAppState,
@@ -183,92 +178,73 @@ fun RegistrationApplications(
         }
     }
 
-    val refreshing = registrationApplicationsViewModel.applicationsRes.isRefreshing()
-
-    val refreshState =
-        rememberPullRefreshState(
-            refreshing = refreshing,
-            onRefresh = {
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    registrationApplicationsViewModel.resetPage()
-                    registrationApplicationsViewModel.listApplications(
-                        registrationApplicationsViewModel.getFormApplications(),
-                        ApiState.Refreshing,
-                    )
-                    siteViewModel.fetchUnreadAppCount()
-                }
-            },
-        )
-
-    Column(
+    PullToRefreshBox(
         modifier = Modifier
             .padding(padding),
-    ) {
-        Box(
-            modifier = Modifier.pullRefresh(refreshState),
-        ) {
-            JerboaPullRefreshIndicator(
-                refreshing,
-                refreshState,
-                Modifier
-                    .align(Alignment.TopCenter)
-                    .zIndex(100F),
-            )
-
-            if (registrationApplicationsViewModel.applicationsRes.isLoading()) {
-                LoadingBar()
+        isRefreshing = registrationApplicationsViewModel.applicationsRes.isRefreshing(),
+        onRefresh = {
+            account.doIfReadyElseDisplayInfo(
+                appState,
+                ctx,
+                snackbarHostState,
+                scope,
+                siteViewModel,
+            ) {
+                registrationApplicationsViewModel.resetPage()
+                registrationApplicationsViewModel.listApplications(
+                    registrationApplicationsViewModel.getFormApplications(),
+                    ApiState.Refreshing,
+                )
+                siteViewModel.fetchUnreadAppCount()
             }
-            when (val appsRes = registrationApplicationsViewModel.applicationsRes) {
-                ApiState.Empty -> ApiEmptyText()
-                is ApiState.Failure -> ApiErrorText(appsRes.msg)
-                is ApiState.Holder -> {
-                    val apps = appsRes.data.registration_applications
-                    LazyColumn(
-                        state = listState,
-                        modifier =
-                            Modifier
-                                .simpleVerticalScrollbar(listState)
-                                .fillMaxSize()
-                                .imePadding(),
-                    ) {
-                        items(
-                            apps,
-                            key = { app -> app.registration_application.id },
-                            contentType = { "registrationApplication" },
-                        ) { registrationApplicationView ->
-                            RegistrationApplicationItem(
-                                registrationApplicationView = registrationApplicationView,
-                                onApproveClick = { form ->
-                                    account.doIfReadyElseDisplayInfo(
-                                        appState,
-                                        ctx,
-                                        snackbarHostState,
-                                        scope,
-                                        siteViewModel,
-                                    ) {
-                                        registrationApplicationsViewModel.approveOrDenyApplication(
-                                            form,
-                                        )
-                                    }
-                                },
-                                onPersonClick = { personId ->
-                                    appState.toProfile(id = personId)
-                                },
-                                showAvatar = siteViewModel.showAvatar(),
-                                account = account,
-                            )
-                        }
+        },
+    ) {
+        JerboaLoadingBar(registrationApplicationsViewModel.applicationsRes)
+
+        when (val appsRes = registrationApplicationsViewModel.applicationsRes) {
+            ApiState.Empty -> ApiEmptyText()
+            is ApiState.Failure -> ApiErrorText(appsRes.msg)
+            is ApiState.Holder -> {
+                val apps = appsRes.data.registration_applications
+                LazyColumn(
+                    state = listState,
+                    modifier =
+                        Modifier
+                            .simpleVerticalScrollbar(listState)
+                            .fillMaxSize()
+                            .imePadding(),
+                ) {
+                    items(
+                        apps,
+                        key = { app -> app.registration_application.id },
+                        contentType = { "registrationApplication" },
+                    ) { registrationApplicationView ->
+                        RegistrationApplicationItem(
+                            registrationApplicationView = registrationApplicationView,
+                            onApproveClick = { form ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                ) {
+                                    registrationApplicationsViewModel.approveOrDenyApplication(
+                                        form,
+                                    )
+                                }
+                            },
+                            onPersonClick = { personId ->
+                                appState.toProfile(id = personId)
+                            },
+                            showAvatar = siteViewModel.showAvatar(),
+                            account = account,
+                        )
                     }
                 }
-
-                else -> {}
             }
+
+            else -> {}
         }
     }
 }
