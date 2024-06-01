@@ -2,16 +2,12 @@ package com.jerboa.ui.components.home
 
 import android.util.Log
 import androidx.activity.compose.ReportDrawn
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -21,12 +17,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -34,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.zIndex
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
@@ -58,13 +53,12 @@ import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
@@ -119,11 +113,21 @@ fun HomeActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
+    appState.ConsumeReturn<BanFromCommunityData>(
+        BanFromCommunityReturn.BAN_DATA_VIEW,
+        homeViewModel::updateBannedFromCommunity,
+    )
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
-            account.doIfReadyElseDisplayInfo(appState, ctx, snackbarHostState, scope, siteViewModel, accountViewModel) {}
+            account.doIfReadyElseDisplayInfo(
+                appState,
+                ctx,
+                snackbarHostState,
+                scope,
+                siteViewModel,
+                accountViewModel,
+            ) {}
         }
     }
 
@@ -204,7 +208,7 @@ fun HomeActivity(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
@@ -235,33 +239,18 @@ fun MainPostListingsContent(
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
+
         else -> {}
     }
 
     ReportDrawn()
 
-    val pullRefreshState =
-        rememberPullRefreshState(
-            refreshing = homeViewModel.postsRes.isRefreshing(),
-            onRefresh = {
-                homeViewModel.refreshPosts()
-            },
-        )
-
-    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-        // zIndex needed bc some elements of a post get drawn above it.
-        JerboaPullRefreshIndicator(
-            homeViewModel.postsRes.isRefreshing(),
-            pullRefreshState,
-            Modifier
-                .padding(padding)
-                .align(Alignment.TopCenter)
-                .zIndex(100f),
-        )
-        // Can't be in ApiState.Loading, because of infinite scrolling
-        if (homeViewModel.postsRes.isLoading()) {
-            LoadingBar(padding = padding)
-        }
+    PullToRefreshBox(
+        modifier = Modifier.padding(padding),
+        isRefreshing = homeViewModel.postsRes.isRefreshing(),
+        onRefresh = homeViewModel::refreshPosts,
+    ) {
+        JerboaLoadingBar(homeViewModel.postsRes)
 
         val posts =
             when (val postsRes = homeViewModel.postsRes) {
@@ -269,6 +258,7 @@ fun MainPostListingsContent(
                     apiErrorToast(ctx, postsRes.msg)
                     emptyList()
                 }
+
                 is ApiState.Holder -> postsRes.data.posts.toList()
                 else -> emptyList()
             }
@@ -427,7 +417,6 @@ fun MainPostListingsContent(
                 homeViewModel.appendPosts()
             },
             account = account,
-            padding = padding,
             listState = postListState,
             postViewMode = getPostViewMode(appSettingsViewModel),
             showVotingArrowsInListView = showVotingArrowsInListView,
