@@ -94,6 +94,25 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         this.savedOnly = savedOnly
     }
 
+    fun refresh() {
+        when (val profileRes = personDetailsRes) {
+            is ApiState.Success -> {
+                resetPage()
+                getPersonDetails(
+                    GetPersonDetails(
+                        person_id = profileRes.data.person_view.person.id,
+                        sort = sortType,
+                        page = page,
+                        saved_only = savedOnly,
+                    ),
+                    ApiState.Refreshing,
+                )
+            }
+
+            else -> {}
+        }
+    }
+
     fun getPersonDetails(
         form: GetPersonDetails,
         state: ApiState<GetPersonDetailsResponse> = ApiState.Loading,

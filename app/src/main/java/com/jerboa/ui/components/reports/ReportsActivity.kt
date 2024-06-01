@@ -3,8 +3,6 @@ package com.jerboa.ui.components.reports
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,6 +20,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
@@ -52,11 +47,9 @@ import com.jerboa.model.ReportsViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.unreadOrAllFromBool
@@ -155,7 +148,7 @@ enum class ReportsTab(
     Messages(R.string.inbox_activity_messages, true),
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportsTabs(
     appState: JerboaAppState,
@@ -224,41 +217,27 @@ fun ReportsTabs(
                         }
                     }
 
-                    val refreshing = reportsViewModel.postReportsRes.isRefreshing()
+                    PullToRefreshBox(
+                        isRefreshing = reportsViewModel.postReportsRes.isRefreshing(),
+                        onRefresh = {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
+                                reportsViewModel.resetPagePostReports()
+                                reportsViewModel.listPostReports(
+                                    reportsViewModel.getFormPostReports(),
+                                    ApiState.Refreshing,
+                                )
+                                siteViewModel.fetchUnreadReportCount()
+                            }
+                        },
+                    ) {
+                        JerboaLoadingBar(reportsViewModel.postReportsRes)
 
-                    val refreshState =
-                        rememberPullRefreshState(
-                            refreshing = refreshing,
-                            onRefresh = {
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                ) {
-                                    reportsViewModel.resetPagePostReports()
-                                    reportsViewModel.listPostReports(
-                                        reportsViewModel.getFormPostReports(),
-                                        ApiState.Refreshing,
-                                    )
-                                    siteViewModel.fetchUnreadReportCount()
-                                }
-                            },
-                        )
-
-                    Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        JerboaPullRefreshIndicator(
-                            refreshing,
-                            refreshState,
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100F),
-                        )
-
-                        if (reportsViewModel.postReportsRes.isLoading()) {
-                            LoadingBar()
-                        }
                         when (val reportsRes = reportsViewModel.postReportsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(reportsRes.msg)
@@ -266,10 +245,9 @@ fun ReportsTabs(
                                 val reports = reportsRes.data.post_reports
                                 LazyColumn(
                                     state = listState,
-                                    modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .simpleVerticalScrollbar(listState),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         reports,
@@ -338,46 +316,26 @@ fun ReportsTabs(
                         }
                     }
 
-                    val loading = reportsViewModel.commentReportsRes.isLoading()
-
-                    val refreshing = reportsViewModel.commentReportsRes.isRefreshing()
-
-                    val refreshState =
-                        rememberPullRefreshState(
-                            refreshing = refreshing,
-                            onRefresh = {
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                ) {
-                                    reportsViewModel.resetPageCommentReports()
-                                    reportsViewModel.listCommentReports(
-                                        reportsViewModel.getFormCommentReports(),
-                                        ApiState.Refreshing,
-                                    )
-                                    siteViewModel.fetchUnreadReportCount()
-                                }
-                            },
-                        )
-                    Box(
-                        modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                    PullToRefreshBox(
+                        isRefreshing = reportsViewModel.commentReportsRes.isRefreshing(),
+                        onRefresh = {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
+                                reportsViewModel.resetPageCommentReports()
+                                reportsViewModel.listCommentReports(
+                                    reportsViewModel.getFormCommentReports(),
+                                    ApiState.Refreshing,
+                                )
+                                siteViewModel.fetchUnreadReportCount()
+                            }
+                        },
                     ) {
-                        JerboaPullRefreshIndicator(
-                            refreshing,
-                            refreshState,
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100F),
-                        )
-                        if (loading) {
-                            LoadingBar()
-                        }
+                        JerboaLoadingBar(reportsViewModel.commentReportsRes)
 
                         when (val reportsRes = reportsViewModel.commentReportsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -450,46 +408,27 @@ fun ReportsTabs(
                         }
                     }
 
-                    val loading = reportsViewModel.messageReportsRes.isLoading()
-                    val refreshing = reportsViewModel.messageReportsRes.isRefreshing()
-
-                    val refreshState =
-                        rememberPullRefreshState(
-                            refreshing = refreshing,
-                            onRefresh = {
-                                account.doIfReadyElseDisplayInfo(
-                                    appState,
-                                    ctx,
-                                    snackbarHostState,
-                                    scope,
-                                    siteViewModel,
-                                ) {
-                                    reportsViewModel.resetPageMessageReports()
-                                    reportsViewModel.listMessageReports(
-                                        reportsViewModel.getFormMessageReports(),
-                                        ApiState.Refreshing,
-                                    )
-                                    siteViewModel.fetchUnreadReportCount()
-                                }
-                            },
-                        )
-                    Box(
-                        modifier =
-                            Modifier
-                                .pullRefresh(refreshState)
-                                .fillMaxSize(),
+                    PullToRefreshBox(
+                        isRefreshing = reportsViewModel.messageReportsRes.isRefreshing(),
+                        onRefresh = {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
+                                reportsViewModel.resetPageMessageReports()
+                                reportsViewModel.listMessageReports(
+                                    reportsViewModel.getFormMessageReports(),
+                                    ApiState.Refreshing,
+                                )
+                                siteViewModel.fetchUnreadReportCount()
+                            }
+                        },
                     ) {
-                        JerboaPullRefreshIndicator(
-                            refreshing,
-                            refreshState,
-                            Modifier
-                                .align(Alignment.TopCenter)
-                                .zIndex(100F),
-                        )
+                        JerboaLoadingBar(reportsViewModel.messageReportsRes)
 
-                        if (loading) {
-                            LoadingBar()
-                        }
                         when (val reportsRes = reportsViewModel.messageReportsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(reportsRes.msg)
