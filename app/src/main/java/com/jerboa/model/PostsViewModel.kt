@@ -94,7 +94,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
                 is ApiState.Success -> {
                     pageController.nextPage(newRes.data.next_page)
                     postController.addAll(newRes.data.posts)
-                    postsRes = ApiState.Success(postController.feed)
+                    postsRes = ApiState.Success(oldRes.data)
                 }
 
                 else -> {

@@ -21,6 +21,11 @@ open class FeedController<T> {
         index: Int,
         transformer: (T) -> T,
     ) {
+        if (!isValidIndex(index)) {
+            Log.d("FeedController", "OoB item not updated $index")
+            return
+        }
+
         safeUpdate(index, transformer(items[index]))
     }
 
@@ -43,7 +48,7 @@ open class FeedController<T> {
         index: Int,
         new: T,
     ) {
-        if (index >= 0 && index < items.size) {
+        if (isValidIndex(index)) {
             items[index] = new
         } else {
             Log.d("FeedController", "OoB item not updated $new")
@@ -64,4 +69,6 @@ open class FeedController<T> {
                 predicate(elem)
             }
         }
+
+    private fun isValidIndex(index: Int) = index >= 0 && index < items.size
 }
