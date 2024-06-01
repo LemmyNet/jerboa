@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.util.Log
 import androidx.activity.compose.ReportDrawn
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -51,7 +52,6 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
-import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
@@ -113,10 +113,7 @@ fun HomeActivity(
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
-    appState.ConsumeReturn<BanFromCommunityData>(
-        BanFromCommunityReturn.BAN_DATA_VIEW,
-        homeViewModel::updateBannedFromCommunity,
-    )
+    appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -161,24 +158,25 @@ fun HomeActivity(
             )
         },
         content = { innerPadding ->
-            MainPostListingsContent(
-                padding = innerPadding,
-                homeViewModel = homeViewModel,
-                siteViewModel = siteViewModel,
-                appSettingsViewModel = appSettingsViewModel,
-                account = account,
-                appState = appState,
-                postListState = postListState,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreviews = showPostLinkPreviews,
-                markAsReadOnScroll = markAsReadOnScroll,
-                snackbarHostState = snackbarHostState,
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-            )
+            Box(modifier = Modifier.padding(innerPadding)) {
+                MainPostListingsContent(
+                    homeViewModel = homeViewModel,
+                    siteViewModel = siteViewModel,
+                    appSettingsViewModel = appSettingsViewModel,
+                    account = account,
+                    appState = appState,
+                    postListState = postListState,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
+                    showPostLinkPreviews = showPostLinkPreviews,
+                    markAsReadOnScroll = markAsReadOnScroll,
+                    snackbarHostState = snackbarHostState,
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                )
+            }
         },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
@@ -215,7 +213,6 @@ fun MainPostListingsContent(
     siteViewModel: SiteViewModel,
     account: Account,
     appState: JerboaAppState,
-    padding: PaddingValues,
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
@@ -233,9 +230,8 @@ fun MainPostListingsContent(
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading -> LoadingBar(padding)
-        ApiState.Empty -> ApiEmptyText()
-        is ApiState.Failure -> ApiErrorText(siteRes.msg, padding)
+        ApiState.Loading -> LoadingBar()
+        is ApiState.Failure -> ApiErrorText(siteRes.msg)
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
@@ -246,29 +242,27 @@ fun MainPostListingsContent(
     ReportDrawn()
 
     PullToRefreshBox(
-        modifier = Modifier.padding(padding),
         isRefreshing = homeViewModel.postsRes.isRefreshing(),
         onRefresh = homeViewModel::refreshPosts,
     ) {
         JerboaLoadingBar(homeViewModel.postsRes)
 
-        val posts =
-            when (val postsRes = homeViewModel.postsRes) {
-                is ApiState.Failure -> {
-                    apiErrorToast(ctx, postsRes.msg)
-                    emptyList()
-                }
-
-                is ApiState.Holder -> postsRes.data.posts.toList()
-                else -> emptyList()
+        val posts: List<PostView> = when (val postsRes = homeViewModel.postsRes) {
+            is ApiState.Failure -> {
+                apiErrorToast(ctx, postsRes.msg)
+                listOf()
             }
+
+            is ApiState.Holder -> postsRes.data
+            else -> listOf()
+        }
 
         PostListings(
             posts = posts,
             admins = siteViewModel.admins(),
             // No community moderators available here
             moderators = null,
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toList()) },
+            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
                     appState,

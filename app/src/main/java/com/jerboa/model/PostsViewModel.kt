@@ -3,8 +3,8 @@ package com.jerboa.model
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -18,11 +18,9 @@ import com.jerboa.api.toApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.repository.AccountRepository
-import com.jerboa.findAndUpdatePost
-import com.jerboa.findAndUpdatePostCreator
-import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
+import com.jerboa.feed.PaginationController
+import com.jerboa.feed.PostController
 import com.jerboa.findAndUpdatePostHidden
-import com.jerboa.mergePosts
 import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
@@ -30,11 +28,9 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPostsResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
@@ -42,15 +38,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 open class PostsViewModel(protected val accountRepository: AccountRepository) : ViewModel() {
-    var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
-        private set
-    private var page by mutableLongStateOf(1)
-    protected var pageCursor: PaginationCursor? by mutableStateOf(null)
+    val lazyListState = LazyListState()
+    var postsRes: ApiState<List<PostView>> by mutableStateOf(ApiState.Empty)
         private set
     var sortType by mutableStateOf(SortType.Active)
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
+
+    private val pageController = PaginationController()
+    private val postController = PostController()
 
     protected fun init() {
         viewModelScope.launch {
@@ -66,136 +63,70 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         }
     }
 
-    protected fun nextPage() {
-        page += 1
-    }
-
-    protected fun prevPage() {
-        page -= 1
-    }
-
-    protected fun resetPage() {
-        page = 1
-        pageCursor = null
-    }
-
-    protected fun getPosts(
+    private fun initPosts(
         form: GetPosts,
-        state: ApiState<GetPostsResponse> = ApiState.Loading,
+        state: ApiState<List<PostView>> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             postsRes = state
-            postsRes = API.getInstance().getPosts(form).toApiState()
+            postsRes = API.getInstance().getPosts(form).fold(
+                onSuccess = {
+                    pageController.nextPage(it.next_page)
+                    postController.addAll(it.posts)
+                    ApiState.Success(postController.feed)
+                },
+                onFailure = { ApiState.Failure(it) },
+            )
         }
     }
 
     fun appendPosts() {
+        Log.d("PostsViewModel", "Appending posts")
         viewModelScope.launch {
             val oldRes = postsRes
-            postsRes =
-                when (oldRes) {
-                    is ApiState.Appending -> return@launch
-                    is ApiState.Holder -> ApiState.Appending(oldRes.data)
-                    else -> return@launch
-                }
-
-            // Update the page cursor before fetching again
-            pageCursor = oldRes.data.next_page
-            nextPage()
-            val newRes = API.getInstance().getPosts(getForm()).toApiState()
-
-            postsRes =
-                when (newRes) {
-                    is ApiState.Success -> {
-                        val res =
-                            GetPostsResponse(
-                                posts =
-                                    mergePosts(
-                                        oldRes.data.posts,
-                                        newRes.data.posts,
-                                    ),
-                                next_page = newRes.data.next_page,
-                            )
-                        ApiState.Success(
-                            res,
-                        )
-                    }
-
-                    else -> {
-                        prevPage()
-                        ApiState.AppendingFailure(oldRes.data)
-                    }
-                }
-        }
-    }
-
-    fun updatePost(postView: PostView) {
-        when (val existing = postsRes) {
-            is ApiState.Success -> {
-                val newPosts = findAndUpdatePost(existing.data.posts, postView)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
-                postsRes = newRes
+            postsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                else -> return@launch
             }
 
-            else -> {}
-        }
-    }
+            when (val newRes = API.getInstance().getPosts(getForm()).toApiState()) {
+                is ApiState.Success -> {
+                    pageController.nextPage(newRes.data.next_page)
+                    postController.addAll(newRes.data.posts)
+                    postsRes = ApiState.Success(oldRes.data)
+                }
 
-    private fun updatePostHidden(form: HidePost) {
-        when (val existing = postsRes) {
-            is ApiState.Success -> {
-                val newPosts = findAndUpdatePostHidden(existing.data.posts, form)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
-                postsRes = newRes
+                else -> {
+                    postsRes = ApiState.AppendingFailure(oldRes.data)
+                }
             }
-
-            else -> {}
         }
     }
 
     fun updateBanned(personView: PersonView) {
-        when (val existing = postsRes) {
-            is ApiState.Success -> {
-                val posts = findAndUpdatePostCreator(existing.data.posts, personView.person)
-                val newRes = ApiState.Success(existing.data.copy(posts = posts))
-                postsRes = newRes
-            }
-
-            else -> {}
-        }
+        postController.findAndUpdateCreator(personView.person)
     }
 
     fun updateBannedFromCommunity(banData: BanFromCommunityData) {
-        when (val existing = postsRes) {
-            is ApiState.Success -> {
-                val posts = findAndUpdatePostCreatorBannedFromCommunity(existing.data.posts, banData)
-                val newRes = ApiState.Success(existing.data.copy(posts = posts))
-                postsRes = newRes
-            }
-
-            else -> {}
-        }
+        postController.findAndUpdatePostCreatorBannedFromCommunity(banData)
     }
 
-    fun resetPosts() {
-        resetPage()
-        getPosts(
+    fun resetPosts(state: ApiState<List<PostView>> = ApiState.Loading) {
+        pageController.reset()
+        postController.clear()
+        initPosts(
             getForm(),
+            state,
         )
     }
 
-    fun refreshPosts() {
-        resetPage()
-        getPosts(
-            getForm(),
-            ApiState.Refreshing,
-        )
-    }
+    fun refreshPosts() = resetPosts(ApiState.Refreshing)
 
     protected open fun getForm(): GetPosts {
         return GetPosts(
-            page = page,
-            page_cursor = pageCursor,
+            page = pageController.page,
+            page_cursor = pageController.pageCursor,
             sort = sortType,
             type_ = listingType,
         )
@@ -252,7 +183,7 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
         viewModelScope.launch {
             val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
             API.getInstance().hidePost(form).onSuccess {
-                updatePostHidden(form)
+                postController.findAndUpdatePostHidden(form)
                 Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
             }
         }
@@ -272,5 +203,9 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
                 updatePost(it.post_view)
             }
         }
+    }
+
+    fun updatePost(postView: PostView) {
+        postController.findAndUpdatePost(postView)
     }
 }

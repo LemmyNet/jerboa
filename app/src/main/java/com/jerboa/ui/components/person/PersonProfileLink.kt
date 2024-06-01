@@ -45,6 +45,7 @@ fun PersonName(
             local = person.local,
             itemColor = color,
             itemStyle = style,
+            onClick = null,
         )
     }
 }

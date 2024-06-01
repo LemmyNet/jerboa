@@ -40,13 +40,15 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 
 @Composable
 fun CommunityName(
-    modifier: Modifier = Modifier,
     community: Community,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)?,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     ItemAndInstanceTitle(
         title = community.title,
+        onClick = onClick,
         actorId = community.actor_id,
         local = community.local,
         modifier = modifier,
@@ -58,13 +60,13 @@ fun CommunityName(
 @Preview
 @Composable
 fun CommunityNamePreview() {
-    CommunityName(community = sampleCommunity)
+    CommunityName(sampleCommunity, onClick = null)
 }
 
 @Preview
 @Composable
 fun CommunityFederatedNamePreview() {
-    CommunityName(community = sampleCommunityFederated)
+    CommunityName(community = sampleCommunityFederated, onClick = null)
 }
 
 @Composable
@@ -113,7 +115,7 @@ fun CommunityLink(
             }
         }
         Column {
-            CommunityName(community = community, color = color, style = style)
+            CommunityName(community = community, color = color, style = style, onClick = null)
             usersPerMonth?.also {
                 Text(
                     text = stringResource(R.string.community_link_users_month, usersPerMonth),

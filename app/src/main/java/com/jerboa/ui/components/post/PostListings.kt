@@ -7,10 +7,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,10 +22,9 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
 import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
@@ -83,11 +78,9 @@ fun PostListings(
 ) {
     LazyColumn(
         state = listState,
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .simpleVerticalScrollbar(listState)
-                .testTag("jerboa:posts"),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("jerboa:posts"),
     ) {
         item(contentType = "aboveContent") {
             contentAboveListings()
@@ -154,19 +147,7 @@ fun PostListings(
         }
     }
 
-    // observer when reached end of list
-    val endOfListReached by remember {
-        derivedStateOf {
-            listState.isScrolledToEnd()
-        }
-    }
-
-    // Act when end of list reached
-    if (endOfListReached && !showPostAppendRetry) {
-        LaunchedEffect(Unit) {
-            loadMorePosts()
-        }
-    }
+    TriggerWhenReachingEnd(listState, loadMorePosts, showPostAppendRetry)
 }
 
 @Preview

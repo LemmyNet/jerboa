@@ -3,7 +3,6 @@ package com.jerboa.ui.components.community
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -91,15 +90,15 @@ fun CommunityActivity(
 ) {
     Log.d("jerboa", "got to community activity")
 
-    val scope = rememberCoroutineScope()
-    val postListState = rememberLazyListState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val account = getCurrentAccount(accountViewModel)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val communityViewModel: CommunityViewModel =
         viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
+    val postListState = communityViewModel.lazyListState
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, communityViewModel::updatePost)
@@ -205,7 +204,7 @@ fun CommunityActivity(
                             }
 
                         PostListings(
-                            posts = postsRes.data.posts,
+                            posts = postsRes.data,
                             admins = siteViewModel.admins(),
                             moderators = remember(moderators) { moderators?.map { it.moderator.id } },
                             contentAboveListings = {

@@ -128,7 +128,10 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun PostHeaderLine(
-    postView: PostView,
+    community: Community,
+    post: Post,
+    creator: Person,
+    creatorBannedFromCommunity: Boolean,
     instantScores: InstantScores,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
@@ -139,7 +142,6 @@ fun PostHeaderLine(
     blurNSFW: BlurNSFW,
     voteDisplayMode: VoteDisplayMode,
 ) {
-    val community = postView.community
     Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -151,22 +153,13 @@ fun PostHeaderLine(
                 modifier = Modifier.weight(1f),
             ) {
                 if (showCommunityName && showAvatar) {
-                    community.icon?.let {
-                        CircularIcon(
-                            icon = it,
-                            contentDescription = stringResource(R.string.postListing_goToCommunity),
-                            size = MEDIUM_ICON_SIZE,
-                            modifier = Modifier.clickable { onCommunityClick(community) },
-                            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = blurNSFW.needBlur(community.nsfw),
-                        )
-                    }
+                    CommunityIcon(community, onCommunityClick, blurNSFW)
                 }
                 Column {
                     if (showCommunityName) {
                         CommunityName(
-                            community = postView.community,
-                            modifier = Modifier.clickable { onCommunityClick(community) },
+                            community = community,
+                            onClick = { onCommunityClick(community) },
                         )
                     }
                     Row(
@@ -174,16 +167,16 @@ fun PostHeaderLine(
                         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
                     ) {
                         PersonProfileLink(
-                            person = postView.creator,
+                            person = creator,
                             onClick = onPersonClick,
                             showTags = fullBody,
                             // Set this to false, we already know this
                             isPostCreator = false,
-                            isCommunityBanned = postView.creator_banned_from_community,
+                            isCommunityBanned = creatorBannedFromCommunity,
                             color = MaterialTheme.colorScheme.onSurface.muted,
                             showAvatar = !showCommunityName && showAvatar,
                         )
-                        if (postView.post.featured_local) {
+                        if (post.featured_local) {
                             DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
@@ -192,7 +185,7 @@ fun PostHeaderLine(
                                 modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
                         }
-                        if (postView.post.featured_community) {
+                        if (post.featured_community) {
                             DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
@@ -201,7 +194,7 @@ fun PostHeaderLine(
                                 modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
                         }
-                        if (postView.post.locked) {
+                        if (post.locked) {
                             DotSpacer()
                             Icon(
                                 imageVector = Icons.Outlined.CommentsDisabled,
@@ -212,14 +205,14 @@ fun PostHeaderLine(
                         }
                     }
                 }
-                if (postView.post.deleted) {
+                if (post.deleted) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = stringResource(R.string.postListing_deleted),
                         tint = MaterialTheme.colorScheme.error,
                     )
                 }
-                if (postView.post.removed) {
+                if (post.removed) {
                     Icon(
                         imageVector = Icons.Outlined.Gavel,
                         contentDescription = stringResource(R.string.removed),
@@ -229,12 +222,30 @@ fun PostHeaderLine(
             }
             ScoreAndTime(
                 instantScores = instantScores,
-                published = postView.post.published,
-                updated = postView.post.updated,
-                isNsfw = nsfwCheck(postView),
+                published = post.published,
+                updated = post.updated,
+                isNsfw = nsfwCheck(post, community),
                 voteDisplayMode = voteDisplayMode,
             )
         }
+    }
+}
+
+@Composable
+fun CommunityIcon(
+    community: Community,
+    onCommunityClick: (community: Community) -> Unit,
+    blurNSFW: BlurNSFW,
+) {
+    community.icon?.let {
+        CircularIcon(
+            icon = it,
+            contentDescription = stringResource(R.string.postListing_goToCommunity),
+            size = MEDIUM_ICON_SIZE,
+            modifier = Modifier.clickable { onCommunityClick(community) },
+            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
+            blur = blurNSFW.needBlur(community.nsfw),
+        )
     }
 }
 
@@ -243,7 +254,10 @@ fun PostHeaderLine(
 fun PostHeaderLinePreview() {
     val postView = sampleLinkPostView
     PostHeaderLine(
-        postView = postView,
+        post = postView.post,
+        community = postView.community,
+        creator = postView.creator,
+        creatorBannedFromCommunity = postView.creator_banned_from_community,
         instantScores = InstantScores(
             myVote = 0,
             score = 10,
@@ -286,31 +300,34 @@ fun PostNodeHeader(
 
 @Composable
 fun PostTitleBlock(
-    postView: PostView,
+    post: Post,
+    read: Boolean,
     expandedImage: Boolean,
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
+    blurEnabled: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
-    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
+    val imagePost = post.url?.let { getPostType(it) == PostType.Image } ?: false
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
-            postView = postView,
-            blurNSFW = blurNSFW,
+            post = post,
+            read = read,
             appState = appState,
+            blurEnabled = blurEnabled,
             showIfRead = showIfRead,
         )
     } else {
         PostTitleAndThumbnail(
-            postView = postView,
+            post = post,
+            read = read,
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
+            blurEnabled = blurEnabled,
             appState = appState,
             showIfRead = showIfRead,
         )
@@ -319,24 +336,25 @@ fun PostTitleBlock(
 
 @Composable
 fun PostName(
-    postView: PostView,
+    post: Post,
+    read: Boolean,
     showIfRead: Boolean,
 ) {
     var color =
-        if (postView.post.featured_local) {
+        if (post.featured_local) {
             MaterialTheme.colorScheme.primary
-        } else if (postView.post.featured_community) {
+        } else if (post.featured_community) {
             MaterialTheme.colorScheme.secondary
         } else {
             MaterialTheme.colorScheme.onSurface
         }
 
-    if (showIfRead && postView.read) {
+    if (showIfRead && read) {
         color = color.muted
     }
 
     Text(
-        text = postView.post.name,
+        text = post.name,
         style = MaterialTheme.typography.headlineMedium,
         color = color,
         modifier = Modifier.testTag("jerboa:posttitle"),
@@ -346,24 +364,25 @@ fun PostName(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostTitleAndImageLink(
-    postView: PostView,
-    blurNSFW: BlurNSFW,
+    post: Post,
+    read: Boolean,
+    blurEnabled: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
-    val url = postView.post.url?.toHttps()
+    val url = post.url?.toHttps()
 
     Column(
-        modifier =
-            Modifier.padding(
-                vertical = MEDIUM_PADDING,
-                horizontal = MEDIUM_PADDING,
-            ),
+        modifier = Modifier.padding(
+            vertical = MEDIUM_PADDING,
+            horizontal = MEDIUM_PADDING,
+        ),
     ) {
         // Title of the post
         PostName(
-            postView = postView,
+            post = post,
+            read = read,
             showIfRead = showIfRead,
         )
     }
@@ -371,8 +390,8 @@ fun PostTitleAndImageLink(
     url?.let { cUrl ->
         PictrsUrlImage(
             url = cUrl,
-            blur = blurNSFW.needBlur(postView),
-            contentDescription = postView.post.alt_text,
+            blur = blurEnabled,
+            contentDescription = post.alt_text,
             modifier =
                 Modifier
                     .combinedClickable(
@@ -385,11 +404,12 @@ fun PostTitleAndImageLink(
 
 @Composable
 fun PostTitleAndThumbnail(
-    postView: PostView,
+    post: Post,
+    read: Boolean,
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
+    blurEnabled: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -404,8 +424,8 @@ fun PostTitleAndThumbnail(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
                 modifier = Modifier.weight(1f),
             ) {
-                PostName(postView = postView, showIfRead = showIfRead)
-                postView.post.url?.also { postUrl ->
+                PostName(post = post, read = read, showIfRead = showIfRead)
+                post.url?.also { postUrl ->
                     if (!isSameInstance(postUrl, account.instance)) {
                         val hostName = hostName(postUrl)
                         hostName?.also {
@@ -419,10 +439,10 @@ fun PostTitleAndThumbnail(
                 }
             }
             ThumbnailTile(
-                postView = postView,
+                post = post,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
+                blurEnabled = blurEnabled,
                 appState = appState,
             )
         }
@@ -431,30 +451,31 @@ fun PostTitleAndThumbnail(
 
 @Composable
 fun PostBody(
-    postView: PostView,
+    post: Post,
+    read: Boolean,
     fullBody: Boolean,
     viewSource: Boolean,
     expandedImage: Boolean,
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
+    blurEnabled: Boolean,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     clickBody: () -> Unit = {},
     showIfRead: Boolean,
 ) {
-    val post = postView.post
     Column(
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         PostTitleBlock(
-            postView = postView,
+            post = post,
+            read = read,
             expandedImage = expandedImage,
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
+            blurEnabled = blurEnabled,
             appState = appState,
             showIfRead = showIfRead,
         )
@@ -516,14 +537,15 @@ fun PostBody(
 @Composable
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
-        postView = samplePostView,
+        post = samplePostView.post,
+        read = samplePostView.read,
         fullBody = false,
         viewSource = false,
         expandedImage = false,
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = BlurNSFW.NSFW,
+        blurEnabled = BlurNSFW.NSFW.needBlur(samplePostView),
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -533,15 +555,17 @@ fun PreviewStoryTitleAndMetadata() {
 @Preview
 @Composable
 fun PreviewSourcePost() {
+    val pv = sampleMarkdownPostView
     PostBody(
-        postView = sampleMarkdownPostView,
+        post = pv.post,
+        read = pv.read,
         fullBody = true,
         viewSource = true,
         expandedImage = false,
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = BlurNSFW.NSFW,
+        blurEnabled = BlurNSFW.NSFW.needBlur(pv),
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -691,27 +715,10 @@ fun PostFooterLine(
                 account = account,
             )
         }
-        ActionBarButton(
-            icon =
-                if (postView.saved) {
-                    Icons.Filled.Bookmark
-                } else {
-                    Icons.Outlined.BookmarkBorder
-                },
-            contentDescription =
-                if (postView.saved) {
-                    stringResource(R.string.removeBookmark)
-                } else {
-                    stringResource(R.string.addBookmark)
-                },
-            onClick = { onSaveClick(postView) },
-            contentColor =
-                if (postView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+        SavedButton(
+            saved = postView.saved,
             account = account,
+            onSaveClick = { onSaveClick(postView) },
         )
         ActionBarButton(
             icon = Icons.Outlined.MoreVert,
@@ -737,6 +744,33 @@ fun PostFooterLine(
             )
         }
     }
+}
+
+@Composable
+fun SavedButton(
+    saved: Boolean,
+    account: Account,
+    onSaveClick: () -> Unit,
+) {
+    ActionBarButton(
+        icon = if (saved) {
+            Icons.Filled.Bookmark
+        } else {
+            Icons.Outlined.BookmarkBorder
+        },
+        contentDescription = if (saved) {
+            stringResource(R.string.removeBookmark)
+        } else {
+            stringResource(R.string.addBookmark)
+        },
+        onClick = onSaveClick,
+        contentColor = if (saved) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onBackground.muted
+        },
+        account = account,
+    )
 }
 
 @Composable
@@ -1090,17 +1124,30 @@ fun PostListing(
 ) {
     val ctx = LocalContext.current
     // This stores vote data
-    var instantScores by
-        remember {
-            mutableStateOf(
-                InstantScores(
-                    myVote = postView.my_vote,
-                    score = postView.counts.score,
-                    upvotes = postView.counts.upvotes,
-                    downvotes = postView.counts.downvotes,
-                ),
-            )
+    var instantScores by remember {
+        mutableStateOf(
+            InstantScores(
+                myVote = postView.my_vote,
+                score = postView.counts.score,
+                upvotes = postView.counts.upvotes,
+                downvotes = postView.counts.downvotes,
+            ),
+        )
+    }
+
+    val upvoteClick = remember(postView, instantScores) {
+        {
+            instantScores = instantScores.update(VoteType.Upvote)
+            onUpvoteClick(postView)
         }
+    }
+
+    val downvoteClick = remember(postView, instantScores) {
+        {
+            instantScores = instantScores.update(VoteType.Downvote)
+            onDownvoteClick(postView)
+        }
+    }
 
     var viewSource by remember { mutableStateOf(false) }
 
@@ -1108,25 +1155,10 @@ fun PostListing(
         {
             if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 when (it) {
-                    SwipeToActionType.Upvote -> {
-                        instantScores =
-                            instantScores.update(VoteType.Upvote)
-                        onUpvoteClick(postView)
-                    }
-
-                    SwipeToActionType.Downvote -> {
-                        instantScores =
-                            instantScores.update(VoteType.Downvote)
-                        onDownvoteClick(postView)
-                    }
-
-                    SwipeToActionType.Reply -> {
-                        onReplyClick(postView)
-                    }
-
-                    SwipeToActionType.Save -> {
-                        onSaveClick(postView)
-                    }
+                    SwipeToActionType.Upvote -> upvoteClick()
+                    SwipeToActionType.Downvote -> downvoteClick()
+                    SwipeToActionType.Reply -> onReplyClick(postView)
+                    SwipeToActionType.Save -> onSaveClick(postView)
                 }
             }
         }
@@ -1148,14 +1180,8 @@ fun PostListing(
                         admins = admins,
                         moderators = moderators,
                         instantScores = instantScores,
-                        onUpvoteClick = {
-                            instantScores = instantScores.update(VoteType.Upvote)
-                            onUpvoteClick(postView)
-                        },
-                        onDownvoteClick = {
-                            instantScores = instantScores.update(VoteType.Downvote)
-                            onDownvoteClick(postView)
-                        },
+                        onUpvoteClick = upvoteClick,
+                        onDownvoteClick = downvoteClick,
                         onReplyClick = onReplyClick,
                         onPostClick = onPostClick,
                         onSaveClick = onSaveClick,
@@ -1198,14 +1224,8 @@ fun PostListing(
                         admins = admins,
                         moderators = moderators,
                         instantScores = instantScores,
-                        onUpvoteClick = {
-                            instantScores = instantScores.update(VoteType.Upvote)
-                            onUpvoteClick(postView)
-                        },
-                        onDownvoteClick = {
-                            instantScores = instantScores.update(VoteType.Downvote)
-                            onDownvoteClick(postView)
-                        },
+                        onUpvoteClick = upvoteClick,
+                        onDownvoteClick = downvoteClick,
                         onReplyClick = onReplyClick,
                         onPostClick = onPostClick,
                         onSaveClick = onSaveClick,
@@ -1245,14 +1265,8 @@ fun PostListing(
                     PostListingList(
                         postView = postView,
                         instantScores = instantScores,
-                        onUpvoteClick = {
-                            instantScores = instantScores.update(VoteType.Upvote)
-                            onUpvoteClick(postView)
-                        },
-                        onDownvoteClick = {
-                            instantScores = instantScores.update(VoteType.Downvote)
-                            onDownvoteClick(postView)
-                        },
+                        onUpvoteClick = upvoteClick,
+                        onDownvoteClick = downvoteClick,
                         onPostClick = onPostClick,
                         showCommunityName = showCommunityName,
                         account = account,
@@ -1386,7 +1400,7 @@ fun PostListingList(
                         .clickable { onPostClick(postView) },
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                PostName(postView = postView, showIfRead = showIfRead)
+                PostName(post = postView.post, read = postView.read, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
                 ) {
@@ -1463,10 +1477,10 @@ fun PostListingList(
                 }
             }
             ThumbnailTile(
-                postView = postView,
+                post = postView.post,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
+                blurEnabled = blurNSFW.needBlur(postView),
                 appState = appState,
             )
         }
@@ -1476,42 +1490,41 @@ fun PostListingList(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThumbnailTile(
-    postView: PostView,
+    post: Post,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
+    blurEnabled: Boolean,
     appState: JerboaAppState,
 ) {
-    postView.post.url?.also { url ->
+    post.url?.also { url ->
         val postType = getPostType(url)
 
-        val postLinkPicMod =
-            Modifier
-                .size(POST_LINK_PIC_SIZE)
-                .combinedClickable(
-                    onClick = {
-                        if (postType != PostType.Link) {
-                            appState.openImageViewer(url)
-                        } else {
-                            appState.openLink(
-                                url,
-                                useCustomTabs,
-                                usePrivateTabs,
-                            )
-                        }
-                    },
-                    onLongClick = {
-                        appState.showLinkPopup(url)
-                    },
-                )
+        val postLinkPicMod = Modifier
+            .size(POST_LINK_PIC_SIZE)
+            .combinedClickable(
+                onClick = {
+                    if (postType != PostType.Link) {
+                        appState.openImageViewer(url)
+                    } else {
+                        appState.openLink(
+                            url,
+                            useCustomTabs,
+                            usePrivateTabs,
+                        )
+                    }
+                },
+                onLongClick = {
+                    appState.showLinkPopup(url)
+                },
+            )
 
         Box {
-            postView.post.thumbnail_url?.also { thumbnail ->
+            post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
-                    blur = blurNSFW.needBlur(postView),
+                    blur = blurEnabled,
                     roundBottomEndCorner = postType != PostType.Link,
-                    contentDescription = postView.post.alt_text,
+                    contentDescription = post.alt_text,
                     modifier = postLinkPicMod,
                 )
             } ?: run {
@@ -1663,7 +1676,10 @@ fun PostListingCard(
     ) {
         // Header
         PostHeaderLine(
-            postView = postView,
+            post = postView.post,
+            creator = postView.creator,
+            community = postView.community,
+            creatorBannedFromCommunity = postView.creator_banned_from_community,
             instantScores = instantScores,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
@@ -1679,14 +1695,15 @@ fun PostListingCard(
 
         //  Title + metadata
         PostBody(
-            postView = postView,
+            post = postView.post,
+            read = postView.read,
             fullBody = fullBody,
             viewSource = viewSource,
             expandedImage = expandedImage,
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
+            blurEnabled = blurNSFW.needBlur(postView),
             showPostLinkPreview = showPostLinkPreview,
             appState = appState,
             clickBody = { onPostClick(postView) },
