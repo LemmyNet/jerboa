@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.util.Log
 import androidx.activity.compose.ReportDrawn
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -245,7 +246,6 @@ fun MainPostListingsContent(
         onRefresh = homeViewModel::refreshPosts,
     ) {
         JerboaLoadingBar(homeViewModel.postsRes)
-
 
         val posts: List<PostView> = when (val postsRes = homeViewModel.postsRes) {
             is ApiState.Failure -> {
