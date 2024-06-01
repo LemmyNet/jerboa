@@ -12,7 +12,7 @@ enum class PostNavigationGestureMode(
     Disabled(R.string.look_and_feel_post_navigation_gesture_mode_disabled),
 
     /**
-     * Enable swiping left to navigate away from a post.
+     * Enable swiping right to navigate away from a post.
      */
-    SwipeLeft(R.string.look_and_feel_post_navigation_gesture_mode_swipe_left),
+    SwipeRight(R.string.look_and_feel_post_navigation_gesture_mode_swipe_right),
 }

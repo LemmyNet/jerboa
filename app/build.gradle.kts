@@ -132,12 +132,6 @@ dependencies {
     implementation("io.noties.markwon:image-coil:4.6.2")
     implementation("io.noties.markwon:linkify:4.6.2")
 
-    // Accompanist
-    implementation("com.google.accompanist:accompanist-pager:0.34.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
-
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
@@ -184,7 +178,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
-    implementation("androidx.navigation:navigation-compose")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 
     testImplementation("junit:junit:4.13.2")
