@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.settings.about
 
+import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.outlined.Anchor
 import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Build
@@ -21,15 +23,25 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.profileinstaller.ProfileVerifier
+import androidx.profileinstaller.ProfileVerifier.CompilationStatus
 import com.jerboa.R
+import com.jerboa.api.ApiState
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.PreferenceCategory
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
@@ -52,10 +64,25 @@ fun AboutActivity(
     Log.d("jerboa", "Got to About activity")
 
     val ctx = LocalContext.current
-
+    val coroutine = rememberCoroutineScope()
     val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var profileState: ApiState<CompilationStatus> by remember {
+        mutableStateOf(ApiState.Loading)
+    }
+
+    if (SDK_INT >= 28) {
+        LaunchedEffect(Unit) {
+            coroutine.launch(Dispatchers.IO) {
+                val status = ProfileVerifier.getCompilationStatusAsync().get()
+                profileState = ApiState.Success(status)
+            }
+        }
+    } else {
+        profileState = ApiState.Failure(Throwable("Not supported"))
+    }
 
     fun openLink(link: String) {
         openLinkRaw(link, useCustomTabs, usePrivateTabs)
@@ -197,6 +224,44 @@ fun AboutActivity(
                             openLink(GITHUB_URL)
                         },
                     )
+                    PreferenceCategory(
+                        title = {
+                            Text(stringResource(R.string.info))
+                        },
+                    )
+
+                    Preference(
+                        title = { Text(stringResource(R.string.settings_about_baseline_profile)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Anchor,
+                                contentDescription = null,
+                            )
+                        },
+                        summary = {
+                            Text(
+                                text = when (val state = profileState) {
+                                    is ApiState.Loading -> stringResource(R.string.loading)
+                                    is ApiState.Success -> {
+                                        val installed = stringResource(
+                                            if (state.data.isCompiledWithProfile) {
+                                                R.string.installed
+                                            } else {
+                                                R.string.not_installed
+                                            },
+                                        )
+
+                                        val installCode = getInstallCode(state.data)
+
+                                        "$installed\n$installCode"
+                                    }
+
+                                    is ApiState.Failure -> stringResource(R.string.unable_to_retrieve)
+                                    else -> ""
+                                },
+                            )
+                        },
+                    )
                 }
             }
         },
@@ -213,4 +278,20 @@ fun AboutPreview() {
         onClickCrashLogs = {},
         openLinkRaw = { _: String, _: Boolean, _: Boolean -> },
     )
+}
+
+fun getInstallCode(compilationStatus: CompilationStatus): String {
+    return when (compilationStatus.profileInstallResultCode) {
+        CompilationStatus.RESULT_CODE_NO_PROFILE -> "NO_PROFILE"
+        CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE -> "COMPILED_WITH_PROFILE"
+        CompilationStatus.RESULT_CODE_PROFILE_ENQUEUED_FOR_COMPILATION -> "PROFILE_ENQUEUED_FOR_COMPILATION"
+        CompilationStatus.RESULT_CODE_ERROR_UNSUPPORTED_API_VERSION -> "ERROR_UNSUPPORTED_API_VERSION"
+        CompilationStatus.RESULT_CODE_ERROR_PACKAGE_NAME_DOES_NOT_EXIST -> "ERROR_PACKAGE_NAME_DOES_NOT_EXIST"
+        CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE_NON_MATCHING -> "COMPILED_WITH_PROFILE_NON_MATCHING"
+        CompilationStatus.RESULT_CODE_ERROR_CACHE_FILE_EXISTS_BUT_CANNOT_BE_READ -> "ERROR_CACHE_FILE_EXISTS_BUT_CANNOT_BE_READ"
+        CompilationStatus.RESULT_CODE_ERROR_CANT_WRITE_PROFILE_VERIFICATION_RESULT_CACHE_FILE ->
+            "ERROR_CANT_WRITE_PROFILE_VERIFICATION_RESULT_CACHE_FILE"
+
+        else -> "UNKNOWN[${compilationStatus.profileInstallResultCode}]"
+    }
 }

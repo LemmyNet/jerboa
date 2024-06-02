@@ -8,6 +8,7 @@ ktlint_standard_comment-wrapping = disabled
 ktlint_function_naming_ignore_when_annotated_with= Composable
 ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_string-template-indent = disabled
+max_line_length = 140
 
 [app/src/main/java/com/jerboa/DefaultInstances.kt]
 ktlint = disabled

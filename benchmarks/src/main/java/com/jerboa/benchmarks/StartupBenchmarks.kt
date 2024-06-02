@@ -7,6 +7,7 @@ import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry
 import com.jerboa.actions.closeChangeLogIfOpen
 import com.jerboa.actions.waitUntilPostsActuallyVisible
 import org.junit.Rule
@@ -21,9 +22,10 @@ import org.junit.runner.RunWith
  *
  * Run this benchmark to see startup measurements and captured system traces for verifying
  * the effectiveness of your Baseline Profiles. You can run it directly from Android
- * Studio as an instrumentation test, or run all benchmarks with this Gradle task:
+ * Studio as an instrumentation test, or run all benchmarks for a variant, for example benchmarkRelease,
+ * with this Gradle task:
  * ```
- * ./gradlew :benchmarks:connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=Macrobenchmark
+ * ./gradlew :benchmarks:connectedBenchmarkReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=Macrobenchmark
  * ```
  *
  * You should run the benchmarks on a physical device, not an Android emulator, because the
@@ -46,7 +48,8 @@ class StartupBenchmarks {
 
     private fun benchmark(compilationMode: CompilationMode) {
         rule.measureRepeated(
-            packageName = "com.jerboa",
+            packageName = InstrumentationRegistry.getArguments().getString("targetAppId")
+                ?: throw Exception("targetAppId not passed as instrumentation runner arg"),
             metrics = listOf(StartupTimingMetric()),
             compilationMode = compilationMode,
             startupMode = StartupMode.COLD,

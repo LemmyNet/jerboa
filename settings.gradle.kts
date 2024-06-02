@@ -18,4 +18,3 @@ dependencyResolutionManagement {
 rootProject.name = "jerboa"
 include(":app")
 include(":benchmarks")
-

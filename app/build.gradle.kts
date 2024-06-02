@@ -83,14 +83,14 @@ android {
             versionNameSuffix = " (DEBUG)"
         }
 
-        register("generateProfiles") { // use this variant to generate the profiles
-            isMinifyEnabled = false // The startup profiles needs minification off
-            isShrinkResources = false
-            isDebuggable = false
-            signingConfig = signingConfigs.getByName("debug")
-            proguardFiles("benchmark-rules.pro") // The baseline profile generator needs obfuscation off
-            applicationIdSuffix = ".benchmark"
-        }
+//        register("generateProfiles") { // use this variant to generate the profiles
+//            isMinifyEnabled = false // The startup profiles needs minification off
+//            isShrinkResources = false
+//            isDebuggable = false
+//            signingConfig = signingConfigs.getByName("debug")
+//            proguardFiles("benchmark-rules.pro") // The baseline profile generator needs obfuscation off
+//            applicationIdSuffix = ".benchmark"
+//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -107,6 +107,12 @@ android {
 
 composeCompiler {
     enableStrongSkippingMode = true
+}
+
+baselineProfile {
+    mergeIntoMain = true
+    saveInSrc = true
+    dexLayoutOptimization = true
 }
 
 dependencies {

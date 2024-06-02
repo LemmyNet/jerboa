@@ -96,11 +96,11 @@ fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(
     timeout: Long = 10_000,
     depth: Int = 0,
 ) {
+    if (depth > 10) throw IllegalStateException("Exceed retrial")
     device.wait(
         Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))),
         timeout,
     )
-    if (depth > 10) throw IllegalStateException("Exceed retrial")
 
     if (retry && !device.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post")))) {
         openMoreOptions()

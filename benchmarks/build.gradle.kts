@@ -22,24 +22,24 @@ android {
 
     defaultConfig {
         testInstrumentationRunnerArguments += mapOf("suppressErrors" to "EMULATOR")
-        minSdk = 26
+        minSdk = 28
         targetSdk =  34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // Only use the emulator to test benchmarks
     }
 
     targetProjectPath = ":app"
     // Enable the benchmark to run separately from the app process
-    experimentalProperties["android.experimental.self-instrumenting"] = true
+   // experimentalProperties["android.experimental.self-instrumenting"] = true
 
-    // Baselines profiles needs to generated on a rooted phone
-    // Use this plugin to setup and tear down a rooted phone
+    // This code creates the gradle managed device used to generate baseline profiles.
+    // To use GMD please invoke generation through the command line:
+    // ./gradlew :app:generateBaselineProfile
     testOptions.managedDevices.devices {
-        maybeCreate<ManagedVirtualDevice>("pixel6Api31").apply {
+        create<ManagedVirtualDevice>("pixel6Api34") {
             device = "Pixel 6"
-            apiLevel = 31
-            systemImageSource = "aosp"
+            apiLevel = 34
+            systemImageSource = "google"
         }
     }
 
@@ -49,17 +49,14 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
         }
-        create("generateProfiles") {
-        }
-        create("nonMinifiedGenerateProfiles") {
-        }
     }
 }
 
 // This is the configuration block for the Baseline Profile plugin.
 // You can specify to run the generators on a managed devices or connected devices.
 baselineProfile {
-    managedDevices += "pixel6Api31"
+    managedDevices += "pixel6Api34"
+    enableEmulatorDisplay = true
     useConnectedDevices = false
 }
 
@@ -68,4 +65,14 @@ dependencies {
     implementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("androidx.test.uiautomator:uiautomator:2.3.0")
     implementation("androidx.benchmark:benchmark-macro-junit4:1.2.4")
+}
+
+androidComponents {
+    onVariants { v ->
+        val artifactsLoader = v.artifacts.getBuiltArtifactsLoader()
+        v.instrumentationRunnerArguments.put(
+            "targetAppId",
+            v.testedApks.map { artifactsLoader.load(it)?.applicationId }
+        )
+    }
 }
