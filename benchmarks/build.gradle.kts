@@ -30,7 +30,6 @@ android {
 
     targetProjectPath = ":app"
     // Enable the benchmark to run separately from the app process
-   // experimentalProperties["android.experimental.self-instrumenting"] = true
 
     // This code creates the gradle managed device used to generate baseline profiles.
     // To use GMD please invoke generation through the command line:
@@ -72,7 +71,7 @@ androidComponents {
         val artifactsLoader = v.artifacts.getBuiltArtifactsLoader()
         v.instrumentationRunnerArguments.put(
             "targetAppId",
-            v.testedApks.map { artifactsLoader.load(it)?.applicationId }
+            v.testedApks.map { artifactsLoader.load(it)?.applicationId ?: "com.jerboa" }
         )
     }
 }
