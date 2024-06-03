@@ -82,15 +82,6 @@ android {
             applicationIdSuffix = ".debug"
             versionNameSuffix = " (DEBUG)"
         }
-
-        register("generateProfiles") { // use this variant to generate the profiles
-            isMinifyEnabled = false // The startup profiles needs minification off
-            isShrinkResources = false
-            isDebuggable = false
-            signingConfig = signingConfigs.getByName("debug")
-            proguardFiles("benchmark-rules.pro") // The baseline profile generator needs obfuscation off
-            applicationIdSuffix = ".benchmark"
-        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -107,6 +98,12 @@ android {
 
 composeCompiler {
     enableStrongSkippingMode = true
+}
+
+baselineProfile {
+    mergeIntoMain = true
+    saveInSrc = true
+    dexLayoutOptimization = true
 }
 
 dependencies {
@@ -131,12 +128,6 @@ dependencies {
     implementation("io.noties.markwon:html:4.6.2")
     implementation("io.noties.markwon:image-coil:4.6.2")
     implementation("io.noties.markwon:linkify:4.6.2")
-
-    // Accompanist
-    implementation("com.google.accompanist:accompanist-pager:0.34.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
@@ -184,7 +175,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
-    implementation("androidx.navigation:navigation-compose")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 
     testImplementation("junit:junit:4.13.2")
