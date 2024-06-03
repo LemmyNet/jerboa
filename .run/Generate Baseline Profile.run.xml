@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":app:generateReleaseBaselineProfile" />
+          <option value=":app:generateBaselineProfile" />
         </list>
       </option>
       <option name="vmOptions" />
