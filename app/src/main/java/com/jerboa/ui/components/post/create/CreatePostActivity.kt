@@ -93,10 +93,13 @@ fun CreatePostActivity(
         )
     }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
+    var altText by rememberSaveable { mutableStateOf("") }
+    var customThumbnail by rememberSaveable { mutableStateOf("") }
 
     val nameField = validatePostName(ctx, name)
     val urlField = validateUrl(ctx, url)
-    val formValid = !nameField.hasError && !urlField.hasError && (selectedCommunity !== null)
+    val customThumbnailField = validateUrl(ctx, customThumbnail, ctx.getString(R.string.custom_thumbnail))
+    val formValid = !nameField.hasError && !urlField.hasError && !customThumbnailField.hasError && (selectedCommunity !== null)
 
     LaunchedEffect(initialUrl) {
         if (initialUrl.isNotEmpty()) {
@@ -137,6 +140,8 @@ fun CreatePostActivity(
                                     name = name,
                                     body = body,
                                     url = url,
+                                    altText = altText,
+                                    customThumbnail = customThumbnail,
                                     isNsfw = isNsfw,
                                     selectedCommunity = selectedCommunity,
                                     createPostViewModel = createPostViewModel,
@@ -179,6 +184,11 @@ fun CreatePostActivity(
                                 }
                             }
                     },
+                    altText = altText,
+                    onAltTextChange = { altText = it },
+                    customThumbnailField = customThumbnailField,
+                    customThumbnail = customThumbnail,
+                    onCustomThumbnailChange = { customThumbnail = it },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
                     sharedImage = initialImage,
@@ -217,6 +227,8 @@ fun onSubmitClick(
     name: String,
     body: TextFieldValue,
     url: String,
+    altText: String,
+    customThumbnail: String,
     isNsfw: Boolean,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
@@ -227,11 +239,15 @@ fun onSubmitClick(
         val nameOut = name.trim()
         val bodyOut = body.text.trim().ifEmpty { null }
         val urlOut = url.trim().ifEmpty { null }?.padUrlWithHttps()
+        val altTextOut = altText.trim().ifEmpty { null }
+        val customThumbnailOut = customThumbnail.trim().ifEmpty { null }
         createPostViewModel.createPost(
             CreatePost(
                 name = nameOut,
                 community_id = it,
                 url = urlOut,
+                alt_text = altTextOut,
+                custom_thumbnail = customThumbnailOut,
                 body = bodyOut,
                 nsfw = isNsfw,
             ),

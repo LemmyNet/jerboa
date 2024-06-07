@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.InputField
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
@@ -56,6 +57,11 @@ fun CreateEditPostBody(
     url: String,
     urlField: InputField,
     onUrlChange: (url: String) -> Unit,
+    altText: String,
+    onAltTextChange: (altText: String) -> Unit,
+    customThumbnailField: InputField,
+    customThumbnail: String,
+    onCustomThumbnailChange: (customThumbnail: String) -> Unit,
     sharedImage: Uri? = null,
     onImagePicked: (image: Uri) -> Unit,
     isUploadingImage: Boolean = false,
@@ -68,6 +74,7 @@ fun CreateEditPostBody(
     padding: PaddingValues,
     error: Throwable?,
 ) {
+    val api = API.getInstanceOrNull()
     val scrollState = rememberScrollState()
 
     Column(
@@ -141,6 +148,37 @@ fun CreateEditPostBody(
             PictrsUrlImage(
                 url = url,
                 blur = false,
+                contentDescription = altText,
+            )
+
+            /**
+             * Alt text field. Only show if its a url image.
+             */
+            if (api != null && api.FF.hidePost()) {
+                OutlinedTextField(
+                    value = altText,
+                    onValueChange = onAltTextChange,
+                    label = {
+                        Text(text = stringResource(R.string.alt_text))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+
+        /**
+         * Post custom thumbnail
+         */
+        if (api != null && api.FF.hidePost()) {
+            OutlinedTextField(
+                value = customThumbnail,
+                onValueChange = onCustomThumbnailChange,
+                label = {
+                    Text(text = customThumbnailField.label)
+                },
+                isError = customThumbnailField.hasError,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 
@@ -240,6 +278,11 @@ fun CreatePostBodyPreview() {
         url = "",
         urlField = InputField(label = "", hasError = false),
         onUrlChange = {},
+        altText = "",
+        onAltTextChange = {},
+        customThumbnailField = InputField(label = "", hasError = false),
+        customThumbnail = "",
+        onCustomThumbnailChange = {},
         onImagePicked = {},
         account = AnonAccount,
         padding = PaddingValues(),
@@ -269,6 +312,11 @@ fun CreatePostBodyPreviewNoCommunity() {
         url = "",
         urlField = InputField(label = "", hasError = false),
         onUrlChange = {},
+        altText = "",
+        onAltTextChange = {},
+        customThumbnailField = InputField(label = "", hasError = false),
+        customThumbnail = "",
+        onCustomThumbnailChange = {},
         onImagePicked = {},
         suggestedTitle = stringResource(R.string.create_post_a_title_here),
         suggestedTitleLoading = false,
@@ -299,6 +347,11 @@ fun EditPostBodyPreview() {
         onNameChange = {},
         onImagePicked = {},
         onUrlChange = {},
+        altText = "",
+        onAltTextChange = {},
+        customThumbnailField = InputField(label = "", hasError = false),
+        customThumbnail = "",
+        onCustomThumbnailChange = {},
         account = AnonAccount,
         isNsfw = false,
         onIsNsfwChange = {},

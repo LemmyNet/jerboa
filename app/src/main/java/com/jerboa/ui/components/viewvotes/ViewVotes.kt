@@ -54,6 +54,8 @@ fun ViewVotesBody(
                     person = like.creator,
                     onClick = onPersonClick,
                     showAvatar = true,
+                    showTags = true,
+                    isCommunityBanned = like.creator_banned_from_community,
                 )
                 Icon(
                     imageVector = voteInfo.icon,

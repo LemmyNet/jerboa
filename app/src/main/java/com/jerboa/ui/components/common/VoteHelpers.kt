@@ -29,10 +29,10 @@ fun VoteGeneric(
             if (myVote == 1) {
                 stringResource(R.string.upvoted)
             } else {
-                stringResource(R.string.downvoted)
+                stringResource(R.string.upvote)
             }
         } else {
-            if (myVote == 1) {
+            if (myVote == -1) {
                 stringResource(R.string.downvoted)
             } else {
                 stringResource(R.string.downvote)

@@ -493,7 +493,7 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.PostArgs(it)
 
                         SwipeToNavigateBack(
-                            appSettings.postNavigationGestureMode,
+                            appSettings.postNavigationGestureMode.toEnumSafe(),
                             appState::navigateUp,
                         ) {
                             PostActivity(

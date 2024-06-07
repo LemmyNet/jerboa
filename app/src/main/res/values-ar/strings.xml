@@ -150,7 +150,6 @@
     <string name="look_and_feel_look_and_feel">الأسلوب</string>
     <string name="look_and_feel_post_navigation_gesture_mode">إيماءات التنقُّل بين الموضوعات</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">معطَّل</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">اسحب يسارًا ترجع</string>
     <string name="look_and_feel_post_view">منظور الموضوعات</string>
     <string name="look_and_feel_post_view_card">بطائق</string>
     <string name="look_and_feel_post_view_list">قائمة</string>

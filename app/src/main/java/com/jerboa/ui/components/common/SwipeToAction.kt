@@ -141,7 +141,6 @@ fun SwipeToAction(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun rememberSwipeActionState(
     swipeToActionPreset: SwipeToActionPreset,

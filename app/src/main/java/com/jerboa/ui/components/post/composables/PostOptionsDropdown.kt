@@ -20,6 +20,8 @@ import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -68,6 +70,7 @@ fun PostOptionsDropdown(
     onPersonClick: (PersonId) -> Unit,
     onEditPostClick: (PostView) -> Unit,
     onDeletePostClick: (PostView) -> Unit,
+    onHidePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
     onRemoveClick: (PostView) -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
@@ -85,6 +88,7 @@ fun PostOptionsDropdown(
     scope: CoroutineScope,
 ) {
     val ctx = LocalContext.current
+    val api = getInstanceOrNull()
     val localClipboardManager = LocalClipboardManager.current
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
 
@@ -311,6 +315,29 @@ fun PostOptionsDropdown(
             )
         }
 
+        // Hide / unhide post
+        if (api != null && api.FF.hidePost()) {
+            if (postView.hidden) {
+                PopupMenuItem(
+                    text = stringResource(R.string.unhide_post),
+                    icon = Icons.Outlined.Visibility,
+                    onClick = {
+                        onDismissRequest()
+                        onHidePostClick(postView)
+                    },
+                )
+            } else {
+                PopupMenuItem(
+                    text = stringResource(R.string.hide_post),
+                    icon = Icons.Outlined.VisibilityOff,
+                    onClick = {
+                        onDismissRequest()
+                        onHidePostClick(postView)
+                    },
+                )
+            }
+        }
+
         // Only visible from PostActivity
         if (showViewSource) {
             postView.post.body?.also {
@@ -398,8 +425,6 @@ fun PostOptionsDropdown(
                         )
                     },
                 )
-
-                val api = getInstanceOrNull()
 
                 if (api != null && api.FF.instanceBlock()) {
                     val instance = getInstanceFromCommunityUrl(postView.community.actor_id)

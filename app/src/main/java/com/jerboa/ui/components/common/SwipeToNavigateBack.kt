@@ -3,56 +3,46 @@ package com.jerboa.ui.components.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jerboa.feat.PostNavigationGestureMode
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeToNavigateBack(
-    useSwipeBack: Int,
+    useSwipeBack: PostNavigationGestureMode,
     onSwipeBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    if (useSwipeBack == PostNavigationGestureMode.SwipeLeft.ordinal) {
-        val dismissState =
-            rememberDismissState(
-                confirmStateChange = {
+    if (useSwipeBack == PostNavigationGestureMode.SwipeRight) {
+        SwipeToDismissBox(
+            state = rememberSwipeToDismissBoxState(
+                confirmValueChange = {
                     when (it) {
-                        DismissValue.DismissedToEnd -> {
+                        SwipeToDismissBoxValue.StartToEnd -> {
                             onSwipeBack()
                             true
                         }
 
-                        else -> {
-                            false
-                        }
+                        else -> false
                     }
                 },
-            )
-        SwipeToDismiss(
-            state = dismissState,
-            background = {
+                positionalThreshold = { it * 0.7f },
+            ),
+            enableDismissFromEndToStart = false,
+            backgroundContent = {
                 Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
                 )
             },
-            dismissContent = {
-                content()
-            },
-            directions = setOf(DismissDirection.StartToEnd),
-            dismissThresholds = { FractionalThreshold(0.8f) },
-        )
+        ) {
+            content()
+        }
     } else {
         content()
     }

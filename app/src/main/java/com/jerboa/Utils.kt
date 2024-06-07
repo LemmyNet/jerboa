@@ -658,6 +658,7 @@ fun validatePostName(
 fun validateUrl(
     ctx: Context,
     url: String,
+    label: String = ctx.getString(R.string.url),
 ): InputField {
     return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
@@ -666,7 +667,7 @@ fun validateUrl(
         )
     } else {
         InputField(
-            label = ctx.getString(R.string.url),
+            label = label,
             hasError = false,
         )
     }
@@ -865,7 +866,14 @@ fun getCommentIdDepthFromPath(
 }
 
 fun nsfwCheck(postView: PostView): Boolean {
-    return postView.post.nsfw || postView.community.nsfw
+    return nsfwCheck(postView.post, postView.community)
+}
+
+fun nsfwCheck(
+    post: Post,
+    community: Community,
+): Boolean {
+    return post.nsfw || community.nsfw
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -1102,6 +1110,21 @@ fun findAndUpdatePostCreator(
     newPosts.replaceAll {
         if (it.creator.id == person.id) {
             it.copy(creator = person)
+        } else {
+            it
+        }
+    }
+    return newPosts
+}
+
+fun findAndUpdatePostHidden(
+    posts: List<PostView>,
+    form: HidePost,
+): List<PostView> {
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (form.post_ids.contains(it.post.id)) {
+            it.copy(hidden = form.hide)
         } else {
             it
         }
@@ -1405,7 +1428,7 @@ fun Context.getInputStream(url: String): InputStream {
             Request.Builder()
                 .url(url)
                 .build(),
-        ).execute().body.byteStream()
+        ).execute().body?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }
 

@@ -5,7 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    kotlin("plugin.serialization") version "1.9.23"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
 
 }
 
@@ -28,7 +29,7 @@ android {
             useSupportLibrary = true
         }
         ksp {
-           arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -81,15 +82,6 @@ android {
             applicationIdSuffix = ".debug"
             versionNameSuffix = " (DEBUG)"
         }
-
-        register("generateProfiles") { // use this variant to generate the profiles
-            isMinifyEnabled = false // The startup profiles needs minification off
-            isShrinkResources = false
-            isDebuggable = false
-            signingConfig = signingConfigs.getByName("debug")
-            proguardFiles("benchmark-rules.pro") // The baseline profile generator needs obfuscation off
-            applicationIdSuffix = ".benchmark"
-        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -102,16 +94,32 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
-    }
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
+}
+
+baselineProfile {
+    mergeIntoMain = true
+    saveInSrc = true
+    dexLayoutOptimization = true
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("me.zhanghai.compose.preference:library:1.0.0")
+    // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
+    // This is the "official" composeBom, but it breaks the imageviewer until 1.7 is released. See:
+    // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
+    // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
+    val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.05.00-alpha03")
+    implementation(composeBom)
+    implementation("androidx.activity:activity-compose")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    androidTestImplementation(composeBom)
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    implementation("me.zhanghai.compose.preference:library:1.0.0")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
@@ -121,16 +129,10 @@ dependencies {
     implementation("io.noties.markwon:image-coil:4.6.2")
     implementation("io.noties.markwon:linkify:4.6.2")
 
-    // Accompanist
-    implementation("com.google.accompanist:accompanist-pager:0.34.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
-
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx")
 
     // Images
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -139,8 +141,7 @@ dependencies {
     implementation("io.coil-kt:coil-video:2.6.0")
 
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.10.0")
-    
+    implementation("me.saket.telephoto:zoomable-image-coil:0.11.2")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -162,38 +163,37 @@ dependencies {
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 
     implementation("io.arrow-kt:arrow-core:1.2.4")
-    // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    implementation("androidx.compose.material3:material3:1.2.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
 
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
+
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
+
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.8.Final")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 
-    implementation("androidx.compose.ui:ui:1.6.6")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.6")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.6")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.6")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.6")
-    implementation("androidx.compose.material:material-icons-extended:1.6.6")
-
-    implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit")
+    androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito:mockito-core:5.12.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 
     implementation("androidx.browser:browser:1.8.0")
 
-    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.11-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.15-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    // Ktor uses SLF4J
-    implementation("org.slf4j:slf4j-api:2.0.13")
-    implementation("uk.uuid.slf4j:slf4j-android:2.0.13-0")
+
+    // For custom logging plugin
+    implementation("io.ktor:ktor-client-logging:2.3.11")
 }

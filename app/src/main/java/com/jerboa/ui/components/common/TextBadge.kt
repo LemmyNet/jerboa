@@ -2,6 +2,7 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,13 +53,13 @@ fun TextBadge(
 /**
  * Displays activitypub items (communities, users), with a smaller @instance shown
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemAndInstanceTitle(
     modifier: Modifier = Modifier,
     title: String,
     actorId: String?,
     local: Boolean,
+    onClick: (() -> Unit)?,
     itemColor: Color = MaterialTheme.colorScheme.primary,
     itemStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     instanceColor: Color = MaterialTheme.colorScheme.onSurface.muted,
@@ -89,9 +90,15 @@ fun ItemAndInstanceTitle(
         }
     }
 
+    val baseModifier = if (onClick != null) {
+        modifier.clickable { onClick() }
+    } else {
+        modifier
+    }
+
     Text(
         text = text,
         maxLines = 1,
-        modifier = modifier.customMarquee(),
+        modifier = baseModifier.customMarquee(),
     )
 }

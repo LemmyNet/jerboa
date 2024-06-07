@@ -96,7 +96,7 @@
     <string name="look_and_feel_look_and_feel">Внешний вид и предпочтения</string>
     <string name="look_and_feel_post_navigation_gesture_mode">Жесты навигации по публикациям</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">Отключен</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Проведите пальцем слева, чтобы вернуться назад.</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_swipe_right">Проведите пальцем слева, чтобы вернуться назад.</string>
     <string name="look_and_feel_post_view">Внешний вид постов</string>
     <string name="look_and_feel_post_view_card">Карточка</string>
     <string name="look_and_feel_post_view_list">Список</string>

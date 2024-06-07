@@ -1,15 +1,10 @@
 package com.jerboa.ui.components.community
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -17,16 +12,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
@@ -53,12 +47,11 @@ import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
@@ -71,13 +64,14 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityActivity(
     communityArg: Either<CommunityId, String>,
@@ -96,15 +90,15 @@ fun CommunityActivity(
 ) {
     Log.d("jerboa", "got to community activity")
 
-    val scope = rememberCoroutineScope()
-    val postListState = rememberLazyListState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val account = getCurrentAccount(accountViewModel)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val communityViewModel: CommunityViewModel =
         viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
+    val postListState = communityViewModel.lazyListState
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, communityViewModel::updatePost)
@@ -114,14 +108,6 @@ fun CommunityActivity(
         BanFromCommunityReturn.BAN_DATA_VIEW,
         communityViewModel::updateBannedFromCommunity,
     )
-
-    val pullRefreshState =
-        rememberPullRefreshState(
-            refreshing = communityViewModel.postsRes.isRefreshing(),
-            onRefresh = {
-                communityViewModel.refreshPosts()
-            },
-        )
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -194,20 +180,14 @@ fun CommunityActivity(
             }
         },
         content = { padding ->
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                // zIndex needed bc some elements of a post get drawn above it.
-                JerboaPullRefreshIndicator(
-                    communityViewModel.postsRes.isRefreshing(),
-                    pullRefreshState,
-                    Modifier
-                        .padding(padding)
-                        .align(Alignment.TopCenter)
-                        .zIndex(100F),
-                )
-                // Can't be in ApiState.Loading, because of infinite scrolling
-                if (communityViewModel.postsRes.isLoading()) {
-                    LoadingBar(padding = padding)
-                }
+            PullToRefreshBox(
+                modifier = Modifier.padding(padding),
+                isRefreshing = communityViewModel.postsRes.isRefreshing(),
+                onRefresh = communityViewModel::refreshPosts,
+            ) {
+                // Can't be inside ApiState.Loading, because can be holder and loading at same time
+                JerboaLoadingBar(communityViewModel.postsRes)
+
                 when (val postsRes = communityViewModel.postsRes) {
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(postsRes.msg)
@@ -224,7 +204,7 @@ fun CommunityActivity(
                             }
 
                         PostListings(
-                            posts = postsRes.data.posts,
+                            posts = postsRes.data,
                             admins = siteViewModel.admins(),
                             moderators = remember(moderators) { moderators?.map { it.moderator.id } },
                             contentAboveListings = {
@@ -272,7 +252,7 @@ fun CommunityActivity(
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
-                                            score = newVote(postView.my_vote, VoteType.Upvote).toLong(),
+                                            score = newVote(postView.my_vote, VoteType.Upvote),
                                         ),
                                     )
                                 }
@@ -289,7 +269,7 @@ fun CommunityActivity(
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
-                                            score = newVote(postView.my_vote, VoteType.Downvote).toLong(),
+                                            score = newVote(postView.my_vote, VoteType.Downvote),
                                         ),
                                     )
                                 }
@@ -339,6 +319,24 @@ fun CommunityActivity(
                                             post_id = postView.post.id,
                                             deleted = !postView.post.deleted,
                                         ),
+                                    )
+                                }
+                            },
+                            onHidePostClick = { postView ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
+                                    communityViewModel.hidePost(
+                                        HidePost(
+                                            post_ids = listOf(postView.post.id),
+                                            hide = !postView.hidden,
+                                        ),
+                                        ctx,
                                     )
                                 }
                             },
@@ -401,7 +399,6 @@ fun CommunityActivity(
                             },
                             account = account,
                             showCommunityName = false,
-                            padding = padding,
                             listState = postListState,
                             postViewMode = getPostViewMode(appSettingsViewModel),
                             showVotingArrowsInListView = showVotingArrowsInListView,

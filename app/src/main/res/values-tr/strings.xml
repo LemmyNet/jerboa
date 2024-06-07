@@ -155,7 +155,6 @@
     <string name="look_and_feel_look_and_feel">Bak ve hisset</string>
     <string name="look_and_feel_post_navigation_gesture_mode">Gezinme sonrası hareketleri</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">Devre dışı</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Geri gitmek için sola kaydırın</string>
     <string name="look_and_feel_post_view">Gönderi Görünümü</string>
     <string name="look_and_feel_post_view_card">Kart</string>
     <string name="look_and_feel_post_view_list">Liste</string>

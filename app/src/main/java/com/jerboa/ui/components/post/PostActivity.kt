@@ -5,17 +5,14 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Sort
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -24,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -47,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
@@ -82,14 +78,12 @@ import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDropdown
 import com.jerboa.ui.components.common.DualHeaderTitle
-import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
@@ -103,6 +97,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
 import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
@@ -117,7 +112,6 @@ object PostViewReturn {
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class,
-    ExperimentalMaterialApi::class,
 )
 @Composable
 fun PostActivity(
@@ -175,14 +169,6 @@ fun PostActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val pullRefreshState =
-        rememberPullRefreshState(
-            refreshing = postViewModel.postRes.isRefreshing(),
-            onRefresh = {
-                postViewModel.getData(ApiState.Refreshing)
-            },
-        )
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -270,38 +256,33 @@ fun PostActivity(
             }
         },
         content = { padding ->
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .pullRefresh(pullRefreshState),
+            PullToRefreshBox(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxWidth(),
+                isRefreshing = postViewModel.postRes.isRefreshing(),
+                onRefresh = {
+                    postViewModel.getData(ApiState.Refreshing)
+                },
             ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
-                JerboaPullRefreshIndicator(
-                    postViewModel.postRes.isRefreshing(),
-                    pullRefreshState,
-                    // zIndex needed bc some elements of a post get drawn above it.
-                    Modifier
-                        .padding(padding)
-                        .align(Alignment.TopCenter)
-                        .zIndex(100f),
-                )
                 when (val postRes = postViewModel.postRes) {
-                    is ApiState.Loading -> LoadingBar(padding)
-                    is ApiState.Failure -> ApiErrorText(postRes.msg, padding)
+                    is ApiState.Loading -> LoadingBar()
+                    is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
                         val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
 
-                        if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
+                        if (!account.isAnon()) {
+                            appState.addReturn(
+                                PostViewReturn.POST_VIEW,
+                                postView.copy(read = true),
+                            )
+                        }
                         LazyColumn(
                             state = listState,
-                            modifier =
-                                Modifier
-                                    .padding(top = padding.calculateTopPadding())
-                                    .simpleVerticalScrollbar(listState)
-                                    .testTag("jerboa:comments"),
+                            modifier = Modifier.testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
@@ -320,11 +301,7 @@ fun PostActivity(
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score =
-                                                        newVote(
-                                                            postView.my_vote,
-                                                            VoteType.Upvote,
-                                                        ).toLong(),
+                                                    score = newVote(pv.my_vote, VoteType.Upvote),
                                                 ),
                                             )
                                         }
@@ -341,10 +318,7 @@ fun PostActivity(
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score = newVote(
-                                                        postView.my_vote,
-                                                        VoteType.Downvote,
-                                                    ).toLong(),
+                                                    score = newVote(pv.my_vote, VoteType.Downvote),
                                                 ),
                                             )
                                         }
@@ -394,6 +368,24 @@ fun PostActivity(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
                                                 ),
+                                            )
+                                        }
+                                    },
+                                    onHidePostClick = { pv ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
+                                            postViewModel.hidePost(
+                                                HidePost(
+                                                    post_ids = listOf(pv.post.id),
+                                                    hide = !pv.hidden,
+                                                ),
+                                                ctx,
                                             )
                                         }
                                     },
@@ -495,32 +487,40 @@ fun PostActivity(
                                             ),
                                         )
 
-                                    val toggleExpanded: (CommentId) -> Unit = { commentId: CommentId ->
-                                        if (unExpandedComments.contains(commentId)) {
-                                            unExpandedComments.remove(commentId)
-                                        } else {
-                                            unExpandedComments.add(commentId)
+                                    val toggleExpanded: (CommentId) -> Unit =
+                                        { commentId: CommentId ->
+                                            if (unExpandedComments.contains(commentId)) {
+                                                unExpandedComments.remove(commentId)
+                                            } else {
+                                                unExpandedComments.add(commentId)
+                                            }
                                         }
-                                    }
 
-                                    val toggleActionBar: (CommentId) -> Unit = { commentId: CommentId ->
-                                        if (commentsWithToggledActionBar.contains(commentId)) {
-                                            commentsWithToggledActionBar.remove(commentId)
-                                        } else {
-                                            commentsWithToggledActionBar.add(commentId)
+                                    val toggleActionBar: (CommentId) -> Unit =
+                                        { commentId: CommentId ->
+                                            if (commentsWithToggledActionBar.contains(commentId)) {
+                                                commentsWithToggledActionBar.remove(commentId)
+                                            } else {
+                                                commentsWithToggledActionBar.add(commentId)
+                                            }
                                         }
-                                    }
 
-                                    item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
+                                    item(
+                                        key = "${postView.post.id}_is_comment_view",
+                                        contentType = "contextButtons",
+                                    ) {
                                         if (postViewModel.isCommentView()) {
                                             val firstCommentNodeData = commentTree.firstOrNull()
 
                                             val firstCommentPath = firstCommentNodeData?.getPath()
 
                                             val hasParent =
-                                                firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
+                                                firstCommentPath != null && getDepthFromComment(
+                                                    firstCommentPath,
+                                                ) > 0
 
-                                            val commentParentId = firstCommentPath?.let(::getCommentParentId)
+                                            val commentParentId =
+                                                firstCommentPath?.let(::getCommentParentId)
 
                                             ShowCommentContextButtons(
                                                 postView.post.id,
@@ -564,11 +564,10 @@ fun PostActivity(
                                                 postViewModel.likeComment(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
-                                                        score =
-                                                            newVote(
-                                                                cv.my_vote,
-                                                                VoteType.Upvote,
-                                                            ).toLong(),
+                                                        score = newVote(
+                                                            cv.my_vote,
+                                                            VoteType.Upvote,
+                                                        ),
                                                     ),
                                                 )
                                             }
@@ -588,7 +587,7 @@ fun PostActivity(
                                                         score = newVote(
                                                             cv.my_vote,
                                                             VoteType.Downvote,
-                                                        ).toLong(),
+                                                        ),
                                                     ),
                                                 )
                                             }
@@ -618,7 +617,11 @@ fun PostActivity(
                                         onPersonClick = appState::toProfile,
                                         onViewVotesClick = appState::toCommentLikes,
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
-                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView ->
+                                            toggleActionBar(
+                                                commentView.comment.id,
+                                            )
+                                        },
                                         onEditCommentClick = { cv ->
                                             appState.toCommentEdit(
                                                 commentView = cv,
@@ -722,11 +725,6 @@ fun PostActivity(
                                 }
 
                                 else -> {}
-                            }
-                            if (showParentCommentNavigationButtons) {
-                                item {
-                                    Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
-                                }
                             }
                         }
                     }

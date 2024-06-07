@@ -156,7 +156,7 @@
     <string name="look_and_feel_look_and_feel">Look and feel</string>
     <string name="look_and_feel_post_navigation_gesture_mode">Post navigation gestures</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">Disabled</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe left to navigate back</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_swipe_right">Swipe right to navigate back</string>
     <string name="look_and_feel_post_view">Post View</string>
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>
@@ -481,4 +481,15 @@
     <string name="site_legal_info_name">%1$s legal info</string>
     <string name="moderators">Moderators</string>
     <string name="admins">Admins</string>
+    <string name="custom_thumbnail">Custom Thumbnail</string>
+    <string name="alt_text">Alt Text</string>
+    <string name="post_hidden">Post hidden</string>
+    <string name="post_unhidden">Post unhidden</string>
+    <string name="hide_post">Hide Post</string>
+    <string name="unhide_post">Unhide Post</string>
+    <string name="info">Info</string>
+    <string name="settings_about_baseline_profile">Baseline profile</string>
+    <string name="installed">Installed</string>
+    <string name="not_installed">Not installed</string>
+    <string name="unable_to_retrieve">Unable to retrieve</string>
 </resources>

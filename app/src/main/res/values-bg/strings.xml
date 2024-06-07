@@ -155,7 +155,6 @@
     <string name="look_and_feel_look_and_feel">Външен вид</string>
     <string name="look_and_feel_post_navigation_gesture_mode">Post navigation gestures</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">Disabled</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe left to navigate back</string>
     <string name="look_and_feel_post_view">Изглед на публикациите</string>
     <string name="look_and_feel_post_view_card">Карта</string>
     <string name="look_and_feel_post_view_list">Списък</string>
