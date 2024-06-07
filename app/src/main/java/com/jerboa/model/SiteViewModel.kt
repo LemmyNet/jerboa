@@ -15,10 +15,10 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.api.toApiState
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
+import com.jerboa.feat.default
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
@@ -27,6 +27,7 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.GetReportCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadCountResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetUnreadRegistrationApplicationCountResponse
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
 import kotlinx.coroutines.Job
@@ -39,7 +40,9 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
-    private var unreadAppCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(ApiState.Empty)
+    private var unreadAppCountRes: ApiState<GetUnreadRegistrationApplicationCountResponse> by mutableStateOf(
+        ApiState.Empty,
+    )
     private var unreadReportCountRes: ApiState<GetReportCountResponse> by mutableStateOf(ApiState.Empty)
 
     val unreadCount by derivedStateOf { getUnreadCountTotal() }
@@ -166,7 +169,10 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = unreadReportCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data
-                unreads.post_reports + unreads.comment_reports + (unreads.private_message_reports ?: 0)
+                unreads.post_reports + unreads.comment_reports + (
+                    unreads.private_message_reports
+                        ?: 0
+                )
             }
 
             else -> null
@@ -218,23 +224,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    // TODO this should probably be persisted rather than waited for
-    // For the current default, just use FullScores
-    fun voteDisplayMode(): VoteDisplayMode {
-        val defaultMode = VoteDisplayMode.ScoreAndUpvotePercentage
+    // For the current default, just use Upvotes / Downvotes
+    fun voteDisplayMode(): LocalUserVoteDisplayMode {
         return when (val res = siteRes) {
             is ApiState.Success ->
-                res.data.my_user?.let { mui ->
-                    if (mui.local_user_view.local_user.show_scores) {
-                        defaultMode
-                    } else {
-                        VoteDisplayMode.HideAll
-                    }
-                } ?: run {
-                    defaultMode
-                }
+                res.data.my_user?.local_user_view?.local_user_vote_display_mode ?: LocalUserVoteDisplayMode.default()
 
-            else -> defaultMode
+            else -> LocalUserVoteDisplayMode.default()
         }
     }
 

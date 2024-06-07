@@ -1,6 +1,6 @@
 package com.jerboa.feat
 
-import com.jerboa.datatypes.VoteDisplayMode
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 
 enum class VoteType(val value: Int) {
     Upvote(1),
@@ -32,7 +32,7 @@ data class InstantScores(
         )
     }
 
-    fun scoreOrPctStr(voteDisplayMode: VoteDisplayMode): String? {
+    fun scoreOrPctStr(voteDisplayMode: LocalUserVoteDisplayMode): String? {
         return scoreOrPctStr(
             score = score,
             upvotes = upvotes,
@@ -63,11 +63,22 @@ private fun scoreOrPctStr(
     score: Long,
     upvotes: Long,
     downvotes: Long,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ): String? {
-    return when (voteDisplayMode) {
-        VoteDisplayMode.UpvotePercentage -> formatPercent(upvotePercent(upvotes, downvotes))
-        VoteDisplayMode.HideAll -> null
-        else -> score.toString()
+    return if (voteDisplayMode.upvote_percentage) {
+        formatPercent(upvotePercent(upvotes, downvotes))
+    } else if (!(voteDisplayMode.score && voteDisplayMode.upvotes && voteDisplayMode.downvotes)) {
+        null
+    } else {
+        score.toString()
     }
 }
+
+fun LocalUserVoteDisplayMode.Companion.default() =
+    LocalUserVoteDisplayMode(
+        local_user_id = -1,
+        upvotes = true,
+        downvotes = true,
+        score = false,
+        upvote_percentage = false,
+    )

@@ -11,31 +11,36 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDownward
+import androidx.compose.material.icons.outlined.ArrowUpward
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jerboa.R
 import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.formatPercent
 import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
-import com.jerboa.ui.theme.SCORE_SIZE_ADD
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import java.time.Instant
 import java.time.format.DateTimeParseException
 import java.util.Date
@@ -125,7 +130,7 @@ fun ScoreAndTime(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     isNsfw: Boolean = false,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -138,72 +143,88 @@ fun ScoreAndTime(
             upvotes = instantScores.upvotes,
             downvotes = instantScores.downvotes,
         )
-        when (voteDisplayMode) {
-            VoteDisplayMode.Full -> {
-                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
-                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
-                    SmallVoteIndicator(data = "${instantScores.upvotes}↑")
-                    DotSpacer(style = MaterialTheme.typography.labelMedium)
-                    SmallVoteIndicator(data = "${instantScores.downvotes}↓")
-                    DotSpacer(style = MaterialTheme.typography.labelMedium)
-                }
-            }
-            VoteDisplayMode.ScoreAndDownvote -> {
-                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
-                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
-                    SmallVoteIndicator(data = "${instantScores.downvotes}↓")
-                    DotSpacer(style = MaterialTheme.typography.labelMedium)
-                }
-            }
-            VoteDisplayMode.ScoreAndUpvotePercentage -> {
-                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
-                if (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) {
-                    SmallVoteIndicator(data = formatPercent(upvotePct))
-                    DotSpacer(style = MaterialTheme.typography.labelMedium)
-                }
-            }
-            VoteDisplayMode.UpvotePercentage -> {
-                LargeVoteIndicator(data = formatPercent(upvotePct), myVote = instantScores.myVote)
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
-            }
-            VoteDisplayMode.Score -> {
-                LargeVoteIndicator(data = instantScores.score.toString(), myVote = instantScores.myVote)
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
-            }
-            VoteDisplayMode.HideAll -> {}
+
+        // A special case for scores, where if both are enabled,
+        // and the score is the same as the upvotes, then hide the score
+        val hideScore =
+            voteDisplayMode.score && voteDisplayMode.upvotes && instantScores.score == instantScores.upvotes
+
+        if (voteDisplayMode.score && !hideScore) {
+            VoteIndicator(
+                data = instantScores.score.toString(),
+                myVote = instantScores.myVote,
+                iconAndDescription = Pair(
+                    Icons.Outlined.FavoriteBorder,
+                    stringResource(id = R.string.score),
+                ),
+            )
+        }
+        if (voteDisplayMode.upvote_percentage && (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)) {
+            // Always mute the color
+            VoteIndicator(data = formatPercent(upvotePct), myVote = 0)
+        }
+        if (voteDisplayMode.upvotes) {
+            // Mute color if not 1
+            val myVote = if (instantScores.myVote == 1) 1 else 0
+            VoteIndicator(
+                data = instantScores.upvotes.toString(),
+                myVote = myVote,
+                iconAndDescription = Pair(
+                    Icons.Outlined.ArrowUpward,
+                    stringResource(id = R.string.upvoted),
+                ),
+            )
+        }
+        if (voteDisplayMode.downvotes && instantScores.downvotes > 0) {
+            // Mute color if not -1
+            val myVote = if (instantScores.myVote == -1) -1 else 0
+            VoteIndicator(
+                data = instantScores.downvotes.toString(),
+                myVote = myVote,
+                iconAndDescription = Pair(
+                    Icons.Outlined.ArrowDownward,
+                    stringResource(id = R.string.downvoted),
+                ),
+            )
+        }
+        // Only show this spacer if at least one of the fields is enabled
+        if (voteDisplayMode.score || voteDisplayMode.upvotes || voteDisplayMode.downvotes || voteDisplayMode.upvote_percentage) {
+            DotSpacer(style = MaterialTheme.typography.labelMedium)
         }
         TimeAgo(published = published, updated = updated)
     }
 }
 
 @Composable
-private fun LargeVoteIndicator(
+private fun VoteIndicator(
     data: String,
     myVote: Int,
+    iconAndDescription: Pair<ImageVector, String>? = null,
 ) {
-    Text(
-        text = data,
-        color = scoreColor(myVote = myVote),
-        style = MaterialTheme.typography.labelMedium,
-        fontSize = MaterialTheme.typography.labelMedium.fontSize.value.plus(SCORE_SIZE_ADD).sp,
-    )
-}
-
-@Composable
-private fun SmallVoteIndicator(data: String) {
-    Text(
-        text = data,
-        color = MaterialTheme.colorScheme.onBackground.muted,
-        style = MaterialTheme.typography.labelMedium,
-    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = data,
+            color = scoreColor(myVote = myVote),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(horizontal = 0.dp),
+        )
+        iconAndDescription?.let {
+            val size = MaterialTheme.typography.labelMedium.fontSize.value.dp
+            Icon(
+                imageVector = iconAndDescription.first,
+                contentDescription = iconAndDescription.second,
+                tint = scoreColor(myVote = myVote),
+                modifier = Modifier.size(size),
+            )
+        }
+    }
 }
 
 @Preview
 @Composable
-fun ScoreFullAndTimePreview() {
+fun UpvoteAndDownvotePreview() {
     ScoreAndTime(
         instantScores = InstantScores(
             score = 25,
@@ -213,7 +234,13 @@ fun ScoreFullAndTimePreview() {
         ),
         published = samplePost.published,
         updated = samplePost.updated,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode(
+            local_user_id = -1,
+            score = false,
+            upvotes = true,
+            downvotes = true,
+            upvote_percentage = false,
+        ),
     )
 }
 
@@ -223,13 +250,19 @@ fun ScoreAndUpvotePctAndTimePreview() {
     ScoreAndTime(
         instantScores = InstantScores(
             score = 25,
-            myVote = -1,
+            myVote = 1,
             upvotes = 10,
             downvotes = 15,
         ),
         published = samplePost.published,
         updated = samplePost.updated,
-        voteDisplayMode = VoteDisplayMode.ScoreAndUpvotePercentage,
+        voteDisplayMode = LocalUserVoteDisplayMode(
+            local_user_id = -1,
+            score = true,
+            upvote_percentage = true,
+            upvotes = false,
+            downvotes = false,
+        ),
     )
 }
 
@@ -245,7 +278,13 @@ fun UpvotePctAndTimePreview() {
         ),
         published = samplePost.published,
         updated = samplePost.updated,
-        voteDisplayMode = VoteDisplayMode.UpvotePercentage,
+        voteDisplayMode = LocalUserVoteDisplayMode(
+            local_user_id = -1,
+            upvote_percentage = true,
+            score = false,
+            upvotes = false,
+            downvotes = false,
+        ),
     )
 }
 
@@ -261,7 +300,13 @@ fun ScoreAndTimePreview() {
         ),
         published = samplePost.published,
         updated = samplePost.updated,
-        voteDisplayMode = VoteDisplayMode.Score,
+        voteDisplayMode = LocalUserVoteDisplayMode(
+            local_user_id = -1,
+            score = true,
+            upvote_percentage = false,
+            upvotes = false,
+            downvotes = false,
+        ),
     )
 }
 
@@ -277,7 +322,13 @@ fun HideAllAndTimePreview() {
         ),
         published = samplePost.published,
         updated = samplePost.updated,
-        voteDisplayMode = VoteDisplayMode.HideAll,
+        voteDisplayMode = LocalUserVoteDisplayMode(
+            local_user_id = -1,
+            score = false,
+            upvote_percentage = false,
+            upvotes = false,
+            downvotes = false,
+        ),
     )
 }
 

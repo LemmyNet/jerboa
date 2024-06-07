@@ -123,6 +123,7 @@ fun SettingsForm(
 
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
+    val api = API.getInstanceOrNull()
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
     var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
@@ -144,7 +145,10 @@ fun SettingsForm(
 
     val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
-    val showScoresState = remember { mutableStateOf(luv?.local_user?.show_scores ?: false) }
+    val showScoresState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.score ?: false) }
+    val showUpvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvotes ?: false) }
+    val showDownvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.downvotes ?: false) }
+    val showUpvotePercentageState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvote_percentage ?: false) }
     val showBotAccountState = remember { mutableStateOf(luv?.local_user?.show_bot_accounts ?: false) }
     val botAccountState = remember { mutableStateOf(luv?.person?.bot_account ?: false) }
     val showReadPostsState = remember { mutableStateOf(luv?.local_user?.show_read_posts ?: false) }
@@ -169,6 +173,9 @@ fun SettingsForm(
             show_read_posts = showReadPostsState.value,
             theme = theme,
             show_scores = showScoresState.value,
+            show_upvotes = showUpvotesState.value,
+            show_downvotes = showDownvotesState.value,
+            show_upvote_percentage = showUpvotePercentageState.value,
             discussion_languages = null,
         )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
@@ -310,12 +317,32 @@ fun SettingsForm(
                     Text(text = stringResource(R.string.account_settings_show_bot_accounts))
                 },
             )
-            SwitchPreference(
-                state = showScoresState,
-                title = {
-                    Text(text = stringResource(R.string.account_settings_show_scores))
-                },
-            )
+            if (api != null && api.FF.hidePost()) {
+                SwitchPreference(
+                    state = showScoresState,
+                    title = {
+                        Text(text = stringResource(R.string.account_settings_show_scores))
+                    },
+                )
+                SwitchPreference(
+                    state = showUpvotesState,
+                    title = {
+                        Text(text = stringResource(R.string.show_upvotes))
+                    },
+                )
+                SwitchPreference(
+                    state = showDownvotesState,
+                    title = {
+                        Text(text = stringResource(R.string.show_downvotes))
+                    },
+                )
+                SwitchPreference(
+                    state = showUpvotePercentageState,
+                    title = {
+                        Text(text = stringResource(R.string.show_upvote_percentage))
+                    },
+                )
+            }
 
             SwitchPreference(
                 enabled = !email.isNullOrEmpty(),

@@ -3,7 +3,6 @@ package com.jerboa.ui.theme
 import androidx.compose.ui.unit.dp
 
 const val DEFAULT_FONT_SIZE = 16
-const val SCORE_SIZE_ADD = 4
 
 val ACTION_BAR_ICON_SIZE = 16.dp
 val MARKDOWN_BAR_ICON_SIZE = 24.dp

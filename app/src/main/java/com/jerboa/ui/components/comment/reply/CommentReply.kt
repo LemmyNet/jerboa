@@ -15,11 +15,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.InstantScores
+import com.jerboa.feat.default
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
@@ -29,6 +29,7 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
@@ -38,7 +39,7 @@ fun RepliedComment(
     commentView: CommentView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentNodeHeader(
@@ -68,7 +69,7 @@ fun RepliedCommentReply(
     commentReplyView: CommentReplyView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentReplyNodeHeader(
@@ -96,7 +97,7 @@ fun RepliedMentionReply(
     personMentionView: PersonMentionView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentMentionNodeHeader(
@@ -126,7 +127,7 @@ fun RepliedCommentPreview() {
         commentView = sampleCommentView,
         onPersonClick = {},
         showAvatar = true,
-        VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
 
@@ -135,7 +136,7 @@ fun RepliedPost(
     postView: PostView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PostNodeHeader(
@@ -166,7 +167,7 @@ fun CommentReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -198,7 +199,7 @@ fun CommentReplyReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -230,7 +231,7 @@ fun MentionReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -262,7 +263,7 @@ fun PostReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 

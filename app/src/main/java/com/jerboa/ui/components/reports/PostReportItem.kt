@@ -10,12 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.samplePostReportView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
+import com.jerboa.feat.default
 import com.jerboa.feat.needBlur
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.post.PostBody
@@ -24,6 +24,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.dto.SubscribedType
 import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
@@ -39,7 +40,7 @@ fun PostReportItem(
     onCommunityClick: (Community) -> Unit,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     account: Account,
 ) {
     // Build a post-view using the content at the time it was reported,
@@ -160,7 +161,7 @@ fun PostReportItemPreview() {
         onResolveClick = {},
         showAvatar = false,
         blurNSFW = BlurNSFW.NSFW,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         account = AnonAccount,
         appState = rememberJerboaAppState(),
     )

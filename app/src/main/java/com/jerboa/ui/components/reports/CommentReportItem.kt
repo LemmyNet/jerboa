@@ -7,9 +7,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.datatypes.VoteDisplayMode
 import com.jerboa.datatypes.sampleCommentReportView
 import com.jerboa.feat.InstantScores
+import com.jerboa.feat.default
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -18,6 +18,7 @@ import it.vercruysse.lemmyapi.dto.SubscribedType
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportView
 import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
+import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
 import it.vercruysse.lemmyapi.v0x19.datatypes.ResolveCommentReport
 
@@ -28,7 +29,7 @@ fun CommentReportItem(
     onPersonClick: (PersonId) -> Unit,
     onCommentClick: (CommentId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: VoteDisplayMode,
+    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     // Build a comment-view using the content at the time it was reported,
     // not the current state.
@@ -122,6 +123,6 @@ fun CommentReportItemPreview() {
         onResolveClick = {},
         onCommentClick = {},
         showAvatar = false,
-        voteDisplayMode = VoteDisplayMode.Full,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
