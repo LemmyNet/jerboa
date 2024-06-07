@@ -123,6 +123,7 @@ fun SettingsForm(
 
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
+    val api = API.getInstanceOrNull()
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
     var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
@@ -316,30 +317,32 @@ fun SettingsForm(
                     Text(text = stringResource(R.string.account_settings_show_bot_accounts))
                 },
             )
-            SwitchPreference(
-                state = showScoresState,
-                title = {
-                    Text(text = stringResource(R.string.account_settings_show_scores))
-                },
-            )
-            SwitchPreference(
-                state = showUpvotesState,
-                title = {
-                    Text(text = stringResource(R.string.show_upvotes))
-                },
-            )
-            SwitchPreference(
-                state = showDownvotesState,
-                title = {
-                    Text(text = stringResource(R.string.show_downvotes))
-                },
-            )
-            SwitchPreference(
-                state = showUpvotePercentageState,
-                title = {
-                    Text(text = stringResource(R.string.show_upvote_percentage))
-                },
-            )
+            if (api != null && api.FF.hidePost()) {
+                SwitchPreference(
+                    state = showScoresState,
+                    title = {
+                        Text(text = stringResource(R.string.account_settings_show_scores))
+                    },
+                )
+                SwitchPreference(
+                    state = showUpvotesState,
+                    title = {
+                        Text(text = stringResource(R.string.show_upvotes))
+                    },
+                )
+                SwitchPreference(
+                    state = showDownvotesState,
+                    title = {
+                        Text(text = stringResource(R.string.show_downvotes))
+                    },
+                )
+                SwitchPreference(
+                    state = showUpvotePercentageState,
+                    title = {
+                        Text(text = stringResource(R.string.show_upvote_percentage))
+                    },
+                )
+            }
 
             SwitchPreference(
                 enabled = !email.isNullOrEmpty(),
