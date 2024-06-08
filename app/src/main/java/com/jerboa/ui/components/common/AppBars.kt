@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.UserViewType
@@ -734,6 +735,7 @@ fun LoadingBar(padding: PaddingValues = PaddingValues(0.dp)) {
             Modifier
                 .fillMaxWidth()
                 .padding(padding)
+                .zIndex(99F)
                 .testTag("jerboa:loading"),
     )
 }

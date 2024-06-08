@@ -7,22 +7,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.PostLikesViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.viewvotes.ViewVotesBody
 import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
@@ -49,18 +45,8 @@ fun PostLikesActivity(
 
             val listState = rememberLazyListState()
 
-            // observer when reached end of list
-            val endOfListReached by remember {
-                derivedStateOf {
-                    listState.isScrolledToEnd()
-                }
-            }
-
-            // act when end of list reached
-            if (endOfListReached) {
-                LaunchedEffect(Unit) {
-                    postLikesViewModel.appendLikes()
-                }
+            TriggerWhenReachingEnd(listState, false) {
+                postLikesViewModel.appendLikes()
             }
 
             PullToRefreshBox(
