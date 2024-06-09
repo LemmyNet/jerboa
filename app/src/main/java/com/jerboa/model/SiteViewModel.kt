@@ -228,7 +228,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     fun voteDisplayMode(): LocalUserVoteDisplayMode {
         return when (val res = siteRes) {
             is ApiState.Success ->
-                res.data.my_user?.local_user_view?.local_user_vote_display_mode ?: LocalUserVoteDisplayMode.default()
+                res.data.my_user?.local_user_view?.local_user_vote_display_mode
+                    ?: LocalUserVoteDisplayMode.default(res.data.my_user?.local_user_view?.local_user?.show_scores)
 
             else -> LocalUserVoteDisplayMode.default()
         }

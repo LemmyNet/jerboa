@@ -145,6 +145,7 @@ fun SettingsForm(
 
     val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
+    val showScoresStateLegacy = remember { mutableStateOf(luv?.local_user?.show_scores ?: false) }
     val showScoresState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.score ?: false) }
     val showUpvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvotes ?: false) }
     val showDownvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.downvotes ?: false) }
@@ -317,6 +318,16 @@ fun SettingsForm(
                     Text(text = stringResource(R.string.account_settings_show_bot_accounts))
                 },
             )
+
+            if (api != null && !api.FF.hidePost()) {
+                SwitchPreference(
+                    state = showScoresStateLegacy,
+                    title = {
+                        Text(text = stringResource(R.string.account_settings_show_scores))
+                    },
+                )
+            }
+
             if (api != null && api.FF.hidePost()) {
                 SwitchPreference(
                     state = showScoresState,

@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
+import com.jerboa.api.API
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.feat.InstantScores
@@ -40,6 +41,7 @@ import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
+import io.github.z4kn4fein.semver.Version
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import java.time.Instant
 import java.time.format.DateTimeParseException
@@ -144,52 +146,58 @@ fun ScoreAndTime(
             downvotes = instantScores.downvotes,
         )
 
+        // If the show_scores is disabled, and we are the instance is pre 0.19.4, we fallback to legacy behaviour
+        val version = API.getInstanceOrNull()?.version
+        val legacyScoresHidden = version != null && version < Version(0, 19, 4) && !voteDisplayMode.score
+
         // A special case for scores, where if both are enabled,
         // and the score is the same as the upvotes, then hide the score
         val hideScore =
             voteDisplayMode.score && voteDisplayMode.upvotes && instantScores.score == instantScores.upvotes
 
-        if (voteDisplayMode.score && !hideScore) {
-            VoteIndicator(
-                data = instantScores.score.toString(),
-                myVote = instantScores.myVote,
-                iconAndDescription = Pair(
-                    Icons.Outlined.FavoriteBorder,
-                    stringResource(id = R.string.score),
-                ),
-            )
-        }
-        if (voteDisplayMode.upvote_percentage && (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)) {
-            // Always mute the color
-            VoteIndicator(data = formatPercent(upvotePct), myVote = 0)
-        }
-        if (voteDisplayMode.upvotes) {
-            // Mute color if not 1
-            val myVote = if (instantScores.myVote == 1) 1 else 0
-            VoteIndicator(
-                data = instantScores.upvotes.toString(),
-                myVote = myVote,
-                iconAndDescription = Pair(
-                    Icons.Outlined.ArrowUpward,
-                    stringResource(id = R.string.upvoted),
-                ),
-            )
-        }
-        if (voteDisplayMode.downvotes && instantScores.downvotes > 0) {
-            // Mute color if not -1
-            val myVote = if (instantScores.myVote == -1) -1 else 0
-            VoteIndicator(
-                data = instantScores.downvotes.toString(),
-                myVote = myVote,
-                iconAndDescription = Pair(
-                    Icons.Outlined.ArrowDownward,
-                    stringResource(id = R.string.downvoted),
-                ),
-            )
-        }
-        // Only show this spacer if at least one of the fields is enabled
-        if (voteDisplayMode.score || voteDisplayMode.upvotes || voteDisplayMode.downvotes || voteDisplayMode.upvote_percentage) {
-            DotSpacer(style = MaterialTheme.typography.labelMedium)
+        if (!legacyScoresHidden) {
+            if (voteDisplayMode.score && !hideScore) {
+                VoteIndicator(
+                    data = instantScores.score.toString(),
+                    myVote = instantScores.myVote,
+                    iconAndDescription = Pair(
+                        Icons.Outlined.FavoriteBorder,
+                        stringResource(id = R.string.score),
+                    ),
+                )
+            }
+            if (voteDisplayMode.upvote_percentage && (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)) {
+                // Always mute the color
+                VoteIndicator(data = formatPercent(upvotePct), myVote = 0)
+            }
+            if (voteDisplayMode.upvotes) {
+                // Mute color if not 1
+                val myVote = if (instantScores.myVote == 1) 1 else 0
+                VoteIndicator(
+                    data = instantScores.upvotes.toString(),
+                    myVote = myVote,
+                    iconAndDescription = Pair(
+                        Icons.Outlined.ArrowUpward,
+                        stringResource(id = R.string.upvoted),
+                    ),
+                )
+            }
+            if (voteDisplayMode.downvotes && instantScores.downvotes > 0) {
+                // Mute color if not -1
+                val myVote = if (instantScores.myVote == -1) -1 else 0
+                VoteIndicator(
+                    data = instantScores.downvotes.toString(),
+                    myVote = myVote,
+                    iconAndDescription = Pair(
+                        Icons.Outlined.ArrowDownward,
+                        stringResource(id = R.string.downvoted),
+                    ),
+                )
+            }
+            // Only show this spacer if at least one of the fields is enabled
+            if (voteDisplayMode.score || voteDisplayMode.upvotes || voteDisplayMode.downvotes || voteDisplayMode.upvote_percentage) {
+                DotSpacer(style = MaterialTheme.typography.labelMedium)
+            }
         }
         TimeAgo(published = published, updated = updated)
     }
