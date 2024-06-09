@@ -173,7 +173,7 @@ fun SettingsForm(
             default_listing_type = supportedListingTypes[defaultListingTypeState.value.ordinal],
             show_read_posts = showReadPostsState.value,
             theme = theme,
-            show_scores = showScoresState.value,
+            show_scores = if (api != null && !api.FF.hidePost()) showScoresStateLegacy.value else showScoresState.value,
             show_upvotes = showUpvotesState.value,
             show_downvotes = showDownvotesState.value,
             show_upvote_percentage = showUpvotePercentageState.value,
