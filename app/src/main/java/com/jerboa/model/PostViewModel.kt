@@ -17,10 +17,10 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.appendData
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdateCommentCreator
 import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
@@ -313,8 +313,9 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
+            val res = API.getInstance().blockPerson(form)
+            blockPersonRes = res.toApiState()
+            showBlockPersonToast(res, ctx)
         }
     }
 

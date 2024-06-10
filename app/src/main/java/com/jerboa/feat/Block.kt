@@ -1,15 +1,17 @@
 package com.jerboa.feat
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.jerboa.R
 import com.jerboa.api.API
+import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstanceResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +27,7 @@ fun blockCommunity(
     ctx: Context,
 ) {
     scope.launch {
-        val res = API.getInstance().blockCommunity(form).toApiState()
+        val res = API.getInstance().blockCommunity(form)
         withContext(Dispatchers.Main) {
             showBlockCommunityToast(res, ctx)
         }
@@ -38,32 +40,25 @@ fun blockPerson(
     ctx: Context,
 ) {
     scope.launch {
-        val res = API.getInstance().blockPerson(form).toApiState()
+        val res = API.getInstance().blockPerson(form)
         withContext(Dispatchers.Main) {
             showBlockPersonToast(res, ctx)
         }
     }
 }
 
-fun showBlockCommunityToast(
+fun showBlockInstanceToast(
     blockInstanceResp: Result<BlockInstanceResponse>,
     instance: String,
     ctx: Context,
 ) {
     blockInstanceResp
         .onSuccess {
-            Toast.makeText(
+            makeSuccessfulBlockMessage(
+                it.blocked,
+                instance,
                 ctx,
-                ctx.getString(
-                    if (it.blocked) {
-                        R.string.blocked_community_toast
-                    } else {
-                        R.string.unblocked_community_toast
-                    },
-                    instance,
-                ),
-                Toast.LENGTH_SHORT,
-            ).show()
+            )
         }
         .onFailure {
             Toast.makeText(
@@ -71,5 +66,71 @@ fun showBlockCommunityToast(
                 ctx.getText(R.string.instance_block_toast_failure),
                 Toast.LENGTH_SHORT,
             ).show()
+            Log.i("Block", "failed", it)
         }
 }
+
+fun showBlockPersonToast(
+    blockPersonRes: Result<BlockPersonResponse>,
+    ctx: Context,
+) {
+    blockPersonRes
+        .onSuccess {
+            makeSuccessfulBlockMessage(
+                it.blocked,
+                it.person_view.person.name,
+                ctx,
+            )
+        }
+        .onFailure {
+            Toast.makeText(
+                ctx,
+                ctx.getText(R.string.user_block_toast_failure),
+                Toast.LENGTH_SHORT,
+            ).show()
+            Log.i("Block", "failed", it)
+        }
+
+}
+
+fun showBlockCommunityToast(
+    blockCommunityRes: Result<BlockCommunityResponse>,
+    ctx: Context,
+) {
+    blockCommunityRes
+        .onSuccess {
+            makeSuccessfulBlockMessage(
+                it.blocked,
+                it.community_view.community.name,
+                ctx,
+            )
+        }
+        .onFailure {
+            Toast.makeText(
+                ctx,
+                ctx.getText(R.string.community_block_toast_failure),
+                Toast.LENGTH_SHORT,
+            ).show()
+            Log.i("Block", "failed", it)
+        }
+}
+
+private fun makeSuccessfulBlockMessage(
+    isBlocked: Boolean,
+    name: String,
+    context: Context,
+) {
+    Toast.makeText(
+        context,
+        context.getString(
+            if (isBlocked) {
+                R.string.blocked_element_toast
+            } else {
+                R.string.unblocked_element_toast
+            },
+            name,
+        ),
+        Toast.LENGTH_SHORT,
+    ).show()
+}
+

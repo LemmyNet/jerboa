@@ -58,6 +58,8 @@ object Route {
     const val REGISTRATION_APPLICATIONS = "registrationApplications"
     const val REPORTS = "reports"
 
+    const val BLOCK_VIEW = "blockView"
+
     val VIEW = ViewArgs.route
 
     class CommunityFromIdArgs(val id: CommunityId) {
