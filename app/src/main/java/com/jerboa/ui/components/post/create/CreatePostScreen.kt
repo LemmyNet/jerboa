@@ -64,7 +64,7 @@ fun CreatePostScreen(
     initialBody: String,
     initialImage: Uri?,
 ) {
-    Log.d("jerboa", "got to create post activity")
+    Log.d("jerboa", "got to create post screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

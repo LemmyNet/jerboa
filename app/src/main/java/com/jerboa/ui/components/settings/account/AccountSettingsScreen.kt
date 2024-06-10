@@ -24,7 +24,7 @@ fun AccountSettingsScreen(
     siteViewModel: SiteViewModel,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "Got to settings activity")
+    Log.d("jerboa", "Got to settings screen")
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }

@@ -27,7 +27,7 @@ fun LoginScreen(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
 ) {
-    Log.d("jerboa", "Got to login activity")
+    Log.d("jerboa", "Got to login screen")
 
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current

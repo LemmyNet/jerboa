@@ -36,7 +36,7 @@ fun RegistrationApplicationsScreen(
     accountViewModel: AccountViewModel,
     padding: PaddingValues? = null,
 ) {
-    Log.d("jerboa", "got to registration applications activity")
+    Log.d("jerboa", "got to registration applications screen")
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }

@@ -36,7 +36,7 @@ fun BanFromCommunityScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
-    Log.d("jerboa", "got to ban from community activity")
+    Log.d("jerboa", "got to ban from community screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

@@ -35,7 +35,7 @@ fun BanPersonScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
-    Log.d("jerboa", "got to ban person activity")
+    Log.d("jerboa", "got to ban person screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

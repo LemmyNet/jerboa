@@ -30,7 +30,7 @@ fun CreateCommentReportScreen(
     accountViewModel: AccountViewModel,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to create comment report activity")
+    Log.d("jerboa", "got to create comment report screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

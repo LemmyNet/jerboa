@@ -51,7 +51,7 @@ fun CommunityListScreen(
     showAvatar: Boolean,
     padding: PaddingValues? = null,
 ) {
-    Log.d("jerboa", "got to community list activity")
+    Log.d("jerboa", "got to community list screen")
 
     val communityListViewModel: CommunityListViewModel =
         viewModel(factory = CommunityListViewModel.Companion.Factory(followList))

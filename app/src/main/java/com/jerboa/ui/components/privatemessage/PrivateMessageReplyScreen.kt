@@ -43,7 +43,7 @@ fun PrivateMessageReplyScreen(
     onBack: () -> Unit,
     onProfile: (PostId) -> Unit,
 ) {
-    Log.d("jerboa", "got to private message reply activity")
+    Log.d("jerboa", "got to private message reply screen")
     val privateMessageView = appState.getPrevReturn<PrivateMessageView>(PrivateMessage.PM_VIEW)
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)

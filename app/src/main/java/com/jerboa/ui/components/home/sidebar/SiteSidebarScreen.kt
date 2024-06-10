@@ -24,7 +24,7 @@ fun SiteSidebarScreen(
     appState: JerboaAppState,
     siteViewModel: SiteViewModel,
 ) {
-    Log.d("jerboa", "got to site sidebar activity")
+    Log.d("jerboa", "got to site sidebar screen")
 
     val title =
         when (val siteRes = siteViewModel.siteRes) {

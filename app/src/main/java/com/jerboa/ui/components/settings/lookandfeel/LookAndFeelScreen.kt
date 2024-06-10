@@ -60,7 +60,7 @@ fun LookAndFeelScreen(
     appSettingsViewModel: AppSettingsViewModel,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "Got to lookAndFeel activity")
+    Log.d("jerboa", "Got to lookAndFeel screen")
     val ctx = LocalContext.current
 
     val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT

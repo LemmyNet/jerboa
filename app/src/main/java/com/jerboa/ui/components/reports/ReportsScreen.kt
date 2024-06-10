@@ -66,7 +66,7 @@ fun ReportsScreen(
     blurNSFW: BlurNSFW,
     padding: PaddingValues? = null,
 ) {
-    Log.d("jerboa", "got to reports activity")
+    Log.d("jerboa", "got to reports screen")
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }

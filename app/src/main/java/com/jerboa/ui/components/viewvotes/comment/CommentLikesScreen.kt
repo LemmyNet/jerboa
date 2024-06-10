@@ -34,7 +34,7 @@ fun CommentLikesScreen(
     commentId: CommentId,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to comment likes activity")
+    Log.d("jerboa", "got to comment likes screen")
 
     val commentLikesViewModel: CommentLikesViewModel = viewModel(factory = CommentLikesViewModel.Companion.Factory(commentId))
 

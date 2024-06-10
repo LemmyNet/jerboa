@@ -46,7 +46,7 @@ fun CreatePrivateMessageScreen(
     accountViewModel: AccountViewModel,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to create private message activity")
+    Log.d("jerboa", "got to create private message screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

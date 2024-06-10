@@ -31,7 +31,7 @@ fun CreatePostReportScreen(
     accountViewModel: AccountViewModel,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to create post report activity")
+    Log.d("jerboa", "got to create post report screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

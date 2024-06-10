@@ -35,7 +35,7 @@ fun CommentRemoveScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
-    Log.d("jerboa", "got to create comment remove activity")
+    Log.d("jerboa", "got to create comment remove screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

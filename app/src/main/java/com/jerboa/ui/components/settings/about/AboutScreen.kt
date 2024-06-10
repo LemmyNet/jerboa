@@ -61,7 +61,7 @@ fun AboutScreen(
     onClickCrashLogs: () -> Unit,
     openLinkRaw: (String, Boolean, Boolean) -> Unit,
 ) {
-    Log.d("jerboa", "Got to About activity")
+    Log.d("jerboa", "Got to About screen")
 
     val ctx = LocalContext.current
     val coroutine = rememberCoroutineScope()

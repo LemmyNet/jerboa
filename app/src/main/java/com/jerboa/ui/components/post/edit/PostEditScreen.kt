@@ -42,7 +42,7 @@ fun PostEditScreen(
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
 ) {
-    Log.d("jerboa", "got to post edit activity")
+    Log.d("jerboa", "got to post edit screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

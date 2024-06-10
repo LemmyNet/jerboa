@@ -45,7 +45,7 @@ import java.util.Date
 
 @Composable
 fun CrashLogsScreen(onClickBack: () -> Unit) {
-    Log.d("jerboa", "Got to Crash log activity")
+    Log.d("jerboa", "Got to Crash log screen")
 
     CrashLogs(onClickBack = onClickBack)
 }

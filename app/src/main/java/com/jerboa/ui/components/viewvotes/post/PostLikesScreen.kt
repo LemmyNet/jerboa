@@ -34,7 +34,7 @@ fun PostLikesScreen(
     postId: PostId,
     onBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to post likes activity")
+    Log.d("jerboa", "got to post likes screen")
 
     val postLikesViewModel: PostLikesViewModel = viewModel(factory = PostLikesViewModel.Companion.Factory(postId))
 

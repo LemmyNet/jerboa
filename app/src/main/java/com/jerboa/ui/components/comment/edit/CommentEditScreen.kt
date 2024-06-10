@@ -38,7 +38,7 @@ fun CommentEditScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
-    Log.d("jerboa", "got to comment edit activity")
+    Log.d("jerboa", "got to comment edit screen")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }

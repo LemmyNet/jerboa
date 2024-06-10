@@ -28,7 +28,7 @@ fun SiteLegalScreen(
     siteViewModel: SiteViewModel,
     onBackClick: () -> Unit,
 ) {
-    Log.d("jerboa", "got to site legal activity")
+    Log.d("jerboa", "got to site legal screen")
 
     val scrollState = rememberScrollState()
 

@@ -35,7 +35,7 @@ fun PostRemoveScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
-    Log.d("jerboa", "got to create post remove activity")
+    Log.d("jerboa", "got to create post remove screen")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)

@@ -35,7 +35,7 @@ fun SettingsActivity(
     onClickAccountSettings: () -> Unit,
     onClickAbout: () -> Unit,
 ) {
-    Log.d("jerboa", "Got to settings activity")
+    Log.d("jerboa", "Got to settings screen")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
