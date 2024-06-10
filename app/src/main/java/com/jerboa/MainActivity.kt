@@ -40,43 +40,43 @@ import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.ban.BanFromCommunityActivity
-import com.jerboa.ui.components.ban.BanPersonActivity
-import com.jerboa.ui.components.comment.edit.CommentEditActivity
-import com.jerboa.ui.components.comment.reply.CommentReplyActivity
+import com.jerboa.ui.components.ban.BanFromCommunityScreen
+import com.jerboa.ui.components.ban.BanPersonScreen
+import com.jerboa.ui.components.comment.edit.CommentEditScreen
+import com.jerboa.ui.components.comment.reply.CommentReplyScreen
 import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.community.CommunityActivity
-import com.jerboa.ui.components.community.list.CommunityListActivity
-import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
-import com.jerboa.ui.components.home.BottomNavActivity
-import com.jerboa.ui.components.home.legal.SiteLegalActivity
-import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
-import com.jerboa.ui.components.imageviewer.ImageViewer
-import com.jerboa.ui.components.inbox.InboxActivity
-import com.jerboa.ui.components.login.LoginActivity
-import com.jerboa.ui.components.person.PersonProfileActivity
-import com.jerboa.ui.components.post.PostActivity
-import com.jerboa.ui.components.post.create.CreatePostActivity
-import com.jerboa.ui.components.post.edit.PostEditActivity
-import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
-import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
-import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsActivity
-import com.jerboa.ui.components.remove.comment.CommentRemoveActivity
-import com.jerboa.ui.components.remove.post.PostRemoveActivity
-import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
-import com.jerboa.ui.components.report.post.CreatePostReportActivity
-import com.jerboa.ui.components.reports.ReportsActivity
+import com.jerboa.ui.components.community.CommunityScreen
+import com.jerboa.ui.components.community.list.CommunityListScreen
+import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
+import com.jerboa.ui.components.home.BottomNavScreen
+import com.jerboa.ui.components.home.legal.SiteLegalScreen
+import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
+import com.jerboa.ui.components.imageviewer.ImageViewerScreen
+import com.jerboa.ui.components.inbox.InboxScreen
+import com.jerboa.ui.components.login.LoginScreen
+import com.jerboa.ui.components.person.PersonProfileScreen
+import com.jerboa.ui.components.post.PostScreen
+import com.jerboa.ui.components.post.create.CreatePostScreen
+import com.jerboa.ui.components.post.edit.PostEditScreen
+import com.jerboa.ui.components.privatemessage.CreatePrivateMessageScreen
+import com.jerboa.ui.components.privatemessage.PrivateMessageReplyScreen
+import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsScreen
+import com.jerboa.ui.components.remove.comment.CommentRemoveScreen
+import com.jerboa.ui.components.remove.post.PostRemoveScreen
+import com.jerboa.ui.components.report.comment.CreateCommentReportScreen
+import com.jerboa.ui.components.report.post.CreatePostReportScreen
+import com.jerboa.ui.components.reports.ReportsScreen
 import com.jerboa.ui.components.settings.SettingsActivity
-import com.jerboa.ui.components.settings.about.AboutActivity
-import com.jerboa.ui.components.settings.account.AccountSettingsActivity
-import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
-import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
-import com.jerboa.ui.components.viewvotes.comment.CommentLikesActivity
-import com.jerboa.ui.components.viewvotes.post.PostLikesActivity
+import com.jerboa.ui.components.settings.about.AboutScreen
+import com.jerboa.ui.components.settings.account.AccountSettingsScreen
+import com.jerboa.ui.components.settings.crashlogs.CrashLogsScreen
+import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelScreen
+import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
+import com.jerboa.ui.components.viewvotes.post.PostLikesScreen
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 
@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                                 navDeepLink { uriPattern = "$instance/login" }
                             },
                     ) {
-                        LoginActivity(
+                        LoginScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.HOME) {
-                        BottomNavActivity(
+                        BottomNavScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.CommunityFromIdArgs(it)
 
-                        CommunityActivity(
+                        CommunityScreen(
                             communityArg = Either.Left(args.id),
                             appState = appState,
                             accountViewModel = accountViewModel,
@@ -270,7 +270,7 @@ class MainActivity : AppCompatActivity() {
                                 "${args.name}@${args.instance}"
                             }
 
-                        CommunityActivity(
+                        CommunityScreen(
                             communityArg = Either.Right(qualifiedName),
                             appState = appState,
                             accountViewModel = accountViewModel,
@@ -288,7 +288,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.COMMUNITY_SIDEBAR) {
-                        CommunitySidebarActivity(
+                        CommunitySidebarScreen(
                             appState = appState,
                             onClickBack = appState::popBackStack,
                             showAvatar = siteViewModel.showAvatar(),
@@ -309,7 +309,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.ProfileFromIdArgs(it)
-                        PersonProfileActivity(
+                        PersonProfileScreen(
                             personArg = Either.Left(args.id),
                             savedMode = args.saved,
                             appState = appState,
@@ -348,7 +348,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.ProfileFromUrlArgs(it)
                         val qualifiedName = "${args.name}@${args.instance}"
-                        PersonProfileActivity(
+                        PersonProfileScreen(
                             personArg = Either.Right(qualifiedName),
                             savedMode = false,
                             appState = appState,
@@ -378,7 +378,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.CommunityListArgs(it)
-                        CommunityListActivity(
+                        CommunityListScreen(
                             appState = appState,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
@@ -416,7 +416,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
-                        CreatePostActivity(
+                        CreatePostScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             initialUrl = url,
@@ -433,7 +433,7 @@ class MainActivity : AppCompatActivity() {
                                 navDeepLink { uriPattern = "$instance/inbox" }
                             },
                     ) {
-                        InboxActivity(
+                        InboxScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -445,7 +445,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.REGISTRATION_APPLICATIONS,
                     ) {
-                        RegistrationApplicationsActivity(
+                        RegistrationApplicationsScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -456,7 +456,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.REGISTRATION_APPLICATIONS,
                     ) {
-                        RegistrationApplicationsActivity(
+                        RegistrationApplicationsScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -467,7 +467,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.REPORTS,
                     ) {
-                        ReportsActivity(
+                        ReportsScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -495,7 +495,7 @@ class MainActivity : AppCompatActivity() {
                             appSettings.postNavigationGestureMode.toEnumSafe(),
                             appState::navigateUp,
                         ) {
-                            PostActivity(
+                            PostScreen(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
                                 appState = appState,
@@ -529,7 +529,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.CommentArgs(it)
-                        PostActivity(
+                        PostScreen(
                             id = Either.Right(args.id),
                             accountViewModel = accountViewModel,
                             appState = appState,
@@ -551,7 +551,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMENT_REPLY,
                     ) {
-                        CommentReplyActivity(
+                        CommentReplyScreen(
                             accountViewModel = accountViewModel,
                             appState = appState,
                             siteViewModel = siteViewModel,
@@ -559,35 +559,35 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.SITE_SIDEBAR) {
-                        SiteSidebarActivity(
+                        SiteSidebarScreen(
                             appState = appState,
                             siteViewModel = siteViewModel,
                         )
                     }
 
                     composable(route = Route.SITE_LEGAL) {
-                        SiteLegalActivity(
+                        SiteLegalScreen(
                             siteViewModel = siteViewModel,
                             onBackClick = appState::popBackStack,
                         )
                     }
 
                     composable(route = Route.COMMENT_EDIT) {
-                        CommentEditActivity(
+                        CommentEditScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
                     }
 
                     composable(route = Route.POST_EDIT) {
-                        PostEditActivity(
+                        PostEditScreen(
                             accountViewModel = accountViewModel,
                             appState = appState,
                         )
                     }
 
                     composable(route = Route.PRIVATE_MESSAGE_REPLY) {
-                        PrivateMessageReplyActivity(
+                        PrivateMessageReplyScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -599,7 +599,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.POST_REMOVE,
                     ) {
-                        PostRemoveActivity(
+                        PostRemoveScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
@@ -608,7 +608,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.POST_REMOVE,
                     ) {
-                        PostRemoveActivity(
+                        PostRemoveScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
@@ -617,7 +617,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMENT_REMOVE,
                     ) {
-                        CommentRemoveActivity(
+                        CommentRemoveScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
@@ -626,7 +626,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.BAN_PERSON,
                     ) {
-                        BanPersonActivity(
+                        BanPersonScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
@@ -635,7 +635,7 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.BAN_FROM_COMMUNITY,
                     ) {
-                        BanFromCommunityActivity(
+                        BanFromCommunityScreen(
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
@@ -651,7 +651,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.PostReportArgs(it)
-                        CreatePostReportActivity(
+                        CreatePostReportScreen(
                             postId = args.id,
                             accountViewModel = accountViewModel,
                             onBack = appState::navigateUp,
@@ -668,7 +668,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.PostLikesArgs(it)
-                        PostLikesActivity(
+                        PostLikesScreen(
                             appState = appState,
                             postId = args.id,
                             onBack = appState::navigateUp,
@@ -685,7 +685,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.CommentLikesArgs(it)
-                        CommentLikesActivity(
+                        CommentLikesScreen(
                             appState = appState,
                             commentId = args.id,
                             onBack = appState::navigateUp,
@@ -702,7 +702,7 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.CommentReportArgs(it)
-                        CreateCommentReportActivity(
+                        CreateCommentReportScreen(
                             commentId = args.id,
                             accountViewModel = accountViewModel,
                             onBack = appState::navigateUp,
@@ -720,7 +720,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.LOOK_AND_FEEL) {
-                        LookAndFeelActivity(
+                        LookAndFeelScreen(
                             appSettingsViewModel = appSettingsViewModel,
                             onBack = appState::popBackStack,
                         )
@@ -733,7 +733,7 @@ class MainActivity : AppCompatActivity() {
                                 navDeepLink { uriPattern = "$instance/settings" }
                             },
                     ) {
-                        AccountSettingsActivity(
+                        AccountSettingsScreen(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel,
@@ -742,7 +742,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.ABOUT) {
-                        AboutActivity(
+                        AboutScreen(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             onBack = appState::popBackStack,
@@ -752,7 +752,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.CRASH_LOGS) {
-                        CrashLogsActivity(
+                        CrashLogsScreen(
                             onClickBack = appState::popBackStack,
                         )
                     }
@@ -772,7 +772,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.ViewArgs(it)
 
-                        ImageViewer(url = args.url, appState = appState)
+                        ImageViewerScreen(url = args.url, appState = appState)
                     }
 
                     composable(
@@ -789,7 +789,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.CreatePrivateMessageArgs(it)
 
-                        CreatePrivateMessageActivity(
+                        CreatePrivateMessageScreen(
                             args.personId,
                             args.personName,
                             accountViewModel,
