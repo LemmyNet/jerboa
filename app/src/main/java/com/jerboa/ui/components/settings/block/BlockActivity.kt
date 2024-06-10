@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.settings.block
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -43,8 +44,8 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ItemAndInstanceTitle
+import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.Title
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -53,11 +54,20 @@ import it.vercruysse.lemmyapi.v0x19.datatypes.MyUserInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BlocksActivity(
+fun BlocksScreen(
     siteViewModel: SiteViewModel,
     onBack: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        Log.d("BlocksActivity", "Refreshing site")
+        when (val res = siteViewModel.siteRes) {
+            is ApiState.Success -> siteViewModel.getSite(ApiState.Appending(res.data))
+            is ApiState.Loading, is ApiState.Appending -> {}
+            else -> siteViewModel.getSite()
+        }
+    }
 
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
@@ -70,10 +80,11 @@ fun BlocksActivity(
                 isRefreshing = siteViewModel.siteRes is ApiState.Loading,
                 onRefresh = { siteViewModel.getSite() },
             ) {
+                JerboaLoadingBar(siteViewModel.siteRes)
+
                 when (val res = siteViewModel.siteRes) {
-                    is ApiState.Loading -> LoadingBar()
                     is ApiState.Failure -> ApiErrorText(res.msg)
-                    is ApiState.Success -> {
+                    is ApiState.Holder -> {
                         res.data.my_user?.let {
                             BlockList(it)
                         } ?: ApiEmptyText()
@@ -143,9 +154,17 @@ inline fun <T> LazyListScope.itemsWithEmpty(
         item(
             contentType = "blockEmpty",
         ) {
-            Spacer(modifier = Modifier.fillMaxWidth().height(LARGE_PADDING))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(LARGE_PADDING),
+            )
             Text(stringResource(emptyText))
-            Spacer(modifier = Modifier.fillMaxWidth().height(LARGE_PADDING))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(LARGE_PADDING),
+            )
         }
     } else {
         items(

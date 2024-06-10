@@ -117,7 +117,7 @@ fun SettingsForm(
 ) {
     val luv =
         when (val siteRes = siteViewModel.siteRes) {
-            is ApiState.Success -> siteRes.data.my_user?.local_user_view
+            is ApiState.Holder -> siteRes.data.my_user?.local_user_view
             else -> null
         }
 

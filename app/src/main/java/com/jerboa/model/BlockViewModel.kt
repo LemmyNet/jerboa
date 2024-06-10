@@ -31,7 +31,7 @@ class BlockViewModel : ViewModel() {
     val personBlocks = derivedStateOf { personBlockController.feed }
 
     fun initData(userInfo: MyUserInfo) {
-        Log.i("BlockViewModel", "initData")
+        Log.d("BlockViewModel", "initData")
         instanceBlockController.init(userInfo.instance_blocks.map { it.instance })
         communityBlockController.init(userInfo.community_blocks.map { it.community })
         personBlockController.init(userInfo.person_blocks.map { it.target })
@@ -50,7 +50,9 @@ class BlockViewModel : ViewModel() {
                 }
                 .onFailure {
                     instanceBlockController.setFailed(instance, it)
-                    showBlockInstanceToast(Result.failure(it), instance.domain, ctx)
+                    withContext(Dispatchers.Main) {
+                        showBlockInstanceToast(Result.failure(it), instance.domain, ctx)
+                    }
                 }
         }
     }

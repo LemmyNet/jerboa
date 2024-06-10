@@ -91,9 +91,9 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun getSite(): Job {
+    fun getSite(loadingState: ApiState<GetSiteResponse> = ApiState.Loading): Job {
         return viewModelScope.launch {
-            siteRes = ApiState.Loading
+            siteRes = loadingState
             siteRes = API.getInstance().getSite().toApiState()
 
             when (val res = siteRes) {
