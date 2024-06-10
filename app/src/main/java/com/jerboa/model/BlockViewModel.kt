@@ -37,7 +37,10 @@ class BlockViewModel : ViewModel() {
         personBlockController.init(userInfo.person_blocks.map { it.target })
     }
 
-    fun unBlockInstance(instance: Instance, ctx: Context) {
+    fun unBlockInstance(
+        instance: Instance,
+        ctx: Context,
+    ) {
         instanceBlockController.setLoading(instance)
 
         viewModelScope.launch {
@@ -52,7 +55,10 @@ class BlockViewModel : ViewModel() {
         }
     }
 
-    fun unBlockCommunity(community: Community, ctx: Context) {
+    fun unBlockCommunity(
+        community: Community,
+        ctx: Context,
+    ) {
         communityBlockController.setLoading(community)
 
         viewModelScope.launch {
@@ -69,7 +75,10 @@ class BlockViewModel : ViewModel() {
         }
     }
 
-    fun unBlockPerson(person: Person, ctx: Context) {
+    fun unBlockPerson(
+        person: Person,
+        ctx: Context,
+    ) {
         personBlockController.setLoading(person)
 
         viewModelScope.launch {

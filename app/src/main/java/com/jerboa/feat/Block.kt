@@ -5,8 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import com.jerboa.R
 import com.jerboa.api.API
-import com.jerboa.api.ApiState
-import com.jerboa.api.toApiState
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
 import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstanceResponse
@@ -90,7 +88,6 @@ fun showBlockPersonToast(
             ).show()
             Log.i("Block", "failed", it)
         }
-
 }
 
 fun showBlockCommunityToast(
@@ -133,4 +130,3 @@ private fun makeSuccessfulBlockMessage(
         Toast.LENGTH_SHORT,
     ).show()
 }
-

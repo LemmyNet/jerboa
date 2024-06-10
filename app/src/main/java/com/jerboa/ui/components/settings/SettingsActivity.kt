@@ -84,7 +84,7 @@ fun SettingsActivity(
                         Preference(
                             title = {
                                 Text(
-                                    "Blocks",
+                                    stringResource(id = R.string.blocks),
                                 )
                             },
                             icon = {
