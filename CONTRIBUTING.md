@@ -132,8 +132,8 @@ The baseline profile code is located in the Benchmarks module.
 
 Be warned that this task will take a long time to run (+30m) and can fail.
 
-You will also need to set the variant of `app` to `benchmarkRelease`,
-have no device connected and it should start a emulator with the correct settings.
+The variant for `app` needs to be set to `benchmarkRelease`.
+There should be no device connected and it should start an emulator with the correct settings.
 
 ```shell
 ./gradlew :app:generateBaselineProfile
