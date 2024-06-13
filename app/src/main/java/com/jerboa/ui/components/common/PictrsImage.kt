@@ -23,11 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
@@ -63,16 +63,15 @@ fun CircularIcon(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
-        modifier =
-            modifier
-                .getBlurredOrRounded(
-                    rounded = true,
-                    blur = blur,
-                )
-                .size(size),
+        modifier = modifier
+            .getBlurredOrRounded(
+                rounded = true,
+                blur = blur,
+            )
+            .size(size),
     )
 }
 
@@ -148,7 +147,7 @@ fun PictrsThumbnailImage(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier =
@@ -188,7 +187,7 @@ fun PictrsUrlImage(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier =
@@ -221,7 +220,7 @@ fun PictrsBannerImage(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier =
