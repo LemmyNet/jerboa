@@ -25,9 +25,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,7 +51,6 @@ import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
@@ -71,6 +67,7 @@ import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -661,11 +658,10 @@ fun UserTabs(
 
                                 val listState = rememberLazyListState()
 
-                                // observer when reached end of list
-                                val endOfListReached by remember {
-                                    derivedStateOf {
-                                        listState.isScrolledToEnd()
-                                    }
+                                TriggerWhenReachingEnd(listState, false) {
+                                    personProfileViewModel.appendData(
+                                        profileRes.data.person_view.person.id,
+                                    )
                                 }
 
                                 // Holds the un-expanded comment ids
@@ -693,15 +689,6 @@ fun UserTabs(
                                 }
 
                                 val showActionBarByDefault = true
-
-                                // act when end of list reached
-                                if (endOfListReached) {
-                                    LaunchedEffect(Unit) {
-                                        personProfileViewModel.appendData(
-                                            profileRes.data.person_view.person.id,
-                                        )
-                                    }
-                                }
 
                                 CommentNodes(
                                     nodes = nodes,

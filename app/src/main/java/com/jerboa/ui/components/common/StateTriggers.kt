@@ -11,8 +11,8 @@ import com.jerboa.isScrolledToEnd
 @Composable
 fun TriggerWhenReachingEnd(
     listState: LazyListState,
-    loadMorePosts: () -> Unit,
     showPostAppendRetry: Boolean,
+    loadMorePosts: () -> Unit,
 ) {
     // observer when reached end of list
     val endOfListReached by remember {
