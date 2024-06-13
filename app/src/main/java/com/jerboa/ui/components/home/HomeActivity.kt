@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun HomeActivity(
+fun HomeScreen(
     appState: JerboaAppState,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
@@ -95,7 +95,7 @@ fun HomeActivity(
     swipeToActionPreset: SwipeToActionPreset,
     padding: PaddingValues? = null,
 ) {
-    Log.d("jerboa", "got to home activity")
+    Log.d("jerboa", "got to home screen")
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
