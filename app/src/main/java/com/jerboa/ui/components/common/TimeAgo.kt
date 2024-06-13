@@ -41,7 +41,6 @@ import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import io.github.z4kn4fein.semver.Version
 import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
 import java.time.Instant
 import java.time.format.DateTimeParseException
@@ -147,8 +146,8 @@ fun ScoreAndTime(
         )
 
         // If the show_scores is disabled, and we are the instance is pre 0.19.4, we fallback to legacy behaviour
-        val version = API.getInstanceOrNull()?.version
-        val legacyScoresHidden = version != null && version < Version(0, 19, 4) && !voteDisplayMode.score
+        val api = API.getInstanceOrNull()
+        val legacyScoresHidden = api != null && !api.FF.hidePost() && !voteDisplayMode.score
 
         // A special case for scores, where if both are enabled,
         // and the score is the same as the upvotes, then hide the score
