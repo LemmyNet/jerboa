@@ -10,9 +10,11 @@
     * [Kotlin](#kotlin)
     * [Code quality](#code-quality)
   * [Adding translations](#adding-translations)
+  * [Theming guide](#theming-guide)
   * [Updating the instance list](#updating-the-instance-list)
   * [Generate compose compiler metrics](#generate-compose-compiler-metrics)
   * [Testing migrations](#testing-migrations)
+  * [Updating the Baseline profiles](#updating-the-baseline-profiles)
 <!-- TOC -->
 
 <!-- prettier-ignore-end -->
@@ -120,3 +122,21 @@ If you add a migration to the DB, test it with this gradle task
 ```shell
 ./gradlew app:connectAndroidTest
 ```
+
+## Updating the Baseline profiles
+
+You can generate the latest baseline profiles by executing the following gradle task.
+It will generate the baseline profiles and the startup profiles.
+
+The baseline profile code is located in the Benchmarks module.
+
+Be warned that this task will take a long time to run (+30m) and can fail.
+
+You will also need to set the variant of `app` to `benchmarkRelease`,
+have no device connected and it should start a emulator with the correct settings.
+
+```shell
+./gradlew :app:generateBaselineProfile
+```
+
+see https://developer.android.com/topic/performance/baselineprofiles/overview
