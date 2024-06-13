@@ -14,13 +14,12 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateCommentReply
 import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
@@ -436,25 +435,15 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun blockCommunity(
-        form: BlockCommunity,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockCommunityRes = ApiState.Loading
-            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
-            showBlockCommunityToast(blockCommunityRes, ctx)
-        }
-    }
-
     fun blockPerson(
         form: BlockPerson,
         ctx: Context,
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
+            val res = API.getInstance().blockPerson(form)
+            blockPersonRes = res.toApiState()
+            showBlockPersonToast(res, ctx)
         }
     }
 

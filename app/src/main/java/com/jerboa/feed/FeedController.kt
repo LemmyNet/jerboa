@@ -55,9 +55,22 @@ open class FeedController<T> {
         }
     }
 
+    fun init(newItems: List<T>) {
+        items.clear()
+        items.addAll(newItems)
+    }
+
+    fun get(index: Int): T? = items.getOrNull(index)
+
     fun add(item: T) = items.add(item)
 
     fun remove(item: T) = items.remove(item)
+
+    fun removeAt(index: Int) {
+        if (isValidIndex(index)) {
+            items.removeAt(index)
+        }
+    }
 
     fun clear() = items.clear()
 

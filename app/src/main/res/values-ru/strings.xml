@@ -371,8 +371,8 @@
     <string name="post_actionbar">Режим панели действий поста</string>
     <string name="settings_autoplaygifs">Автоматическое воспроизведение GIF</string>
     <string name="community_unblock_community">Разблокировать сообщество</string>
-    <string name="blocked_community_toast">%1s заблокирован</string>
-    <string name="unblocked_community_toast">%1s разблокирован</string>
+    <string name="blocked_element_toast">%1s заблокирован</string>
+    <string name="unblocked_element_toast">%1s разблокирован</string>
     <string name="community_block_toast_failure">Не удалось (раз)блокировать это сообщество</string>
     <string name="instance_block_toast_failure">Не удалось (раз)блокировать этот экземпляр</string>
     <string name="saving_media">Сохраняем медиа…</string>

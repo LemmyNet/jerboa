@@ -106,6 +106,8 @@ class JerboaAppState(
 
     fun toLookAndFeel() = navController.navigate(Route.LOOK_AND_FEEL)
 
+    fun toBlockView() = navController.navigate(Route.BLOCK_VIEW)
+
     fun toAbout() = navController.navigate(Route.ABOUT)
 
     fun toCrashLogs() = navController.navigate(Route.CRASH_LOGS)

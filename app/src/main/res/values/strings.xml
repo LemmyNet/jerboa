@@ -377,10 +377,11 @@
     <string name="post_actionbar">Post actionbar mode</string>
     <string name="settings_autoplaygifs">Auto play GIFs</string>
     <string name="community_unblock_community">Unblock Community</string>
-    <string name="blocked_community_toast">%1$s is blocked</string>
-    <string name="unblocked_community_toast">%1$s is unblocked</string>
+    <string name="blocked_element_toast">%1$s is blocked</string>
+    <string name="unblocked_element_toast">%1$s is unblocked</string>
     <string name="community_block_toast_failure">Failed to (un)block this community</string>
     <string name="instance_block_toast_failure">Failed to (un)block this instance</string>
+    <string name="user_block_toast_failure">Failed to (un)block this user</string>
     <string name="saving_media">Saving media…</string>
     <string name="saved_media">Saved media</string>
     <string name="share_image">Share image</string>
@@ -484,4 +485,12 @@
     <string name="installed">Installed</string>
     <string name="not_installed">Not installed</string>
     <string name="unable_to_retrieve">Unable to retrieve</string>
+    <string name="blocks">Blocks</string>
+    <string name="unblock">Unblock</string>
+    <string name="blocked_users">Blocked users</string>
+    <string name="blocked_communities">Blocked communities</string>
+    <string name="blocked_instances">Blocked instances</string>
+    <string name="you_have_no_blocked_users">You have no blocked users</string>
+    <string name="you_have_no_blocked_communities">You have no blocked communities</string>
+    <string name="you_have_no_blocked_instances">You have no blocked instances</string>
 </resources>
