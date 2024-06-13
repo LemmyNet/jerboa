@@ -207,11 +207,11 @@ private fun VoteIndicator(
         Text(
             text = data,
             color = scoreColor(myVote = myVote),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(horizontal = 0.dp),
         )
         iconAndDescription?.let {
-            val size = MaterialTheme.typography.labelMedium.fontSize.value.dp
+            val size = MaterialTheme.typography.labelLarge.fontSize.value.dp
             Icon(
                 imageVector = iconAndDescription.first,
                 contentDescription = iconAndDescription.second,
