@@ -526,7 +526,6 @@ fun Sidebar(
     admins: List<PersonView>,
     showAvatar: Boolean,
     onPersonClick: (PersonId) -> Unit,
-    padding: PaddingValues,
 ) {
     val listState = rememberLazyListState()
 
@@ -534,7 +533,6 @@ fun Sidebar(
         state = listState,
         modifier =
             Modifier
-                .padding(padding)
                 .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {

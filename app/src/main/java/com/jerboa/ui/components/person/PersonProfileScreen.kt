@@ -2,6 +2,7 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -280,30 +281,31 @@ fun PersonProfileScreen(
             }
         },
         content = {
-            UserTabs(
-                savedMode = savedMode,
-                padding = it,
-                appState = appState,
-                personProfileViewModel = personProfileViewModel,
-                siteViewModel = siteViewModel,
-                ctx = ctx,
-                account = account,
-                scope = scope,
-                postListState = postListState,
-                appSettingsViewModel = appSettingsViewModel,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = siteViewModel.enableDownvotes(),
-                showAvatar = siteViewModel.showAvatar(),
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreviews = showPostLinkPreviews,
-                markAsReadOnScroll = markAsReadOnScroll,
-                snackbarHostState = snackbarHostState,
-                voteDisplayMode = siteViewModel.voteDisplayMode(),
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-            )
+            Box(Modifier.padding(it)) {
+                UserTabs(
+                    savedMode = savedMode,
+                    appState = appState,
+                    personProfileViewModel = personProfileViewModel,
+                    siteViewModel = siteViewModel,
+                    ctx = ctx,
+                    account = account,
+                    scope = scope,
+                    postListState = postListState,
+                    appSettingsViewModel = appSettingsViewModel,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = siteViewModel.enableDownvotes(),
+                    showAvatar = siteViewModel.showAvatar(),
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
+                    showPostLinkPreviews = showPostLinkPreviews,
+                    markAsReadOnScroll = markAsReadOnScroll,
+                    snackbarHostState = snackbarHostState,
+                    voteDisplayMode = siteViewModel.voteDisplayMode(),
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                )
+            }
         },
     )
 }
@@ -325,7 +327,6 @@ fun UserTabs(
     account: Account,
     scope: CoroutineScope,
     postListState: LazyListState,
-    padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
@@ -353,9 +354,7 @@ fun UserTabs(
 
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
 
-    Column(
-        modifier = Modifier.padding(padding),
-    ) {
+    Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
         ) {

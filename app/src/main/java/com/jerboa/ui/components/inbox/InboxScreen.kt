@@ -3,6 +3,7 @@ package com.jerboa.ui.components.inbox
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -165,17 +166,18 @@ fun InboxScreen(
             )
         },
         content = {
-            InboxTabs(
-                padding = it,
-                appState = appState,
-                inboxViewModel = inboxViewModel,
-                siteViewModel = siteViewModel,
-                ctx = ctx,
-                account = account,
-                scope = scope,
-                blurNSFW = blurNSFW,
-                snackbarHostState = snackbarHostState,
-            )
+            Box(modifier = Modifier.padding(it)) {
+                InboxTabs(
+                    appState = appState,
+                    inboxViewModel = inboxViewModel,
+                    siteViewModel = siteViewModel,
+                    ctx = ctx,
+                    account = account,
+                    scope = scope,
+                    blurNSFW = blurNSFW,
+                    snackbarHostState = snackbarHostState,
+                )
+            }
         },
     )
 }
@@ -198,14 +200,11 @@ fun InboxTabs(
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    padding: PaddingValues,
     blurNSFW: BlurNSFW,
 ) {
     val pagerState = rememberPagerState { InboxTab.entries.size }
 
-    Column(
-        modifier = Modifier.padding(padding),
-    ) {
+    Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             tabs = {
