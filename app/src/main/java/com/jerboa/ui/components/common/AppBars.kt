@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.UserViewType
@@ -526,7 +527,6 @@ fun Sidebar(
     admins: List<PersonView>,
     showAvatar: Boolean,
     onPersonClick: (PersonId) -> Unit,
-    padding: PaddingValues,
 ) {
     val listState = rememberLazyListState()
 
@@ -534,7 +534,6 @@ fun Sidebar(
         state = listState,
         modifier =
             Modifier
-                .padding(padding)
                 .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
@@ -734,6 +733,7 @@ fun LoadingBar(padding: PaddingValues = PaddingValues(0.dp)) {
             Modifier
                 .fillMaxWidth()
                 .padding(padding)
+                .zIndex(99F)
                 .testTag("jerboa:loading"),
     )
 }

@@ -116,9 +116,9 @@ fun getLocalizedStringForUserTab(
     tab: UserTab,
 ): String =
     when (tab) {
-        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
-        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
-        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+        UserTab.About -> ctx.getString(R.string.person_profile_screen_about)
+        UserTab.Posts -> ctx.getString(R.string.person_profile_screen_posts)
+        UserTab.Comments -> ctx.getString(R.string.person_profile_screen_comments)
     }
 
 /**

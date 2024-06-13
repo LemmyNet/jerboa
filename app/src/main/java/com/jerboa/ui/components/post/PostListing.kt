@@ -1757,7 +1757,8 @@ fun PostListingHeaderPreview() {
 @Composable
 fun MetadataCard(post: Post) {
     val embedTitle = post.embed_title
-    if (embedTitle != null) {
+    // If there is a valid title or description show it
+    if (embedTitle != null && (post.name != embedTitle || post.embed_description != null)) {
         OutlinedCard(
             shape = MaterialTheme.shapes.medium,
             modifier =

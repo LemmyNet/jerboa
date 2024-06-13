@@ -148,7 +148,7 @@ fun PostListings(
         }
     }
 
-    TriggerWhenReachingEnd(listState, loadMorePosts, showPostAppendRetry)
+    TriggerWhenReachingEnd(listState, showPostAppendRetry, loadMorePosts)
 }
 
 @Preview

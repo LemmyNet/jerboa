@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.community.sidebar
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import com.jerboa.ui.components.common.Sidebar
 import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
@@ -11,7 +10,6 @@ fun CommunitySidebar(
     communityRes: GetCommunityResponse,
     showAvatar: Boolean,
     onPersonClick: (PersonId) -> Unit,
-    padding: PaddingValues,
 ) {
     val community = communityRes.community_view.community
     val counts = communityRes.community_view.counts
@@ -31,6 +29,5 @@ fun CommunitySidebar(
         admins = emptyList(),
         showAvatar = showAvatar,
         onPersonClick = onPersonClick,
-        padding = padding,
     )
 }
