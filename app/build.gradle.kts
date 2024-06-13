@@ -21,8 +21,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 67
-        versionName = "0.0.67"
+        versionCode = 68
+        versionName = "0.0.68"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
