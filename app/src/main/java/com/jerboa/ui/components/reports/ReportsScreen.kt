@@ -23,9 +23,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -41,7 +38,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.ReportsViewModel
 import com.jerboa.model.SiteViewModel
@@ -49,6 +45,7 @@ import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -195,25 +192,15 @@ fun ReportsTabs(
                 ReportsTab.Posts.ordinal -> {
                     val listState = rememberLazyListState()
 
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                reportsViewModel.appendPostReports()
-                            }
+                    TriggerWhenReachingEnd(listState, false) {
+                        account.doIfReadyElseDisplayInfo(
+                            appState,
+                            ctx,
+                            snackbarHostState,
+                            scope,
+                            siteViewModel,
+                        ) {
+                            reportsViewModel.appendPostReports()
                         }
                     }
 
@@ -294,25 +281,15 @@ fun ReportsTabs(
                 ReportsTab.Comments.ordinal -> {
                     val listState = rememberLazyListState()
 
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                reportsViewModel.appendCommentReports()
-                            }
+                    TriggerWhenReachingEnd(listState, false) {
+                        account.doIfReadyElseDisplayInfo(
+                            appState,
+                            ctx,
+                            snackbarHostState,
+                            scope,
+                            siteViewModel,
+                        ) {
+                            reportsViewModel.appendCommentReports()
                         }
                     }
 
@@ -386,25 +363,15 @@ fun ReportsTabs(
                 ReportsTab.Messages.ordinal -> {
                     val listState = rememberLazyListState()
 
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                reportsViewModel.appendMessageReports()
-                            }
+                    TriggerWhenReachingEnd(listState, false) {
+                        account.doIfReadyElseDisplayInfo(
+                            appState,
+                            ctx,
+                            snackbarHostState,
+                            scope,
+                            siteViewModel,
+                        ) {
+                            reportsViewModel.appendMessageReports()
                         }
                     }
 

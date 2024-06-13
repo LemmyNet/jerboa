@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.home.sidebar
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.sampleGetSiteRes
@@ -13,7 +12,6 @@ fun SiteSidebar(
     siteRes: GetSiteResponse,
     showAvatar: Boolean,
     onPersonClick: (PersonId) -> Unit,
-    padding: PaddingValues,
 ) {
     val site = siteRes.site_view.site
     val counts = siteRes.site_view.counts
@@ -29,7 +27,6 @@ fun SiteSidebar(
         usersActiveWeek = counts.users_active_week,
         usersActiveMonth = counts.users_active_month,
         usersActiveHalfYear = counts.users_active_half_year,
-        padding = padding,
         showAvatar = showAvatar,
         onPersonClick = onPersonClick,
         admins = siteRes.admins,
@@ -44,6 +41,5 @@ fun SiteSidebarPreview() {
         siteRes = sampleGetSiteRes,
         onPersonClick = {},
         showAvatar = false,
-        padding = PaddingValues(),
     )
 }

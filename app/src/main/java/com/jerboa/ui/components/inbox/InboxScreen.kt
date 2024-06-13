@@ -3,6 +3,7 @@ package com.jerboa.ui.components.inbox
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,9 +24,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -44,7 +42,6 @@ import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.getCommentParentId
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.InboxViewModel
 import com.jerboa.model.ReplyItem
@@ -55,9 +52,8 @@ import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
@@ -165,17 +161,18 @@ fun InboxScreen(
             )
         },
         content = {
-            InboxTabs(
-                padding = it,
-                appState = appState,
-                inboxViewModel = inboxViewModel,
-                siteViewModel = siteViewModel,
-                ctx = ctx,
-                account = account,
-                scope = scope,
-                blurNSFW = blurNSFW,
-                snackbarHostState = snackbarHostState,
-            )
+            Box(modifier = Modifier.padding(it)) {
+                InboxTabs(
+                    appState = appState,
+                    inboxViewModel = inboxViewModel,
+                    siteViewModel = siteViewModel,
+                    ctx = ctx,
+                    account = account,
+                    scope = scope,
+                    blurNSFW = blurNSFW,
+                    snackbarHostState = snackbarHostState,
+                )
+            }
         },
     )
 }
@@ -198,14 +195,11 @@ fun InboxTabs(
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
-    padding: PaddingValues,
     blurNSFW: BlurNSFW,
 ) {
     val pagerState = rememberPagerState { InboxTab.entries.size }
 
-    Column(
-        modifier = Modifier.padding(padding),
-    ) {
+    Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             tabs = {
@@ -231,26 +225,8 @@ fun InboxTabs(
                 InboxTab.Replies.ordinal -> {
                     val listState = rememberLazyListState()
 
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.appendReplies()
-                            }
-                        }
+                    TriggerWhenReachingEnd(listState, false) {
+                        inboxViewModel.appendReplies()
                     }
 
                     val goToComment = { crv: CommentReplyView ->
@@ -435,26 +411,8 @@ fun InboxTabs(
                 InboxTab.Mentions.ordinal -> {
                     val listState = rememberLazyListState()
 
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.appendMentions()
-                            }
-                        }
+                    TriggerWhenReachingEnd(listState, false) {
+                        inboxViewModel.appendMentions()
                     }
 
                     PullToRefreshBox(
@@ -631,26 +589,8 @@ fun InboxTabs(
                 InboxTab.Messages.ordinal -> {
                     val listState = rememberLazyListState()
 
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.appendMessages()
-                            }
-                        }
+                    TriggerWhenReachingEnd(listState, false) {
+                        inboxViewModel.appendMessages()
                     }
 
                     PullToRefreshBox(
@@ -672,9 +612,8 @@ fun InboxTabs(
                             }
                         },
                     ) {
-                        if (inboxViewModel.messagesRes.isLoading()) {
-                            LoadingBar()
-                        }
+                        JerboaLoadingBar(inboxViewModel.messagesRes)
+
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(messagesRes.msg)

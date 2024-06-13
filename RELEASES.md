@@ -1,7 +1,23 @@
+# Jerboa 0.0.68 (2024-06-13)
+
+## What's Changed in 0.0.68
+
+- Add blocks screen by @MV-GH in [#1545](https://github.com/LemmyNet/jerboa/pull/1545)
+- Fix Loading bar clipping behind content by @MV-GH in [#1540](https://github.com/LemmyNet/jerboa/pull/1540)
+- Reduce recompositions due to TopAppBar by @MV-GH in [#1542](https://github.com/LemmyNet/jerboa/pull/1542)
+- Increase fontsize votes slightly by @MV-GH in [#1549](https://github.com/LemmyNet/jerboa/pull/1549)
+- Hide Metadata outline when no metadata is shown by @MV-GH in [#1548](https://github.com/LemmyNet/jerboa/pull/1548)
+- Use AsyncPainter where possible by @MV-GH in [#1543](https://github.com/LemmyNet/jerboa/pull/1543)
+- Update the default instance list by @MV-GH in [#1550](https://github.com/LemmyNet/jerboa/pull/1550)
+- Rename Activity nomenclature to Screen by @MV-GH in [#1546](https://github.com/LemmyNet/jerboa/pull/1546)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.67...0.0.68
+
 # Jerboa 0.0.67 (2024-06-07)
 
 ## What's Changed in 0.0.67
 
+- Upping version. by @dessalines
 - Adding LocalUserVoteDisplayMode for saving, and displaying votes. by @dessalines in [#1529](https://github.com/LemmyNet/jerboa/pull/1529)
 - Add baseline profile info + update baseline profile by @MV-GH in [#1538](https://github.com/LemmyNet/jerboa/pull/1538)
 - Refactor deprecated M1 SwipeToDismiss, use M3 SwipeToDismissBox by @MV-GH in [#1537](https://github.com/LemmyNet/jerboa/pull/1537)

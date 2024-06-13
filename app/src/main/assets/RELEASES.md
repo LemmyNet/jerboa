@@ -1,47 +1,16 @@
-# Jerboa 0.0.67 (2024-06-07)
+# Jerboa 0.0.68 (2024-06-13)
 
-## What's Changed in 0.0.67
+## What's Changed in 0.0.68
 
-- Adding LocalUserVoteDisplayMode for saving, and displaying votes. by @dessalines in [#1529](https://github.com/LemmyNet/jerboa/pull/1529)
-- Add baseline profile info + update baseline profile by @MV-GH in [#1538](https://github.com/LemmyNet/jerboa/pull/1538)
-- Refactor deprecated M1 SwipeToDismiss, use M3 SwipeToDismissBox by @MV-GH in [#1537](https://github.com/LemmyNet/jerboa/pull/1537)
-- Show when banned on view-votes screen. by @dessalines in [#1536](https://github.com/LemmyNet/jerboa/pull/1536)
-- Performance refactors for Posts feed by @MV-GH in [#1527](https://github.com/LemmyNet/jerboa/pull/1527)
-- Fix #1533 use M3 PullToRefresh by @MV-GH in [#1534](https://github.com/LemmyNet/jerboa/pull/1534)
-- chore(deps): update dependency gradle to v8.8 by @renovate[bot] in [#1535](https://github.com/LemmyNet/jerboa/pull/1535)
-- Adding alt_text and custom_thumbnail to post form. Fixes #1513 by @dessalines in [#1528](https://github.com/LemmyNet/jerboa/pull/1528)
-- Use chris banes compose-bom. by @dessalines in [#1530](https://github.com/LemmyNet/jerboa/pull/1530)
-- Adding post hiding. by @dessalines in [#1517](https://github.com/LemmyNet/jerboa/pull/1517)
-- Revert "Set specific versions for runtime-livedata." by @dessalines in [#1526](https://github.com/LemmyNet/jerboa/pull/1526)
-- Perf improvement: enable Strong Skipping by @MV-GH in [#1524](https://github.com/LemmyNet/jerboa/pull/1524)
-- chore(deps): update kotlin monorepo to v2 (major) by @MV-GH in [#1523](https://github.com/LemmyNet/jerboa/pull/1523)
-- chore(deps): update plugin com.android.library to v8.4.1 by @renovate[bot] in [#1519](https://github.com/LemmyNet/jerboa/pull/1519)
-- chore(deps): update plugin com.android.test to v8.4.1 by @renovate[bot] in [#1520](https://github.com/LemmyNet/jerboa/pull/1520)
-- chore(deps): update plugin com.android.application to v8.4.1 by @renovate[bot] in [#1518](https://github.com/LemmyNet/jerboa/pull/1518)
-- Fix content description for upvotes by @MV-GH in [#1516](https://github.com/LemmyNet/jerboa/pull/1516)
-- Set specific versions for runtime-livedata. by @dessalines in [#1502](https://github.com/LemmyNet/jerboa/pull/1502)
-- Removing ben-names_versions. by @dessalines in [#1501](https://github.com/LemmyNet/jerboa/pull/1501)
-- fix(deps): update dependency org.mockito:mockito-core to v5.12.0 by @renovate[bot] in [#1500](https://github.com/LemmyNet/jerboa/pull/1500)
-- fix(deps): update dependency androidx.lifecycle:lifecycle-runtime-compose to v2.8.0 by @renovate[bot] in [#1499](https://github.com/LemmyNet/jerboa/pull/1499)
-- fix(deps): update dependency androidx.lifecycle:lifecycle-livedata-ktx to v2.8.0 by @renovate[bot] in [#1498](https://github.com/LemmyNet/jerboa/pull/1498)
-- chore(deps): update plugin com.github.ben-manes.versions to v0.51.0 by @renovate[bot] in [#1497](https://github.com/LemmyNet/jerboa/pull/1497)
-- fix(deps): update dependency composeoptions to v1.5.14 by @renovate[bot] in [#1493](https://github.com/LemmyNet/jerboa/pull/1493)
-- chore(deps): update plugin com.google.devtools.ksp to v1.9.24-1.0.20 by @renovate[bot] in [#1492](https://github.com/LemmyNet/jerboa/pull/1492)
-- chore(deps): update kotlin monorepo to v1.9.24 by @renovate[bot] in [#1491](https://github.com/LemmyNet/jerboa/pull/1491)
-- fix(deps): update dependency org.ocpsoft.prettytime:prettytime to v5.0.8.final by @renovate[bot] in [#1496](https://github.com/LemmyNet/jerboa/pull/1496)
-- fix(deps): update dependency org.jetbrains.kotlinx:kotlinx-coroutines-test to v1.8.1 by @renovate[bot] in [#1495](https://github.com/LemmyNet/jerboa/pull/1495)
-- fix(deps): update dependency io.ktor:ktor-client-logging to v2.3.11 by @renovate[bot] in [#1494](https://github.com/LemmyNet/jerboa/pull/1494)
-- chore: Configure Renovate by @renovate[bot] in [#1489](https://github.com/LemmyNet/jerboa/pull/1489)
-- Update LemmyApi by @MV-GH in [#1486](https://github.com/LemmyNet/jerboa/pull/1486)
-- Use Compose BOM by @MV-GH in [#1485](https://github.com/LemmyNet/jerboa/pull/1485)
-- Upgrading deps. by @dessalines in [#1482](https://github.com/LemmyNet/jerboa/pull/1482)
-- chore: fix some comments by @TechVest in [#1480](https://github.com/LemmyNet/jerboa/pull/1480)
+- Add blocks screen by @MV-GH in [#1545](https://github.com/LemmyNet/jerboa/pull/1545)
+- Fix Loading bar clipping behind content by @MV-GH in [#1540](https://github.com/LemmyNet/jerboa/pull/1540)
+- Reduce recompositions due to TopAppBar by @MV-GH in [#1542](https://github.com/LemmyNet/jerboa/pull/1542)
+- Increase fontsize votes slightly by @MV-GH in [#1549](https://github.com/LemmyNet/jerboa/pull/1549)
+- Hide Metadata outline when no metadata is shown by @MV-GH in [#1548](https://github.com/LemmyNet/jerboa/pull/1548)
+- Use AsyncPainter where possible by @MV-GH in [#1543](https://github.com/LemmyNet/jerboa/pull/1543)
+- Update the default instance list by @MV-GH in [#1550](https://github.com/LemmyNet/jerboa/pull/1550)
+- Rename Activity nomenclature to Screen by @MV-GH in [#1546](https://github.com/LemmyNet/jerboa/pull/1546)
 
-## New Contributors
-
-- @renovate[bot] made their first contribution in [#1535](https://github.com/LemmyNet/jerboa/pull/1535)
-- @TechVest made their first contribution in [#1480](https://github.com/LemmyNet/jerboa/pull/1480)
-
-**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.66...0.0.67
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.67...0.0.68
 
 <!-- generated by git-cliff -->

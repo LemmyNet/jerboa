@@ -17,6 +17,8 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.feat.showBlockCommunityToast
+import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdateCommentCreator
 import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
@@ -25,8 +27,6 @@ import com.jerboa.findAndUpdatePostCreator
 import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
 import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.getDeduplicateMerge
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
@@ -264,8 +264,9 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes = API.getInstance().blockCommunity(form).toApiState()
-            showBlockCommunityToast(blockCommunityRes, ctx)
+            val res = API.getInstance().blockCommunity(form)
+            blockCommunityRes = res.toApiState()
+            showBlockCommunityToast(res, ctx)
         }
     }
 
@@ -275,8 +276,9 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
-            blockPersonRes = API.getInstance().blockPerson(form).toApiState()
-            showBlockPersonToast(blockPersonRes, ctx)
+            val res = API.getInstance().blockPerson(form)
+            blockPersonRes = res.toApiState()
+            showBlockPersonToast(res, ctx)
         }
     }
 

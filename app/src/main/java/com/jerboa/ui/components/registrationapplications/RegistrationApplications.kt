@@ -31,8 +31,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,7 +54,6 @@ import com.jerboa.datatypes.samplePendingRegistrationApplicationView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.RegistrationApplicationsViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -66,6 +63,7 @@ import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDropDown
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -156,25 +154,15 @@ fun RegistrationApplications(
 ) {
     val listState = rememberLazyListState()
 
-    // observer when reached end of list
-    val endOfListReached by remember {
-        derivedStateOf {
-            listState.isScrolledToEnd()
-        }
-    }
-
-    // act when end of list reached
-    if (endOfListReached) {
-        LaunchedEffect(Unit) {
-            account.doIfReadyElseDisplayInfo(
-                appState,
-                ctx,
-                snackbarHostState,
-                scope,
-                siteViewModel,
-            ) {
-                registrationApplicationsViewModel.appendApplications()
-            }
+    TriggerWhenReachingEnd(listState, false) {
+        account.doIfReadyElseDisplayInfo(
+            appState,
+            ctx,
+            snackbarHostState,
+            scope,
+            siteViewModel,
+        ) {
+            registrationApplicationsViewModel.appendApplications()
         }
     }
 

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.material.icons.outlined.Palette
@@ -33,6 +34,7 @@ fun SettingsActivity(
     onBack: () -> Unit,
     onClickLookAndFeel: () -> Unit,
     onClickAccountSettings: () -> Unit,
+    onClickBlocks: () -> Unit,
     onClickAbout: () -> Unit,
 ) {
     Log.d("jerboa", "Got to settings screen")
@@ -76,6 +78,22 @@ fun SettingsActivity(
                                 )
                             },
                             onClick = onClickAccountSettings,
+                        )
+                    }
+                    if (!account.isAnon()) {
+                        Preference(
+                            title = {
+                                Text(
+                                    stringResource(id = R.string.blocks),
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Block,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = onClickBlocks,
                         )
                     }
                     Preference(

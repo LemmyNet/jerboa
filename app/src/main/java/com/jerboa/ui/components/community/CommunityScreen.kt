@@ -287,11 +287,10 @@ fun CommunityScreen(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.savePost(
-                                        form =
-                                            SavePost(
-                                                post_id = postView.post.id,
-                                                save = !postView.saved,
-                                            ),
+                                        form = SavePost(
+                                            post_id = postView.post.id,
+                                            save = !postView.saved,
+                                        ),
                                     )
                                 }
                             },

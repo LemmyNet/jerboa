@@ -73,6 +73,7 @@ import com.jerboa.ui.components.reports.ReportsScreen
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutScreen
 import com.jerboa.ui.components.settings.account.AccountSettingsScreen
+import com.jerboa.ui.components.settings.block.BlocksScreen
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsScreen
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelScreen
 import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
@@ -715,6 +716,7 @@ class MainActivity : AppCompatActivity() {
                             onBack = appState::popBackStack,
                             onClickAbout = appState::toAbout,
                             onClickAccountSettings = appState::toAccountSettings,
+                            onClickBlocks = appState::toBlockView,
                             onClickLookAndFeel = appState::toLookAndFeel,
                         )
                     }
@@ -748,6 +750,13 @@ class MainActivity : AppCompatActivity() {
                             onBack = appState::popBackStack,
                             onClickCrashLogs = appState::toCrashLogs,
                             openLinkRaw = appState::openLinkRaw,
+                        )
+                    }
+
+                    composable(route = Route.BLOCK_VIEW) {
+                        BlocksScreen(
+                            siteViewModel = siteViewModel,
+                            onBack = appState::popBackStack,
                         )
                     }
 

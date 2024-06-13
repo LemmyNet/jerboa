@@ -2,6 +2,7 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,9 +25,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,7 +51,6 @@ import com.jerboa.feat.VoteType
 import com.jerboa.feat.canMod
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
@@ -70,6 +67,7 @@ import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -280,30 +278,31 @@ fun PersonProfileScreen(
             }
         },
         content = {
-            UserTabs(
-                savedMode = savedMode,
-                padding = it,
-                appState = appState,
-                personProfileViewModel = personProfileViewModel,
-                siteViewModel = siteViewModel,
-                ctx = ctx,
-                account = account,
-                scope = scope,
-                postListState = postListState,
-                appSettingsViewModel = appSettingsViewModel,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = siteViewModel.enableDownvotes(),
-                showAvatar = siteViewModel.showAvatar(),
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-                showPostLinkPreviews = showPostLinkPreviews,
-                markAsReadOnScroll = markAsReadOnScroll,
-                snackbarHostState = snackbarHostState,
-                voteDisplayMode = siteViewModel.voteDisplayMode(),
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-            )
+            Box(Modifier.padding(it)) {
+                UserTabs(
+                    savedMode = savedMode,
+                    appState = appState,
+                    personProfileViewModel = personProfileViewModel,
+                    siteViewModel = siteViewModel,
+                    ctx = ctx,
+                    account = account,
+                    scope = scope,
+                    postListState = postListState,
+                    appSettingsViewModel = appSettingsViewModel,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = siteViewModel.enableDownvotes(),
+                    showAvatar = siteViewModel.showAvatar(),
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
+                    showPostLinkPreviews = showPostLinkPreviews,
+                    markAsReadOnScroll = markAsReadOnScroll,
+                    snackbarHostState = snackbarHostState,
+                    voteDisplayMode = siteViewModel.voteDisplayMode(),
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                )
+            }
         },
     )
 }
@@ -325,7 +324,6 @@ fun UserTabs(
     account: Account,
     scope: CoroutineScope,
     postListState: LazyListState,
-    padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
@@ -353,9 +351,7 @@ fun UserTabs(
 
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
 
-    Column(
-        modifier = Modifier.padding(padding),
-    ) {
+    Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
         ) {
@@ -662,11 +658,10 @@ fun UserTabs(
 
                                 val listState = rememberLazyListState()
 
-                                // observer when reached end of list
-                                val endOfListReached by remember {
-                                    derivedStateOf {
-                                        listState.isScrolledToEnd()
-                                    }
+                                TriggerWhenReachingEnd(listState, false) {
+                                    personProfileViewModel.appendData(
+                                        profileRes.data.person_view.person.id,
+                                    )
                                 }
 
                                 // Holds the un-expanded comment ids
@@ -694,15 +689,6 @@ fun UserTabs(
                                 }
 
                                 val showActionBarByDefault = true
-
-                                // act when end of list reached
-                                if (endOfListReached) {
-                                    LaunchedEffect(Unit) {
-                                        personProfileViewModel.appendData(
-                                            profileRes.data.person_view.person.id,
-                                        )
-                                    }
-                                }
 
                                 CommentNodes(
                                     nodes = nodes,

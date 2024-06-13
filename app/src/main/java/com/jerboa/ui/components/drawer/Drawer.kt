@@ -59,7 +59,6 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.customMarquee
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
@@ -205,7 +204,6 @@ fun DrawerItemsMain(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState),
     ) {
         if (follows.isNotEmpty()) {
             item {
