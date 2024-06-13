@@ -74,11 +74,11 @@ private fun scoreOrPctStr(
     }
 }
 
-fun LocalUserVoteDisplayMode.Companion.default() =
+fun LocalUserVoteDisplayMode.Companion.default(score: Boolean? = false) =
     LocalUserVoteDisplayMode(
         local_user_id = -1,
         upvotes = true,
         downvotes = true,
-        score = false,
+        score = score ?: false,
         upvote_percentage = false,
     )
