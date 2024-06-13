@@ -145,7 +145,7 @@ fun SettingsForm(
 
     val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
-    val showScoresStateLegacy = remember { mutableStateOf(luv?.local_user?.show_scores ?: false) }
+    val showScoresStateLegacy = remember { mutableStateOf(luv?.local_user?.show_scores ?: true) }
     val showScoresState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.score ?: false) }
     val showUpvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvotes ?: false) }
     val showDownvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.downvotes ?: false) }

@@ -226,12 +226,30 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     // For the current default, just use Upvotes / Downvotes
     fun voteDisplayMode(): LocalUserVoteDisplayMode {
+        val api = API.getInstanceOrNull()
+
+        return if (api == null || api.FF.hidePost()) {
+            newVoteDisplayMode()
+        } else {
+            legacyVoteDisplayMode()
+        }
+    }
+
+    private fun newVoteDisplayMode(): LocalUserVoteDisplayMode {
         return when (val res = siteRes) {
             is ApiState.Success ->
-                res.data.my_user?.local_user_view?.local_user_vote_display_mode
-                    ?: LocalUserVoteDisplayMode.default(res.data.my_user?.local_user_view?.local_user?.show_scores)
+                res.data.my_user?.local_user_view?.local_user_vote_display_mode ?: LocalUserVoteDisplayMode.default()
 
             else -> LocalUserVoteDisplayMode.default()
+        }
+    }
+
+    private fun legacyVoteDisplayMode(): LocalUserVoteDisplayMode {
+        return when (val res = siteRes) {
+            is ApiState.Success ->
+                LocalUserVoteDisplayMode.default(res.data.my_user?.local_user_view?.local_user?.show_scores ?: true)
+
+            else -> LocalUserVoteDisplayMode.default(true) // Legacy default
         }
     }
 
