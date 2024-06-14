@@ -1,7 +1,18 @@
+# Jerboa 0.0.69 (2024-06-14)
+
+## What's Changed in 0.0.69
+
+- Improve baseline documentation + update baseline profiles by @MV-GH in [#1551](https://github.com/LemmyNet/jerboa/pull/1551)
+- Fix edgecase with legacy show_scores by @MV-GH in [#1552](https://github.com/LemmyNet/jerboa/pull/1552)
+- Restore legacy 'Show Scores' option by @MV-GH in [#1544](https://github.com/LemmyNet/jerboa/pull/1544)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.68...0.0.69
+
 # Jerboa 0.0.68 (2024-06-13)
 
 ## What's Changed in 0.0.68
 
+- Upping version. by @dessalines
 - Add blocks screen by @MV-GH in [#1545](https://github.com/LemmyNet/jerboa/pull/1545)
 - Fix Loading bar clipping behind content by @MV-GH in [#1540](https://github.com/LemmyNet/jerboa/pull/1540)
 - Reduce recompositions due to TopAppBar by @MV-GH in [#1542](https://github.com/LemmyNet/jerboa/pull/1542)
