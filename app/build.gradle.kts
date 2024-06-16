@@ -113,10 +113,10 @@ dependencies {
     // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
 
     val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.05.00-alpha03")
-    implementation(composeBom)
+    api(composeBom)
     implementation("androidx.activity:activity-compose")
     implementation("androidx.appcompat:appcompat:1.7.0")
-    androidTestImplementation(composeBom)
+    androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.0.0")
@@ -189,7 +189,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.15-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.2.16-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // For custom logging plugin
