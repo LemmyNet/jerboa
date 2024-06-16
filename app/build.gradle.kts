@@ -113,10 +113,10 @@ dependencies {
     // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
 
     val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.05.00-alpha03")
-    implementation(composeBom)
+    api(composeBom)
     implementation("androidx.activity:activity-compose")
     implementation("androidx.appcompat:appcompat:1.7.0")
-    androidTestImplementation(composeBom)
+    androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.0.0")
