@@ -35,13 +35,14 @@ fun storeMedia(
     if (SDK_INT < 29 && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         val appCompat = (ctx as MainActivity)
 
-        appCompat.registerActivityResultLauncher(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) {
-                actualStoreImage(scope, ctx, url, mediaType)
-            } else {
-                Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
-            }
-        }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        appCompat
+            .registerActivityResultLauncher(ActivityResultContracts.RequestPermission()) { granted ->
+                if (granted) {
+                    actualStoreImage(scope, ctx, url, mediaType)
+                } else {
+                    Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                }
+            }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     } else {
         actualStoreImage(scope, ctx, url, mediaType)
     }

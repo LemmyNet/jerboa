@@ -38,18 +38,15 @@ fun canMod(
     }
 }
 
-fun futureDaysToUnixTime(days: Long?): Long? {
-    return days?.let {
+fun futureDaysToUnixTime(days: Long?): Long? =
+    days?.let {
         Instant.now().plus(it, ChronoUnit.DAYS).epochSecond
     }
-}
 
 fun amMod(
     moderators: List<PersonId>?,
     myId: PersonId,
-): Boolean {
-    return moderators?.contains(myId) ?: false
-}
+): Boolean = moderators?.contains(myId) ?: false
 
 /**
  * In screens with posts from different communities we don't have access to moderators of those communities

@@ -65,7 +65,8 @@ fun CommunityListScreen(
     } else {
         // https://issuetracker.google.com/issues/249727298
         // Else it also applies the padding above the ime (keyboard)
-        Modifier.padding(padding)
+        Modifier
+            .padding(padding)
             .consumeWindowInsets(padding)
             .systemBarsPadding()
     }

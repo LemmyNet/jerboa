@@ -6,7 +6,9 @@ import com.jerboa.db.entity.Account
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
-class AccountRepository(private val accountDao: AccountDao) {
+class AccountRepository(
+    private val accountDao: AccountDao,
+) {
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
     val currentAccount = accountDao.getCurrent()

@@ -18,7 +18,10 @@ import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {
+class RegistrationApplicationsViewModel(
+    account: Account,
+    siteViewModel: SiteViewModel,
+) : ViewModel() {
     var applicationsRes: ApiState<ListRegistrationApplicationsResponse> by mutableStateOf(
         ApiState.Empty,
     )
@@ -41,12 +44,11 @@ class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteVie
         this.unreadOnly = unreadOnly
     }
 
-    fun getFormApplications(): ListRegistrationApplications {
-        return ListRegistrationApplications(
+    fun getFormApplications(): ListRegistrationApplications =
+        ListRegistrationApplications(
             unread_only = this.unreadOnly,
             page = this.page,
         )
-    }
 
     fun listApplications(
         form: ListRegistrationApplications,
@@ -135,9 +137,7 @@ class RegistrationApplicationsViewModel(account: Account, siteViewModel: SiteVie
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return RegistrationApplicationsViewModel(account, siteViewModel) as T
-            }
+            ): T = RegistrationApplicationsViewModel(account, siteViewModel) as T
         }
     }
 }

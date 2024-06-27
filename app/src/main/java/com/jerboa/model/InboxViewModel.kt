@@ -24,7 +24,10 @@ import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
-class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {
+class InboxViewModel(
+    account: Account,
+    siteViewModel: SiteViewModel,
+) : ViewModel() {
     var repliesRes: ApiState<GetRepliesResponse> by mutableStateOf(
         ApiState.Empty,
     )
@@ -485,28 +488,25 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun getFormReplies(): GetReplies {
-        return GetReplies(
+    fun getFormReplies(): GetReplies =
+        GetReplies(
             unread_only = unreadOnly,
             sort = CommentSortType.New,
             page = pageReplies,
         )
-    }
 
-    fun getFormMentions(): GetPersonMentions {
-        return GetPersonMentions(
+    fun getFormMentions(): GetPersonMentions =
+        GetPersonMentions(
             unread_only = unreadOnly,
             sort = CommentSortType.New,
             page = pageMentions,
         )
-    }
 
-    fun getFormMessages(): GetPrivateMessages {
-        return GetPrivateMessages(
+    fun getFormMessages(): GetPrivateMessages =
+        GetPrivateMessages(
             unread_only = unreadOnly,
             page = pageMessages,
         )
-    }
 
     init {
         if (!account.isAnon()) {
@@ -533,9 +533,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return InboxViewModel(account, siteViewModel) as T
-            }
+            ): T = InboxViewModel(account, siteViewModel) as T
         }
     }
 }

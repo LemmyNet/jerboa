@@ -17,7 +17,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Stable
-class AccountViewModel(private val repository: AccountRepository) : ViewModel() {
+class AccountViewModel(
+    private val repository: AccountRepository,
+) : ViewModel() {
     val currentAccount = repository.currentAccount
     val allAccounts = repository.allAccounts
 

@@ -59,13 +59,9 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
             private val span: ClickableSpan,
             private val text: String,
         ) {
-            fun span(): ClickableSpan {
-                return span
-            }
+            fun span(): ClickableSpan = span
 
-            fun text(): String {
-                return text
-            }
+            fun text(): String = text
 
             companion object {
                 fun ofSpan(
@@ -89,9 +85,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         /**
          * Return a new instance of BetterLinkMovementMethod.
          */
-        fun newInstance(): BetterLinkMovementMethod {
-            return BetterLinkMovementMethod()
-        }
+        fun newInstance(): BetterLinkMovementMethod = BetterLinkMovementMethod()
     }
 
     interface OnLinkClickListener {

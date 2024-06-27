@@ -1373,8 +1373,7 @@ fun PostListingList(
                 .padding(
                     horizontal = MEDIUM_PADDING,
                     vertical = MEDIUM_PADDING,
-                )
-                .testTag("jerboa:post"),
+                ).testTag("jerboa:post"),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

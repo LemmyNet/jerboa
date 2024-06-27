@@ -129,11 +129,12 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         localClipboardManager.setText(AnnotatedString(it))
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.post_listing_link_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.post_listing_link_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                     },
                 )
             }
@@ -145,11 +146,12 @@ fun PostOptionsDropdown(
                     onDismissRequest()
                     val permalink = postView.post.ap_id
                     localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast.makeText(
-                        ctx,
-                        ctx.getString(R.string.post_listing_permalink_copied),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Toast
+                        .makeText(
+                            ctx,
+                            ctx.getString(R.string.post_listing_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 },
             )
 
@@ -165,17 +167,19 @@ fun PostOptionsDropdown(
                                 "thumbnail link",
                             )
                         ) {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_thumbnail_link_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_thumbnail_link_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         } else {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         }
                     },
                 )
@@ -193,17 +197,19 @@ fun PostOptionsDropdown(
                                 "post title",
                             )
                         ) {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_title_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_title_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         } else {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         }
                     },
                 )
@@ -216,17 +222,19 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         if (copyToClipboard(ctx, postView.post.name, "post name")) {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_name_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_name_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         } else {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         }
                     },
                 )
@@ -239,17 +247,19 @@ fun PostOptionsDropdown(
                     onClick = {
                         onDismissRequest()
                         if (copyToClipboard(ctx, postView.post.body ?: "", "post text")) {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_text_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_text_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         } else {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                         }
                     },
                 )

@@ -84,14 +84,12 @@ enum class AccountVerificationState {
     }
 }
 
-fun checkInternet(ctx: Context): CheckState {
-    return CheckState.from(ctx.getSystemService<ConnectivityManager>().isCurrentlyConnected())
-}
+fun checkInternet(ctx: Context): CheckState = CheckState.from(ctx.getSystemService<ConnectivityManager>().isCurrentlyConnected())
 
 // Checks the instance itself, this way we can properly check if the backend is having issues
 // as the API endpoints seem te be returning 400 instead of 5XX when the backend is having internal issues
-suspend fun checkInstance(instance: String): CheckState {
-    return withContext(Dispatchers.IO) {
+suspend fun checkInstance(instance: String): CheckState =
+    withContext(Dispatchers.IO) {
         try {
             val response =
                 API.httpClient
@@ -114,7 +112,6 @@ suspend fun checkInstance(instance: String): CheckState {
             CheckState.ConnectionFailedMsg(instance)
         }
     }
-}
 
 suspend fun checkIfAccountIsDeleted(
     account: Account,
@@ -129,7 +126,9 @@ suspend fun checkIfAccountIsDeleted(
             // This check is not perfect since, technically a different account with the same name and ID
             // can happen but that should be incredibly rare.
             return@withContext if (
-                body.person_view.person.name.equals(account.name, true) && !body.person_view.person.deleted
+                body.person_view.person.name
+                    .equals(account.name, true) &&
+                !body.person_view.person.deleted
             ) {
                 Pair(CheckState.Passed, ApiState.Success<GetPersonDetailsResponse>(body))
             } else {
@@ -143,13 +142,12 @@ suspend fun checkIfAccountIsDeleted(
     }
 }
 
-fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
-    return if (userRes.person_view.person.banned) {
+fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState =
+    if (userRes.person_view.person.banned) {
         CheckState.FailedMsg(userRes.person_view.person.ban_expires ?: "TIME_NOT_SPECIFIED")
     } else {
         CheckState.Passed
     }
-}
 
 suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
     return withContext(Dispatchers.IO) {
@@ -170,11 +168,15 @@ suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
 suspend fun checkIfSiteRetrievalSucceeded(
     siteViewModel: SiteViewModel,
     account: Account,
-): Pair<CheckState, ApiState.Success<GetSiteResponse>?> {
-    return when (val res = siteViewModel.siteRes) {
+): Pair<CheckState, ApiState.Success<GetSiteResponse>?> =
+    when (val res = siteViewModel.siteRes) {
         is ApiState.Success -> {
             // Contains information for the wrong person
-            if (res.data.my_user?.local_user_view?.local_user?.person_id == account.id) {
+            if (res.data.my_user
+                    ?.local_user_view
+                    ?.local_user
+                    ?.person_id == account.id
+            ) {
                 Pair(CheckState.Passed, res)
             } else {
                 siteViewModel.siteRes = ApiState.Empty
@@ -190,7 +192,6 @@ suspend fun checkIfSiteRetrievalSucceeded(
             }
         }
     }
-}
 
 sealed class CheckState {
     data object Passed : CheckState()
@@ -199,14 +200,16 @@ sealed class CheckState {
 
     data object ConnectionFailed : ConnectionFailedMsg()
 
-    open class ConnectionFailedMsg(val msg: String = "") : CheckState()
+    open class ConnectionFailedMsg(
+        val msg: String = "",
+    ) : CheckState()
 
-    open class FailedMsg(val msg: String = "") : CheckState()
+    open class FailedMsg(
+        val msg: String = "",
+    ) : CheckState()
 
     companion object {
-        fun from(boolean: Boolean): CheckState {
-            return if (boolean) Passed else Failed
-        }
+        fun from(boolean: Boolean): CheckState = if (boolean) Passed else Failed
     }
 }
 
@@ -491,8 +494,8 @@ suspend fun SnackbarHostState.doSnackbarAction(
     }
 }
 
-fun Account.isReadyAndIfNotShowSimplifiedInfoToast(ctx: Context): Boolean {
-    return if (this.isAnon()) {
+fun Account.isReadyAndIfNotShowSimplifiedInfoToast(ctx: Context): Boolean =
+    if (this.isAnon()) {
         loginFirstToast(ctx)
         false
     } else if (!this.isReady()) {
@@ -501,4 +504,3 @@ fun Account.isReadyAndIfNotShowSimplifiedInfoToast(ctx: Context): Boolean {
     } else {
         true
     }
-}

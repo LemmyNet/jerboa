@@ -104,15 +104,14 @@ fun TimeAgo(
 fun dateStringToPretty(
     dateStr: String,
     longTimeFormat: Boolean = false,
-): String? {
-    return try {
+): String? =
+    try {
         val publishedDate = Date.from(Instant.parse(dateStr))
         formatDuration(publishedDate, longTimeFormat)
     } catch (e: DateTimeParseException) {
         Log.d("TimeAgo", "Failed to parse date string: $dateStr", e)
         null
     }
-}
 
 @Preview
 @Composable

@@ -48,8 +48,8 @@ fun VoteGeneric(
 }
 
 @Composable
-fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
-    return when (myVote) {
+fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
+    when (myVote) {
         1 ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
@@ -62,11 +62,10 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
                     .colorScheme.onBackground.muted,
             )
     }
-}
 
 @Composable
-fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
-    return when (myVote) {
+fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
+    when (myVote) {
         -1 ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_filled),
@@ -79,4 +78,3 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
                     .colorScheme.onBackground.muted,
             )
     }
-}

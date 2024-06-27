@@ -515,9 +515,10 @@ fun PostScreen(
                                             val firstCommentPath = firstCommentNodeData?.getPath()
 
                                             val hasParent =
-                                                firstCommentPath != null && getDepthFromComment(
-                                                    firstCommentPath,
-                                                ) > 0
+                                                firstCommentPath != null &&
+                                                    getDepthFromComment(
+                                                        firstCommentPath,
+                                                    ) > 0
 
                                             val commentParentId =
                                                 firstCommentPath?.let(::getCommentParentId)

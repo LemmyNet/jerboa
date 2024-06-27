@@ -269,8 +269,7 @@ fun CommentOrPostNodeHeader(
                     indication = null,
                     onLongClick = onLongCLick,
                     onClick = onClick,
-                )
-                .padding(
+                ).padding(
                     top = LARGE_PADDING,
                     bottom = MEDIUM_PADDING,
                 ),
@@ -463,13 +462,12 @@ fun DotSpacer(
 }
 
 @Composable
-fun scoreColor(myVote: Int?): Color {
-    return when (myVote) {
+fun scoreColor(myVote: Int?): Color =
+    when (myVote) {
         1 -> MaterialTheme.colorScheme.secondary
         -1 -> MaterialTheme.colorScheme.error
         else -> MaterialTheme.colorScheme.onBackground.muted
     }
-}
 
 @Composable
 fun NavbarIconAndBadge(
@@ -707,7 +705,9 @@ fun Modifier.simpleVerticalScrollbar(
     return drawWithContent {
         drawContent()
 
-        val firstVisibleElementIndex = state.layoutInfo.visibleItemsInfo.firstOrNull()?.index
+        val firstVisibleElementIndex = state.layoutInfo.visibleItemsInfo
+            .firstOrNull()
+            ?.index
         val needDrawScrollbar = state.isScrollInProgress || alpha > 0.0f
 
         // Draw scrollbar if scrolling or if the animation is still running and lazy column has content

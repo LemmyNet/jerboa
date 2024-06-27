@@ -13,11 +13,15 @@ import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.image.AsyncDrawableScheduler
 
-data class SpoilerTitleSpan(val title: CharSequence)
+data class SpoilerTitleSpan(
+    val title: CharSequence,
+)
 
 class SpoilerCloseSpan
 
-class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlugin() {
+class MarkwonSpoilerPlugin(
+    val enableInteraction: Boolean,
+) : AbstractMarkwonPlugin() {
     override fun configure(registry: MarkwonPlugin.Registry) {
         registry.require(CorePlugin::class.java) {
             it.addOnTextAddedListener(
@@ -50,7 +54,8 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
             // Find all spoiler "end" lines
             val spoilerCloses = spoilerCloseRegex.findAll(text)
             for (match in spoilerCloses) {
-                visitor.builder()
+                visitor
+                    .builder()
                     .setSpan(SpoilerCloseSpan(), start, start + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
