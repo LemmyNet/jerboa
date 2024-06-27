@@ -23,7 +23,7 @@ import com.jerboa.model.BanPersonViewModel
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.Person
 
 object BanPersonReturn {
     const val PERSON_VIEW = "ban-person::return(person-view)"

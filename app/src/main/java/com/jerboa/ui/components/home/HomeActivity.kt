@@ -64,16 +64,16 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPostAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
+import it.vercruysse.lemmyapi.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.datatypes.DeletePost
+import it.vercruysse.lemmyapi.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.datatypes.HidePost
+import it.vercruysse.lemmyapi.datatypes.LockPost
+import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.SavePost
+import it.vercruysse.lemmyapi.datatypes.Tagline
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)

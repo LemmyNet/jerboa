@@ -4,9 +4,9 @@ import android.content.Context
 import com.jerboa.MainActivity
 import com.jerboa.db.entity.Account
 import com.jerboa.findActivity
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.CommunityId
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonView
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 

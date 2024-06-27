@@ -23,7 +23,7 @@ import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostId
 
 @Composable
 fun CreatePostReportScreen(

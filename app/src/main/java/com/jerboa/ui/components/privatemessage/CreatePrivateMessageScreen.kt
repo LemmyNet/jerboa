@@ -32,9 +32,9 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.getCurrentAccount
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
+import it.vercruysse.lemmyapi.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -20,8 +20,8 @@ import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.getDeduplicateMerge
+import it.vercruysse.lemmyapi.datatypes.*
 import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
 class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {

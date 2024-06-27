@@ -43,13 +43,13 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.PostId
 
 @Composable
 fun CommentMentionNodeHeader(

@@ -45,7 +45,7 @@ import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.Community
 
 @Composable
 fun CreateEditPostBody(

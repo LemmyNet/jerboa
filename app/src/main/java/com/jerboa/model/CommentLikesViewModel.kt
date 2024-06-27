@@ -13,9 +13,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.getDeduplicateMerge
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.ListCommentLikes
-import it.vercruysse.lemmyapi.v0x19.datatypes.ListCommentLikesResponse
+import it.vercruysse.lemmyapi.datatypes.CommentId
+import it.vercruysse.lemmyapi.datatypes.ListCommentLikes
+import it.vercruysse.lemmyapi.datatypes.ListCommentLikesResponse
 import kotlinx.coroutines.launch
 
 class CommentLikesViewModel(val id: CommentId) : ViewModel() {

@@ -33,10 +33,10 @@ import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.CommentId
+import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonId
 
 @Composable
 fun CommentOptionsDropdown(

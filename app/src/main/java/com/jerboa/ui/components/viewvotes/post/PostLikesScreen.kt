@@ -21,7 +21,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.viewvotes.ViewVotesBody
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

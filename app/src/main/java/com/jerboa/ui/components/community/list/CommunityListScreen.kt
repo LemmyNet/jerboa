@@ -27,10 +27,10 @@ import com.jerboa.model.CommunityListViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
+import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.datatypes.Search
 import it.vercruysse.lemmyapi.dto.SearchType
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Search
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

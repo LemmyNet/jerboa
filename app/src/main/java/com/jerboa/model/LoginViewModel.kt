@@ -15,8 +15,9 @@ import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.matchLoginErrorMsgToStringRes
 import it.vercruysse.lemmyapi.LemmyApi
+import it.vercruysse.lemmyapi.LemmyApiBaseController
+import it.vercruysse.lemmyapi.datatypes.Login
 import it.vercruysse.lemmyapi.exception.NotSupportedException
-import it.vercruysse.lemmyapi.v0x19.datatypes.Login
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
@@ -34,7 +35,7 @@ class LoginViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             loading = true
-            lateinit var tempInstance: it.vercruysse.lemmyapi.v0x19.LemmyApi
+            lateinit var tempInstance: LemmyApiBaseController
             try {
                 val nodeInfo = LemmyApi.getNodeInfo(instance).getOrThrow()
 

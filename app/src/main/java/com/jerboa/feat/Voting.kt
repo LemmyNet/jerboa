@@ -1,6 +1,6 @@
 package com.jerboa.feat
 
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 
 enum class VoteType(val value: Int) {
     Upvote(1),

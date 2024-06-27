@@ -17,7 +17,7 @@ import com.jerboa.findAndUpdateCommentReport
 import com.jerboa.findAndUpdatePostReport
 import com.jerboa.findAndUpdatePrivateMessageReport
 import com.jerboa.getDeduplicateMerge
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.launch
 
 class ReportsViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {

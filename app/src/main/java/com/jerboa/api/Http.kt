@@ -9,6 +9,7 @@ import io.ktor.client.plugins.UserAgent
 import io.ktor.client.plugins.logging.*
 import io.ktor.http.HttpHeaders
 import it.vercruysse.lemmyapi.LemmyApi
+import it.vercruysse.lemmyapi.LemmyApiBaseController
 import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import it.vercruysse.lemmyapi.setDefaultClientConfig
 import kotlinx.coroutines.CompletableDeferred
@@ -21,7 +22,6 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import it.vercruysse.lemmyapi.v0x19.LemmyApi as LemmyApiV19
 
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val DEFAULT_VERSION = "0.19.0"
@@ -30,7 +30,7 @@ object API {
     private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
     private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
     private val initialized = CompletableDeferred<Unit>()
-    private lateinit var newApi: LemmyApiV19
+    private lateinit var newApi: LemmyApiBaseController
 
     // Not super reliable if used during startup
     // But simplifies a lot of things
@@ -78,13 +78,13 @@ object API {
         }
     }
 
-    suspend fun getInstance(): LemmyApiV19 {
+    suspend fun getInstance(): LemmyApiBaseController {
         initialized.await()
         return newApi
     }
 
     // This use is discouraged, use getInstance() as much as possible
-    fun getInstanceOrNull(): LemmyApiV19? {
+    fun getInstanceOrNull(): LemmyApiBaseController? {
         return if (::newApi.isInitialized) {
             newApi
         } else {
@@ -115,12 +115,12 @@ object API {
     suspend fun setLemmyInstance(
         instance: String,
         auth: String? = null,
-    ): LemmyApiV19 {
+    ): LemmyApiBaseController {
         setLemmyInstance(LemmyApi.getLemmyApi(instance, auth))
         return newApi
     }
 
-    fun setLemmyInstance(api: LemmyApiV19) {
+    fun setLemmyInstance(api: LemmyApiBaseController) {
         Log.d("setLemmyInstance", "Setting lemmy instance to ${api.baseUrl}")
         version = api.version.toString()
         newApi = api
@@ -131,7 +131,7 @@ object API {
         host: String,
         auth: String? = null,
         overrideVersion: String = DEFAULT_VERSION,
-    ): LemmyApiV19 {
+    ): LemmyApiBaseController {
         return try {
             createTempInstance(host, auth)
         } catch (e: Throwable) {
@@ -143,7 +143,7 @@ object API {
     suspend fun createTempInstance(
         host: String,
         auth: String? = null,
-    ): LemmyApiV19 {
+    ): LemmyApiBaseController {
         return LemmyApi.getLemmyApi(host, auth)
     }
 
@@ -151,7 +151,7 @@ object API {
         host: String,
         version: String,
         auth: String? = null,
-    ): LemmyApiV19 {
+    ): LemmyApiBaseController {
         return LemmyApi.getLemmyApi(host, version, auth)
     }
 

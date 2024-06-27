@@ -22,11 +22,11 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.apiErrorToast
+import it.vercruysse.lemmyapi.LemmyApiBaseController
+import it.vercruysse.lemmyapi.datatypes.GetPersonDetails
+import it.vercruysse.lemmyapi.datatypes.GetPersonDetailsResponse
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.exception.LemmyBadRequestException
-import it.vercruysse.lemmyapi.v0x19.LemmyApi
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetails
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPersonDetailsResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -118,7 +118,7 @@ suspend fun checkInstance(instance: String): CheckState {
 
 suspend fun checkIfAccountIsDeleted(
     account: Account,
-    api: LemmyApi,
+    api: LemmyApiBaseController,
 ): Pair<CheckState, ApiState.Success<GetPersonDetailsResponse>?> {
     return withContext(Dispatchers.IO) {
         val res = api.getPersonDetails(GetPersonDetails(person_id = account.id))
@@ -151,7 +151,7 @@ fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
     }
 }
 
-suspend fun checkIfJWTValid(api: LemmyApi): CheckState {
+suspend fun checkIfJWTValid(api: LemmyApiBaseController): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
         val resp = api.validateAuth()
@@ -217,7 +217,7 @@ suspend fun Account.checkAccountVerification(
 ): Pair<AccountVerificationState, CheckState> {
     Log.d("verification", "Verification started")
 
-    lateinit var api: LemmyApi
+    lateinit var api: LemmyApiBaseController
 
     var checkState: CheckState = CheckState.Passed
     var curVerificationState: Int =

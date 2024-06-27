@@ -70,9 +70,9 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.ApproveRegistrationApplication
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplicationView
+import it.vercruysse.lemmyapi.datatypes.ApproveRegistrationApplication
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.RegistrationApplicationView
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
