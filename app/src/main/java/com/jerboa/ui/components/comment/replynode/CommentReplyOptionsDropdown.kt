@@ -73,11 +73,12 @@ fun CommentReplyOptionsDropdown(
                     onDismissRequest()
                     val permalink = commentReplyView.comment.ap_id
                     localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast.makeText(
-                        ctx,
-                        ctx.getString(R.string.comment_node_permalink_copied),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Toast
+                        .makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 },
             )
             val content = commentReplyView.comment.getContent()

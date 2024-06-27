@@ -60,7 +60,10 @@ fun MainDrawer(
             },
         follows = when (val res = siteViewModel.siteRes) {
             is ApiState.Success -> {
-                res.data.my_user?.follows?.sortedBy { it.community.title.lowercase() }.orEmpty()
+                res.data.my_user
+                    ?.follows
+                    ?.sortedBy { it.community.title.lowercase() }
+                    .orEmpty()
             }
             else -> emptyList()
         },

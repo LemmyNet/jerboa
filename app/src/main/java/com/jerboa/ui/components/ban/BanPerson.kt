@@ -42,8 +42,7 @@ fun BanPersonBody(
                 .padding(
                     vertical = padding.calculateTopPadding(),
                     horizontal = MEDIUM_PADDING,
-                )
-                .imePadding(),
+                ).imePadding(),
     ) {
         MarkdownTextField(
             text = reason,

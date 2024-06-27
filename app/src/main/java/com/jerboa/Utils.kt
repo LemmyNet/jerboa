@@ -127,9 +127,7 @@ class MissingCommentNode(
     override fun getPath() = missingCommentView.path
 }
 
-fun commentsToFlatNodes(comments: List<CommentView>): List<CommentNode> {
-    return comments.map { c -> CommentNode(c, depth = 0) }
-}
+fun commentsToFlatNodes(comments: List<CommentView>): List<CommentNode> = comments.map { c -> CommentNode(c, depth = 0) }
 
 /**
  * This function takes a list of comments and builds a tree from it
@@ -388,8 +386,8 @@ fun formatDuration(
     }
 }
 
-fun prettyTimeShortener(timeString: String): String {
-    return if (prettyTime.locale.language == "en") {
+fun prettyTimeShortener(timeString: String): String =
+    if (prettyTime.locale.language == "en") {
         if (timeString.isEmpty()) {
             "Now"
         } else {
@@ -405,7 +403,6 @@ fun prettyTimeShortener(timeString: String): String {
     } else {
         timeString
     }
-}
 
 fun pictrsImageThumbnail(
     src: String,
@@ -432,13 +429,9 @@ fun pictrsImageThumbnail(
     return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
 
-fun isImage(url: String): Boolean {
-    return imageRegex.matches(url)
-}
+fun isImage(url: String): Boolean = imageRegex.matches(url)
 
-fun getPostType(url: String): PostType {
-    return if (isImage(url)) PostType.Image else PostType.Link
-}
+fun getPostType(url: String): PostType = if (isImage(url)) PostType.Image else PostType.Link
 
 val imageRegex =
     Regex(
@@ -473,48 +466,46 @@ fun personNameShown(
 /**
  * Warning, do not use this for links and such, only for messages
  */
-fun communityNameShown(community: Community): String {
-    return if (community.local) {
+fun communityNameShown(community: Community): String =
+    if (community.local) {
         community.title
     } else {
         "${community.title}@${hostName(community.actor_id)}"
     }
-}
 
-fun hostName(url: String): String? {
-    return try {
+fun hostName(url: String): String? =
+    try {
         URL(url).host
     } catch (e: MalformedURLException) {
         null
     }
-}
 
 enum class UnreadOrAll {
     All,
     Unread,
 }
 
-fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
-    return if (b) {
+fun unreadOrAllFromBool(b: Boolean): UnreadOrAll =
+    if (b) {
         UnreadOrAll.Unread
     } else {
         UnreadOrAll.All
     }
-}
 
 fun appendMarkdownImage(
     text: String,
     url: String,
-): String {
-    return "$text\n\n![]($url)"
-}
+): String = "$text\n\n![]($url)"
 
 /**
  * Border definition can be extended to provide border style or [androidx.compose.ui.graphics.Brush]
  * One more way is make it sealed class and provide different implementations:
  * SolidBorder, DashedBorder etc
  */
-data class Border(val strokeWidth: Dp, val color: Color)
+data class Border(
+    val strokeWidth: Dp,
+    val color: Color,
+)
 
 @Stable
 fun Modifier.border(
@@ -619,9 +610,7 @@ private fun DrawScope.drawEndBorder(
     )
 }
 
-fun isPostCreator(commentView: CommentView): Boolean {
-    return commentView.creator.id == commentView.post.creator_id
-}
+fun isPostCreator(commentView: CommentView): Boolean = commentView.creator.id == commentView.post.creator_id
 
 data class InputField(
     val label: String,
@@ -631,8 +620,8 @@ data class InputField(
 fun validatePostName(
     ctx: Context,
     name: String,
-): InputField {
-    return if (name.isEmpty()) {
+): InputField =
+    if (name.isEmpty()) {
         InputField(
             label = ctx.getString(R.string.title_required),
             hasError = true,
@@ -653,14 +642,13 @@ fun validatePostName(
             hasError = false,
         )
     }
-}
 
 fun validateUrl(
     ctx: Context,
     url: String,
     label: String = ctx.getString(R.string.url),
-): InputField {
-    return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
+): InputField =
+    if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
             label = ctx.getString(R.string.url_invalid),
             hasError = true,
@@ -671,7 +659,6 @@ fun validateUrl(
             hasError = false,
         )
     }
-}
 
 fun siFormat(num: Long): String {
     // Weird bug where if num is zero, it won't format
@@ -696,9 +683,7 @@ fun siFormat(num: Long): String {
 fun imageInputStreamFromUri(
     ctx: Context,
     uri: Uri,
-): InputStream {
-    return ctx.contentResolver.openInputStream(uri)!!
-}
+): InputStream = ctx.contentResolver.openInputStream(uri)!!
 
 fun scrollToTop(
     scope: CoroutineScope,
@@ -804,32 +789,28 @@ enum class PostType {
     ;
 
     companion object {
-        fun fromURL(url: String): PostType {
-            return if (isImage(url)) {
+        fun fromURL(url: String): PostType =
+            if (isImage(url)) {
                 Image
             } else if (isVideo(url)) {
                 Video
             } else {
                 Link
             }
-        }
     }
 
-    fun toMediaDir(): String {
-        return when (this) {
+    fun toMediaDir(): String =
+        when (this) {
             Image -> Environment.DIRECTORY_PICTURES
             Video -> Environment.DIRECTORY_MOVIES
             Link -> Environment.DIRECTORY_DOWNLOADS
         }
-    }
 }
 
 fun isSameInstance(
     url: String,
     instance: String,
-): Boolean {
-    return hostName(url) == instance
-}
+): Boolean = hostName(url) == instance
 
 fun getCommentParentId(comment: Comment): CommentId? = getCommentParentId(comment.path)
 
@@ -851,9 +832,7 @@ fun getCommentParentId(commentPath: String): CommentId? {
  */
 fun getParentPath(path: String) = path.substringBeforeLast(".")
 
-fun getDepthFromComment(commentPath: String): Int {
-    return commentPath.split(".").size.minus(2)
-}
+fun getDepthFromComment(commentPath: String): Int = commentPath.split(".").size.minus(2)
 
 fun getDepthFromComment(comment: Comment): Int = getDepthFromComment(comment.path)
 
@@ -865,16 +844,12 @@ fun getCommentIdDepthFromPath(
     return split.indexOf(commentId.toString()).minus(1)
 }
 
-fun nsfwCheck(postView: PostView): Boolean {
-    return nsfwCheck(postView.post, postView.community)
-}
+fun nsfwCheck(postView: PostView): Boolean = nsfwCheck(postView.post, postView.community)
 
 fun nsfwCheck(
     post: Post,
     community: Community,
-): Boolean {
-    return post.nsfw || community.nsfw
-}
+): Boolean = post.nsfw || community.nsfw
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Throws(IOException::class)
@@ -952,13 +927,13 @@ fun saveMediaP(
 fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
-): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_SP,
-        sp.value,
-        ctx.resources.displayMetrics,
-    ).toInt()
-}
+): Int =
+    TypedValue
+        .applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp.value,
+            ctx.resources.displayMetrics,
+        ).toInt()
 
 fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
@@ -1203,13 +1178,12 @@ fun findAndUpdateCommentReply(
 fun calculateCommentOffset(
     depth: Int,
     padding: Dp = SMALL_PADDING,
-): Dp {
-    return if (depth == 0) {
+): Dp =
+    if (depth == 0) {
         0.dp
     } else {
         (abs((depth.minus(1) * padding.value)).dp + padding)
     }
-}
 
 fun findAndUpdatePost(
     posts: List<PostView>,
@@ -1234,7 +1208,8 @@ fun scrollToNextParentComment(
     listState: LazyListState,
 ) {
     scope.launch {
-        parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }
+        parentListStateIndexes
+            .firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }
             ?.let { nearestNextIndex ->
                 listState.animateScrollToItem(nearestNextIndex)
             }
@@ -1247,7 +1222,8 @@ fun scrollToPreviousParentComment(
     listState: LazyListState,
 ) {
     scope.launch {
-        parentListStateIndexes.lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }
+        parentListStateIndexes
+            .lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }
             ?.let { nearestPreviousIndex ->
                 listState.animateScrollToItem(nearestPreviousIndex)
             }
@@ -1312,12 +1288,11 @@ fun getLangPreferenceDropdownEntries(ctx: Context): Map<Locale, String> {
     return map
 }
 
-fun matchLocale(localeMap: Map<Locale, String>): Locale {
-    return Locale.lookup(
+fun matchLocale(localeMap: Map<Locale, String>): Locale =
+    Locale.lookup(
         AppCompatDelegate.getApplicationLocales().convertToLanguageRange(),
         localeMap.keys.toList(),
     ) ?: Locale.ENGLISH
-}
 
 fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange> {
     val l = mutableListOf<Locale.LanguageRange>()
@@ -1356,9 +1331,7 @@ fun CreationExtras.jerboaApplication(): JerboaApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 @Throws(IndexOutOfBoundsException::class)
-inline fun <reified T : Enum<T>> Int.toEnum(): T {
-    return enumValues<T>()[this]
-}
+inline fun <reified T : Enum<T>> Int.toEnum(): T = enumValues<T>()[this]
 
 inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
     val vals = enumValues<T>()
@@ -1390,7 +1363,8 @@ fun matchLoginErrorMsgToStringRes(
 }
 
 fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
-    this?.activeNetwork
+    this
+        ?.activeNetwork
         ?.let(::getNetworkCapabilities)
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         ?: true
@@ -1424,11 +1398,15 @@ fun Context.getInputStream(url: String): InputStream {
     return if (snapshot != null) {
         snapshot.data.toFile().inputStream()
     } else {
-        API.httpClient.newCall(
-            Request.Builder()
-                .url(url)
-                .build(),
-        ).execute().body?.byteStream() ?: throw IOException("Failed to get input stream")
+        API.httpClient
+            .newCall(
+                Request
+                    .Builder()
+                    .url(url)
+                    .build(),
+            ).execute()
+            .body
+            ?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }
 
@@ -1437,9 +1415,7 @@ val videoRgx =
         pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov|webm))",
     )
 
-fun isVideo(url: String): Boolean {
-    return url.matches(videoRgx)
-}
+fun isVideo(url: String): Boolean = url.matches(videoRgx)
 
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
 
@@ -1480,43 +1456,36 @@ fun <T> getDeduplicateMerge(
     oldItems: List<T>,
     newItems: List<T>,
     getId: (T) -> PostId,
-): List<T> {
-    return appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
-}
+): List<T> = appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
 
 fun mergePosts(
     old: List<PostView>,
     new: List<PostView>,
-): List<PostView> {
-    return appendData(old, getDeduplicatedList(old, new) { it.post.id })
-}
+): List<PostView> = appendData(old, getDeduplicatedList(old, new) { it.post.id })
 
 /**
  * This function rewrites HTTP URLs to HTTPS
  */
-fun String.toHttps(): String {
-    return if (this.startsWith("http://", true)) {
+fun String.toHttps(): String =
+    if (this.startsWith("http://", true)) {
         this.replaceFirst("http", "https", true)
     } else {
         this
     }
-}
 
-fun String.padUrlWithHttps(): String {
-    return if (this.contains("://") || this.isBlank()) {
+fun String.padUrlWithHttps(): String =
+    if (this.contains("://") || this.isBlank()) {
         this
     } else {
         "https://$this"
     }
-}
 
-fun Context.getPackageInfo(): PackageInfo {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+fun Context.getPackageInfo(): PackageInfo =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
     } else {
         packageManager.getPackageInfo(packageName, 0)
     }
-}
 
 fun Context.getVersionCode(): Int =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

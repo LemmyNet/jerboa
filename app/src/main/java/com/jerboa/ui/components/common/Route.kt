@@ -62,7 +62,9 @@ object Route {
 
     val VIEW = ViewArgs.route
 
-    class CommunityFromIdArgs(val id: CommunityId) {
+    class CommunityFromIdArgs(
+        val id: CommunityId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -76,7 +78,10 @@ object Route {
         }
     }
 
-    class CommunityFromUrlArgs(val instance: String, val name: String) {
+    class CommunityFromUrlArgs(
+        val instance: String,
+        val name: String,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) : this(
             instance = navBackStackEntry.arguments?.getString(INSTANCE)!!,
             name = navBackStackEntry.arguments?.getString(NAME)!!,
@@ -98,7 +103,9 @@ object Route {
         }
     }
 
-    class CommunityListArgs(val select: Boolean) {
+    class CommunityListArgs(
+        val select: Boolean,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(navBackStackEntry.arguments?.getBoolean(SELECT)!!)
 
@@ -113,7 +120,10 @@ object Route {
         }
     }
 
-    class ProfileFromIdArgs(val id: PostId, val saved: Boolean) {
+    class ProfileFromIdArgs(
+        val id: PostId,
+        val saved: Boolean,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) : this(
             id = navBackStackEntry.arguments?.getLong(ID)!!,
             saved = navBackStackEntry.arguments?.getBoolean(SAVED)!!,
@@ -136,7 +146,10 @@ object Route {
         }
     }
 
-    class ProfileFromUrlArgs(val instance: String, val name: String) {
+    class ProfileFromUrlArgs(
+        val instance: String,
+        val name: String,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) : this(
             instance = navBackStackEntry.arguments?.getString(INSTANCE)!!,
             name = navBackStackEntry.arguments?.getString(NAME)!!,
@@ -158,7 +171,9 @@ object Route {
         }
     }
 
-    class PostArgs(val id: PostId) {
+    class PostArgs(
+        val id: PostId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -172,7 +187,9 @@ object Route {
         }
     }
 
-    class CommentArgs(val id: CommentId) {
+    class CommentArgs(
+        val id: CommentId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -186,7 +203,9 @@ object Route {
         }
     }
 
-    class CommentReportArgs(val id: CommentId) {
+    class CommentReportArgs(
+        val id: CommentId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -200,7 +219,9 @@ object Route {
         }
     }
 
-    class PostReportArgs(val id: PostId) {
+    class PostReportArgs(
+        val id: PostId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -214,7 +235,9 @@ object Route {
         }
     }
 
-    class CommentLikesArgs(val id: CommentId) {
+    class CommentLikesArgs(
+        val id: CommentId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -228,7 +251,9 @@ object Route {
         }
     }
 
-    class PostLikesArgs(val id: PostId) {
+    class PostLikesArgs(
+        val id: PostId,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getLong(ID)!!)
 
@@ -242,7 +267,9 @@ object Route {
         }
     }
 
-    class ViewArgs(val url: String) {
+    class ViewArgs(
+        val url: String,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(url = navBackStackEntry.arguments?.getString(URL)!!)
 
@@ -256,7 +283,10 @@ object Route {
         }
     }
 
-    class CreatePrivateMessageArgs(val personId: PersonId, val personName: String) {
+    class CreatePrivateMessageArgs(
+        val personId: PersonId,
+        val personName: String,
+    ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(
                 personId = navBackStackEntry.arguments?.getLong(PERSON_ID)!!,

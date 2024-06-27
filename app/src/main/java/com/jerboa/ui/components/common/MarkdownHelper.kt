@@ -89,7 +89,8 @@ object MarkdownHelper {
         val loader = context.imageLoader
         // main markdown parser has coil + html on
         markwon =
-            Markwon.builder(context)
+            Markwon
+                .builder(context)
                 .usePlugin(ForceHttpsPlugin())
                 // email urls interfere with lemmy links
                 .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
@@ -108,8 +109,7 @@ object MarkdownHelper {
                             BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
                         ),
                     ),
-                )
-                .usePlugin(
+                ).usePlugin(
                     object : AbstractMarkwonPlugin() {
                         override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                             builder.linkResolver { view, link ->
@@ -120,12 +120,12 @@ object MarkdownHelper {
                             }
                         }
                     },
-                )
-                .build()
+                ).build()
 
         // no image parser has html off
         previewMarkwon =
-            Markwon.builder(context)
+            Markwon
+                .builder(context)
                 // email urls interfere with lemmy links
                 .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
                 .usePlugin(MarkwonLemmyLinkPlugin())
@@ -139,8 +139,7 @@ object MarkdownHelper {
                             builder.linkResolver { _, _ -> }
                         }
                     },
-                )
-                .usePlugin(MarkwonSpoilerPlugin(false))
+                ).usePlugin(MarkwonSpoilerPlugin(false))
                 .build()
     }
 

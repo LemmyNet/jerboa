@@ -24,9 +24,8 @@ fun BlurNSFW.needBlur(postView: PostView) = this.needBlur(postView.community.nsf
 fun BlurNSFW.needBlur(
     isCommunityNsfw: Boolean,
     isPostNsfw: Boolean = isCommunityNsfw,
-): Boolean {
-    return when (this) {
+): Boolean =
+    when (this) {
         BlurNSFW.Nothing -> false
         BlurNSFW.NSFW, BlurNSFW.NsfwExceptFromNsfwCommunities -> isPostNsfw
     }
-}

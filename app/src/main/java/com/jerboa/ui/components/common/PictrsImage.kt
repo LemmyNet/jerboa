@@ -70,8 +70,7 @@ fun CircularIcon(
             .getBlurredOrRounded(
                 rounded = true,
                 blur = blur,
-            )
-            .size(size),
+            ).size(size),
     )
 }
 
@@ -108,7 +107,8 @@ fun getImageRequest(
     blur: Boolean,
 ): ImageRequest {
     val builder =
-        ImageRequest.Builder(context)
+        ImageRequest
+            .Builder(context)
             .data(pictrsImageThumbnail(path, size))
             .crossfade(true)
 
@@ -155,8 +155,7 @@ fun PictrsThumbnailImage(
                 .getBlurredOrRounded(
                     rounded = false,
                     blur = blur,
-                )
-                .clip(
+                ).clip(
                     RoundedCornerShape(
                         12f,
                         12f,
@@ -195,8 +194,7 @@ fun PictrsUrlImage(
                 .getBlurredOrRounded(
                     rounded = false,
                     blur = blur,
-                )
-                .fillMaxWidth(),
+                ).fillMaxWidth(),
     )
 }
 
@@ -227,8 +225,7 @@ fun PictrsBannerImage(
             modifier
                 .getBlurredOrRounded(
                     blur = blur,
-                )
-                .fillMaxWidth(),
+                ).fillMaxWidth(),
     )
 }
 

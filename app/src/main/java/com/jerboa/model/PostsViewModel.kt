@@ -37,7 +37,9 @@ import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-open class PostsViewModel(protected val accountRepository: AccountRepository) : ViewModel() {
+open class PostsViewModel(
+    protected val accountRepository: AccountRepository,
+) : ViewModel() {
     val lazyListState = LazyListState()
     var postsRes: ApiState<List<PostView>> by mutableStateOf(ApiState.Empty)
         private set
@@ -123,14 +125,13 @@ open class PostsViewModel(protected val accountRepository: AccountRepository) : 
 
     fun refreshPosts() = resetPosts(ApiState.Refreshing)
 
-    protected open fun getForm(): GetPosts {
-        return GetPosts(
+    protected open fun getForm(): GetPosts =
+        GetPosts(
             page = pageController.page,
             page_cursor = pageController.pageCursor,
             sort = sortType,
             type_ = listingType,
         )
-    }
 
     fun markPostAsRead(
         form: MarkPostAsRead,

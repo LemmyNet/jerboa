@@ -691,6 +691,4 @@ fun ExpiresField(
 fun String.insert(
     index: Int,
     string: String,
-): String {
-    return this.substring(0, index) + string + this.substring(index, this.length)
-}
+): String = this.substring(0, index) + string + this.substring(index, this.length)

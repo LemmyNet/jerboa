@@ -35,7 +35,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @Stable
-class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
+class SiteViewModel(
+    private val accountRepository: AccountRepository,
+) : ViewModel() {
     // Can't be private, because it needs to be set by the login viewmodel
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
@@ -91,8 +93,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun getSite(loadingState: ApiState<GetSiteResponse> = ApiState.Loading): Job {
-        return viewModelScope.launch {
+    fun getSite(loadingState: ApiState<GetSiteResponse> = ApiState.Loading): Job =
+        viewModelScope.launch {
             siteRes = loadingState
             siteRes = API.getInstance().getSite().toApiState()
 
@@ -120,7 +122,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                 else -> {}
             }
         }
-    }
 
     fun fetchUnreadCounts() {
         viewModelScope.launch {
@@ -144,8 +145,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun getUnreadCountTotal(): Long {
-        return when (val res = unreadCountRes) {
+    private fun getUnreadCountTotal(): Long =
+        when (val res = unreadCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data
                 unreads.mentions + unreads.private_messages + unreads.replies
@@ -153,20 +154,18 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
             else -> 0
         }
-    }
 
-    private fun getUnreadAppCountTotal(): Long? {
-        return when (val res = unreadAppCountRes) {
+    private fun getUnreadAppCountTotal(): Long? =
+        when (val res = unreadAppCountRes) {
             is ApiState.Success -> {
                 res.data.registration_applications
             }
 
             else -> null
         }
-    }
 
-    private fun getUnreadReportCountTotal(): Long? {
-        return when (val res = unreadReportCountRes) {
+    private fun getUnreadReportCountTotal(): Long? =
+        when (val res = unreadReportCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data
                 unreads.post_reports + unreads.comment_reports + (
@@ -177,7 +176,6 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
             else -> null
         }
-    }
 
     fun updateUnreadCounts(
         dReplies: Int = 0,
@@ -200,29 +198,32 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun showAvatar(): Boolean {
-        return when (val res = siteRes) {
+    fun showAvatar(): Boolean =
+        when (val res = siteRes) {
             is ApiState.Success ->
-                res.data.my_user?.local_user_view?.local_user?.show_avatars
+                res.data.my_user
+                    ?.local_user_view
+                    ?.local_user
+                    ?.show_avatars
                     ?: true
 
             else -> true
         }
-    }
 
-    fun moderatedCommunities(): List<CommunityId>? {
-        return when (val res = siteRes) {
-            is ApiState.Success -> res.data.my_user?.moderates?.map { it.community.id }
+    fun moderatedCommunities(): List<CommunityId>? =
+        when (val res = siteRes) {
+            is ApiState.Success ->
+                res.data.my_user
+                    ?.moderates
+                    ?.map { it.community.id }
             else -> null
         }
-    }
 
-    fun enableDownvotes(): Boolean {
-        return when (val res = siteRes) {
+    fun enableDownvotes(): Boolean =
+        when (val res = siteRes) {
             is ApiState.Success -> res.data.site_view.local_site.enable_downvotes
             else -> true
         }
-    }
 
     // For the current default, just use Upvotes / Downvotes
     fun voteDisplayMode(): LocalUserVoteDisplayMode {
@@ -235,37 +236,40 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun newVoteDisplayMode(): LocalUserVoteDisplayMode {
-        return when (val res = siteRes) {
+    private fun newVoteDisplayMode(): LocalUserVoteDisplayMode =
+        when (val res = siteRes) {
             is ApiState.Success ->
-                res.data.my_user?.local_user_view?.local_user_vote_display_mode ?: LocalUserVoteDisplayMode.default()
+                res.data.my_user
+                    ?.local_user_view
+                    ?.local_user_vote_display_mode ?: LocalUserVoteDisplayMode.default()
 
             else -> LocalUserVoteDisplayMode.default()
         }
-    }
 
-    private fun legacyVoteDisplayMode(): LocalUserVoteDisplayMode {
-        return when (val res = siteRes) {
+    private fun legacyVoteDisplayMode(): LocalUserVoteDisplayMode =
+        when (val res = siteRes) {
             is ApiState.Success ->
-                LocalUserVoteDisplayMode.default(res.data.my_user?.local_user_view?.local_user?.show_scores ?: true)
+                LocalUserVoteDisplayMode.default(
+                    res.data.my_user
+                        ?.local_user_view
+                        ?.local_user
+                        ?.show_scores ?: true,
+                )
 
             else -> LocalUserVoteDisplayMode.default(true) // Legacy default
         }
-    }
 
-    fun getFollowList(): List<CommunityFollowerView> {
-        return when (val res = siteRes) {
+    fun getFollowList(): List<CommunityFollowerView> =
+        when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.follows ?: emptyList()
             else -> emptyList()
         }
-    }
 
-    fun admins(): List<PersonView> {
-        return when (val res = siteRes) {
+    fun admins(): List<PersonView> =
+        when (val res = siteRes) {
             is ApiState.Success -> res.data.admins
             else -> emptyList()
         }
-    }
 
     companion object {
         val Factory =

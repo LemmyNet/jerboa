@@ -50,7 +50,10 @@ import kotlinx.coroutines.launch
 
 private var fetchSiteMetadataJob: Job? = null
 
-data class MetaDataRes(val title: String?, val loading: Boolean)
+data class MetaDataRes(
+    val title: String?,
+    val loading: Boolean,
+)
 
 object CreatePostReturn {
     const val COMMUNITY_SEND = "create-post::send(community)"

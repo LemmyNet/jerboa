@@ -31,7 +31,10 @@ import it.vercruysse.lemmyapi.datatypes.*
 import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean) : ViewModel() {
+class PersonProfileViewModel(
+    personArg: Either<PersonId, String>,
+    savedMode: Boolean,
+) : ViewModel() {
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -472,9 +475,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return PersonProfileViewModel(personArg, savedMode) as T
-            }
+            ): T = PersonProfileViewModel(personArg, savedMode) as T
         }
     }
 }

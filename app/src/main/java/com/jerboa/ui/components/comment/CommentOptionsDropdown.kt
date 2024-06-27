@@ -96,11 +96,12 @@ fun CommentOptionsDropdown(
                     onDismissRequest()
                     val permalink = commentView.comment.ap_id
                     localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast.makeText(
-                        ctx,
-                        ctx.getString(R.string.comment_node_permalink_copied),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Toast
+                        .makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 },
             )
             val content = commentView.comment.getContent()
@@ -110,17 +111,19 @@ fun CommentOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     if (copyToClipboard(ctx, content, "comment")) {
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_node_comment_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.comment_node_comment_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                     } else {
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.generic_error),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.generic_error),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                     }
                 },
             )

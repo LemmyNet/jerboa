@@ -85,8 +85,7 @@ fun CreateEditPostBody(
                 .padding(
                     vertical = padding.calculateTopPadding(),
                     horizontal = MEDIUM_PADDING,
-                )
-                .fillMaxWidth(),
+                ).fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         error?.let {

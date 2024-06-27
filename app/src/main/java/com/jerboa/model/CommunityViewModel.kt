@@ -119,12 +119,11 @@ class CommunityViewModel(
         init()
     }
 
-    override fun getForm(): GetPosts {
-        return super.getForm().copy(
+    override fun getForm(): GetPosts =
+        super.getForm().copy(
             community_id = communityId,
             community_name = communityName,
         )
-    }
 
     companion object {
         class Factory(
@@ -134,9 +133,7 @@ class CommunityViewModel(
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return CommunityViewModel(id, extras.jerboaApplication().container.accountRepository) as T
-            }
+            ): T = CommunityViewModel(id, extras.jerboaApplication().container.accountRepository) as T
         }
     }
 }

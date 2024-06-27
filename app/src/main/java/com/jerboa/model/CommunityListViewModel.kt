@@ -19,7 +19,9 @@ import it.vercruysse.lemmyapi.dto.SearchType
 import it.vercruysse.lemmyapi.dto.SubscribedType
 import kotlinx.coroutines.launch
 
-class CommunityListViewModel(communities: List<CommunityFollowerView>) : ViewModel() {
+class CommunityListViewModel(
+    communities: List<CommunityFollowerView>,
+) : ViewModel() {
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -79,9 +81,7 @@ class CommunityListViewModel(communities: List<CommunityFollowerView>) : ViewMod
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return CommunityListViewModel(followedCommunities) as T
-            }
+            ): T = CommunityListViewModel(followedCommunities) as T
         }
     }
 }

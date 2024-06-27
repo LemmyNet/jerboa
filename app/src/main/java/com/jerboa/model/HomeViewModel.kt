@@ -5,7 +5,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 
-class HomeViewModel(accountRepository: AccountRepository) : PostsViewModel(accountRepository) {
+class HomeViewModel(
+    accountRepository: AccountRepository,
+) : PostsViewModel(accountRepository) {
     init {
         init()
     }

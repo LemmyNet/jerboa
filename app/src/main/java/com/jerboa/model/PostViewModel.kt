@@ -48,7 +48,9 @@ import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import kotlinx.coroutines.launch
 
-class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
+class PostViewModel(
+    val id: Either<PostId, CommentId>,
+) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -121,9 +123,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
         }
     }
 
-    fun isCommentView(): Boolean {
-        return id.isRight()
-    }
+    fun isCommentView(): Boolean = id.isRight()
 
     fun fetchMoreChildren(commentView: CommentView) {
         viewModelScope.launch {
@@ -437,9 +437,7 @@ class PostViewModel(val id: Either<PostId, CommentId>) : ViewModel() {
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return PostViewModel(id) as T
-            }
+            ): T = PostViewModel(id) as T
         }
 
         const val COMMENTS_DEPTH_MAX = 6L

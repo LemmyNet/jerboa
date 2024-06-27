@@ -280,8 +280,8 @@ fun AboutPreview() {
     )
 }
 
-fun getInstallCode(compilationStatus: CompilationStatus): String {
-    return when (compilationStatus.profileInstallResultCode) {
+fun getInstallCode(compilationStatus: CompilationStatus): String =
+    when (compilationStatus.profileInstallResultCode) {
         CompilationStatus.RESULT_CODE_NO_PROFILE -> "NO_PROFILE"
         CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE -> "COMPILED_WITH_PROFILE"
         CompilationStatus.RESULT_CODE_PROFILE_ENQUEUED_FOR_COMPILATION -> "PROFILE_ENQUEUED_FOR_COMPILATION"
@@ -294,4 +294,3 @@ fun getInstallCode(compilationStatus: CompilationStatus): String {
 
         else -> "UNKNOWN[${compilationStatus.profileInstallResultCode}]"
     }
-}

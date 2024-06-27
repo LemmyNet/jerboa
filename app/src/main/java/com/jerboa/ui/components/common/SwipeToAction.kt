@@ -58,8 +58,8 @@ fun SwipeToAction(
             )
         }
 
-    fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? {
-        return when (state.targetValue) {
+    fun actionByState(state: SwipeToDismissBoxState): Pair<OpenEndRange<Float>, SwipeToActionType>? =
+        when (state.targetValue) {
             SwipeToDismissBoxValue.StartToEnd -> {
                 leftActionsRanges.findLast { swipeState.progress in it.first }
             }
@@ -70,7 +70,6 @@ fun SwipeToAction(
 
             else -> null
         }
-    }
 
     val swipeAction =
         remember(swipeState.progress, swipeState.targetValue) { actionByState(swipeState) }

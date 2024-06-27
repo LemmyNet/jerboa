@@ -40,10 +40,6 @@ fun ApiEmptyText() {
     Text("Empty")
 }
 
-fun <T> ApiState<T>.isLoading(): Boolean {
-    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
-}
+fun <T> ApiState<T>.isLoading(): Boolean = this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
 
-fun <T> ApiState<T>.isRefreshing(): Boolean {
-    return this == ApiState.Refreshing
-}
+fun <T> ApiState<T>.isRefreshing(): Boolean = this == ApiState.Refreshing

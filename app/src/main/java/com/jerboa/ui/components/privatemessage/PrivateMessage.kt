@@ -79,9 +79,7 @@ fun PrivateMessageHeader(
 fun isCreator(
     myPersonId: PersonId,
     privateMessageView: PrivateMessageView,
-): Boolean {
-    return myPersonId == privateMessageView.creator.id
-}
+): Boolean = myPersonId == privateMessageView.creator.id
 
 @Preview
 @Composable

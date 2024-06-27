@@ -84,7 +84,8 @@ class LoginViewModel : ViewModel() {
                                 it.name.equals(
                                     luv.person.name,
                                     true,
-                                ) && it.instance.equals(instance, true)
+                                ) &&
+                                    it.instance.equals(instance, true)
                             } == true
                         ) {
                             throw Exception(ctx.getString(R.string.login_already_logged_in))

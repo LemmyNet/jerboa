@@ -18,7 +18,9 @@ import it.vercruysse.lemmyapi.datatypes.ListPostLikesResponse
 import it.vercruysse.lemmyapi.datatypes.PostId
 import kotlinx.coroutines.launch
 
-class PostLikesViewModel(val id: PostId) : ViewModel() {
+class PostLikesViewModel(
+    val id: PostId,
+) : ViewModel() {
     var likesRes: ApiState<ListPostLikesResponse> by mutableStateOf(ApiState.Empty)
         private set
     private var page by mutableLongStateOf(1)
@@ -38,13 +40,12 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
         }
     }
 
-    private fun getForm(): ListPostLikes {
-        return ListPostLikes(
+    private fun getForm(): ListPostLikes =
+        ListPostLikes(
             post_id = id,
             limit = VIEW_VOTES_LIMIT,
             page = page,
         )
-    }
 
     fun appendLikes() {
         viewModelScope.launch {
@@ -84,9 +85,7 @@ class PostLikesViewModel(val id: PostId) : ViewModel() {
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return PostLikesViewModel(id) as T
-            }
+            ): T = PostLikesViewModel(id) as T
         }
     }
 }

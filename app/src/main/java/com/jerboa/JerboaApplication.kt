@@ -12,7 +12,9 @@ import com.jerboa.api.API
 import com.jerboa.db.AppDBContainer
 import com.jerboa.util.downloadprogress.DownloadProgress
 
-class JerboaApplication : Application(), ImageLoaderFactory {
+class JerboaApplication :
+    Application(),
+    ImageLoaderFactory {
     lateinit var container: AppDBContainer
     lateinit var imageViewerLoader: ImageLoader
     private lateinit var imageLoader: ImageLoader
@@ -23,7 +25,8 @@ class JerboaApplication : Application(), ImageLoaderFactory {
 
         container = AppDBContainer(this)
         imageLoader =
-            ImageLoader.Builder(this)
+            ImageLoader
+                .Builder(this)
                 .okHttpClient(API.httpClient)
                 .crossfade(true)
                 .error(R.drawable.error_placeholder)
@@ -31,11 +34,11 @@ class JerboaApplication : Application(), ImageLoaderFactory {
                 .components {
                     add(SvgDecoder.Factory())
                     add(VideoFrameDecoder.Factory())
-                }
-                .build()
+                }.build()
 
         imageGifLoader =
-            imageLoader.newBuilder()
+            imageLoader
+                .newBuilder()
                 .components {
                     add(SvgDecoder.Factory())
                     if (Build.VERSION.SDK_INT >= 28) {
@@ -43,11 +46,11 @@ class JerboaApplication : Application(), ImageLoaderFactory {
                     } else {
                         add(GifDecoder.Factory())
                     }
-                }
-                .build()
+                }.build()
 
         imageViewerLoader =
-            imageGifLoader.newBuilder()
+            imageGifLoader
+                .newBuilder()
                 .okHttpClient(DownloadProgress.downloadProgressHttpClient)
                 .build()
     }

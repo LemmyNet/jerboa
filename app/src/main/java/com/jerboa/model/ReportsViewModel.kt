@@ -20,7 +20,10 @@ import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.launch
 
-class ReportsViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {
+class ReportsViewModel(
+    account: Account,
+    siteViewModel: SiteViewModel,
+) : ViewModel() {
     var postReportsRes: ApiState<ListPostReportsResponse> by mutableStateOf(
         ApiState.Empty,
     )
@@ -77,26 +80,23 @@ class ReportsViewModel(account: Account, siteViewModel: SiteViewModel) : ViewMod
         resetPageMessageReports()
     }
 
-    fun getFormPostReports(): ListPostReports {
-        return ListPostReports(
+    fun getFormPostReports(): ListPostReports =
+        ListPostReports(
             unresolved_only = unresolvedOnly,
             page = pagePostReports,
         )
-    }
 
-    fun getFormCommentReports(): ListCommentReports {
-        return ListCommentReports(
+    fun getFormCommentReports(): ListCommentReports =
+        ListCommentReports(
             unresolved_only = unresolvedOnly,
             page = pageCommentReports,
         )
-    }
 
-    fun getFormMessageReports(): ListPrivateMessageReports {
-        return ListPrivateMessageReports(
+    fun getFormMessageReports(): ListPrivateMessageReports =
+        ListPrivateMessageReports(
             unresolved_only = unresolvedOnly,
             page = pageMessageReports,
         )
-    }
 
     fun listPostReports(
         form: ListPostReports,
@@ -327,9 +327,7 @@ class ReportsViewModel(account: Account, siteViewModel: SiteViewModel) : ViewMod
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T {
-                return ReportsViewModel(account, siteViewModel) as T
-            }
+            ): T = ReportsViewModel(account, siteViewModel) as T
         }
     }
 }

@@ -32,18 +32,17 @@ enum class SwipeToActionType {
     }
 
     @Composable
-    fun getImageVector(): ImageVector {
-        return when (this) {
+    fun getImageVector(): ImageVector =
+        when (this) {
             Upvote -> ImageVector.vectorResource(id = R.drawable.up_outline)
             Downvote -> ImageVector.vectorResource(id = R.drawable.down_outline)
             Reply -> Icons.AutoMirrored.Outlined.Comment
             Save -> Icons.Outlined.Bookmark
         }
-    }
 
     @Composable
-    fun getActionColor(): ActionColor {
-        return when (this) {
+    fun getActionColor(): ActionColor =
+        when (this) {
             Upvote -> ActionColor(
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
                 background = MaterialTheme.colorScheme.secondaryContainer,
@@ -61,7 +60,6 @@ enum class SwipeToActionType {
                 background = MaterialTheme.colorScheme.primaryContainer,
             )
         }
-    }
 }
 
 data class ActionColor(
