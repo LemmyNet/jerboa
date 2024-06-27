@@ -241,8 +241,10 @@ fun LazyListScope.commentNodeItem(
     }
 
     val showMoreChildren =
-        isExpanded(commentId) && node.children.isEmpty() &&
-            commentView.counts.child_count > 0 && !isFlat
+        isExpanded(commentId) &&
+            node.children.isEmpty() &&
+            commentView.counts.child_count > 0 &&
+            !isFlat
 
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
@@ -305,8 +307,7 @@ fun LazyListScope.commentNodeItem(
                         Modifier
                             .padding(
                                 start = offset,
-                            )
-                            .border(start = border)
+                            ).border(start = border)
                             .padding(bottom = MEDIUM_PADDING),
                 ) {
                     Column(
@@ -816,8 +817,7 @@ fun CommentFooterLine(
                     indication = null,
                     onClick = onClick,
                     onLongClick = onLongClick,
-                )
-                .padding(top = MEDIUM_PADDING),
+                ).padding(top = MEDIUM_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -956,13 +956,12 @@ fun ShowMoreChildrenPreview() {
 fun calculateBorderColor(
     defaultBackground: Color,
     depth: Int,
-): Color {
-    return if (depth == 0) {
+): Color =
+    if (depth == 0) {
         defaultBackground
     } else {
         colorList[depth.minus(1).mod(colorList.size)]
     }
-}
 
 @Composable
 fun ShowCommentContextButtons(

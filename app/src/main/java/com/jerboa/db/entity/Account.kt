@@ -47,20 +47,15 @@ val AnonAccount =
         isMod = false,
     )
 
-fun Account.isAnon(): Boolean {
-    return this.id == -1L
-}
+fun Account.isAnon(): Boolean = this.id == -1L
 
-fun Account.isReady(): Boolean {
-    return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
-}
+fun Account.isReady(): Boolean = this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
 
-fun Account.userViewType(): UserViewType {
-    return if (isAdmin) {
+fun Account.userViewType(): UserViewType =
+    if (isAdmin) {
         UserViewType.AdminOnly
     } else if (isMod) {
         UserViewType.AdminOrMod
     } else {
         UserViewType.Normal
     }
-}

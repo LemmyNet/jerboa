@@ -16,7 +16,9 @@ import com.jerboa.jerboaApplication
 import kotlinx.coroutines.launch
 
 @Stable
-class AppSettingsViewModel(private val repository: AppSettingsRepository) : ViewModel() {
+class AppSettingsViewModel(
+    private val repository: AppSettingsRepository,
+) : ViewModel() {
     val appSettings = repository.appSettings
     var changelog by mutableStateOf("")
 
@@ -39,7 +41,10 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
         viewModelScope.launch {
             try {
                 Log.d("jerboa", "Getting RELEASES.md from assets...")
-                changelog = ctx.assets.open("RELEASES.md").bufferedReader().use { it.readText() }
+                changelog = ctx.assets
+                    .open("RELEASES.md")
+                    .bufferedReader()
+                    .use { it.readText() }
             } catch (e: Exception) {
                 Log.e("jerboa", "Failed to load changelog: $e")
             }

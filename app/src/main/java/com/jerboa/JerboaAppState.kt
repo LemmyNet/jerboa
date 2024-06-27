@@ -48,8 +48,8 @@ import java.nio.charset.StandardCharsets
 fun rememberJerboaAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
-): JerboaAppState {
-    return remember(
+): JerboaAppState =
+    remember(
         navController,
         coroutineScope,
     ) {
@@ -58,7 +58,6 @@ fun rememberJerboaAppState(
             coroutineScope,
         )
     }
-}
 
 @Stable
 class JerboaAppState(
@@ -326,7 +325,8 @@ class JerboaAppState(
         LaunchedEffect(key) {
             val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
             if (savedStateHandle?.contains(key) == true) {
-                savedStateHandle.get<String>(key)
+                savedStateHandle
+                    .get<String>(key)
                     ?.let { Json.decodeFromString<T>(it) }
                     ?.also(consumeBlock)
             }
@@ -334,16 +334,14 @@ class JerboaAppState(
     }
 }
 
-inline fun <reified T> getKotlinxSerializerSaver(): Saver<T, String> {
-    return Saver(
+inline fun <reified T> getKotlinxSerializerSaver(): Saver<T, String> =
+    Saver(
         save = { Json.encodeToString(it) },
         restore = { Json.decodeFromString<T>(it) },
     )
-}
 
-inline fun <reified T> getKotlinxSerializerSaver3(): Saver<T?, String> {
-    return Saver(
+inline fun <reified T> getKotlinxSerializerSaver3(): Saver<T?, String> =
+    Saver(
         save = { Json.encodeToString(it) },
         restore = { Json.decodeFromString<T>(it) },
     )
-}

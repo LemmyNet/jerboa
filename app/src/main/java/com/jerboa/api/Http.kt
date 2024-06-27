@@ -43,18 +43,20 @@ object API {
     val apiFailState: StateFlow<Boolean> = _apiFailState
 
     val httpClient: OkHttpClient =
-        OkHttpClient.Builder()
+        OkHttpClient
+            .Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .addNetworkInterceptor { chain ->
                 TrafficStats.setThreadStatsTag(Thread.currentThread().id.toInt())
-                chain.request().newBuilder()
+                chain
+                    .request()
+                    .newBuilder()
                     .header("User-Agent", "Jerboa")
                     .build()
                     .let(chain::proceed)
-            }
-            .build()
+            }.build()
 
     init {
         LemmyApi.setDefaultClientConfig {
@@ -84,13 +86,12 @@ object API {
     }
 
     // This use is discouraged, use getInstance() as much as possible
-    fun getInstanceOrNull(): LemmyApiV19? {
-        return if (::newApi.isInitialized) {
+    fun getInstanceOrNull(): LemmyApiV19? =
+        if (::newApi.isInitialized) {
             newApi
         } else {
             null
         }
-    }
 
     /**
      * This is a safe way to set the lemmy instance,
@@ -131,29 +132,24 @@ object API {
         host: String,
         auth: String? = null,
         overrideVersion: String = DEFAULT_VERSION,
-    ): LemmyApiV19 {
-        return try {
+    ): LemmyApiV19 =
+        try {
             createTempInstance(host, auth)
         } catch (e: Throwable) {
             Log.i("createTempInstanceSafe", "Failed to set lemmy instance", e)
             createTempInstanceVersion(host, overrideVersion, auth)
         }
-    }
 
     suspend fun createTempInstance(
         host: String,
         auth: String? = null,
-    ): LemmyApiV19 {
-        return LemmyApi.getLemmyApi(host, auth)
-    }
+    ): LemmyApiV19 = LemmyApi.getLemmyApi(host, auth)
 
     fun createTempInstanceVersion(
         host: String,
         version: String,
         auth: String? = null,
-    ): LemmyApiV19 {
-        return LemmyApi.getLemmyApi(host, version, auth)
-    }
+    ): LemmyApiV19 = LemmyApi.getLemmyApi(host, version, auth)
 
     suspend fun checkIfLemmyInstance(url: String): Boolean {
         try {
@@ -208,9 +204,8 @@ object API {
     }
 }
 
-fun <T> Result<T>.toApiState(): ApiState<T> {
-    return this.fold(
+fun <T> Result<T>.toApiState(): ApiState<T> =
+    this.fold(
         onSuccess = { ApiState.Success(it) },
         onFailure = { ApiState.Failure(it) },
     )
-}

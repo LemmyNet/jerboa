@@ -30,39 +30,27 @@ fun UiObject2.scrollThroughShort() {
 fun UiDevice.findOrFail(
     resId: String,
     failMsg: String,
-): UiObject2 {
-    return this.findObject(By.res(resId)) ?: throw IllegalStateException(failMsg)
-}
+): UiObject2 = this.findObject(By.res(resId)) ?: throw IllegalStateException(failMsg)
 
-fun UiDevice.findOrFail(resId: String): UiObject2 {
-    return this.findOrFail(resId, "$resId not found")
-}
+fun UiDevice.findOrFail(resId: String): UiObject2 = this.findOrFail(resId, "$resId not found")
 
 fun UiObject2.findOrFail(
     resId: String,
     failMsg: String,
-): UiObject2 {
-    return this.findObject(By.res(resId)) ?: throw IllegalStateException(failMsg)
-}
+): UiObject2 = this.findObject(By.res(resId)) ?: throw IllegalStateException(failMsg)
 
-fun UiDevice.findOrFailTimeout(resId: String): UiObject2 {
-    return this.findOrFailTimeout(resId, "$resId not found")
-}
+fun UiDevice.findOrFailTimeout(resId: String): UiObject2 = this.findOrFailTimeout(resId, "$resId not found")
 
 fun UiDevice.findOrFailTimeout(
     resId: String,
     failMsg: String,
     timeout: Long = 5000,
-): UiObject2 {
-    return findTimeout(resId, timeout) ?: throw IllegalStateException(failMsg)
-}
+): UiObject2 = findTimeout(resId, timeout) ?: throw IllegalStateException(failMsg)
 
 fun UiDevice.findTimeout(
     resId: String,
     timeout: Long = 5000,
-): UiObject2? {
-    return wait(Until.findObject(By.res(resId)), timeout)
-}
+): UiObject2? = wait(Until.findObject(By.res(resId)), timeout)
 
 // Somehow you can have device.findObject().click() be instantly Stale
 // This is an attempt at solving that

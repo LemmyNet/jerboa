@@ -15,9 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-fun getInstanceFromCommunityUrl(url: String): String {
-    return url.substringBefore("/c/")
-}
+fun getInstanceFromCommunityUrl(url: String): String = url.substringBefore("/c/")
 
 fun blockCommunity(
     scope: CoroutineScope,
@@ -57,13 +55,13 @@ fun showBlockInstanceToast(
                 instance,
                 ctx,
             )
-        }
-        .onFailure {
-            Toast.makeText(
-                ctx,
-                ctx.getText(R.string.instance_block_toast_failure),
-                Toast.LENGTH_SHORT,
-            ).show()
+        }.onFailure {
+            Toast
+                .makeText(
+                    ctx,
+                    ctx.getText(R.string.instance_block_toast_failure),
+                    Toast.LENGTH_SHORT,
+                ).show()
             Log.i("Block", "failed", it)
         }
 }
@@ -79,13 +77,13 @@ fun showBlockPersonToast(
                 it.person_view.person.name,
                 ctx,
             )
-        }
-        .onFailure {
-            Toast.makeText(
-                ctx,
-                ctx.getText(R.string.user_block_toast_failure),
-                Toast.LENGTH_SHORT,
-            ).show()
+        }.onFailure {
+            Toast
+                .makeText(
+                    ctx,
+                    ctx.getText(R.string.user_block_toast_failure),
+                    Toast.LENGTH_SHORT,
+                ).show()
             Log.i("Block", "failed", it)
         }
 }
@@ -101,13 +99,13 @@ fun showBlockCommunityToast(
                 it.community_view.community.name,
                 ctx,
             )
-        }
-        .onFailure {
-            Toast.makeText(
-                ctx,
-                ctx.getText(R.string.community_block_toast_failure),
-                Toast.LENGTH_SHORT,
-            ).show()
+        }.onFailure {
+            Toast
+                .makeText(
+                    ctx,
+                    ctx.getText(R.string.community_block_toast_failure),
+                    Toast.LENGTH_SHORT,
+                ).show()
             Log.i("Block", "failed", it)
         }
 }
@@ -117,16 +115,17 @@ private fun makeSuccessfulBlockMessage(
     name: String,
     context: Context,
 ) {
-    Toast.makeText(
-        context,
-        context.getString(
-            if (isBlocked) {
-                R.string.blocked_element_toast
-            } else {
-                R.string.unblocked_element_toast
-            },
-            name,
-        ),
-        Toast.LENGTH_SHORT,
-    ).show()
+    Toast
+        .makeText(
+            context,
+            context.getString(
+                if (isBlocked) {
+                    R.string.blocked_element_toast
+                } else {
+                    R.string.unblocked_element_toast
+                },
+                name,
+            ),
+            Toast.LENGTH_SHORT,
+        ).show()
 }

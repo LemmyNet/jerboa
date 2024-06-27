@@ -75,12 +75,14 @@ fun CreatePrivateMessageScreen(
                             while (res !is ApiState.Success) {
                                 res =
                                     withContext(Dispatchers.IO) {
-                                        API.getInstance().createPrivateMessage(
-                                            CreatePrivateMessage(
-                                                textBody.text,
-                                                personId,
-                                            ),
-                                        ).toApiState()
+                                        API
+                                            .getInstance()
+                                            .createPrivateMessage(
+                                                CreatePrivateMessage(
+                                                    textBody.text,
+                                                    personId,
+                                                ),
+                                            ).toApiState()
                                     }
                                 if (res is ApiState.Failure) {
                                     Toast.makeText(ctx, R.string.private_message_failed, Toast.LENGTH_SHORT).show()

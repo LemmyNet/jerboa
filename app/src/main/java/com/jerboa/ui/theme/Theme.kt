@@ -73,15 +73,14 @@ fun JerboaTheme(
             ThemeColor.Dracula -> dracula()
         }
 
-    fun makeBlack(darkTheme: JerboaColorScheme): JerboaColorScheme {
-        return darkTheme.copy(
+    fun makeBlack(darkTheme: JerboaColorScheme): JerboaColorScheme =
+        darkTheme.copy(
             material =
                 darkTheme.material.copy(
                     background = Color(0xFF000000),
                     surface = Color(0xFF000000),
                 ),
         )
-    }
 
     val systemTheme =
         if (!isSystemInDarkTheme()) {
@@ -160,6 +159,4 @@ val colorList =
         hsl(300f),
     )
 
-fun hsl(num: Float): Color {
-    return Color(ColorUtils.HSLToColor(floatArrayOf(num, .35f, .5f)))
-}
+fun hsl(num: Float): Color = Color(ColorUtils.HSLToColor(floatArrayOf(num, .35f, .5f)))

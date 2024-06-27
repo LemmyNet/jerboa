@@ -20,9 +20,7 @@ import androidx.compose.ui.unit.dp
 inline fun Modifier.ifDo(
     predicate: Boolean,
     modifier: Modifier.() -> Modifier,
-): Modifier {
-    return if (predicate) modifier() else this
-}
+): Modifier = if (predicate) modifier() else this
 
 fun Modifier.getBlurredOrRounded(
     blur: Boolean,
@@ -56,8 +54,7 @@ fun Modifier.onAutofill(
     return this
         .onGloballyPositioned {
             autofillNode.boundingBox = it.boundsInWindow()
-        }
-        .onFocusChanged { focusState ->
+        }.onFocusChanged { focusState ->
             autofill?.run {
                 if (focusState.isFocused) {
                     requestAutofillForNode(autofillNode)
@@ -69,6 +66,4 @@ fun Modifier.onAutofill(
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-fun Modifier.customMarquee(): Modifier {
-    return this.basicMarquee(initialDelayMillis = 4_000)
-}
+fun Modifier.customMarquee(): Modifier = this.basicMarquee(initialDelayMillis = 4_000)

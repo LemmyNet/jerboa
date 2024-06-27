@@ -109,10 +109,12 @@ fun ImageViewerScreen(
     }
 
     val image = remember {
-        ImageRequest.Builder(ctx)
+        ImageRequest
+            .Builder(ctx)
             .placeholder(null)
             .data(url)
-            .setParameter("retry_hash", retryHash, memoryCacheKey = null).listener(
+            .setParameter("retry_hash", retryHash, memoryCacheKey = null)
+            .listener(
                 onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
                 onError = { _, _ -> imageState = ImageState.FAILED },
             ).build()

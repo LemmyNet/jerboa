@@ -91,12 +91,12 @@ abstract class AppDB : RoomDatabase() {
             // if it is, then create the database
             return instance ?: synchronized(this) {
                 val i =
-                    Room.databaseBuilder(
-                        context.applicationContext,
-                        AppDB::class.java,
-                        "jerboa",
-                    )
-                        .addMigrations(
+                    Room
+                        .databaseBuilder(
+                            context.applicationContext,
+                            AppDB::class.java,
+                            "jerboa",
+                        ).addMigrations(
                             *MIGRATIONS_LIST,
                         )
                         // Necessary because it can't insert data on creation

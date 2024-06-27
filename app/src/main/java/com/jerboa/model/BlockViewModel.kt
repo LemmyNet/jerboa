@@ -44,11 +44,12 @@ class BlockViewModel : ViewModel() {
         instanceBlockController.setLoading(instance)
 
         viewModelScope.launch {
-            API.getInstance().blockInstance(BlockInstance(instance.id, false))
+            API
+                .getInstance()
+                .blockInstance(BlockInstance(instance.id, false))
                 .onSuccess {
                     instanceBlockController.removeItem(instance)
-                }
-                .onFailure {
+                }.onFailure {
                     instanceBlockController.setFailed(instance, it)
                     withContext(Dispatchers.Main) {
                         showBlockInstanceToast(Result.failure(it), instance.domain, ctx)
@@ -64,11 +65,12 @@ class BlockViewModel : ViewModel() {
         communityBlockController.setLoading(community)
 
         viewModelScope.launch {
-            API.getInstance().blockCommunity(BlockCommunity(community.id, false))
+            API
+                .getInstance()
+                .blockCommunity(BlockCommunity(community.id, false))
                 .onSuccess {
                     communityBlockController.removeItem(community)
-                }
-                .onFailure {
+                }.onFailure {
                     communityBlockController.setFailed(community, it)
                     withContext(Dispatchers.Main) {
                         showBlockCommunityToast(Result.failure(it), ctx)
@@ -84,11 +86,12 @@ class BlockViewModel : ViewModel() {
         personBlockController.setLoading(person)
 
         viewModelScope.launch {
-            API.getInstance().blockPerson(BlockPerson(person.id, false))
+            API
+                .getInstance()
+                .blockPerson(BlockPerson(person.id, false))
                 .onSuccess {
                     personBlockController.removeItem(person)
-                }
-                .onFailure {
+                }.onFailure {
                     personBlockController.setFailed(person, it)
                     withContext(Dispatchers.Main) {
                         showBlockPersonToast(Result.failure(it), ctx)
