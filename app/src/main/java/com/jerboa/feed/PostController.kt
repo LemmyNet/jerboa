@@ -1,9 +1,9 @@
 package com.jerboa.feed
 
 import com.jerboa.datatypes.BanFromCommunityData
-import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.HidePost
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PostView
 
 open class PostController : FeedController<PostView>() {
     fun findAndUpdatePost(updatedPostView: PostView) {

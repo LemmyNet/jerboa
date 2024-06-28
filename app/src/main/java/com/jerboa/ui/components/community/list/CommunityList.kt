@@ -27,7 +27,7 @@ import com.jerboa.feat.BlurNSFW
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.datatypes.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

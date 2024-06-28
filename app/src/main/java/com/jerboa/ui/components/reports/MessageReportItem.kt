@@ -18,9 +18,9 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReportView
-import it.vercruysse.lemmyapi.v0x19.datatypes.ResolvePrivateMessageReport
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageReportView
+import it.vercruysse.lemmyapi.datatypes.ResolvePrivateMessageReport
 
 @Composable
 fun MessageReportItem(

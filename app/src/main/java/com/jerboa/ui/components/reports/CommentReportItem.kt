@@ -14,13 +14,13 @@ import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.datatypes.CommentId
+import it.vercruysse.lemmyapi.datatypes.CommentReportView
+import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.ResolveCommentReport
 import it.vercruysse.lemmyapi.dto.SubscribedType
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.ResolveCommentReport
 
 @Composable
 fun CommentReportItem(
@@ -51,6 +51,7 @@ fun CommentReportItem(
         creator_is_admin = false,
         creator_is_moderator = false,
         saved = false,
+        banned_from_community = false,
     )
 
     Column(

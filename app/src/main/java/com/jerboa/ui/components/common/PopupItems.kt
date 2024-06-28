@@ -9,7 +9,7 @@ import com.jerboa.R
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.personNameShown
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.Person
 
 @Composable
 fun BanPersonPopupMenuItem(

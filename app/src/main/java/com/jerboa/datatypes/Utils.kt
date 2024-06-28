@@ -3,8 +3,8 @@ package com.jerboa.datatypes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jerboa.R
-import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.Comment
+import it.vercruysse.lemmyapi.datatypes.Person
 
 fun Person.getDisplayName(): String = this.display_name ?: this.name
 

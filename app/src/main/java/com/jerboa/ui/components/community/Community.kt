@@ -56,9 +56,9 @@ import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.datatypes.CommunityView
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.SubscribedType
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable

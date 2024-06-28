@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.EditPost
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.EditPost
+import it.vercruysse.lemmyapi.datatypes.PostResponse
+import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.launch
 
 class PostEditViewModel : ViewModel() {

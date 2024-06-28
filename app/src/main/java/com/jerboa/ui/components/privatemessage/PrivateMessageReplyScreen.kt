@@ -28,8 +28,8 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
 
 object PrivateMessage {
     const val PM_VIEW = "private-message::return(pm-view)"

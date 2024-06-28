@@ -13,9 +13,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.getDeduplicateMerge
-import it.vercruysse.lemmyapi.v0x19.datatypes.ListPostLikes
-import it.vercruysse.lemmyapi.v0x19.datatypes.ListPostLikesResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.ListPostLikes
+import it.vercruysse.lemmyapi.datatypes.ListPostLikesResponse
+import it.vercruysse.lemmyapi.datatypes.PostId
 import kotlinx.coroutines.launch
 
 class PostLikesViewModel(

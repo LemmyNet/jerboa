@@ -35,8 +35,8 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDropDown
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

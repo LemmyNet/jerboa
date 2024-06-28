@@ -5,11 +5,11 @@ import android.util.Log
 import android.widget.Toast
 import com.jerboa.R
 import com.jerboa.api.API
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockInstanceResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPersonResponse
+import it.vercruysse.lemmyapi.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.datatypes.BlockCommunityResponse
+import it.vercruysse.lemmyapi.datatypes.BlockInstanceResponse
+import it.vercruysse.lemmyapi.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.datatypes.BlockPersonResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -27,9 +27,9 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
-import it.vercruysse.lemmyapi.v0x19.datatypes.EditPost
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.EditPost
+import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.launch
 
 object PostEditReturn {

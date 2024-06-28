@@ -2,7 +2,7 @@ package com.jerboa.feat
 
 import androidx.annotation.StringRes
 import com.jerboa.R
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.PostView
 
 enum class BlurNSFW(
     @StringRes val resId: Int,

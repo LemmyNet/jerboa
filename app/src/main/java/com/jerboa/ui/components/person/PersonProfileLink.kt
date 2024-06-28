@@ -24,8 +24,8 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonId
 
 @Composable
 fun PersonName(

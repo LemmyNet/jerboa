@@ -1,43 +1,44 @@
 package com.jerboa.datatypes
 
+import it.vercruysse.lemmyapi.datatypes.Comment
+import it.vercruysse.lemmyapi.datatypes.CommentAggregates
+import it.vercruysse.lemmyapi.datatypes.CommentReply
+import it.vercruysse.lemmyapi.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.datatypes.CommentReport
+import it.vercruysse.lemmyapi.datatypes.CommentReportView
+import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.CommunityAggregates
+import it.vercruysse.lemmyapi.datatypes.CommunityView
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.LocalSite
+import it.vercruysse.lemmyapi.datatypes.LocalSiteRateLimit
+import it.vercruysse.lemmyapi.datatypes.LocalUser
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonAggregates
+import it.vercruysse.lemmyapi.datatypes.PersonMention
+import it.vercruysse.lemmyapi.datatypes.PersonMentionView
+import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.Post
+import it.vercruysse.lemmyapi.datatypes.PostAggregates
+import it.vercruysse.lemmyapi.datatypes.PostReport
+import it.vercruysse.lemmyapi.datatypes.PostReportView
+import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.PrivateMessage
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageReport
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageReportView
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.datatypes.RegistrationApplication
+import it.vercruysse.lemmyapi.datatypes.RegistrationApplicationView
+import it.vercruysse.lemmyapi.datatypes.Site
+import it.vercruysse.lemmyapi.datatypes.SiteAggregates
+import it.vercruysse.lemmyapi.datatypes.SiteView
+import it.vercruysse.lemmyapi.dto.CommunityVisibility
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.PostListingMode
 import it.vercruysse.lemmyapi.dto.RegistrationMode
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.SubscribedType
-import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentAggregates
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReply
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReport
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSite
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalSiteRateLimit
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUser
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonAggregates
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMention
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonMentionView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Post
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostAggregates
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostReport
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessage
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReport
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageReportView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
-import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplication
-import it.vercruysse.lemmyapi.v0x19.datatypes.RegistrationApplicationView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Site
-import it.vercruysse.lemmyapi.v0x19.datatypes.SiteAggregates
-import it.vercruysse.lemmyapi.v0x19.datatypes.SiteView
 
 val samplePost =
     Post(
@@ -271,6 +272,7 @@ val sampleCommunity =
         instance_id = 0,
         hidden = false,
         posting_restricted_to_mods = false,
+        visibility = CommunityVisibility.Public,
     )
 
 val sampleCommunityFederated = sampleCommunity.copy(local = false)
@@ -283,6 +285,7 @@ val samplePostAggregates =
         upvotes = 8,
         downvotes = 0,
         published = "2022-01-02T04:02:44.592929Z",
+        newest_comment_time = "2022-01-02T04:02:44.592929Z",
     )
 
 val samplePostView =
@@ -300,6 +303,8 @@ val samplePostView =
         creator_blocked = false,
         unread_comments = 1,
         my_vote = 0,
+        banned_from_community = false,
+        hidden = false,
     )
 
 val sampleLinkPostView =
@@ -317,6 +322,8 @@ val sampleLinkPostView =
         creator_blocked = false,
         unread_comments = 1,
         my_vote = 0,
+        banned_from_community = false,
+        hidden = false,
     )
 
 val sampleLinkNoThumbnailPostView =
@@ -334,6 +341,8 @@ val sampleLinkNoThumbnailPostView =
         creator_blocked = false,
         unread_comments = 1,
         my_vote = 0,
+        banned_from_community = false,
+        hidden = false,
     )
 
 val sampleImagePostView =
@@ -351,6 +360,8 @@ val sampleImagePostView =
         creator_blocked = false,
         unread_comments = 1,
         my_vote = 0,
+        banned_from_community = false,
+        hidden = false,
     )
 
 val sampleMarkdownPostView =
@@ -368,6 +379,8 @@ val sampleMarkdownPostView =
         creator_blocked = false,
         unread_comments = 1,
         my_vote = 0,
+        banned_from_community = false,
+        hidden = false,
     )
 
 val sampleComment =
@@ -448,6 +461,7 @@ val sampleCommentView =
         creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
+        banned_from_community = false,
     )
 
 val sampleSecondReplyCommentView =
@@ -463,6 +477,7 @@ val sampleSecondReplyCommentView =
         creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
+        banned_from_community = false,
     )
 
 val sampleReplyCommentView =
@@ -478,6 +493,7 @@ val sampleReplyCommentView =
         creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
+        banned_from_community = false,
     )
 
 val sampleCommentReply =
@@ -513,6 +529,7 @@ val sampleCommentReplyView =
         creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
+        banned_from_community = false,
     )
 
 val samplePersonMentionView =
@@ -530,6 +547,7 @@ val samplePersonMentionView =
         creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
+        banned_from_community = false,
     )
 
 val sampleCommunityAggregates =
@@ -552,6 +570,7 @@ val sampleCommunityView =
         subscribed = SubscribedType.NotSubscribed,
         blocked = false,
         counts = sampleCommunityAggregates,
+        banned_from_community = false,
     )
 
 val samplePersonAggregates =
@@ -631,6 +650,8 @@ val sampleLocalSite =
         hide_modlog_mod_names = true,
         federation_signed_fetch = false,
         reports_email_admins = false,
+        default_sort_type = SortType.Active,
+        default_post_listing_mode = PostListingMode.Card,
     )
 
 val sampleSiteAggregates =
@@ -683,6 +704,7 @@ val sampleGetSiteRes = GetSiteResponse(
     taglines = emptyList(),
     discussion_languages = emptyList(),
     version = "0.0.1",
+    blocked_urls = emptyList(),
 )
 
 val samplePendingRegistrationApplication =
@@ -757,6 +779,14 @@ val samplePostReportView =
         community = sampleCommunity,
         counts = samplePostAggregates,
         creator_banned_from_community = false,
+        hidden = false,
+        read = false,
+        creator_is_admin = false,
+        subscribed = SubscribedType.NotSubscribed,
+        creator_is_moderator = false,
+        saved = false,
+        creator_blocked = false,
+        unread_comments = 1,
     )
 
 val sampleCommentReport =
@@ -782,6 +812,11 @@ val sampleCommentReportView =
         community = sampleCommunity,
         counts = sampleCommentAggregates,
         creator_banned_from_community = false,
+        subscribed = SubscribedType.NotSubscribed,
+        saved = false,
+        creator_is_admin = false,
+        creator_is_moderator = false,
+        creator_blocked = false,
     )
 
 val samplePrivateMessageReport =

@@ -21,9 +21,9 @@ import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.getContent
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonId
 
 @Composable
 fun CommentReplyOptionsDropdown(

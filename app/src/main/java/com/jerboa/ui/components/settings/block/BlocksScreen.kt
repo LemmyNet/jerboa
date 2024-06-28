@@ -50,7 +50,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.Title
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

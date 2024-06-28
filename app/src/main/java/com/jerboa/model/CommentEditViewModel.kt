@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.EditComment
+import it.vercruysse.lemmyapi.datatypes.CommentResponse
+import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.EditComment
 import kotlinx.coroutines.launch
 
 class CommentEditViewModel : ViewModel() {

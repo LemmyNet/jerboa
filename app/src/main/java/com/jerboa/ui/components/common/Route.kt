@@ -2,10 +2,10 @@ package com.jerboa.ui.components.common
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.CommentId
+import it.vercruysse.lemmyapi.datatypes.CommunityId
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PostId
 
 object Route {
     object Graph {

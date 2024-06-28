@@ -2,8 +2,8 @@ package com.jerboa.ui.components.community.sidebar
 
 import androidx.compose.runtime.Composable
 import com.jerboa.ui.components.common.Sidebar
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse
+import it.vercruysse.lemmyapi.datatypes.PersonId
 
 @Composable
 fun CommunitySidebar(

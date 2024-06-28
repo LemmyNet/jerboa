@@ -40,10 +40,10 @@ import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.CreatePost
+import it.vercruysse.lemmyapi.datatypes.GetSiteMetadata
+import it.vercruysse.lemmyapi.datatypes.PostId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

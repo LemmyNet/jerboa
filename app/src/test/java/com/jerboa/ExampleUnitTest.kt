@@ -2,10 +2,10 @@ package com.jerboa
 
 import com.jerboa.api.API
 import com.jerboa.api.DEFAULT_INSTANCE
+import it.vercruysse.lemmyapi.datatypes.GetPost
+import it.vercruysse.lemmyapi.datatypes.GetPosts
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPost
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

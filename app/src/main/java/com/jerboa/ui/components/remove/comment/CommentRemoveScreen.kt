@@ -23,7 +23,7 @@ import com.jerboa.model.CommentRemoveViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.remove.RemoveItemBody
-import it.vercruysse.lemmyapi.v0x19.datatypes.Comment
+import it.vercruysse.lemmyapi.datatypes.Comment
 
 object CommentRemoveReturn {
     const val COMMENT_VIEW = "comment-remove::return(comment-view)"

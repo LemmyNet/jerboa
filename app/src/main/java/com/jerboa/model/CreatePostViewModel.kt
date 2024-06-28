@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadata
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteMetadataResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
+import it.vercruysse.lemmyapi.datatypes.CreatePost
+import it.vercruysse.lemmyapi.datatypes.GetSiteMetadata
+import it.vercruysse.lemmyapi.datatypes.GetSiteMetadataResponse
+import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostResponse
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {

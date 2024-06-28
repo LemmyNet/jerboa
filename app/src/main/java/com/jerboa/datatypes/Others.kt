@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.person.UserTab
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.dto.CommentSortType
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.PostFeatureType
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.Post
 import kotlinx.serialization.Serializable
 
 data class CommentSortData(

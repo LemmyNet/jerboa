@@ -12,12 +12,12 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReportResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentReport
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostReport
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportResponse
+import it.vercruysse.lemmyapi.datatypes.CommentId
+import it.vercruysse.lemmyapi.datatypes.CommentReportResponse
+import it.vercruysse.lemmyapi.datatypes.CreateCommentReport
+import it.vercruysse.lemmyapi.datatypes.CreatePostReport
+import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostReportResponse
 import kotlinx.coroutines.launch
 
 class CreateReportViewModel : ViewModel() {

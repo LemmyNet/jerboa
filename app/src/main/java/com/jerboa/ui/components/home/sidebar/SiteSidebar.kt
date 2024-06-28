@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.sampleGetSiteRes
 import com.jerboa.ui.components.common.Sidebar
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetSiteResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.PersonId
 
 @Composable
 fun SiteSidebar(

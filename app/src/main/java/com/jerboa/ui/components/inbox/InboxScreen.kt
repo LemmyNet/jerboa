@@ -58,13 +58,13 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentReplyView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkCommentReplyAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPersonMentionAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.MarkPrivateMessageAsRead
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
+import it.vercruysse.lemmyapi.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.datatypes.CommentReplyView
+import it.vercruysse.lemmyapi.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.datatypes.MarkCommentReplyAsRead
+import it.vercruysse.lemmyapi.datatypes.MarkPersonMentionAsRead
+import it.vercruysse.lemmyapi.datatypes.MarkPrivateMessageAsRead
+import it.vercruysse.lemmyapi.datatypes.SaveComment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

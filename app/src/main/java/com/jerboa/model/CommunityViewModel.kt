@@ -15,14 +15,14 @@ import com.jerboa.api.toApiState
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feat.showBlockCommunityToast
 import com.jerboa.jerboaApplication
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.FollowCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetPosts
+import it.vercruysse.lemmyapi.datatypes.BlockCommunity
+import it.vercruysse.lemmyapi.datatypes.BlockCommunityResponse
+import it.vercruysse.lemmyapi.datatypes.CommunityId
+import it.vercruysse.lemmyapi.datatypes.CommunityResponse
+import it.vercruysse.lemmyapi.datatypes.FollowCommunity
+import it.vercruysse.lemmyapi.datatypes.GetCommunity
+import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse
+import it.vercruysse.lemmyapi.datatypes.GetPosts
 import kotlinx.coroutines.launch
 
 class CommunityViewModel(

@@ -87,23 +87,23 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.remove.comment.CommentRemoveReturn
 import com.jerboa.ui.components.remove.post.PostRemoveReturn
+import it.vercruysse.lemmyapi.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.datatypes.CommentId
+import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.datatypes.CreatePostLike
+import it.vercruysse.lemmyapi.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.datatypes.DeletePost
+import it.vercruysse.lemmyapi.datatypes.DistinguishComment
+import it.vercruysse.lemmyapi.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.datatypes.HidePost
+import it.vercruysse.lemmyapi.datatypes.LockPost
+import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.SaveComment
+import it.vercruysse.lemmyapi.datatypes.SavePost
 import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentId
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommentView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreateCommentLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePostLike
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeleteComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.DeletePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.DistinguishComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.FeaturePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.HidePost
-import it.vercruysse.lemmyapi.v0x19.datatypes.LockPost
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveComment
-import it.vercruysse.lemmyapi.v0x19.datatypes.SavePost
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
