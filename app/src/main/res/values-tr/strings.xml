@@ -332,7 +332,6 @@
     <string name="press_again_confirmation">Çıkmak için iki kez geri basın</string>
     <string name="confirm_exit">Çıkış işlemini onayla</string>
     <string name="back_dialog">Çıkışta bir onay iletişim kutusu göster</string>
-    <resources>
     <string name="back_dialog_title">Çıkmak istediğinizden emin misiniz?</string>
     <string name="failed_saving_media">Medya kaydedilemedi!</string>
     <string name="home_switch_anon">Anonime geç</string>
@@ -493,3 +492,4 @@
     <string name="you_have_no_blocked_users">Engellenen kullanıcınız yok</string>
     <string name="you_have_no_blocked_communities">Engellenen topluluğunuz yok</string>
     <string name="you_have_no_blocked_instances">Engellenen örneğiniz yok</string>
+<resources>
