@@ -21,8 +21,8 @@ import com.jerboa.R
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.VoteView
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.VoteView
 
 @Composable
 fun ViewVotesBody(

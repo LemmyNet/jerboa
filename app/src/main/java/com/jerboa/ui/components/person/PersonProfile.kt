@@ -55,8 +55,8 @@ import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
 
 @Composable
 fun PersonProfileTopSection(

@@ -22,13 +22,13 @@ import com.jerboa.ui.components.post.PostBody
 import com.jerboa.ui.components.post.PostHeaderLine
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PostReportView
+import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.ResolvePostReport
 import it.vercruysse.lemmyapi.dto.SubscribedType
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostReportView
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.ResolvePostReport
 
 @Composable
 fun PostReportItem(
@@ -66,6 +66,8 @@ fun PostReportItem(
         read = false,
         saved = false,
         unread_comments = 0,
+        banned_from_community = false,
+        hidden = false,
     )
 
     Column(

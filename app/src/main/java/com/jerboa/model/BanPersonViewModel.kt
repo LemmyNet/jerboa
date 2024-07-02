@@ -16,10 +16,10 @@ import com.jerboa.api.toApiState
 import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
-import it.vercruysse.lemmyapi.v0x19.datatypes.BanPerson
-import it.vercruysse.lemmyapi.v0x19.datatypes.BanPersonResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.BanPerson
+import it.vercruysse.lemmyapi.datatypes.BanPersonResponse
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonView
 import kotlinx.coroutines.launch
 
 class BanPersonViewModel : ViewModel() {

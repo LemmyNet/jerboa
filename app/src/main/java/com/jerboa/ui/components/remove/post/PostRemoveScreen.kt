@@ -23,7 +23,7 @@ import com.jerboa.model.PostRemoveViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.remove.RemoveItemBody
-import it.vercruysse.lemmyapi.v0x19.datatypes.Post
+import it.vercruysse.lemmyapi.datatypes.Post
 
 object PostRemoveReturn {
     const val POST_VIEW = "post-edit::return(post-view)"

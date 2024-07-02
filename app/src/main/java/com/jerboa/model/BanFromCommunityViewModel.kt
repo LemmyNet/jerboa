@@ -18,10 +18,10 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
-import it.vercruysse.lemmyapi.v0x19.datatypes.BanFromCommunity
-import it.vercruysse.lemmyapi.v0x19.datatypes.BanFromCommunityResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.BanFromCommunity
+import it.vercruysse.lemmyapi.datatypes.BanFromCommunityResponse
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.PersonId
 import kotlinx.coroutines.launch
 
 class BanFromCommunityViewModel : ViewModel() {
