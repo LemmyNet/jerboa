@@ -15,7 +15,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.findAndUpdateApplication
 import com.jerboa.getDeduplicateMerge
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
+import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.launch
 
 class RegistrationApplicationsViewModel(

@@ -1,6 +1,6 @@
 package com.jerboa.feed
 
-import it.vercruysse.lemmyapi.v0x19.datatypes.PaginationCursor
+import it.vercruysse.lemmyapi.datatypes.PaginationCursor
 
 class PaginationController(
     var page: Long = 1,

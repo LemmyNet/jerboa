@@ -41,7 +41,7 @@ import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import java.time.Instant
 import java.time.format.DateTimeParseException
 import java.util.Date

@@ -10,13 +10,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import it.vercruysse.lemmyapi.datatypes.CommunityAggregates
+import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.datatypes.CommunityView
+import it.vercruysse.lemmyapi.datatypes.Search
+import it.vercruysse.lemmyapi.datatypes.SearchResponse
 import it.vercruysse.lemmyapi.dto.SearchType
 import it.vercruysse.lemmyapi.dto.SubscribedType
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityAggregates
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
-import it.vercruysse.lemmyapi.v0x19.datatypes.Search
-import it.vercruysse.lemmyapi.v0x19.datatypes.SearchResponse
 import kotlinx.coroutines.launch
 
 class CommunityListViewModel(
@@ -57,6 +57,7 @@ class CommunityListViewModel(
                             users_active_month = 0,
                             users_active_half_year = 0,
                         ),
+                    banned_from_community = false,
                 )
             }
 

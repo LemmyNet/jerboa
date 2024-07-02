@@ -16,7 +16,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import com.jerboa.ui.components.common.apiErrorToast
-import it.vercruysse.lemmyapi.v0x19.datatypes.SaveUserSettings
+import it.vercruysse.lemmyapi.datatypes.SaveUserSettings
 import kotlinx.coroutines.launch
 
 @Stable

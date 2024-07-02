@@ -35,8 +35,8 @@ import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityView
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.CommunityView
 
 @Composable
 fun CommunityName(

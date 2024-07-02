@@ -14,10 +14,10 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.ui.components.common.apiErrorToast
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostResponse
-import it.vercruysse.lemmyapi.v0x19.datatypes.PostView
-import it.vercruysse.lemmyapi.v0x19.datatypes.RemovePost
+import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.PostResponse
+import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.RemovePost
 import kotlinx.coroutines.launch
 
 class PostRemoveViewModel : ViewModel() {

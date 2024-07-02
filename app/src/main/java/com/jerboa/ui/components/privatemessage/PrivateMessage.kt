@@ -28,9 +28,9 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
 
 @Composable
 fun PrivateMessageHeader(

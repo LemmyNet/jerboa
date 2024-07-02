@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import it.vercruysse.lemmyapi.v0x19.datatypes.CreatePrivateMessage
-import it.vercruysse.lemmyapi.v0x19.datatypes.PersonId
-import it.vercruysse.lemmyapi.v0x19.datatypes.PrivateMessageResponse
+import it.vercruysse.lemmyapi.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.launch
 
 class PrivateMessageReplyViewModel : ViewModel() {

@@ -27,8 +27,8 @@ import com.jerboa.findAndUpdatePostCreator
 import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
 import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.getDeduplicateMerge
+import it.vercruysse.lemmyapi.datatypes.*
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.*
 import kotlinx.coroutines.launch
 
 class PersonProfileViewModel(

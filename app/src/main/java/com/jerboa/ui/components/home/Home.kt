@@ -46,9 +46,9 @@ import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
+import it.vercruysse.lemmyapi.datatypes.Tagline
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.v0x19.datatypes.Tagline
 import me.saket.cascade.CascadeDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)

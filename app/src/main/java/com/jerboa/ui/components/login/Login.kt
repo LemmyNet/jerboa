@@ -53,7 +53,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.ui.components.common.onAutofill
-import it.vercruysse.lemmyapi.v0x19.datatypes.Login
+import it.vercruysse.lemmyapi.datatypes.Login
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

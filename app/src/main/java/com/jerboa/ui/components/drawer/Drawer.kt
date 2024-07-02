@@ -66,11 +66,11 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.v0x19.datatypes.Community
-import it.vercruysse.lemmyapi.v0x19.datatypes.CommunityFollowerView
-import it.vercruysse.lemmyapi.v0x19.datatypes.MyUserInfo
-import it.vercruysse.lemmyapi.v0x19.datatypes.Person
 
 @Composable
 fun Drawer(

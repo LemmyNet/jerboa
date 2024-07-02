@@ -12,7 +12,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.hostName
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import it.vercruysse.lemmyapi.v0x19.datatypes.GetCommunityResponse
+import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse
 
 object CommunityViewSidebar {
     const val COMMUNITY_RES = "side-bar::return(community-res)"
