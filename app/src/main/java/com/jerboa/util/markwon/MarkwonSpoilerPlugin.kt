@@ -113,17 +113,19 @@ class MarkwonSpoilerPlugin(
                                 textView.cancelPendingInputEvents()
                                 open = !open
 
+                                val spoilerStartCurrent = spanned.getSpanStart(spoilerTitle)
+
                                 spanned.replace(
-                                    spoilerStart,
-                                    spoilerStart + spoilerTitle.length,
+                                    spoilerStartCurrent,
+                                    spoilerStartCurrent + spoilerTitle.length,
                                     getSpoilerTitle(open),
                                 )
                                 if (open) {
-                                    spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
+                                    spanned.insert(spoilerStartCurrent + spoilerTitle.length, spoilerContent)
                                 } else {
                                     spanned.replace(
-                                        spoilerStart + spoilerTitle.length,
-                                        spoilerStart + spoilerTitle.length + spoilerContent.length,
+                                        spoilerStartCurrent + spoilerTitle.length,
+                                        spoilerStartCurrent + spoilerTitle.length + spoilerContent.length,
                                         "",
                                     )
                                 }
