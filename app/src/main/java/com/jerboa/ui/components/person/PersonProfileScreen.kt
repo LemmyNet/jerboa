@@ -119,9 +119,9 @@ fun PersonProfileScreen(
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
-    onBack: (() -> Unit)? = null,
+    onBack: (() -> Unit)?,
     swipeToActionPreset: SwipeToActionPreset,
-    padding: PaddingValues? = null,
+    padding: PaddingValues?,
 ) {
     Log.d("jerboa", "got to person screen")
 

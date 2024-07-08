@@ -327,6 +327,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = null,
                         )
                     }
 
@@ -366,6 +367,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = null,
                         )
                     }
 
