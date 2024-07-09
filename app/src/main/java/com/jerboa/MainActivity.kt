@@ -327,6 +327,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = null,
                         )
                     }
 
@@ -362,9 +363,11 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
+                            onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            padding = null,
                         )
                     }
 
