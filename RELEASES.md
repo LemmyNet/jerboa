@@ -1,7 +1,28 @@
+# Jerboa 0.0.70 (2024-07-15)
+
+## What's Changed in 0.0.70
+
+- Fixing build script. by @dessalines in [#1595](https://github.com/LemmyNet/jerboa/pull/1595)
+- Fix show back button when clicking on tagged user by @Tyoda in [#1579](https://github.com/LemmyNet/jerboa/pull/1579)
+- Fix multiple spoiler blocks displaying incorrectly (#1577) by @Tyoda in [#1578](https://github.com/LemmyNet/jerboa/pull/1578)
+- Bump compose bom by @MV-GH in [#1576](https://github.com/LemmyNet/jerboa/pull/1576)
+- Update lemmy api to beta by @MV-GH in [#1573](https://github.com/LemmyNet/jerboa/pull/1573)
+- update-tr-language by @mikropsoft in [#1575](https://github.com/LemmyNet/jerboa/pull/1575)
+- Remove renovate bot from git cliff changelogs. by @dessalines in [#1563](https://github.com/LemmyNet/jerboa/pull/1563)
+- Removing renovate schedule. by @dessalines in [#1555](https://github.com/LemmyNet/jerboa/pull/1555)
+- Fix initial page_cursor by @MV-GH in [#1553](https://github.com/LemmyNet/jerboa/pull/1553)
+
+## New Contributors
+
+- @Tyoda made their first contribution in [#1579](https://github.com/LemmyNet/jerboa/pull/1579)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.69...0.0.70
+
 # Jerboa 0.0.69 (2024-06-14)
 
 ## What's Changed in 0.0.69
 
+- Upping version. by @dessalines
 - Improve baseline documentation + update baseline profiles by @MV-GH in [#1551](https://github.com/LemmyNet/jerboa/pull/1551)
 - Fix edgecase with legacy show_scores by @MV-GH in [#1552](https://github.com/LemmyNet/jerboa/pull/1552)
 - Restore legacy 'Show Scores' option by @MV-GH in [#1544](https://github.com/LemmyNet/jerboa/pull/1544)
@@ -35,30 +56,15 @@
 - Show when banned on view-votes screen. by @dessalines in [#1536](https://github.com/LemmyNet/jerboa/pull/1536)
 - Performance refactors for Posts feed by @MV-GH in [#1527](https://github.com/LemmyNet/jerboa/pull/1527)
 - Fix #1533 use M3 PullToRefresh by @MV-GH in [#1534](https://github.com/LemmyNet/jerboa/pull/1534)
-- chore(deps): update dependency gradle to v8.8 by @renovate[bot] in [#1535](https://github.com/LemmyNet/jerboa/pull/1535)
 - Adding alt_text and custom_thumbnail to post form. Fixes #1513 by @dessalines in [#1528](https://github.com/LemmyNet/jerboa/pull/1528)
 - Use chris banes compose-bom. by @dessalines in [#1530](https://github.com/LemmyNet/jerboa/pull/1530)
 - Adding post hiding. by @dessalines in [#1517](https://github.com/LemmyNet/jerboa/pull/1517)
 - Revert "Set specific versions for runtime-livedata." by @dessalines in [#1526](https://github.com/LemmyNet/jerboa/pull/1526)
 - Perf improvement: enable Strong Skipping by @MV-GH in [#1524](https://github.com/LemmyNet/jerboa/pull/1524)
 - chore(deps): update kotlin monorepo to v2 (major) by @MV-GH in [#1523](https://github.com/LemmyNet/jerboa/pull/1523)
-- chore(deps): update plugin com.android.library to v8.4.1 by @renovate[bot] in [#1519](https://github.com/LemmyNet/jerboa/pull/1519)
-- chore(deps): update plugin com.android.test to v8.4.1 by @renovate[bot] in [#1520](https://github.com/LemmyNet/jerboa/pull/1520)
-- chore(deps): update plugin com.android.application to v8.4.1 by @renovate[bot] in [#1518](https://github.com/LemmyNet/jerboa/pull/1518)
 - Fix content description for upvotes by @MV-GH in [#1516](https://github.com/LemmyNet/jerboa/pull/1516)
 - Set specific versions for runtime-livedata. by @dessalines in [#1502](https://github.com/LemmyNet/jerboa/pull/1502)
 - Removing ben-names_versions. by @dessalines in [#1501](https://github.com/LemmyNet/jerboa/pull/1501)
-- fix(deps): update dependency org.mockito:mockito-core to v5.12.0 by @renovate[bot] in [#1500](https://github.com/LemmyNet/jerboa/pull/1500)
-- fix(deps): update dependency androidx.lifecycle:lifecycle-runtime-compose to v2.8.0 by @renovate[bot] in [#1499](https://github.com/LemmyNet/jerboa/pull/1499)
-- fix(deps): update dependency androidx.lifecycle:lifecycle-livedata-ktx to v2.8.0 by @renovate[bot] in [#1498](https://github.com/LemmyNet/jerboa/pull/1498)
-- chore(deps): update plugin com.github.ben-manes.versions to v0.51.0 by @renovate[bot] in [#1497](https://github.com/LemmyNet/jerboa/pull/1497)
-- fix(deps): update dependency composeoptions to v1.5.14 by @renovate[bot] in [#1493](https://github.com/LemmyNet/jerboa/pull/1493)
-- chore(deps): update plugin com.google.devtools.ksp to v1.9.24-1.0.20 by @renovate[bot] in [#1492](https://github.com/LemmyNet/jerboa/pull/1492)
-- chore(deps): update kotlin monorepo to v1.9.24 by @renovate[bot] in [#1491](https://github.com/LemmyNet/jerboa/pull/1491)
-- fix(deps): update dependency org.ocpsoft.prettytime:prettytime to v5.0.8.final by @renovate[bot] in [#1496](https://github.com/LemmyNet/jerboa/pull/1496)
-- fix(deps): update dependency org.jetbrains.kotlinx:kotlinx-coroutines-test to v1.8.1 by @renovate[bot] in [#1495](https://github.com/LemmyNet/jerboa/pull/1495)
-- fix(deps): update dependency io.ktor:ktor-client-logging to v2.3.11 by @renovate[bot] in [#1494](https://github.com/LemmyNet/jerboa/pull/1494)
-- chore: Configure Renovate by @renovate[bot] in [#1489](https://github.com/LemmyNet/jerboa/pull/1489)
 - Update LemmyApi by @MV-GH in [#1486](https://github.com/LemmyNet/jerboa/pull/1486)
 - Use Compose BOM by @MV-GH in [#1485](https://github.com/LemmyNet/jerboa/pull/1485)
 - Upgrading deps. by @dessalines in [#1482](https://github.com/LemmyNet/jerboa/pull/1482)
@@ -66,7 +72,6 @@
 
 ## New Contributors
 
-- @renovate[bot] made their first contribution in [#1535](https://github.com/LemmyNet/jerboa/pull/1535)
 - @TechVest made their first contribution in [#1480](https://github.com/LemmyNet/jerboa/pull/1480)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.66...0.0.67
@@ -82,10 +87,6 @@
 - Add tr locales by @mikropsoft in [#1477](https://github.com/LemmyNet/jerboa/pull/1477)
 - Moving to new LemmyNet repo. by @dessalines in [#1470](https://github.com/LemmyNet/jerboa/pull/1470)
 - Removing cardano, this was never used. by @dessalines in [#1467](https://github.com/LemmyNet/jerboa/pull/1467)
-
-## New Contributors
-
-- @mikropsoft made their first contribution in [#1477](https://github.com/LemmyNet/jerboa/pull/1477)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.65...0.0.66
 
@@ -640,16 +641,16 @@
 - Make updateInstances task compatible with configuration cache by @MV-GH in [#915](https://github.com/LemmyNet/jerboa/pull/915)
 - Merge branch 'main' into config-cache by @MV-GH
 - Adding Show Post Source button by @MV-GH in [#901](https://github.com/LemmyNet/jerboa/pull/901)
-- Fixing lint issue
-- Merge branch 'issue/506' of https://github.com/ZJouba/jerboa into issue/506
+- Fixing lint issue by @IzakJoubert
+- Merge branch 'issue/506' of https://github.com/ZJouba/jerboa into issue/506 by @IzakJoubert
 - Merge branch 'main' into issue/506 by @ZJouba
 - Remove `app_name` from strings.xml for `ko` by @MV-GH in [#924](https://github.com/LemmyNet/jerboa/pull/924)
 - Remove `app_name` from strings.xml for `ko`
-- Changing button text with Boolean
-- Merge remote-tracking branch 'upstream/main' into issue/506
-- Removing unknown translations
-- Fixing lint issues
-- Adding Show Post Source button
+- Changing button text with Boolean by @IzakJoubert
+- Merge remote-tracking branch 'upstream/main' into issue/506 by @IzakJoubert
+- Removing unknown translations by @IzakJoubert
+- Fixing lint issues by @IzakJoubert
+- Adding Show Post Source button by @IzakJoubert
 - Make updateInstances task compatible with configuration cache by @AppearamidGuy
 - Edit strings.xml for `ko` by @meinside in [#909](https://github.com/LemmyNet/jerboa/pull/909)
 - Adding release notes. by @dessalines
@@ -658,6 +659,7 @@
 
 - @frankivo made their first contribution in [#961](https://github.com/LemmyNet/jerboa/pull/961)
 - @MKabe made their first contribution in [#933](https://github.com/LemmyNet/jerboa/pull/933)
+- @IzakJoubert made their first contribution
 - @AppearamidGuy made their first contribution
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.37...0.0.38
