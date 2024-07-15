@@ -1,6 +1,7 @@
 #!/bin/bash
 pushd ../
 
+./gradlew clean
 ./gradlew assembleRelease
 ./gradlew bundleRelease
 
