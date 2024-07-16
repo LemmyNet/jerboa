@@ -1,7 +1,16 @@
+# Jerboa 0.0.71 (2024-07-16)
+
+## What's Changed in 0.0.71
+
+- Fix subscribed feed paging not working by @MV-GH in [#1597](https://github.com/LemmyNet/jerboa/pull/1597)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.70...0.0.71
+
 # Jerboa 0.0.70 (2024-07-15)
 
 ## What's Changed in 0.0.70
 
+- Upping version. by @dessalines
 - Fixing build script. by @dessalines in [#1595](https://github.com/LemmyNet/jerboa/pull/1595)
 - Fix show back button when clicking on tagged user by @Tyoda in [#1579](https://github.com/LemmyNet/jerboa/pull/1579)
 - Fix multiple spoiler blocks displaying incorrectly (#1577) by @Tyoda in [#1578](https://github.com/LemmyNet/jerboa/pull/1578)
