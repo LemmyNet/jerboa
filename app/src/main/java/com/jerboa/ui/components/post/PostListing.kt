@@ -109,6 +109,7 @@ import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.components.post.composables.PostOptionsDropdown
+import com.jerboa.ui.components.settings.about.TORRENT_HELP_LINK
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.CARD_COLORS
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
@@ -483,6 +484,10 @@ fun PostBody(
         // The metadata card
         if (fullBody && showPostLinkPreview) {
             MetadataCard(post = post)
+
+            if (post.url?.startsWith("magnet") == true) {
+                TorrentHelpInfo()
+            }
         }
 
         // Check to make sure body isn't empty string
@@ -1788,4 +1793,25 @@ fun MetadataCard(post: Post) {
             },
         )
     }
+}
+
+@Composable
+fun TorrentHelpInfo() {
+    OutlinedCard(
+        shape = MaterialTheme.shapes.medium,
+        modifier =
+            Modifier
+                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                .fillMaxWidth(),
+        content = {
+            Column(
+                modifier = Modifier.padding(MEDIUM_PADDING),
+            ) {
+                MyMarkdownText(
+                    markdown = stringResource(R.string.torrent_help, TORRENT_HELP_LINK),
+                    onClick = {},
+                )
+            }
+        },
+    )
 }

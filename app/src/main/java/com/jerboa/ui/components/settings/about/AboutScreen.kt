@@ -51,6 +51,7 @@ const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
 const val DONATE_LINK = "https://join-lemmy.org/donate"
 const val JERBOA_LEMMY_ML_LINK = "https://lemmy.ml/c/jerboa"
 const val MASTODON_LINK = "https://mastodon.social/@LemmyDev"
+const val TORRENT_HELP_LINK = "https://join-lemmy.org/docs/users/02-media.html#torrents"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
