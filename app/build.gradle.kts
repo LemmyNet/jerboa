@@ -112,7 +112,7 @@ dependencies {
     // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
     // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
 
-    val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.06.00-alpha01")
+    val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.07.00-alpha02")
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
