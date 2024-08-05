@@ -646,10 +646,8 @@ fun validateUrl(
     ctx: Context,
     url: String,
     label: String = ctx.getString(R.string.url),
-): InputField {
-    val uri = Uri.parse(url)
-
-    return if (url.isNotEmpty() && !ALLOWED_SCHEMES.contains(uri.scheme ?: "")) {
+): InputField =
+    if (url.isNotEmpty() && !ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         InputField(
             label = ctx.getString(R.string.url_invalid),
             hasError = true,
@@ -660,7 +658,6 @@ fun validateUrl(
             hasError = false,
         )
     }
-}
 
 fun siFormat(num: Long): String {
     // Weird bug where if num is zero, it won't format
