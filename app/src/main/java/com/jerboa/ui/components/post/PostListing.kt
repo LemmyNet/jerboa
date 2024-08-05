@@ -1767,7 +1767,7 @@ fun MetadataCard(post: Post) {
             shape = MaterialTheme.shapes.medium,
             modifier =
                 Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .padding(MEDIUM_PADDING)
                     .fillMaxWidth(),
             content = {
                 Column(
@@ -1801,7 +1801,7 @@ fun TorrentHelpInfo() {
         shape = MaterialTheme.shapes.medium,
         modifier =
             Modifier
-                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                .padding(MEDIUM_PADDING)
                 .fillMaxWidth(),
         content = {
             Column(
