@@ -493,4 +493,5 @@
     <string name="you_have_no_blocked_users">You have no blocked users</string>
     <string name="you_have_no_blocked_communities">You have no blocked communities</string>
     <string name="you_have_no_blocked_instances">You have no blocked instances</string>
+    <string name="torrent_help">Lemmy can use a technology called BitTorrent to view or stream media. [Click here](%1$s) to learn how.</string>
 </resources>

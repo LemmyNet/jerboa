@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
-import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -251,7 +250,7 @@ fun parseUrl(
     baseUrl: String,
     url: String,
 ): Pair<Boolean, String>? {
-    if (url.startsWith("https://") || url.startsWith("http://")) {
+    if (ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         return Pair(false, url)
     } else if (url.startsWith("/c/")) {
         if (url.count { c -> c == '@' } == 1) {
@@ -648,7 +647,7 @@ fun validateUrl(
     url: String,
     label: String = ctx.getString(R.string.url),
 ): InputField =
-    if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
+    if (url.isNotEmpty() && !ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         InputField(
             label = ctx.getString(R.string.url_invalid),
             hasError = true,
