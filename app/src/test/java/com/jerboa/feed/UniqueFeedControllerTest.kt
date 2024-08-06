@@ -5,8 +5,9 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class UniqueFeedControllerTest {
-
-    private data class PostView(override val id: Long) : Identity
+    private data class PostView(
+        override val id: Long,
+    ) : Identity
 
     @Test
     fun `Should not add duplicate posts`() {

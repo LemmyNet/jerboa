@@ -5,7 +5,7 @@ import it.vercruysse.lemmyapi.Identity
 open class UniqueFeedController<T : Identity> : FeedController<T>() {
     private val ids = mutableSetOf<Long>()
 
-    override fun add(item: T) : Boolean {
+    override fun add(item: T): Boolean {
         if (ids.add(item.id)) {
             items.add(item)
             return true
@@ -13,7 +13,7 @@ open class UniqueFeedController<T : Identity> : FeedController<T>() {
         return false
     }
 
-    override fun addAll(newItems: List<T>)  {
+    override fun addAll(newItems: List<T>) {
         newItems.forEach {
             if (ids.add(it.id)) {
                 items.add(it)
@@ -26,7 +26,7 @@ open class UniqueFeedController<T : Identity> : FeedController<T>() {
         ids.clear()
     }
 
-    override fun remove(item: T) : Boolean {
+    override fun remove(item: T): Boolean {
         ids.remove(item.id)
         return super.remove(item)
     }
