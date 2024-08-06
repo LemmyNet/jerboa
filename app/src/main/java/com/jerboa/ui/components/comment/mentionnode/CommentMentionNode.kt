@@ -42,7 +42,6 @@ import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -194,7 +193,7 @@ fun CommentMentionNodeFooterLine(
                     if (personMentionView.person_mention.read) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )
@@ -225,7 +224,7 @@ fun CommentMentionNodeFooterLine(
                     if (personMentionView.saved) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )

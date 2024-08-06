@@ -20,7 +20,6 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.muted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +62,7 @@ fun SiteLegalScreen(
                             MyMarkdownText(
                                 modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
                                 markdown = it,
-                                color = MaterialTheme.colorScheme.onBackground.muted,
+                                color = MaterialTheme.colorScheme.outline,
                                 onClick = {},
                             )
                         }

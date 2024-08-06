@@ -166,7 +166,6 @@ fun BottomAppBarAll(
                             textAlign = TextAlign.Center,
                             fontSize = TextUnit(10f, TextUnitType.Sp),
                             text = stringResource(tab.textId),
-                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
@@ -340,7 +339,7 @@ fun ActionBarButton(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     text: String? = null,
-    contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
+    contentColor: Color = MaterialTheme.colorScheme.outline,
     noClick: Boolean = false,
     account: Account,
     requiresAccount: Boolean = true,
@@ -371,7 +370,7 @@ fun ActionBarButton(
             Text(
                 text = text,
                 color = contentColor,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }
@@ -399,7 +398,7 @@ fun ActionBarButtonAndBadge(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     text: String? = null,
-    contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
+    contentColor: Color = MaterialTheme.colorScheme.outline,
     noClick: Boolean = false,
     account: Account,
     requiresAccount: Boolean = true,
@@ -451,12 +450,12 @@ fun ActionBarButtonAndBadge(
 fun DotSpacer(
     modifier: Modifier = Modifier,
     padding: Dp = 0.dp,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelMedium,
 ) {
     Text(
         text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
-        color = MaterialTheme.colorScheme.onBackground.muted,
+        color = MaterialTheme.colorScheme.outline,
         modifier = modifier.padding(horizontal = padding),
     )
 }
@@ -466,7 +465,7 @@ fun scoreColor(myVote: Int?): Color =
     when (myVote) {
         1 -> MaterialTheme.colorScheme.secondary
         -1 -> MaterialTheme.colorScheme.error
-        else -> MaterialTheme.colorScheme.onBackground.muted
+        else -> MaterialTheme.colorScheme.outline
     }
 
 @Composable
@@ -589,7 +588,7 @@ fun Sidebar(
                 ) {
                     MyMarkdownText(
                         markdown = it,
-                        color = MaterialTheme.colorScheme.onBackground.muted,
+                        color = MaterialTheme.colorScheme.outline,
                         onClick = {},
                     )
                 }
@@ -656,34 +655,47 @@ fun CommentsAndPosts(
     FlowRow {
         Text(
             text = stringResource(R.string.AppBars_users_day, siFormat(usersActiveDay)),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
+        DotSpacer()
         Text(
             text = stringResource(R.string.AppBars_users_week, siFormat(usersActiveWeek)),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = stringResource(R.string.AppBars_users_month, siFormat(usersActiveMonth)),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
+        DotSpacer()
         Text(
             text = stringResource(R.string.AppBars_users_6_months, siFormat(usersActiveHalfYear)),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
+        DotSpacer()
         Text(
             text = stringResource(R.string.AppBars_posts, siFormat(postCount)),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
+        DotSpacer()
         Text(
             text = stringResource(R.string.AppBars_comments, siFormat(commentCount)),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
     }
+}
+
+@Preview
+@Composable
+fun CommentsAndPostsPreview() {
+    CommentsAndPosts(
+        usersActiveDay = 2,
+        usersActiveWeek = 22,
+        usersActiveMonth = 222,
+        usersActiveHalfYear = 2222,
+        postCount = 20,
+        commentCount = 5,
+    )
 }
 
 @SuppressLint("ComposableModifierFactory")
@@ -773,9 +785,7 @@ fun ActionTopBar(
                 enabled = formValid && !loading,
             ) {
                 if (loading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    CircularProgressIndicator()
                 } else {
                     Icon(
                         imageVector = actionIcon,

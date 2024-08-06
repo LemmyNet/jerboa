@@ -44,7 +44,7 @@ fun CommunityName(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)?,
     color: Color = MaterialTheme.colorScheme.primary,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelMedium,
 ) {
     ItemAndInstanceTitle(
         title = community.title,
@@ -78,7 +78,7 @@ fun CommunityLink(
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelMedium,
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
@@ -119,7 +119,6 @@ fun CommunityLink(
             usersPerMonth?.also {
                 Text(
                     text = stringResource(R.string.community_link_users_month, usersPerMonth),
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }

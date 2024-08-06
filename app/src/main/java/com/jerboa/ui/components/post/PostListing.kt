@@ -46,6 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -103,6 +105,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.fadingEdge
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.common.scoreColor
 import com.jerboa.ui.components.community.CommunityLink
@@ -111,7 +114,6 @@ import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.components.post.composables.PostOptionsDropdown
 import com.jerboa.ui.components.settings.about.TORRENT_HELP_LINK
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
-import com.jerboa.ui.theme.CARD_COLORS
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
@@ -123,7 +125,6 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.CoroutineScope
 
@@ -174,7 +175,7 @@ fun PostHeaderLine(
                             // Set this to false, we already know this
                             isPostCreator = false,
                             isCommunityBanned = creatorBannedFromCommunity,
-                            color = MaterialTheme.colorScheme.onSurface.muted,
+                            color = MaterialTheme.colorScheme.outline,
                             showAvatar = !showCommunityName && showAvatar,
                         )
                         if (post.featured_local) {
@@ -232,24 +233,6 @@ fun PostHeaderLine(
     }
 }
 
-@Composable
-fun CommunityIcon(
-    community: Community,
-    onCommunityClick: (community: Community) -> Unit,
-    blurNSFW: BlurNSFW,
-) {
-    community.icon?.let {
-        CircularIcon(
-            icon = it,
-            contentDescription = stringResource(R.string.postListing_goToCommunity),
-            size = MEDIUM_ICON_SIZE,
-            modifier = Modifier.clickable { onCommunityClick(community) },
-            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-            blur = blurNSFW.needBlur(community.nsfw),
-        )
-    }
-}
-
 @Preview
 @Composable
 fun PostHeaderLinePreview() {
@@ -272,6 +255,24 @@ fun PostHeaderLinePreview() {
         fullBody = true,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
+}
+
+@Composable
+fun CommunityIcon(
+    community: Community,
+    onCommunityClick: (community: Community) -> Unit,
+    blurNSFW: BlurNSFW,
+) {
+    community.icon?.let {
+        CircularIcon(
+            icon = it,
+            contentDescription = stringResource(R.string.postListing_goToCommunity),
+            size = MEDIUM_ICON_SIZE,
+            modifier = Modifier.clickable { onCommunityClick(community) },
+            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
+            blur = blurNSFW.needBlur(community.nsfw),
+        )
+    }
 }
 
 @Composable
@@ -341,18 +342,16 @@ fun PostName(
     read: Boolean,
     showIfRead: Boolean,
 ) {
-    var color =
-        if (post.featured_local) {
+    val color =
+        if (showIfRead && read) {
+            MaterialTheme.colorScheme.outline
+        } else if (post.featured_local) {
             MaterialTheme.colorScheme.primary
         } else if (post.featured_community) {
             MaterialTheme.colorScheme.secondary
         } else {
-            MaterialTheme.colorScheme.onSurface
+            Color.Unspecified
         }
-
-    if (showIfRead && read) {
-        color = color.muted
-    }
 
     Text(
         text = post.name,
@@ -432,8 +431,9 @@ fun PostTitleAndThumbnail(
                         hostName?.also {
                             Text(
                                 text = it,
-                                color = MaterialTheme.colorScheme.onBackground.muted,
-                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.outline,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontFamily = FontFamily.Monospace,
                             )
                         }
                     }
@@ -495,45 +495,38 @@ fun PostBody(
 
         // The desc
         body?.also { text ->
-            Card(
-                colors = CARD_COLORS,
-                shape = MaterialTheme.shapes.medium,
-                modifier =
-                    Modifier
-                        .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                        .fillMaxWidth(),
-                content = {
-                    if (fullBody) {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .padding(MEDIUM_PADDING),
-                        ) {
-                            if (viewSource) {
-                                SelectionContainer {
-                                    Text(
-                                        text = text,
-                                        fontFamily = FontFamily.Monospace,
-                                    )
-                                }
-                            } else {
-                                MyMarkdownText(
-                                    markdown = text,
-                                    onClick = {},
-                                )
-                            }
+            if (fullBody) {
+                Column(
+                    modifier =
+                        Modifier
+                            .padding(MEDIUM_PADDING),
+                ) {
+                    if (viewSource) {
+                        SelectionContainer {
+                            Text(
+                                text = text,
+                                fontFamily = FontFamily.Monospace,
+                            )
                         }
                     } else {
-                        CreateMarkdownPreview(
+                        MyMarkdownText(
                             markdown = text,
-                            color = LocalContentColor.current,
-                            onClick = clickBody,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(MEDIUM_PADDING),
+                            onClick = {},
                         )
                     }
-                },
-            )
+                }
+            } else {
+                val bottomFade = Brush.verticalGradient(.7f to MaterialTheme.colorScheme.background, 1f to Color.Transparent)
+                CreateMarkdownPreview(
+                    markdown = text,
+                    color = LocalContentColor.current,
+                    onClick = clickBody,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .padding(MEDIUM_PADDING)
+                        .fadingEdge(bottomFade),
+                )
+            }
         }
     }
 }
@@ -772,7 +765,7 @@ fun SavedButton(
         contentColor = if (saved) {
             MaterialTheme.colorScheme.primary
         } else {
-            MaterialTheme.colorScheme.onBackground.muted
+            MaterialTheme.colorScheme.outline
         },
         account = account,
     )
@@ -808,7 +801,7 @@ fun CommentNewCountRework(
 fun CommentNewCount(
     comments: Long,
     unreadCount: Long,
-    style: TextStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+    style: TextStyle = MaterialTheme.typography.labelSmall.copy(fontStyle = FontStyle.Italic),
     spacing: Dp = 0.dp,
 ) {
     val unread =
@@ -823,7 +816,7 @@ fun CommentNewCount(
         Text(
             text = stringResource(R.string.post_listing_new, unread),
             style = style,
-            color = MaterialTheme.colorScheme.onSurface.muted,
+            color = MaterialTheme.colorScheme.outline,
         )
     }
 }
@@ -1426,7 +1419,7 @@ fun PostListingList(
                         person = postView.creator,
                         onClick = {},
                         clickable = false,
-                        color = MaterialTheme.colorScheme.onSurface.muted,
+                        color = MaterialTheme.colorScheme.outline,
                         showAvatar = false,
                         modifier = centerMod,
                     )
@@ -1437,8 +1430,9 @@ fun PostListingList(
                             hostName?.also {
                                 Text(
                                     text = it,
-                                    color = MaterialTheme.colorScheme.onBackground.muted,
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.outline,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontFamily = FontFamily.Monospace,
                                     modifier = centerMod,
                                 )
                                 DotSpacer(modifier = centerMod)
@@ -1469,13 +1463,13 @@ fun PostListingList(
                                 R.string.post_listing_comments_count,
                                 postView.counts.comments,
                             ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground.muted,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.outline,
                     )
                     CommentNewCount(
                         comments = postView.counts.comments,
                         unreadCount = postView.unread_comments,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     NsfwBadge(nsfwCheck(postView))
                 }
@@ -1487,85 +1481,6 @@ fun PostListingList(
                 blurEnabled = blurNSFW.needBlur(postView),
                 appState = appState,
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun ThumbnailTile(
-    post: Post,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurEnabled: Boolean,
-    appState: JerboaAppState,
-) {
-    post.url?.also { url ->
-        val postType = getPostType(url)
-
-        val postLinkPicMod = Modifier
-            .size(POST_LINK_PIC_SIZE)
-            .combinedClickable(
-                onClick = {
-                    if (postType != PostType.Link) {
-                        appState.openImageViewer(url)
-                    } else {
-                        appState.openLink(
-                            url,
-                            useCustomTabs,
-                            usePrivateTabs,
-                        )
-                    }
-                },
-                onLongClick = {
-                    appState.showLinkPopup(url)
-                },
-            )
-
-        Box {
-            post.thumbnail_url?.also { thumbnail ->
-                PictrsThumbnailImage(
-                    thumbnail = thumbnail,
-                    blur = blurEnabled,
-                    roundBottomEndCorner = postType != PostType.Link,
-                    contentDescription = post.alt_text,
-                    modifier = postLinkPicMod,
-                )
-            } ?: run {
-                Card(
-                    colors = CARD_COLORS,
-                    modifier = postLinkPicMod,
-                    shape = MaterialTheme.shapes.large,
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Link,
-                            contentDescription = null,
-                            modifier = Modifier.size(LINK_ICON_SIZE),
-                        )
-                    }
-                }
-            }
-
-            // Display a caret in the bottom right corner to denote this as an image
-            if (postType != PostType.Link) {
-                Icon(
-                    painter = painterResource(id = R.drawable.triangle),
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .size(THUMBNAIL_CARET_SIZE)
-                            .align(Alignment.BottomEnd),
-                    tint =
-                        when (postType) {
-                            PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
-                            else -> MaterialTheme.jerboaColorScheme.imageHighlight
-                        },
-                )
-            }
         }
     }
 }
@@ -1626,6 +1541,84 @@ fun PostListingListWithThumbPreview() {
         enableDownVotes = false,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ThumbnailTile(
+    post: Post,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
+    blurEnabled: Boolean,
+    appState: JerboaAppState,
+) {
+    post.url?.also { url ->
+        val postType = getPostType(url)
+
+        val postLinkPicMod = Modifier
+            .size(POST_LINK_PIC_SIZE)
+            .combinedClickable(
+                onClick = {
+                    if (postType != PostType.Link) {
+                        appState.openImageViewer(url)
+                    } else {
+                        appState.openLink(
+                            url,
+                            useCustomTabs,
+                            usePrivateTabs,
+                        )
+                    }
+                },
+                onLongClick = {
+                    appState.showLinkPopup(url)
+                },
+            )
+
+        Box {
+            post.thumbnail_url?.also { thumbnail ->
+                PictrsThumbnailImage(
+                    thumbnail = thumbnail,
+                    blur = blurEnabled,
+                    roundBottomEndCorner = postType != PostType.Link,
+                    contentDescription = post.alt_text,
+                    modifier = postLinkPicMod,
+                )
+            } ?: run {
+                Card(
+                    modifier = postLinkPicMod,
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Link,
+                            contentDescription = null,
+                            modifier = Modifier.size(LINK_ICON_SIZE),
+                        )
+                    }
+                }
+            }
+
+            // Display a caret in the bottom right corner to denote this as an image
+            if (postType != PostType.Link) {
+                Icon(
+                    painter = painterResource(id = R.drawable.triangle),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .size(THUMBNAIL_CARET_SIZE)
+                            .align(Alignment.BottomEnd),
+                    tint =
+                        when (postType) {
+                            PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                            else -> MaterialTheme.jerboaColorScheme.imageHighlight
+                        },
+                )
+            }
+        }
+    }
 }
 
 @Composable

@@ -38,7 +38,6 @@ import com.jerboa.ui.theme.LARGER_ICON_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.MAX_IMAGE_SIZE
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
-import com.jerboa.ui.theme.muted
 import com.jerboa.util.BlurTransformation
 
 @Composable
@@ -271,7 +270,7 @@ fun ColumnScope.PickImage(
         } else {
             Text(
                 text = stringResource(R.string.pictrs_image_upload_image),
-                color = MaterialTheme.colorScheme.onBackground.muted,
+                color = MaterialTheme.colorScheme.outline,
             )
         }
     }

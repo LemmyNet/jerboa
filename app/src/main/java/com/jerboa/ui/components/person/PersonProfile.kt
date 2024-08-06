@@ -54,7 +54,6 @@ import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.dto.SortType
 
@@ -115,7 +114,7 @@ fun PersonProfileTopSection(
             personView.person.bio?.also {
                 MyMarkdownText(
                     markdown = it,
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    color = MaterialTheme.colorScheme.outline,
                     onClick = {},
                 )
             }
@@ -128,12 +127,14 @@ fun CommentsAndPosts(personView: PersonView) {
     Row {
         Text(
             text = stringResource(R.string.person_profile_posts, personView.counts.post_count),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.outline,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = stringResource(R.string.person_profile_comments, personView.counts.comment_count),
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.outline,
         )
     }
 }
