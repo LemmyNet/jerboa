@@ -23,8 +23,8 @@ import com.jerboa.feat.default
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
+import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.CommentReplyView
@@ -285,4 +285,29 @@ fun PostReply(
             placeholder = stringResource(R.string.comment_reply_type_your_comment),
         )
     }
+}
+
+@Composable
+fun PostNodeHeader(
+    postView: PostView,
+    instantScores: InstantScores,
+    onPersonClick: (personId: PersonId) -> Unit,
+    showAvatar: Boolean,
+    voteDisplayMode: LocalUserVoteDisplayMode,
+) {
+    CommentOrPostNodeHeader(
+        creator = postView.creator,
+        instantScores = instantScores,
+        published = postView.post.published,
+        updated = postView.post.updated,
+        deleted = postView.post.deleted,
+        onPersonClick = onPersonClick,
+        isPostCreator = true,
+        isCommunityBanned = postView.creator_banned_from_community,
+        onClick = {},
+        onLongCLick = {},
+        showAvatar = showAvatar,
+        voteDisplayMode = voteDisplayMode,
+        isDistinguished = false,
+    )
 }

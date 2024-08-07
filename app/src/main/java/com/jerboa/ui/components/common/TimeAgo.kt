@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -17,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDownward
 import androidx.compose.material.icons.outlined.ArrowUpward
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +34,6 @@ import com.jerboa.R
 import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
 import com.jerboa.api.API
 import com.jerboa.datatypes.samplePerson
-import com.jerboa.datatypes.samplePost
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.formatPercent
 import com.jerboa.feat.upvotePercent
@@ -54,6 +53,7 @@ fun TimeAgo(
     longTimeFormat: Boolean = false,
 ) {
     val publishedPretty = dateStringToPretty(published, longTimeFormat)
+    val style = MaterialTheme.typography.labelMedium
 
     if (publishedPretty == null) {
         SmallErrorLabel(text = stringResource(R.string.time_ago_failed_to_parse))
@@ -65,30 +65,36 @@ fun TimeAgo(
             stringResource(R.string.time_ago_ago, it, publishedPretty)
         } ?: run { publishedPretty }
 
-    Row(modifier = modifier) {
-        Text(
-            text = afterPreceding,
-            color = MaterialTheme.colorScheme.outline,
-            style = MaterialTheme.typography.labelMedium,
-        )
-
-        updated?.also {
-            DotSpacer(
-                padding = SMALL_PADDING,
-                style = MaterialTheme.typography.labelMedium,
-            )
-            val updatedPretty = dateStringToPretty(it, longTimeFormat)
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (updated !== null) {
+            val updatedPretty = dateStringToPretty(updated, longTimeFormat)
 
             if (updatedPretty == null) {
                 SmallErrorLabel(text = stringResource(R.string.time_ago_failed_to_parse))
             } else {
+                val size = style.fontSize.value.dp
+                Icon(
+                    imageVector = Icons.Outlined.Edit,
+                    contentDescription = updatedPretty,
+                    tint = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.size(size),
+                )
                 Text(
-                    text = "($updatedPretty)",
-                    style = MaterialTheme.typography.labelMedium,
+                    text = updatedPretty,
+                    style = style,
                     color = MaterialTheme.colorScheme.outline,
                     fontStyle = FontStyle.Italic,
                 )
             }
+        } else {
+            Text(
+                text = afterPreceding,
+                color = MaterialTheme.colorScheme.outline,
+                style = style,
+            )
         }
     }
 }
@@ -122,10 +128,9 @@ fun TimeAgoPreview() {
 }
 
 @Composable
-fun ScoreAndTime(
+fun ScoreCombined(
+    modifier: Modifier = Modifier,
     instantScores: InstantScores,
-    published: String,
-    updated: String?,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     isNsfw: Boolean = false,
@@ -134,10 +139,10 @@ fun ScoreAndTime(
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier,
     ) {
         NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
-        Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
         val upvotePct = upvotePercent(
             upvotes = instantScores.upvotes,
             downvotes = instantScores.downvotes,
@@ -191,12 +196,7 @@ fun ScoreAndTime(
                     ),
                 )
             }
-            // Only show this spacer if at least one of the fields is enabled
-            if (voteDisplayMode.score || voteDisplayMode.upvotes || voteDisplayMode.downvotes || voteDisplayMode.upvote_percentage) {
-                DotSpacer(style = MaterialTheme.typography.labelMedium)
-            }
         }
-        TimeAgo(published = published, updated = updated)
     }
 }
 
@@ -206,17 +206,18 @@ private fun VoteIndicator(
     myVote: Int,
     iconAndDescription: Pair<ImageVector, String>? = null,
 ) {
+    val style = MaterialTheme.typography.labelMedium
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = data,
             color = scoreColor(myVote = myVote),
-            style = MaterialTheme.typography.labelMedium,
+            style = style,
             modifier = Modifier.padding(horizontal = 0.dp),
         )
         iconAndDescription?.let {
-            val size = MaterialTheme.typography.labelLarge.fontSize.value.dp
+            val size = style.fontSize.value.dp
             Icon(
                 imageVector = iconAndDescription.first,
                 contentDescription = iconAndDescription.second,
@@ -230,15 +231,13 @@ private fun VoteIndicator(
 @Preview
 @Composable
 fun UpvoteAndDownvotePreview() {
-    ScoreAndTime(
+    ScoreCombined(
         instantScores = InstantScores(
             score = 25,
             myVote = -1,
             upvotes = 10,
             downvotes = 15,
         ),
-        published = samplePost.published,
-        updated = samplePost.updated,
         voteDisplayMode = LocalUserVoteDisplayMode(
             local_user_id = -1,
             score = false,
@@ -252,15 +251,13 @@ fun UpvoteAndDownvotePreview() {
 @Preview
 @Composable
 fun ScoreAndUpvotePctAndTimePreview() {
-    ScoreAndTime(
+    ScoreCombined(
         instantScores = InstantScores(
             score = 25,
             myVote = 1,
             upvotes = 10,
             downvotes = 15,
         ),
-        published = samplePost.published,
-        updated = samplePost.updated,
         voteDisplayMode = LocalUserVoteDisplayMode(
             local_user_id = -1,
             score = true,
@@ -274,15 +271,13 @@ fun ScoreAndUpvotePctAndTimePreview() {
 @Preview
 @Composable
 fun UpvotePctAndTimePreview() {
-    ScoreAndTime(
+    ScoreCombined(
         instantScores = InstantScores(
             score = 25,
             myVote = -1,
             upvotes = 10,
             downvotes = 15,
         ),
-        published = samplePost.published,
-        updated = samplePost.updated,
         voteDisplayMode = LocalUserVoteDisplayMode(
             local_user_id = -1,
             upvote_percentage = true,
@@ -296,15 +291,13 @@ fun UpvotePctAndTimePreview() {
 @Preview
 @Composable
 fun ScoreAndTimePreview() {
-    ScoreAndTime(
+    ScoreCombined(
         instantScores = InstantScores(
             score = 25,
             myVote = -1,
             upvotes = 10,
             downvotes = 15,
         ),
-        published = samplePost.published,
-        updated = samplePost.updated,
         voteDisplayMode = LocalUserVoteDisplayMode(
             local_user_id = -1,
             score = true,
@@ -318,15 +311,13 @@ fun ScoreAndTimePreview() {
 @Preview
 @Composable
 fun HideAllAndTimePreview() {
-    ScoreAndTime(
+    ScoreCombined(
         instantScores = InstantScores(
             score = 25,
             myVote = -1,
             upvotes = 10,
             downvotes = 15,
         ),
-        published = samplePost.published,
-        updated = samplePost.updated,
         voteDisplayMode = LocalUserVoteDisplayMode(
             local_user_id = -1,
             score = false,

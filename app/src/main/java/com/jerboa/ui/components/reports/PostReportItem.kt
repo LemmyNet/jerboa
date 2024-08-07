@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -16,10 +17,9 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.default
-import com.jerboa.feat.needBlur
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.post.PostBody
-import com.jerboa.ui.components.post.PostHeaderLine
+import com.jerboa.ui.components.post.PostCommunityAndCreatorBlock
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
@@ -30,6 +30,7 @@ import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.ResolvePostReport
 import it.vercruysse.lemmyapi.dto.SubscribedType
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostReportItem(
     appState: JerboaAppState,
@@ -86,42 +87,43 @@ fun PostReportItem(
             modifier = Modifier
                 .clickable { onPostClick(postView) },
         ) {
-            PostHeaderLine(
-                post = postView.post,
-                creator = postView.creator,
-                community = postView.community,
-                creatorBannedFromCommunity = postView.creator_banned_from_community,
-                instantScores = InstantScores(
-                    myVote = postView.my_vote,
-                    score = postView.counts.score,
-                    upvotes = postView.counts.upvotes,
-                    downvotes = postView.counts.downvotes,
-                ),
+            PostCommunityAndCreatorBlock(
+                postView = postView,
                 onCommunityClick = onCommunityClick,
                 onPersonClick = onPersonClick,
                 showCommunityName = true,
                 showAvatar = showAvatar,
                 blurNSFW = blurNSFW,
-                voteDisplayMode = voteDisplayMode,
                 fullBody = false,
             )
         }
 
         //  Title + metadata
         PostBody(
-            post = postView.post,
-            read = postView.read,
+            postView = postView,
             fullBody = false,
             viewSource = false,
             expandedImage = false,
             account = account,
             useCustomTabs = false,
             usePrivateTabs = false,
-            blurEnabled = blurNSFW.needBlur(postView),
             showPostLinkPreview = true,
             appState = appState,
             clickBody = { onPostClick(postView) },
             showIfRead = true,
+            instantScores = InstantScores(
+                myVote = postView.my_vote,
+                score = postView.counts.score,
+                upvotes = postView.counts.upvotes,
+                downvotes = postView.counts.downvotes,
+            ),
+            voteDisplayMode = voteDisplayMode,
+            community = postView.community,
+            onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
+            blurNSFW = blurNSFW,
+            showAvatar = showAvatar,
+            showCommunityName = true,
         )
 
         ReportCreatorBlock(postReportView.creator, onPersonClick, showAvatar)

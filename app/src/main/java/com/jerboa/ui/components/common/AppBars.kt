@@ -258,8 +258,7 @@ fun CommentOrPostNodeHeader(
     voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     FlowRow(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -273,36 +272,40 @@ fun CommentOrPostNodeHeader(
                     bottom = MEDIUM_PADDING,
                 ),
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (deleted) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = stringResource(R.string.commentOrPostHeader_deleted),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                DotSpacer(style = MaterialTheme.typography.bodyMedium)
-            }
-
-            PersonProfileLink(
-                person = creator,
-                onClick = { onPersonClick(creator.id) },
-                showTags = true,
-                isPostCreator = isPostCreator,
-                isDistinguished = isDistinguished,
-                isCommunityBanned = isCommunityBanned,
-                showAvatar = showAvatar,
+        val centerMod = Modifier.align(Alignment.CenterVertically)
+        if (deleted) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = stringResource(R.string.commentOrPostHeader_deleted),
+                tint = MaterialTheme.colorScheme.error,
+                modifier = centerMod,
             )
+            DotSpacer(modifier = centerMod)
         }
-        ScoreAndTime(
+
+        PersonProfileLink(
+            person = creator,
+            onClick = { onPersonClick(creator.id) },
+            showTags = true,
+            isPostCreator = isPostCreator,
+            isDistinguished = isDistinguished,
+            isCommunityBanned = isCommunityBanned,
+            showAvatar = showAvatar,
+            modifier = centerMod,
+        )
+        DotSpacer(modifier = centerMod)
+        ScoreCombined(
             instantScores = instantScores,
-            published = published,
-            updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
             voteDisplayMode = voteDisplayMode,
+            modifier = centerMod,
+        )
+        DotSpacer(modifier = centerMod)
+        TimeAgo(
+            published = published,
+            updated = updated,
+            modifier = centerMod,
         )
     }
 }
