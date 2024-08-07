@@ -44,7 +44,6 @@ import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Community
 
 @Composable
@@ -127,7 +126,7 @@ fun CreateEditPostBody(
             suggestedTitle?.let {
                 Text(
                     text = stringResource(R.string.create_post_copy_suggested_title, it),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier.clickable { onNameChange(it) },
                 )
             }

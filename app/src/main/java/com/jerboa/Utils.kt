@@ -474,7 +474,7 @@ fun communityNameShown(community: Community): String =
 
 fun hostName(url: String): String? =
     try {
-        URL(url).host
+        URL(url).host.replace("www.", "")
     } catch (e: MalformedURLException) {
         null
     }

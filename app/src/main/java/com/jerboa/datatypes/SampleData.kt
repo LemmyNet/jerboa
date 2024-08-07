@@ -1,5 +1,6 @@
 package com.jerboa.datatypes
 
+import com.jerboa.feat.InstantScores
 import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentAggregates
 import it.vercruysse.lemmyapi.datatypes.CommentReply
@@ -838,4 +839,12 @@ val samplePrivateMessageReportView =
         private_message_creator = samplePerson,
         creator = samplePerson2,
         resolver = samplePerson3,
+    )
+
+val sampleInstantScores =
+    InstantScores(
+        myVote = samplePostView.my_vote,
+        score = samplePostView.counts.score,
+        upvotes = samplePostView.counts.upvotes,
+        downvotes = samplePostView.counts.downvotes,
     )

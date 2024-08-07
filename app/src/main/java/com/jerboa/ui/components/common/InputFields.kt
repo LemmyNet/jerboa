@@ -72,7 +72,6 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
 
 @Composable
@@ -138,8 +137,6 @@ fun MarkdownTextField(
                     ),
                 colors =
                     TextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
@@ -196,7 +193,6 @@ fun CreateLinkDialog(
                 Text(
                     text = stringResource(R.string.input_fields_insert_link),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 OutlinedTextField(
                     value = text,
@@ -222,7 +218,7 @@ fun CreateLinkDialog(
             ) {
                 Text(
                     text = stringResource(R.string.input_fields_cancel),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    color = MaterialTheme.colorScheme.outline,
                 )
             }
         },
@@ -272,7 +268,7 @@ fun ShowPreviewDialog(
             ) {
                 Text(
                     text = stringResource(R.string.input_fields_ok),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    color = MaterialTheme.colorScheme.outline,
                 )
             }
         },
@@ -428,7 +424,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Preview,
                 contentDescription = stringResource(R.string.markdownHelper_preview),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -437,7 +433,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Link,
                 contentDescription = stringResource(R.string.markdownHelper_insertLink),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -445,14 +441,12 @@ fun MarkdownHelperBar(
             enabled = !imageUploading,
         ) {
             if (imageUploading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                CircularProgressIndicator()
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Image,
                     contentDescription = stringResource(R.string.markdownHelper_insertImage),
-                    tint = MaterialTheme.colorScheme.onBackground.muted,
+                    tint = MaterialTheme.colorScheme.outline,
                 )
             }
         }
@@ -468,7 +462,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatBold,
                 contentDescription = stringResource(R.string.markdownHelper_formatBold),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -483,7 +477,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatItalic,
                 contentDescription = stringResource(R.string.markdownHelper_formatItalic),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -499,7 +493,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatQuote,
                 contentDescription = stringResource(R.string.markdownHelper_insertQuote),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -515,7 +509,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
                 contentDescription = stringResource(R.string.markdownHelper_insertList),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -532,7 +526,7 @@ fun MarkdownHelperBar(
                 painter = painterResource(R.drawable.emergency_home_fill0_wght400_grad0_opsz48),
                 contentDescription = stringResource(R.string.markdownHelper_insertSpoiler),
                 modifier = Modifier.size(MARKDOWN_BAR_ICON_SIZE),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -548,7 +542,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Title,
                 contentDescription = stringResource(R.string.markdownHelper_insertHeader),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -563,7 +557,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Code,
                 contentDescription = stringResource(R.string.markdownHelper_insertCode),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -578,7 +572,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatStrikethrough,
                 contentDescription = stringResource(R.string.markdownHelper_formatStrikethrough),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -593,7 +587,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Subscript,
                 contentDescription = stringResource(R.string.markdownHelper_formatSubscript),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
         IconButton(
@@ -608,7 +602,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Superscript,
                 contentDescription = stringResource(R.string.markdownHelper_formatSuperscript),
-                tint = MaterialTheme.colorScheme.onBackground.muted,
+                tint = MaterialTheme.colorScheme.outline,
             )
         }
     }

@@ -55,7 +55,6 @@ import com.jerboa.ui.components.common.customMarquee
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.CommunityView
 import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.SubscribedType
@@ -99,7 +98,6 @@ fun CommunityTopSection(
                 Text(
                     text = communityView.community.title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Row {
@@ -109,8 +107,8 @@ fun CommunityTopSection(
                             R.string.community_users_month,
                             communityView.counts.users_active_month,
                         ),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.outline,
                 )
             }
             Row {

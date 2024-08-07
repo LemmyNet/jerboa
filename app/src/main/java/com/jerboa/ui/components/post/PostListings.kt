@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +38,7 @@ import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListings(
     posts: List<PostView>,

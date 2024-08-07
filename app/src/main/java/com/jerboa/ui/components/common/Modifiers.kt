@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.common
 
 import android.os.Build
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -12,7 +11,12 @@ import androidx.compose.ui.autofill.AutofillTree
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
@@ -65,5 +69,12 @@ fun Modifier.onAutofill(
         }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.customMarquee(): Modifier = this.basicMarquee(initialDelayMillis = 4_000)
+
+fun Modifier.fadingEdge(brush: Brush) =
+    this
+        .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+        .drawWithContent {
+            drawContent()
+            drawRect(brush = brush, blendMode = BlendMode.DstIn)
+        }

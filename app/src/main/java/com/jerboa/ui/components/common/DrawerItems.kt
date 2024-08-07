@@ -62,7 +62,6 @@ fun IconAndTextDrawerItem(
                     modifier = spacingMod.size(DRAWER_ITEM_SPACING),
                     icon = ico,
                     contentDescription = contentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Text(
@@ -74,7 +73,6 @@ fun IconAndTextDrawerItem(
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowRight,
                 contentDescription = stringResource(R.string.dialog_moreOptions),
-                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(24.dp),
             )
         }

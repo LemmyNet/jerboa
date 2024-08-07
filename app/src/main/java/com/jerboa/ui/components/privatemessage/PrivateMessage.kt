@@ -27,7 +27,6 @@ import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
@@ -61,7 +60,10 @@ fun PrivateMessageHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = fromOrTo, color = MaterialTheme.colorScheme.onBackground.muted)
+            Text(
+                text = fromOrTo,
+                color = MaterialTheme.colorScheme.outline,
+            )
             PersonProfileLink(
                 person = otherPerson,
                 onClick = { onPersonClick(otherPerson.id) },
@@ -173,7 +175,7 @@ fun PrivateMessageFooterLine(
                         if (privateMessageView.private_message.read) {
                             MaterialTheme.colorScheme.primary
                         } else {
-                            MaterialTheme.colorScheme.onBackground.muted
+                            MaterialTheme.colorScheme.outline
                         },
                     account = account,
                 )

@@ -46,7 +46,6 @@ import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.SaveUserSettings
 import it.vercruysse.lemmyapi.dto.ListingType
 import it.vercruysse.lemmyapi.dto.SortType
@@ -97,7 +96,7 @@ fun ImageWithClose(
             // Hard to see close button without a contrasting background
             colors =
                 IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surface.muted,
+                    containerColor = MaterialTheme.colorScheme.outline,
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
         ) {

@@ -41,7 +41,6 @@ import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
@@ -177,7 +176,7 @@ fun CommentReplyNodeInboxFooterLine(
                     if (commentReplyView.comment_reply.read) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )
@@ -199,7 +198,7 @@ fun CommentReplyNodeInboxFooterLine(
                     if (commentReplyView.saved) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )

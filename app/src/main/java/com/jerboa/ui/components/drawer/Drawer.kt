@@ -3,7 +3,6 @@ package com.jerboa.ui.components.drawer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,7 +64,6 @@ import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
@@ -282,7 +280,7 @@ fun DrawerItemsMain(
                 Text(
                     text = stringResource(R.string.home_subscriptions),
                     modifier = Modifier.padding(LARGE_PADDING),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    color = MaterialTheme.colorScheme.outline,
                 )
             }
             items(
@@ -447,7 +445,6 @@ fun DrawerHeader(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AvatarAndAccountName(
     account: Account,
@@ -467,7 +464,6 @@ fun AvatarAndAccountName(
             Text(
                 text = myPerson?.getDisplayName() ?: account.name,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.customMarquee(),
             )
             Text(

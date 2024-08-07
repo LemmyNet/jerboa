@@ -82,7 +82,6 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
@@ -711,7 +710,10 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = stringResource(R.string.comment_node_in), color = MaterialTheme.colorScheme.onBackground.muted)
+            Text(
+                text = stringResource(R.string.comment_node_in),
+                color = MaterialTheme.colorScheme.outline,
+            )
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
@@ -860,7 +862,7 @@ fun CommentFooterLine(
                     if (commentView.saved) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )

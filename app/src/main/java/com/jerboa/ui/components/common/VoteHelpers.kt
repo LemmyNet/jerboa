@@ -9,7 +9,6 @@ import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.VoteType
-import com.jerboa.ui.theme.muted
 
 @Composable
 fun VoteGeneric(
@@ -58,8 +57,7 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
         else ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_outline),
-                MaterialTheme
-                    .colorScheme.onBackground.muted,
+                MaterialTheme.colorScheme.outline,
             )
     }
 
@@ -74,7 +72,6 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
         else ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_outline),
-                MaterialTheme
-                    .colorScheme.onBackground.muted,
+                MaterialTheme.colorScheme.outline,
             )
     }
