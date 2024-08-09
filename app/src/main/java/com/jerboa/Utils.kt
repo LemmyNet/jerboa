@@ -474,10 +474,15 @@ fun communityNameShown(community: Community): String =
 
 fun hostName(url: String): String? =
     try {
-        URL(url).host.replace("www.", "")
+        URL(url).host
     } catch (e: MalformedURLException) {
         null
     }
+
+/**
+ * Used for the post listing hostname preview
+ */
+fun hostNameCleaned(url: String): String? = hostName(url)?.replace("www.", "")
 
 enum class UnreadOrAll {
     All,

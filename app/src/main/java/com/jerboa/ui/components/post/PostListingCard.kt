@@ -67,7 +67,7 @@ import com.jerboa.feat.default
 import com.jerboa.feat.needBlur
 import com.jerboa.feat.simulateModerators
 import com.jerboa.getPostType
-import com.jerboa.hostName
+import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
@@ -1110,7 +1110,7 @@ fun PostSubtitle(
     ) {
         post.url?.also { postUrl ->
             if (!isSameInstance(postUrl, account.instance)) {
-                val hostName = hostName(postUrl)
+                val hostName = hostNameCleaned(postUrl)
                 hostName?.also {
                     Text(
                         text = it,

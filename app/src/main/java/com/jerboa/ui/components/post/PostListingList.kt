@@ -36,7 +36,7 @@ import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.default
 import com.jerboa.feat.needBlur
-import com.jerboa.hostName
+import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
@@ -133,7 +133,7 @@ fun PostListingList(
                     DotSpacer(modifier = centerMod)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
-                            val hostName = hostName(postUrl)
+                            val hostName = hostNameCleaned(postUrl)
                             hostName?.also {
                                 Text(
                                     text = it,

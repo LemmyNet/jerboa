@@ -8,7 +8,7 @@ open class FeedController<T> {
 
     val feed: List<T> = items
 
-    fun updateAll(
+    open fun updateAll(
         selector: (List<T>) -> List<Int>,
         transformer: (T) -> T,
     ) {
@@ -17,7 +17,7 @@ open class FeedController<T> {
         }
     }
 
-    fun safeUpdate(
+    open fun safeUpdate(
         index: Int,
         transformer: (T) -> T,
     ) {
@@ -29,7 +29,7 @@ open class FeedController<T> {
         safeUpdate(index, transformer(items[index]))
     }
 
-    fun safeUpdate(
+    open fun safeUpdate(
         selector: (List<T>) -> Int,
         transformer: (T) -> T,
     ) {
@@ -44,7 +44,7 @@ open class FeedController<T> {
      * Example: a network request to update an item succeeded after the list has changed.
      * So, we ignore it
      */
-    fun safeUpdate(
+    open fun safeUpdate(
         index: Int,
         new: T,
     ) {
@@ -55,26 +55,28 @@ open class FeedController<T> {
         }
     }
 
-    fun init(newItems: List<T>) {
-        items.clear()
-        items.addAll(newItems)
+    open fun init(newItems: List<T>) {
+        clear()
+        addAll(newItems)
     }
 
-    fun get(index: Int): T? = items.getOrNull(index)
+    open fun get(index: Int): T? = items.getOrNull(index)
 
-    fun add(item: T) = items.add(item)
+    open fun add(item: T) = items.add(item)
 
-    fun remove(item: T) = items.remove(item)
+    open fun remove(item: T) = items.remove(item)
 
-    fun removeAt(index: Int) {
+    open fun removeAt(index: Int) {
         if (isValidIndex(index)) {
             items.removeAt(index)
         }
     }
 
-    fun clear() = items.clear()
+    open fun clear() = items.clear()
 
-    fun addAll(newItems: List<T>) = items.addAll(newItems)
+    open fun addAll(newItems: List<T>) {
+        items.addAll(newItems)
+    }
 
     protected inline fun <E> Iterable<E>.indexesOf(predicate: (E) -> Boolean) =
         mapIndexedNotNull { index, elem ->
