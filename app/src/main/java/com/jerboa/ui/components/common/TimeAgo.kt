@@ -40,7 +40,6 @@ import com.jerboa.feat.formatPercent
 import com.jerboa.feat.upvotePercent
 import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import java.time.Instant
 import java.time.format.DateTimeParseException
@@ -69,7 +68,7 @@ fun TimeAgo(
     Row(modifier = modifier) {
         Text(
             text = afterPreceding,
-            color = MaterialTheme.colorScheme.onBackground.muted,
+            color = MaterialTheme.colorScheme.outline,
             style = MaterialTheme.typography.labelMedium,
         )
 
@@ -86,7 +85,7 @@ fun TimeAgo(
                 Text(
                     text = "($updatedPretty)",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    color = MaterialTheme.colorScheme.outline,
                     fontStyle = FontStyle.Italic,
                 )
             }
@@ -213,7 +212,7 @@ private fun VoteIndicator(
         Text(
             text = data,
             color = scoreColor(myVote = myVote),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.padding(horizontal = 0.dp),
         )
         iconAndDescription?.let {

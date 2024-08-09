@@ -31,7 +31,7 @@ import it.vercruysse.lemmyapi.datatypes.PersonId
 fun PersonName(
     person: Person,
     color: Color = MaterialTheme.colorScheme.tertiary,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = MaterialTheme.typography.labelMedium,
     isPostCreator: Boolean = false,
 ) {
     val name = person.getDisplayName()

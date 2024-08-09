@@ -479,6 +479,11 @@ fun hostName(url: String): String? =
         null
     }
 
+/**
+ * Used for the post listing hostname preview
+ */
+fun hostNameCleaned(url: String): String? = hostName(url)?.replace("www.", "")
+
 enum class UnreadOrAll {
     All,
     Unread,
