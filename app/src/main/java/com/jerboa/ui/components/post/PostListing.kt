@@ -84,7 +84,7 @@ import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.feat.needBlur
 import com.jerboa.feat.simulateModerators
 import com.jerboa.getPostType
-import com.jerboa.hostName
+import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
@@ -427,7 +427,8 @@ fun PostTitleAndThumbnail(
                 PostName(post = post, read = read, showIfRead = showIfRead)
                 post.url?.also { postUrl ->
                     if (!isSameInstance(postUrl, account.instance)) {
-                        val hostName = hostName(postUrl)
+                        val hostName = hostNameCleaned(postUrl)
+
                         hostName?.also {
                             Text(
                                 text = it,
@@ -1426,7 +1427,7 @@ fun PostListingList(
                     DotSpacer(modifier = centerMod)
                     postView.post.url?.also { postUrl ->
                         if (!isSameInstance(postUrl, account.instance)) {
-                            val hostName = hostName(postUrl)
+                            val hostName = hostNameCleaned(postUrl)
                             hostName?.also {
                                 Text(
                                     text = it,
