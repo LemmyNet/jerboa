@@ -294,16 +294,6 @@ fun BottomNavScreen(
                         )
                     }
 
-                    composable(route = NavTab.RegistrationApplications.name) {
-                        RegistrationApplicationsScreen(
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            drawerState = drawerState,
-                            padding = padding,
-                        )
-                    }
-
                     composable(route = NavTab.Reports.name) {
                         ReportsScreen(
                             appState = appState,

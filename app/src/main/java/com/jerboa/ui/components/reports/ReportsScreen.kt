@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -78,8 +80,12 @@ fun ReportsScreen(
     val baseModifier = if (padding == null) {
         Modifier
     } else {
-        // Only do bottom padding else it will apply status bar padding twice due nested scaffold
-        Modifier.padding(bottom = padding.calculateBottomPadding())
+        // https://issuetracker.google.com/issues/249727298
+        // Else it also applies the padding above the ime (keyboard)
+        Modifier
+            .padding(padding)
+            .consumeWindowInsets(padding)
+            .systemBarsPadding()
     }
 
     Scaffold(
