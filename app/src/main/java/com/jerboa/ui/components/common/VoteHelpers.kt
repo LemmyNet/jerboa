@@ -41,7 +41,14 @@ fun VoteGeneric(
         VoteType.Upvote -> instantScores.upvotes
         VoteType.Downvote -> instantScores.downvotes
     }
-    val voteStr = if (votes > 0 && !legacyScoresHidden(voteDisplayMode = voteDisplayMode)) {
+
+    val hideScore = when (type) {
+        VoteType.Upvote -> !voteDisplayMode.upvotes
+        VoteType.Downvote -> !voteDisplayMode.downvotes
+    } &&
+        !legacyScoresHidden(voteDisplayMode = voteDisplayMode)
+
+    val voteStr = if (votes > 0 && !hideScore) {
         votes.toString()
     } else {
         null
