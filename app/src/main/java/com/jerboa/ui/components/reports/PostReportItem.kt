@@ -15,15 +15,12 @@ import com.jerboa.datatypes.samplePostReportView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
-import com.jerboa.feat.InstantScores
-import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
-import com.jerboa.ui.components.post.PostBody
 import com.jerboa.ui.components.post.PostCommunityAndCreatorBlock
+import com.jerboa.ui.components.post.PostTitleAttributionBody
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostReportView
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -41,7 +38,6 @@ fun PostReportItem(
     onCommunityClick: (Community) -> Unit,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     account: Account,
 ) {
     // Build a post-view using the content at the time it was reported,
@@ -99,7 +95,7 @@ fun PostReportItem(
         }
 
         //  Title + metadata
-        PostBody(
+        PostTitleAttributionBody(
             postView = postView,
             fullBody = false,
             viewSource = false,
@@ -111,14 +107,6 @@ fun PostReportItem(
             appState = appState,
             clickBody = { onPostClick(postView) },
             showIfRead = true,
-            instantScores = InstantScores(
-                myVote = postView.my_vote,
-                score = postView.counts.score,
-                upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes,
-            ),
-            voteDisplayMode = voteDisplayMode,
-            community = postView.community,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             blurNSFW = blurNSFW,
@@ -165,7 +153,6 @@ fun PostReportItemPreview() {
         onResolveClick = {},
         showAvatar = false,
         blurNSFW = BlurNSFW.NSFW,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         account = AnonAccount,
         appState = rememberJerboaAppState(),
     )

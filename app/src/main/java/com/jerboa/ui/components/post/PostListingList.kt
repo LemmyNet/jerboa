@@ -178,7 +178,7 @@ fun PostListingList(
                         unreadCount = postView.unread_comments,
                         style = MaterialTheme.typography.labelMedium,
                     )
-                    NsfwBadge(nsfwCheck(postView))
+                    NsfwBadge(visible = nsfwCheck(postView))
                 }
             }
             ThumbnailTile(
@@ -276,7 +276,8 @@ fun PostVotingTile(
                 .padding(end = MEDIUM_PADDING),
     ) {
         VoteGeneric(
-            myVote = instantScores.myVote,
+            instantScores = instantScores,
+            voteDisplayMode = voteDisplayMode,
             type = VoteType.Upvote,
             onVoteClick = onUpvoteClick,
             account = account,
@@ -300,7 +301,8 @@ fun PostVotingTile(
                 style = MaterialTheme.typography.bodyMedium,
             )
             VoteGeneric(
-                myVote = instantScores.myVote,
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
                 account = account,

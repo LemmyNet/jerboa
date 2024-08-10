@@ -282,9 +282,9 @@ val samplePostAggregates =
     PostAggregates(
         post_id = 135129,
         comments = 4,
-        score = 8,
+        score = 5,
         upvotes = 8,
-        downvotes = 0,
+        downvotes = 3,
         published = "2022-01-02T04:02:44.592929Z",
         newest_comment_time = "2022-01-02T04:02:44.592929Z",
     )

@@ -47,11 +47,9 @@ import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
-import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
-import com.jerboa.datatypes.sampleLinkPost
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.samplePostView
@@ -69,7 +67,6 @@ import com.jerboa.feat.simulateModerators
 import com.jerboa.getPostType
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
-import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
 import com.jerboa.toHttps
@@ -80,9 +77,10 @@ import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.ScoreCombined
 import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.VoteScore
 import com.jerboa.ui.components.common.fadingEdge
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
@@ -98,10 +96,12 @@ import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
-import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
+
+// This spacer is used uniformly below
+private val VERTICAL_SPACING = MEDIUM_PADDING
 
 @ExperimentalLayoutApi
 @Composable
@@ -155,7 +155,7 @@ fun PostListingCard(
         // verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         //  Title + metadata + attribution + body
-        PostBody(
+        PostTitleAttributionBody(
             postView = postView,
             fullBody = fullBody,
             viewSource = viewSource,
@@ -167,9 +167,6 @@ fun PostListingCard(
             appState = appState,
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
-            instantScores = instantScores,
-            community = postView.community,
-            voteDisplayMode = voteDisplayMode,
             blurNSFW = blurNSFW,
             onPersonClick = onPersonClick,
             onCommunityClick = onCommunityClick,
@@ -177,7 +174,7 @@ fun PostListingCard(
             showCommunityName = showCommunityName,
         )
 
-        Spacer(modifier = Modifier.padding(vertical = SMALL_PADDING))
+        Spacer(modifier = Modifier.padding(vertical = VERTICAL_SPACING))
 
         // Footer bar
         PostFooterLine(
@@ -209,6 +206,7 @@ fun PostListingCard(
             viewSource = viewSource,
             postActionBarMode = postActionBarMode,
             fromPostActivity = fullBody,
+            voteDisplayMode = voteDisplayMode,
             scope = appState.coroutineScope,
         )
     }
@@ -440,6 +438,7 @@ fun PostFooterLine(
     admins: List<PersonView>,
     moderators: List<PersonId>?,
     instantScores: InstantScores,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (postView: PostView) -> Unit,
@@ -544,18 +543,30 @@ fun PostFooterLine(
                 modifier = Modifier.weight(1F, true),
             )
         }
-
+        VoteScore(
+            instantScores = instantScores,
+            onVoteClick = onUpvoteClick,
+            voteDisplayMode = voteDisplayMode,
+            account = account,
+        )
+        UpvotePercentage(
+            instantScores = instantScores,
+            voteDisplayMode = voteDisplayMode,
+            account = account,
+        )
         VoteGeneric(
-            myVote = instantScores.myVote,
+            instantScores = instantScores,
             type = VoteType.Upvote,
             onVoteClick = onUpvoteClick,
+            voteDisplayMode = voteDisplayMode,
             account = account,
         )
         if (enableDownVotes) {
             VoteGeneric(
-                myVote = instantScores.myVote,
+                instantScores = instantScores,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
+                voteDisplayMode = voteDisplayMode,
                 account = account,
             )
         }
@@ -616,6 +627,7 @@ fun PostFooterLinePreview() {
         admins = emptyList(),
         moderators = emptyList(),
         instantScores = sampleInstantScores,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -655,83 +667,97 @@ fun PostCommunityAndCreatorBlock(
     blurNSFW: BlurNSFW,
 ) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
-        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier.fillMaxWidth(),
     ) {
         val centerMod = Modifier.align(Alignment.CenterVertically)
 
-        if (showCommunityName && showAvatar) {
-            CommunityIcon(
-                modifier = centerMod.padding(end = SMALL_PADDING),
-                community = postView.community,
-                onCommunityClick = onCommunityClick,
-                blurNSFW = blurNSFW,
-            )
-        }
-        if (showCommunityName) {
-            CommunityName(
-                community = postView.community,
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
+        ) {
+            if (showCommunityName && showAvatar) {
+                CommunityIcon(
+                    modifier = centerMod.padding(end = SMALL_PADDING),
+                    community = postView.community,
+                    onCommunityClick = onCommunityClick,
+                    blurNSFW = blurNSFW,
+                )
+            }
+            if (showCommunityName) {
+                CommunityName(
+                    community = postView.community,
+                    modifier = centerMod,
+                    onClick = { onCommunityClick(postView.community) },
+                )
+                Text(
+                    text = stringResource(R.string.by),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = centerMod,
+                )
+            }
+            PersonProfileLink(
+                person = postView.creator,
+                onClick = onPersonClick,
+                showTags = fullBody,
+                // Set this to false, we already know this
+                isPostCreator = false,
+                isCommunityBanned = postView.creator_banned_from_community,
+                color = MaterialTheme.colorScheme.outline,
+                showAvatar = !showCommunityName && showAvatar,
                 modifier = centerMod,
-                onClick = { onCommunityClick(postView.community) },
             )
-            DotSpacer(modifier = centerMod)
+            if (postView.post.featured_local) {
+                DotSpacer(modifier = centerMod)
+                Icon(
+                    imageVector = Icons.Outlined.PushPin,
+                    contentDescription = stringResource(R.string.postListing_featuredLocal),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
+                )
+            }
+            if (postView.post.featured_community) {
+                DotSpacer(modifier = centerMod)
+                Icon(
+                    imageVector = Icons.Outlined.PushPin,
+                    contentDescription = stringResource(R.string.postListing_featuredCommunity),
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
+                )
+            }
+            if (postView.post.locked) {
+                DotSpacer(modifier = centerMod)
+                Icon(
+                    imageVector = Icons.Outlined.CommentsDisabled,
+                    contentDescription = stringResource(R.string.postListing_locked),
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
+                )
+            }
+            if (postView.post.deleted) {
+                DotSpacer(modifier = centerMod)
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = stringResource(R.string.postListing_deleted),
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = centerMod,
+                )
+            }
+            if (postView.post.removed) {
+                DotSpacer(modifier = centerMod)
+                Icon(
+                    imageVector = Icons.Outlined.Gavel,
+                    contentDescription = stringResource(R.string.removed),
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = centerMod,
+                )
+            }
         }
-        PersonProfileLink(
-            person = postView.creator,
-            onClick = onPersonClick,
-            showTags = fullBody,
-            // Set this to false, we already know this
-            isPostCreator = false,
-            isCommunityBanned = postView.creator_banned_from_community,
-            color = MaterialTheme.colorScheme.outline,
-            showAvatar = !showCommunityName && showAvatar,
+        TimeAgo(
+            published = postView.post.published,
+            updated = postView.post.updated,
             modifier = centerMod,
         )
-        if (postView.post.featured_local) {
-            DotSpacer(modifier = centerMod)
-            Icon(
-                imageVector = Icons.Outlined.PushPin,
-                contentDescription = stringResource(R.string.postListing_featuredLocal),
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
-            )
-        }
-        if (postView.post.featured_community) {
-            DotSpacer(modifier = centerMod)
-            Icon(
-                imageVector = Icons.Outlined.PushPin,
-                contentDescription = stringResource(R.string.postListing_featuredCommunity),
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
-            )
-        }
-        if (postView.post.locked) {
-            DotSpacer(modifier = centerMod)
-            Icon(
-                imageVector = Icons.Outlined.CommentsDisabled,
-                contentDescription = stringResource(R.string.postListing_locked),
-                tint = MaterialTheme.colorScheme.error,
-                modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
-            )
-        }
-        if (postView.post.deleted) {
-            DotSpacer(modifier = centerMod)
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = stringResource(R.string.postListing_deleted),
-                tint = MaterialTheme.colorScheme.error,
-                modifier = centerMod,
-            )
-        }
-        if (postView.post.removed) {
-            DotSpacer(modifier = centerMod)
-            Icon(
-                imageVector = Icons.Outlined.Gavel,
-                contentDescription = stringResource(R.string.removed),
-                tint = MaterialTheme.colorScheme.error,
-                modifier = centerMod,
-            )
-        }
     }
 }
 
@@ -769,7 +795,7 @@ fun CommunityIcon(
 
 @ExperimentalLayoutApi
 @Composable
-fun PostBody(
+fun PostTitleAttributionBody(
     postView: PostView,
     fullBody: Boolean,
     viewSource: Boolean,
@@ -783,30 +809,13 @@ fun PostBody(
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     showIfRead: Boolean,
-    instantScores: InstantScores,
-    community: Community,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     blurNSFW: BlurNSFW,
     showCommunityName: Boolean,
     showAvatar: Boolean,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+        verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
     ) {
-        PostTitleBlock(
-            postView = postView,
-            expandedImage = expandedImage,
-            account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            appState = appState,
-            showIfRead = showIfRead,
-            instantScores = instantScores,
-            community = community,
-            voteDisplayMode = voteDisplayMode,
-            blurNSFW = blurNSFW,
-        )
-
         PostCommunityAndCreatorBlock(
             postView = postView,
             onCommunityClick = onCommunityClick,
@@ -815,6 +824,17 @@ fun PostBody(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
             fullBody = fullBody,
+            blurNSFW = blurNSFW,
+        )
+
+        PostTitleBlock(
+            postView = postView,
+            expandedImage = expandedImage,
+            account = account,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
+            appState = appState,
+            showIfRead = showIfRead,
             blurNSFW = blurNSFW,
         )
 
@@ -827,45 +847,60 @@ fun PostBody(
             }
         }
 
-        // Check to make sure body isn't empty string
-        val body = postView.post.body
-            ?.trim()
-            ?.ifEmpty { null }
+        PostBody(
+            body = postView.post.body,
+            fullBody = fullBody,
+            viewSource = viewSource,
+            clickBody = clickBody,
+        )
+    }
+}
 
-        // The desc
-        body?.also { text ->
-            if (fullBody) {
-                Column(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = MEDIUM_PADDING),
-                ) {
-                    if (viewSource) {
-                        SelectionContainer {
-                            Text(
-                                text = text,
-                                fontFamily = FontFamily.Monospace,
-                            )
-                        }
-                    } else {
-                        MyMarkdownText(
-                            markdown = text,
-                            onClick = {},
+@Composable
+fun PostBody(
+    body: String?,
+    fullBody: Boolean,
+    viewSource: Boolean,
+    clickBody: () -> Unit,
+) {
+    // Check to make sure body isn't empty string
+    val bodyTrimmed = body
+        ?.trim()
+        ?.ifEmpty { null }
+
+    // The desc
+    bodyTrimmed?.also { text ->
+        if (fullBody) {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(horizontal = MEDIUM_PADDING),
+            ) {
+                if (viewSource) {
+                    SelectionContainer {
+                        Text(
+                            text = text,
+                            fontFamily = FontFamily.Monospace,
                         )
                     }
+                } else {
+                    MyMarkdownText(
+                        markdown = text,
+                        onClick = {},
+                    )
                 }
-            } else {
-                val bottomFade = Brush.verticalGradient(.7f to MaterialTheme.colorScheme.background, 1f to Color.Transparent)
-                CreateMarkdownPreview(
-                    markdown = text,
-                    color = LocalContentColor.current,
-                    onClick = clickBody,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .padding(horizontal = MEDIUM_PADDING)
-                        .fadingEdge(bottomFade),
-                )
             }
+        } else {
+            val bottomFade = Brush.verticalGradient(.7f to MaterialTheme.colorScheme.background, 1f to Color.Transparent)
+            CreateMarkdownPreview(
+                markdown = text,
+                color = LocalContentColor.current,
+                onClick = clickBody,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .padding(horizontal = MEDIUM_PADDING)
+                    .fadingEdge(bottomFade),
+            )
         }
     }
 }
@@ -874,7 +909,7 @@ fun PostBody(
 @Preview
 @Composable
 fun PreviewStoryTitleAndMetadata() {
-    PostBody(
+    PostTitleAttributionBody(
         postView = samplePostView,
         fullBody = false,
         viewSource = false,
@@ -885,9 +920,6 @@ fun PreviewStoryTitleAndMetadata() {
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
-        community = samplePostView.community,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
-        instantScores = sampleInstantScores,
         blurNSFW = BlurNSFW.NSFW,
         onPersonClick = {},
         onCommunityClick = {},
@@ -901,7 +933,7 @@ fun PreviewStoryTitleAndMetadata() {
 @Composable
 fun PreviewSourcePost() {
     val pv = sampleMarkdownPostView
-    PostBody(
+    PostTitleAttributionBody(
         postView = pv,
         fullBody = true,
         viewSource = true,
@@ -912,9 +944,6 @@ fun PreviewSourcePost() {
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
-        community = pv.community,
-        instantScores = sampleInstantScores,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         blurNSFW = BlurNSFW.NSFW,
         onPersonClick = {},
         onCommunityClick = {},
@@ -960,9 +989,6 @@ fun PostTitleBlock(
     usePrivateTabs: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    instantScores: InstantScores,
-    community: Community,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     blurNSFW: BlurNSFW,
 ) {
     val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
@@ -972,10 +998,6 @@ fun PostTitleBlock(
             postView = postView,
             appState = appState,
             showIfRead = showIfRead,
-            account = account,
-            instantScores = instantScores,
-            community = community,
-            voteDisplayMode = voteDisplayMode,
             blurNSFW = blurNSFW,
         )
     } else {
@@ -986,9 +1008,6 @@ fun PostTitleBlock(
             usePrivateTabs = usePrivateTabs,
             appState = appState,
             showIfRead = showIfRead,
-            instantScores = instantScores,
-            community = community,
-            voteDisplayMode = voteDisplayMode,
             blurNSFW = blurNSFW,
         )
     }
@@ -1001,36 +1020,18 @@ fun PostTitleAndImageLink(
     postView: PostView,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    account: Account,
-    instantScores: InstantScores,
-    community: Community,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     blurNSFW: BlurNSFW,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url?.toHttps()
 
-    Column(
-        modifier = Modifier.padding(
-            vertical = SMALL_PADDING,
-            horizontal = MEDIUM_PADDING,
-        ),
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-    ) {
-        // Title of the post
-        PostName(
-            post = postView.post,
-            read = postView.read,
-            showIfRead = showIfRead,
-        )
-        PostSubtitle(
-            post = postView.post,
-            instantScores = instantScores,
-            community = community,
-            voteDisplayMode = voteDisplayMode,
-            account = account,
-        )
-    }
+    // Title of the post
+    PostName(
+        post = postView.post,
+        read = postView.read,
+        showIfRead = showIfRead,
+        modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+    )
 
     url?.let { cUrl ->
         PictrsUrlImage(
@@ -1056,96 +1057,52 @@ fun PostTitleAndThumbnail(
     usePrivateTabs: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    instantScores: InstantScores,
-    community: Community,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     blurNSFW: BlurNSFW,
 ) {
-    Column(
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+        // Title of the post
+        Column(
+            verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
+            modifier = Modifier.weight(1f),
         ) {
-            // Title of the post
-            Column(
-                verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-                modifier = Modifier.weight(1f),
-            ) {
-                PostName(
-                    post = postView.post,
-                    read = postView.read,
-                    showIfRead = showIfRead,
-                )
-                PostSubtitle(
-                    post = postView.post,
-                    instantScores = instantScores,
-                    community = community,
-                    voteDisplayMode = voteDisplayMode,
-                    account = account,
-                )
-            }
-            ThumbnailTile(
+            PostName(
                 post = postView.post,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurEnabled = blurNSFW.needBlur(postView),
-                appState = appState,
+                read = postView.read,
+                showIfRead = showIfRead,
             )
+            HostnameSimplified(postView.post.url, account)
         }
+        ThumbnailTile(
+            post = postView.post,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
+            blurEnabled = blurNSFW.needBlur(postView),
+            appState = appState,
+        )
     }
 }
 
-@ExperimentalLayoutApi
 @Composable
-fun PostSubtitle(
-    post: Post,
-    instantScores: InstantScores,
-    community: Community,
-    voteDisplayMode: LocalUserVoteDisplayMode,
+fun HostnameSimplified(
+    url: String?,
     account: Account,
 ) {
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
-    ) {
-        post.url?.also { postUrl ->
-            if (!isSameInstance(postUrl, account.instance)) {
-                val hostName = hostNameCleaned(postUrl)
-                hostName?.also {
-                    Text(
-                        text = it,
-                        color = MaterialTheme.colorScheme.outline,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontFamily = FontFamily.Monospace,
-                    )
-                    DotSpacer()
-                }
+    url?.also { postUrl ->
+        if (!isSameInstance(postUrl, account.instance)) {
+            val hostName = hostNameCleaned(postUrl)
+            hostName?.also {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontFamily = FontFamily.Monospace,
+                )
             }
         }
-        ScoreCombined(
-            instantScores = instantScores,
-            isNsfw = nsfwCheck(post, community),
-            voteDisplayMode = voteDisplayMode,
-        )
-        DotSpacer()
-        TimeAgo(
-            published = post.published,
-            updated = post.updated,
-        )
     }
-}
-
-@ExperimentalLayoutApi
-@Composable
-@Preview
-fun PostSubtitlePreview() {
-    PostSubtitle(
-        post = sampleLinkPost,
-        instantScores = sampleInstantScores,
-        community = sampleCommunity,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
-        account = AnonAccount,
-    )
 }
 
 @Composable

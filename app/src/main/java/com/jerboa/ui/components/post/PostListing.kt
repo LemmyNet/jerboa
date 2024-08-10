@@ -422,6 +422,7 @@ fun TorrentHelpInfo() {
 
 @Composable
 fun PostName(
+    modifier: Modifier = Modifier,
     post: Post,
     read: Boolean,
     showIfRead: Boolean,
@@ -441,6 +442,6 @@ fun PostName(
         text = post.name,
         style = MaterialTheme.typography.headlineMedium,
         color = color,
-        modifier = Modifier.testTag("jerboa:posttitle"),
+        modifier = modifier.testTag("jerboa:posttitle"),
     )
 }

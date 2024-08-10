@@ -103,7 +103,6 @@ fun CommentReplyScreen(
                                     .padding(padding)
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
-                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                         )
 
                     is ReplyItem.PostItem ->
@@ -114,7 +113,6 @@ fun CommentReplyScreen(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             showAvatar = siteViewModel.showAvatar(),
-                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                             modifier =
                                 Modifier
                                     .padding(padding)
@@ -133,7 +131,6 @@ fun CommentReplyScreen(
                                     .padding(padding)
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
-                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                         )
 
                     is ReplyItem.MentionReplyItem ->
@@ -148,7 +145,6 @@ fun CommentReplyScreen(
                                     .padding(padding)
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
-                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                         )
                 }
             }
