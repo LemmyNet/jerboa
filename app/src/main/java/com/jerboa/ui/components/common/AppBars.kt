@@ -277,6 +277,7 @@ fun CommentOrPostNodeHeader(
         val centerMod = Modifier.align(Alignment.CenterVertically)
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+            modifier = centerMod,
         ) {
             if (deleted) {
                 Icon(
@@ -301,6 +302,7 @@ fun CommentOrPostNodeHeader(
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+            modifier = centerMod,
         ) {
             NsfwBadge(
                 visible = isNsfw,
