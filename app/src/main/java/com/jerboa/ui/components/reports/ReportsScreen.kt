@@ -242,9 +242,7 @@ fun ReportsTabs(
                                         contentType = { "postReport" },
                                     ) { reportView ->
                                         PostReportItem(
-                                            appState = appState,
                                             postReportView = reportView,
-                                            account = account,
                                             blurNSFW = blurNSFW,
                                             showAvatar = siteViewModel.showAvatar(),
                                             onCommunityClick = { community ->

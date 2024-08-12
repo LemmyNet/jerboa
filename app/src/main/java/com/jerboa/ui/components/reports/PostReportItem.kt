@@ -10,14 +10,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.JerboaAppState
 import com.jerboa.datatypes.samplePostReportView
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
-import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.post.PostCommunityAndCreatorBlock
-import com.jerboa.ui.components.post.PostTitleAttributionBody
+import com.jerboa.ui.components.post.PostName
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
@@ -30,7 +26,6 @@ import it.vercruysse.lemmyapi.dto.SubscribedType
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostReportItem(
-    appState: JerboaAppState,
     postReportView: PostReportView,
     onResolveClick: (ResolvePostReport) -> Unit,
     onPersonClick: (PersonId) -> Unit,
@@ -38,7 +33,6 @@ fun PostReportItem(
     onCommunityClick: (Community) -> Unit,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    account: Account,
 ) {
     // Build a post-view using the content at the time it was reported,
     // not the current state.
@@ -94,24 +88,10 @@ fun PostReportItem(
             )
         }
 
-        //  Title + metadata
-        PostTitleAttributionBody(
-            postView = postView,
-            fullBody = false,
-            viewSource = false,
-            expandedImage = false,
-            account = account,
-            useCustomTabs = false,
-            usePrivateTabs = false,
-            showPostLinkPreview = true,
-            appState = appState,
-            clickBody = { onPostClick(postView) },
-            showIfRead = true,
-            onCommunityClick = onCommunityClick,
-            onPersonClick = onPersonClick,
-            blurNSFW = blurNSFW,
-            showAvatar = showAvatar,
-            showCommunityName = true,
+        PostName(
+            post = postView.post,
+            read = postView.read,
+            showIfRead = false,
         )
 
         ReportCreatorBlock(postReportView.creator, onPersonClick, showAvatar)
@@ -153,7 +133,5 @@ fun PostReportItemPreview() {
         onResolveClick = {},
         showAvatar = false,
         blurNSFW = BlurNSFW.NSFW,
-        account = AnonAccount,
-        appState = rememberJerboaAppState(),
     )
 }
