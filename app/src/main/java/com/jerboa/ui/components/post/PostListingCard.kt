@@ -90,6 +90,7 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.VERTICAL_SPACING
 import com.jerboa.ui.theme.XXL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
@@ -99,9 +100,6 @@ import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
-
-// This spacer is used uniformly below
-private val VERTICAL_SPACING = MEDIUM_PADDING
 
 @ExperimentalLayoutApi
 @Composable

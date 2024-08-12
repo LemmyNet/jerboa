@@ -2,7 +2,6 @@ package com.jerboa.ui.components.reports
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
@@ -16,6 +15,7 @@ import com.jerboa.ui.components.post.PostCommunityAndCreatorBlock
 import com.jerboa.ui.components.post.PostName
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.VERTICAL_SPACING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostReportView
@@ -73,7 +73,8 @@ fun PostReportItem(
         // need any of the actions there
 
         // Need to make this clickable
-        Box(
+        Column(
+            verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
             modifier = Modifier
                 .clickable { onPostClick(postView) },
         ) {
@@ -86,13 +87,13 @@ fun PostReportItem(
                 blurNSFW = blurNSFW,
                 fullBody = false,
             )
-        }
 
-        PostName(
-            post = postView.post,
-            read = postView.read,
-            showIfRead = false,
-        )
+            PostName(
+                post = postView.post,
+                read = postView.read,
+                showIfRead = false,
+            )
+        }
 
         ReportCreatorBlock(postReportView.creator, onPersonClick, showAvatar)
 

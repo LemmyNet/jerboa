@@ -25,6 +25,8 @@ val THUMBNAIL_CARET_SIZE = 10.dp
 
 val DRAWER_ITEM_SPACING = 24.dp
 
+val VERTICAL_SPACING = MEDIUM_PADDING
+
 // TODO remove all DPs from code, put here.
 const val ICON_THUMBNAIL_SIZE = 96
 const val LARGER_ICON_THUMBNAIL_SIZE = 256
