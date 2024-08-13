@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.sampleCommentReportView
-import com.jerboa.feat.InstantScores
-import com.jerboa.feat.default
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -17,7 +15,6 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentReportView
 import it.vercruysse.lemmyapi.datatypes.CommentView
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.ResolveCommentReport
 import it.vercruysse.lemmyapi.dto.SubscribedType
@@ -29,7 +26,6 @@ fun CommentReportItem(
     onPersonClick: (PersonId) -> Unit,
     onCommentClick: (CommentId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     // Build a comment-view using the content at the time it was reported,
     // not the current state.
@@ -65,15 +61,8 @@ fun CommentReportItem(
         // Don't use the full CommentNode, as you don't need any of the actions there
         CommentNodeHeader(
             commentView = commentView,
-            instantScores = InstantScores(
-                myVote = commentView.my_vote,
-                score = commentView.counts.score,
-                upvotes = commentView.counts.upvotes,
-                downvotes = commentView.counts.downvotes,
-            ),
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
             collapsedCommentsCount = 0,
             isExpanded = true,
             onClick = { onCommentClick(commentView.comment.id) },
@@ -124,6 +113,5 @@ fun CommentReportItemPreview() {
         onResolveClick = {},
         onCommentClick = {},
         showAvatar = false,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }

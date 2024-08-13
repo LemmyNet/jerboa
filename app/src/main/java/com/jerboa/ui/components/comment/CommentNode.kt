@@ -73,7 +73,9 @@ import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SwipeToAction
+import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.VoteScore
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.theme.BORDER_WIDTH
@@ -82,7 +84,6 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
@@ -98,18 +99,14 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 fun CommentNodeHeader(
     commentView: CommentView,
     onPersonClick: (personId: PersonId) -> Unit,
-    instantScores: InstantScores,
     collapsedCommentsCount: Long,
     isExpanded: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
-        instantScores = instantScores,
-        voteDisplayMode = voteDisplayMode,
         published = commentView.comment.published,
         updated = commentView.comment.updated,
         deleted = commentView.comment.deleted,
@@ -122,6 +119,7 @@ fun CommentNodeHeader(
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
         isDistinguished = commentView.comment.distinguished,
+        isNsfw = false,
     )
 }
 
@@ -130,13 +128,6 @@ fun CommentNodeHeader(
 fun CommentNodeHeaderPreview() {
     CommentNodeHeader(
         commentView = sampleCommentView,
-        instantScores = InstantScores(
-            score = 23,
-            upvotes = 21,
-            downvotes = 2,
-            myVote = 26,
-        ),
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
@@ -330,8 +321,6 @@ fun LazyListScope.commentNodeItem(
                         CommentNodeHeader(
                             commentView = commentView,
                             onPersonClick = onPersonClick,
-                            instantScores = instantScores,
-                            voteDisplayMode = voteDisplayMode,
                             onClick = {
                                 onHeaderClick(commentView)
                             },
@@ -373,6 +362,7 @@ fun LazyListScope.commentNodeItem(
                                         admins = admins,
                                         moderators = moderators,
                                         instantScores = instantScores,
+                                        voteDisplayMode = voteDisplayMode,
                                         onUpvoteClick = {
                                             instantScores =
                                                 instantScores.update(VoteType.Upvote)
@@ -711,7 +701,10 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = stringResource(R.string.comment_node_in), color = MaterialTheme.colorScheme.onBackground.muted)
+            Text(
+                text = stringResource(R.string.comment_node_in),
+                color = MaterialTheme.colorScheme.outline,
+            )
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
@@ -744,6 +737,7 @@ fun CommentFooterLine(
     moderators: List<PersonId>?,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -820,17 +814,30 @@ fun CommentFooterLine(
                 ).padding(top = MEDIUM_PADDING),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
         ) {
+            VoteScore(
+                instantScores = instantScores,
+                onVoteClick = onUpvoteClick,
+                voteDisplayMode = voteDisplayMode,
+                account = account,
+            )
+            UpvotePercentage(
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
+                account = account,
+            )
             VoteGeneric(
-                myVote = instantScores.myVote,
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
             if (enableDownVotes) {
                 VoteGeneric(
-                    myVote = instantScores.myVote,
+                    instantScores = instantScores,
+                    voteDisplayMode = voteDisplayMode,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,
@@ -860,7 +867,7 @@ fun CommentFooterLine(
                     if (commentView.saved) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )

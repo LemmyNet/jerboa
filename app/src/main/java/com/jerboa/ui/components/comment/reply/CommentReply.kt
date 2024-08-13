@@ -18,18 +18,16 @@ import com.jerboa.R
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.entity.Account
-import com.jerboa.feat.InstantScores
-import com.jerboa.feat.default
+import com.jerboa.nsfwCheck
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
+import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.datatypes.CommentView
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -39,24 +37,16 @@ fun RepliedComment(
     commentView: CommentView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentNodeHeader(
             commentView = commentView,
             onPersonClick = onPersonClick,
-            instantScores = InstantScores(
-                score = commentView.counts.score,
-                upvotes = commentView.counts.upvotes,
-                downvotes = commentView.counts.downvotes,
-                myVote = commentView.my_vote,
-            ),
             collapsedCommentsCount = 0,
             isExpanded = true,
             onClick = {},
             onLongClick = {},
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         SelectionContainer {
             Text(text = commentView.comment.getContent())
@@ -69,22 +59,14 @@ fun RepliedCommentReply(
     commentReplyView: CommentReplyView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
-            instantScores = InstantScores(
-                score = commentReplyView.counts.score,
-                upvotes = commentReplyView.counts.upvotes,
-                downvotes = commentReplyView.counts.downvotes,
-                myVote = commentReplyView.my_vote,
-            ),
             onClick = {},
             onLongClick = {},
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         SelectionContainer {
             Text(text = commentReplyView.comment.getContent())
@@ -97,22 +79,14 @@ fun RepliedMentionReply(
     personMentionView: PersonMentionView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentMentionNodeHeader(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
-            instantScores = InstantScores(
-                score = personMentionView.counts.score,
-                upvotes = personMentionView.counts.upvotes,
-                downvotes = personMentionView.counts.downvotes,
-                myVote = personMentionView.my_vote,
-            ),
             onClick = {},
             onLongClick = {},
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         SelectionContainer {
             Text(text = personMentionView.comment.getContent())
@@ -127,7 +101,6 @@ fun RepliedCommentPreview() {
         commentView = sampleCommentView,
         onPersonClick = {},
         showAvatar = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
     )
 }
 
@@ -136,20 +109,12 @@ fun RepliedPost(
     postView: PostView,
     onPersonClick: (personId: PersonId) -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PostNodeHeader(
             postView = postView,
-            instantScores = InstantScores(
-                myVote = postView.my_vote,
-                score = postView.counts.score,
-                upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes,
-            ),
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         val text = postView.post.body ?: run { postView.post.name }
         SelectionContainer {
@@ -167,7 +132,6 @@ fun CommentReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -178,7 +142,6 @@ fun CommentReply(
             commentView = commentView,
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -199,7 +162,6 @@ fun CommentReplyReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -210,7 +172,6 @@ fun CommentReplyReply(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -231,7 +192,6 @@ fun MentionReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -242,7 +202,6 @@ fun MentionReply(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -263,7 +222,6 @@ fun PostReply(
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     val scrollState = rememberScrollState()
 
@@ -274,7 +232,6 @@ fun PostReply(
             postView = postView,
             onPersonClick = onPersonClick,
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         HorizontalDivider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -285,4 +242,26 @@ fun PostReply(
             placeholder = stringResource(R.string.comment_reply_type_your_comment),
         )
     }
+}
+
+@Composable
+fun PostNodeHeader(
+    postView: PostView,
+    onPersonClick: (personId: PersonId) -> Unit,
+    showAvatar: Boolean,
+) {
+    CommentOrPostNodeHeader(
+        creator = postView.creator,
+        published = postView.post.published,
+        updated = postView.post.updated,
+        deleted = postView.post.deleted,
+        onPersonClick = onPersonClick,
+        isPostCreator = true,
+        isCommunityBanned = postView.creator_banned_from_community,
+        onClick = {},
+        onLongCLick = {},
+        showAvatar = showAvatar,
+        isNsfw = nsfwCheck(postView),
+        isDistinguished = false,
+    )
 }

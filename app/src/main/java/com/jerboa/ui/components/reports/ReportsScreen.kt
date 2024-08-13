@@ -248,11 +248,8 @@ fun ReportsTabs(
                                         contentType = { "postReport" },
                                     ) { reportView ->
                                         PostReportItem(
-                                            appState = appState,
                                             postReportView = reportView,
-                                            account = account,
                                             blurNSFW = blurNSFW,
-                                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             showAvatar = siteViewModel.showAvatar(),
                                             onCommunityClick = { community ->
                                                 appState.toCommunity(id = community.id)
@@ -339,7 +336,6 @@ fun ReportsTabs(
                                     ) { reportView ->
                                         CommentReportItem(
                                             commentReportView = reportView,
-                                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             showAvatar = siteViewModel.showAvatar(),
                                             onPersonClick = appState::toProfile,
                                             onCommentClick = appState::toComment,

@@ -5,7 +5,7 @@ import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PostView
 
-open class PostController : FeedController<PostView>() {
+open class PostController : UniqueFeedController<PostView>() {
     fun findAndUpdatePost(updatedPostView: PostView) {
         safeUpdate({ posts ->
             posts.indexOfFirst {

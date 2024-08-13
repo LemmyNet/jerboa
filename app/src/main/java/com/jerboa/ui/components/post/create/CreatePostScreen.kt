@@ -118,12 +118,25 @@ fun CreatePostScreen(
     }
 
     val (suggestedTitle, suggestedTitleLoading) =
-        when (val res = createPostViewModel.siteMetadataRes) {
-            ApiState.Empty -> MetaDataRes(null, false)
-            ApiState.Loading -> MetaDataRes(null, true)
-            is ApiState.Success ->
-                MetaDataRes(res.data.metadata.title, false)
-            else -> MetaDataRes(null, false)
+        // If its a torrent magnet link, use the dn param to extract the torrent title
+        if (url.startsWith("magnet")) {
+            val query = Uri.parse(url).query
+            // Unfortunately you have to use a fake http uri, otherwise getQueryParameter throws a non-hierarchical error.
+            val torrentDownloadName = Uri.parse("http://test.com?$query").getQueryParameter("dn")
+
+            if (torrentDownloadName !== null) {
+                MetaDataRes(torrentDownloadName, false)
+            } else {
+                MetaDataRes(null, false)
+            }
+        } else {
+            when (val res = createPostViewModel.siteMetadataRes) {
+                ApiState.Empty -> MetaDataRes(null, false)
+                ApiState.Loading -> MetaDataRes(null, true)
+                is ApiState.Success ->
+                    MetaDataRes(res.data.metadata.title, false)
+                else -> MetaDataRes(null, false)
+            }
         }
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(

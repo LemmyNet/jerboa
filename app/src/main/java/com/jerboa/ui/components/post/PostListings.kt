@@ -1,10 +1,14 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
@@ -25,6 +29,7 @@ import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
+import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -33,6 +38,7 @@ import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListings(
     posts: List<PostView>,
@@ -139,6 +145,10 @@ fun PostListings(
                     }
                 }
             }
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = SMALL_PADDING),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+            )
         }
 
         if (showPostAppendRetry) {

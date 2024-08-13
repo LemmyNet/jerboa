@@ -27,8 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
+import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
@@ -38,11 +40,11 @@ import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
+import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.VoteScore
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -55,21 +57,18 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 fun CommentMentionNodeHeader(
     personMentionView: PersonMentionView,
     onPersonClick: (personId: PersonId) -> Unit,
-    instantScores: InstantScores,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
-        instantScores = instantScores,
-        voteDisplayMode = voteDisplayMode,
         published = personMentionView.comment.published,
         updated = personMentionView.comment.updated,
         deleted = personMentionView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = false,
+        isNsfw = false,
         isDistinguished = personMentionView.comment.distinguished,
         isCommunityBanned = personMentionView.creator_banned_from_community,
         onClick = onClick,
@@ -83,13 +82,6 @@ fun CommentMentionNodeHeader(
 fun CommentMentionNodeHeaderPreview() {
     CommentMentionNodeHeader(
         personMentionView = samplePersonMentionView,
-        instantScores = InstantScores(
-            score = 23,
-            myVote = 26,
-            upvotes = 21,
-            downvotes = 2,
-        ),
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
@@ -113,7 +105,8 @@ fun CommentMentionNodeFooterLine(
     onRemoveClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    myVote: Int,
+    instantScores: InstantScores,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     account: Account,
     enableDownvotes: Boolean,
     viewSource: Boolean,
@@ -154,17 +147,30 @@ fun CommentMentionNodeFooterLine(
                 .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
         ) {
+            VoteScore(
+                instantScores = instantScores,
+                onVoteClick = onUpvoteClick,
+                voteDisplayMode = voteDisplayMode,
+                account = account,
+            )
+            UpvotePercentage(
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
+                account = account,
+            )
             VoteGeneric(
-                myVote = myVote,
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
             if (enableDownvotes) {
                 VoteGeneric(
-                    myVote = myVote,
+                    instantScores = instantScores,
+                    voteDisplayMode = voteDisplayMode,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,
@@ -194,7 +200,7 @@ fun CommentMentionNodeFooterLine(
                     if (personMentionView.person_mention.read) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )
@@ -225,7 +231,7 @@ fun CommentMentionNodeFooterLine(
                     if (personMentionView.saved) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )
@@ -238,6 +244,32 @@ fun CommentMentionNodeFooterLine(
             )
         }
     }
+}
+
+@Composable
+@Preview
+fun CommentMentionNodeFooterLinePreview() {
+    CommentMentionNodeFooterLine(
+        personMentionView = samplePersonMentionView,
+        admins = listOf(),
+        moderators = listOf(),
+        onUpvoteClick = { },
+        onDownvoteClick = { },
+        onReplyClick = {},
+        onSaveClick = {},
+        onMarkAsReadClick = {},
+        onPersonClick = {},
+        onViewSourceClick = { },
+        onReportClick = {},
+        onRemoveClick = {},
+        onLinkClick = {},
+        onBlockCreatorClick = {},
+        instantScores = sampleInstantScores,
+        voteDisplayMode = LocalUserVoteDisplayMode.default(),
+        account = AnonAccount,
+        enableDownvotes = true,
+        viewSource = false,
+    )
 }
 
 @Composable
@@ -295,8 +327,6 @@ fun CommentMentionNode(
         CommentMentionNodeHeader(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
-            instantScores = instantScores,
-            voteDisplayMode = voteDisplayMode,
             onClick = {
                 isExpanded = !isExpanded
             },
@@ -353,7 +383,8 @@ fun CommentMentionNode(
                         account = account,
                         enableDownvotes = enableDownvotes,
                         viewSource = viewSource,
-                        myVote = instantScores.myVote,
+                        instantScores = instantScores,
+                        voteDisplayMode = voteDisplayMode,
                     )
                 }
             }

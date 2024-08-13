@@ -5,8 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
-    kotlin("plugin.serialization") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
+    kotlin("plugin.serialization") version "2.0.10"
 
 }
 
@@ -190,7 +190,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.3.3-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.3.4-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     // For custom logging plugin

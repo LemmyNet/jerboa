@@ -8,3 +8,5 @@ const val MAX_POST_TITLE_LENGTH = 200
  */
 const val SHOW_UPVOTE_PCT_THRESHOLD = 0.9F
 const val VIEW_VOTES_LIMIT = 40L
+
+val ALLOWED_SCHEMES = listOf("http", "https", "magnet")

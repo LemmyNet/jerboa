@@ -32,16 +32,15 @@ import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.VoteType
-import com.jerboa.feat.default
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
+import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
+import com.jerboa.ui.components.common.VoteScore
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.muted
 import it.vercruysse.lemmyapi.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
@@ -53,26 +52,23 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 fun CommentReplyNodeHeader(
     commentReplyView: CommentReplyView,
     onPersonClick: (personId: PersonId) -> Unit,
-    instantScores: InstantScores,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
-        instantScores = instantScores,
         published = commentReplyView.comment.published,
         updated = commentReplyView.comment.updated,
         deleted = commentReplyView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = false,
+        isNsfw = false,
         isDistinguished = commentReplyView.comment.distinguished,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
-        voteDisplayMode = voteDisplayMode,
     )
 }
 
@@ -81,13 +77,6 @@ fun CommentReplyNodeHeader(
 fun CommentReplyNodeHeaderPreview() {
     CommentReplyNodeHeader(
         commentReplyView = sampleCommentReplyView,
-        instantScores = InstantScores(
-            score = 23,
-            myVote = 26,
-            upvotes = 21,
-            downvotes = 2,
-        ),
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
@@ -108,7 +97,8 @@ fun CommentReplyNodeInboxFooterLine(
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    myVote: Int,
+    instantScores: InstantScores,
+    voteDisplayMode: LocalUserVoteDisplayMode,
     account: Account,
     enableDownvotes: Boolean,
     viewSource: Boolean,
@@ -137,17 +127,30 @@ fun CommentReplyNodeInboxFooterLine(
                 .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
         ) {
+            VoteScore(
+                instantScores = instantScores,
+                onVoteClick = onUpvoteClick,
+                voteDisplayMode = voteDisplayMode,
+                account = account,
+            )
+            UpvotePercentage(
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
+                account = account,
+            )
             VoteGeneric(
-                myVote = myVote,
+                instantScores = instantScores,
+                voteDisplayMode = voteDisplayMode,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
             if (enableDownvotes) {
                 VoteGeneric(
-                    myVote = myVote,
+                    instantScores = instantScores,
+                    voteDisplayMode = voteDisplayMode,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,
@@ -177,7 +180,7 @@ fun CommentReplyNodeInboxFooterLine(
                     if (commentReplyView.comment_reply.read) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )
@@ -199,7 +202,7 @@ fun CommentReplyNodeInboxFooterLine(
                     if (commentReplyView.saved) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onBackground.muted
+                        MaterialTheme.colorScheme.outline
                     },
                 account = account,
             )
@@ -277,7 +280,6 @@ fun CommentReplyNodeInbox(
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
-            instantScores = instantScores,
             onClick = {
                 isExpanded = !isExpanded
             },
@@ -285,7 +287,6 @@ fun CommentReplyNodeInbox(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
-            voteDisplayMode = voteDisplayMode,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -329,7 +330,8 @@ fun CommentReplyNodeInbox(
                         onReportClick = onReportClick,
                         onCommentLinkClick = onCommentLinkClick,
                         onBlockCreatorClick = onBlockCreatorClick,
-                        myVote = instantScores.myVote,
+                        instantScores = instantScores,
+                        voteDisplayMode = voteDisplayMode,
                         account = account,
                         enableDownvotes = enableDownvotes,
                         viewSource = viewSource,
