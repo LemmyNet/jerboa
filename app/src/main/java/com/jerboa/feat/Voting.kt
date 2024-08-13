@@ -54,7 +54,7 @@ fun upvotePercent(
     downvotes: Long,
 ): Float = (upvotes.toFloat() / (upvotes + downvotes))
 
-fun formatPercent(pct: Float): String = "%.0f%%".format(pct * 100F)
+fun formatPercent(pct: Float): String = "%.0f".format(pct * 100F)
 
 private fun scoreOrPctStr(
     score: Long,

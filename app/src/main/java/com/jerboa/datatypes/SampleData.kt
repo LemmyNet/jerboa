@@ -1,5 +1,6 @@
 package com.jerboa.datatypes
 
+import com.jerboa.feat.InstantScores
 import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentAggregates
 import it.vercruysse.lemmyapi.datatypes.CommentReply
@@ -281,9 +282,9 @@ val samplePostAggregates =
     PostAggregates(
         post_id = 135129,
         comments = 4,
-        score = 8,
+        score = 5,
         upvotes = 8,
-        downvotes = 0,
+        downvotes = 3,
         published = "2022-01-02T04:02:44.592929Z",
         newest_comment_time = "2022-01-02T04:02:44.592929Z",
     )
@@ -838,4 +839,12 @@ val samplePrivateMessageReportView =
         private_message_creator = samplePerson,
         creator = samplePerson2,
         resolver = samplePerson3,
+    )
+
+val sampleInstantScores =
+    InstantScores(
+        myVote = samplePostView.my_vote,
+        score = samplePostView.counts.score,
+        upvotes = samplePostView.counts.upvotes,
+        downvotes = samplePostView.counts.downvotes,
     )

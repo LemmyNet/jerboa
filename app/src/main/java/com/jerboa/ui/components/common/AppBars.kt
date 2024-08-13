@@ -3,9 +3,13 @@ package com.jerboa.ui.components.common
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -27,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
@@ -54,8 +60,6 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.feat.InstantScores
-import com.jerboa.feat.default
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
@@ -64,7 +68,6 @@ import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import it.vercruysse.lemmyapi.datatypes.CommunityModeratorView
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
@@ -242,7 +245,7 @@ fun CommentNavigationBottomAppBar(
 @Composable
 fun CommentOrPostNodeHeader(
     creator: Person,
-    instantScores: InstantScores,
+    isNsfw: Boolean,
     published: String,
     updated: String?,
     deleted: Boolean,
@@ -255,11 +258,9 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
     showAvatar: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalArrangement = Arrangement.Center,
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -273,17 +274,19 @@ fun CommentOrPostNodeHeader(
                     bottom = MEDIUM_PADDING,
                 ),
     ) {
+        val centerMod = Modifier.align(Alignment.CenterVertically)
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = centerMod,
         ) {
             if (deleted) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = stringResource(R.string.commentOrPostHeader_deleted),
                     tint = MaterialTheme.colorScheme.error,
+                    modifier = centerMod,
                 )
-                DotSpacer(style = MaterialTheme.typography.bodyMedium)
+                DotSpacer(modifier = centerMod)
             }
 
             PersonProfileLink(
@@ -294,16 +297,28 @@ fun CommentOrPostNodeHeader(
                 isDistinguished = isDistinguished,
                 isCommunityBanned = isCommunityBanned,
                 showAvatar = showAvatar,
+                modifier = centerMod,
             )
         }
-        ScoreAndTime(
-            instantScores = instantScores,
-            published = published,
-            updated = updated,
-            isExpanded = isExpanded,
-            collapsedCommentsCount = collapsedCommentsCount,
-            voteDisplayMode = voteDisplayMode,
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+            modifier = centerMod,
+        ) {
+            NsfwBadge(
+                visible = isNsfw,
+                modifier = centerMod,
+            )
+            CollapsedIndicator(
+                visible = !isExpanded,
+                descendants = collapsedCommentsCount,
+                modifier = centerMod,
+            )
+            TimeAgo(
+                published = published,
+                updated = updated,
+                modifier = centerMod,
+            )
+        }
     }
 }
 
@@ -312,12 +327,6 @@ fun CommentOrPostNodeHeader(
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
         creator = samplePerson,
-        instantScores = InstantScores(
-            score = 23,
-            upvotes = 21,
-            downvotes = 2,
-            myVote = 1,
-        ),
         published = samplePost.published,
         updated = samplePost.updated,
         deleted = false,
@@ -328,7 +337,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
+        isNsfw = true,
     )
 }
 
@@ -358,6 +367,7 @@ fun ActionBarButton(
         }
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING),
         modifier = barMod,
     ) {
         Icon(
@@ -366,7 +376,6 @@ fun ActionBarButton(
             tint = contentColor,
         )
         text?.also {
-            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
                 text = text,
                 color = contentColor,
@@ -838,3 +847,72 @@ fun DualHeaderTitle(
     bottomText = stringResource(selectedSortType.data.shortForm),
     topModifier = topModifier,
 )
+
+@Composable
+fun CollapsedIndicator(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+    descendants: Long,
+) {
+    AnimatedVisibility(
+        visible = visible && descendants > 0,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Column(modifier = modifier.wrapContentSize(Alignment.Center)) {
+            Box(
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .padding(horizontal = SMALL_PADDING),
+            ) {
+                Text(
+                    text = "+$descendants",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CollapsedIndicatorPreview() {
+    CollapsedIndicator(visible = true, descendants = 23)
+}
+
+@Composable
+fun NsfwBadge(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Column(modifier = modifier.wrapContentSize(Alignment.Center)) {
+            Box(
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .padding(horizontal = SMALL_PADDING),
+            ) {
+                Text(
+                    text = "NSFW",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun NsfwBadgePreview() {
+    NsfwBadge(visible = true)
+}

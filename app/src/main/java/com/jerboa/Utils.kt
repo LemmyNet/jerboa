@@ -850,7 +850,7 @@ fun getCommentIdDepthFromPath(
 
 fun nsfwCheck(postView: PostView): Boolean = nsfwCheck(postView.post, postView.community)
 
-fun nsfwCheck(
+private fun nsfwCheck(
     post: Post,
     community: Community,
 ): Boolean = post.nsfw || community.nsfw
