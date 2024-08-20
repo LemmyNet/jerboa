@@ -13,8 +13,20 @@ class ScriptRewriteSupportPlugin : AbstractMarkwonPlugin() {
         )
 
     companion object {
-        val SUPERSCRIPT_RGX = Regex("""\^([^\n^]+)\^""")
-        val SUBSCRIPT_RGX = Regex("""(?<!~)~([^\n~]+)~""")
+        /*
+         * Superscript has the definition:
+         * Any text between a '^' that is not interrupted by a linebreak where the starting
+         * or ending text can't be a whitespace character.
+         */
+        val SUPERSCRIPT_RGX = Regex("""\^(?!\s)([^\n^]+)(?<!\s)\^""")
+
+        /*
+         * Subscript has the definition:
+         * Any text between a tilde that is not interrupted by a linebreak where the starting
+         * or ending text can't be a whitespace character. And where the starting the tilde is not prefixed
+         * by another tilde. (To prevent matching with strikethrough)
+         */
+        val SUBSCRIPT_RGX = Regex("""(?<!~)~(?!\s)([^\n~]+)(?<!\s)~""")
 
         fun rewriteLemmyScriptToMarkwonScript(text: String): String =
             text

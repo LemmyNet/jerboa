@@ -39,5 +39,19 @@ class ScriptRewriteSupportPluginTest {
             listOf("~~text~~", "~~text~~"),
             // Intended to fail, else it will increase the complexity of the regex by a huge margin
             listOf("~~text~", "~~text~"),
+            listOf("~text~~", "<sub>text</sub>~"),
+            listOf("Tesla model X (range ~ 260kms) first, now a model Y LR (range ~ 480kms)", "Tesla model X (range ~ 260kms) first, now a model Y LR (range ~ 480kms)"),
+            listOf("~ 5 ~ 6 ~", "~ 5 ~ 6 ~"),
+            listOf("^ ^", "^ ^"),
+            listOf("^", "^"),
+            listOf("~", "~"),
+            listOf("~~", "~~"),
+            listOf("~~~", "~~~"),
+            listOf("^ 99 ^", "^ 99 ^"),
+            listOf("^ 99^", "^ 99^"),
+            listOf("^99 ^", "^99 ^"),
+            listOf("~ 99 ~", "~ 99 ~"),
+            listOf("~ 99~", "~ 99~"),
+            listOf("~99 ~", "~99 ~"),
         )
 }
