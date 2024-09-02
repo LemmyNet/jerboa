@@ -185,7 +185,10 @@ fun PictrsUrlImage(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
+        // TODO There's a bug in coil when using a placeholder,
+        // and ContentScale.FillWidth
+        // See https://github.com/coil-kt/coil/issues/1505
+        //        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier =
