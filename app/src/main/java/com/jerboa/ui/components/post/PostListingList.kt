@@ -281,6 +281,7 @@ fun PostVotingTile(
             type = VoteType.Upvote,
             onVoteClick = onUpvoteClick,
             account = account,
+            hideScores = true,
         )
 
         val scoreOrPctStr = instantScores.scoreOrPctStr(voteDisplayMode)
@@ -306,6 +307,7 @@ fun PostVotingTile(
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
                 account = account,
+                hideScores = true,
             )
         }
     }

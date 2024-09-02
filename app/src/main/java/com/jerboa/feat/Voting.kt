@@ -64,10 +64,10 @@ private fun scoreOrPctStr(
 ): String? =
     if (voteDisplayMode.upvote_percentage) {
         formatPercent(upvotePercent(upvotes, downvotes))
-    } else if (!(voteDisplayMode.score && voteDisplayMode.upvotes && voteDisplayMode.downvotes)) {
-        null
-    } else {
+    } else if (voteDisplayMode.score || voteDisplayMode.upvotes || voteDisplayMode.downvotes) {
         score.toString()
+    } else {
+        null
     }
 
 fun LocalUserVoteDisplayMode.Companion.default(score: Boolean? = false) =
