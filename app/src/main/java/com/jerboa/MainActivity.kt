@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.TextView
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.EnterTransition
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             val ctx = LocalContext.current
@@ -329,7 +331,6 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                            padding = null,
                         )
                     }
 
@@ -369,7 +370,6 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                            padding = null,
                         )
                     }
 
