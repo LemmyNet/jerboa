@@ -32,6 +32,7 @@ fun VoteGeneric(
     type: VoteType,
     onVoteClick: () -> Unit,
     account: Account,
+    hideScores: Boolean = false,
 ) {
     val iconAndColor = iconAndColor(type, instantScores)
 
@@ -42,11 +43,14 @@ fun VoteGeneric(
         VoteType.Downvote -> instantScores.downvotes
     }
 
-    val hideScore = when (type) {
-        VoteType.Upvote -> !voteDisplayMode.upvotes
-        VoteType.Downvote -> !voteDisplayMode.downvotes
-    } &&
-        !legacyScoresHidden(voteDisplayMode = voteDisplayMode)
+    val hideScore = hideScores ||
+        (
+            !legacyScoresHidden(voteDisplayMode = voteDisplayMode) &&
+                when (type) {
+                    VoteType.Upvote -> !voteDisplayMode.upvotes
+                    VoteType.Downvote -> !voteDisplayMode.downvotes
+                }
+        )
 
     val voteStr = if (votes > 0 && !hideScore) {
         votes.toString()
