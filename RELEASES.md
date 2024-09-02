@@ -1,7 +1,28 @@
+# Jerboa 0.0.72 (2024-09-02)
+
+## What's Changed in 0.0.72
+
+- Upgrading compose-bom to 2024.08 by @dessalines in [#1646](https://github.com/LemmyNet/jerboa/pull/1646)
+- Temp fix for incorrect coil image sizing. by @dessalines in [#1647](https://github.com/LemmyNet/jerboa/pull/1647)
+- Adding edge to edge support by @dessalines in [#1607](https://github.com/LemmyNet/jerboa/pull/1607)
+- Showing scores in post listing like they were before. by @dessalines in [#1641](https://github.com/LemmyNet/jerboa/pull/1641)
+- Make sup/subscript more strict by @MV-GH in [#1632](https://github.com/LemmyNet/jerboa/pull/1632)
+- Move time ago and score to a flowrow layout by @dessalines in [#1615](https://github.com/LemmyNet/jerboa/pull/1615)
+- Some material 3 cleanups. by @dessalines in [#1614](https://github.com/LemmyNet/jerboa/pull/1614)
+- Adding a few resources. by @dessalines in [#1617](https://github.com/LemmyNet/jerboa/pull/1617)
+- Adding post divider back. by @dessalines in [#1616](https://github.com/LemmyNet/jerboa/pull/1616)
+- Deduplicate posts in the feed by @MV-GH in [#1613](https://github.com/LemmyNet/jerboa/pull/1613)
+- Bettering torrent support. by @dessalines in [#1612](https://github.com/LemmyNet/jerboa/pull/1612)
+- Fix dialog for switching keyboards/languages by @MV-GH in [#1611](https://github.com/LemmyNet/jerboa/pull/1611)
+- Adding renovate automerge. by @dessalines in [#1606](https://github.com/LemmyNet/jerboa/pull/1606)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.71...0.0.72
+
 # Jerboa 0.0.71 (2024-07-16)
 
 ## What's Changed in 0.0.71
 
+- Upping version. by @dessalines
 - Fix subscribed feed paging not working by @MV-GH in [#1597](https://github.com/LemmyNet/jerboa/pull/1597)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.70...0.0.71
