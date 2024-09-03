@@ -135,11 +135,11 @@ fun BottomAppBarAll(
             }
         }
     }
-
+// TODO check if this is needed
     // If descriptions are hidden, make the bar shorter
-    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.height(56.dp)
+//    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.height(56.dp)
     NavigationBar(
-        modifier = modifier,
+        modifier = Modifier,
     ) {
         for (tab in NavTab.getEntries(userViewType)) {
             val selected = tab == selectedTab
