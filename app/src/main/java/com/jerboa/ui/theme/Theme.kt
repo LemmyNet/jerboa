@@ -13,9 +13,11 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.WindowCompat
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.entity.AppSettings
@@ -107,11 +109,25 @@ fun JerboaTheme(
 
     val view = LocalView.current
     val window = (view.context as Activity).window
+    val insets = WindowCompat.getInsetsController(window, view)
+
+    val isLight =
+        when (themeMode) {
+            ThemeMode.Black, ThemeMode.Dark -> false
+            ThemeMode.System, ThemeMode.SystemBlack -> !isSystemInDarkTheme()
+            else -> true
+        }
+
     if (appSettings.secureWindow) {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     } else {
         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
+
+    // The navigation bar color is set on BottomAppBarAll
+    insets.isAppearanceLightStatusBars = isLight
+    insets.isAppearanceLightNavigationBars = isLight
+    window.statusBarColor = Color.Transparent.toArgb()
 
     // Set up a provider to allow access to the custom color scheme from any child element
     CompositionLocalProvider(LocalColorScheme provides colors) {

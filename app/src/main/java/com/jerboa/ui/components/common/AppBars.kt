@@ -128,7 +128,7 @@ fun BottomAppBarAll(
         val colorScheme = MaterialTheme.colorScheme
 
         DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+            window.navigationBarColor = colorScheme.surfaceContainer.toArgb()
 
             onDispose {
                 window.navigationBarColor = colorScheme.background.toArgb()
