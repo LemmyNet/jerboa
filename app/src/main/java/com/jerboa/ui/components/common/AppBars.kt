@@ -135,9 +135,8 @@ fun BottomAppBarAll(
             }
         }
     }
-
     // If descriptions are hidden, make the bar shorter
-    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.height(56.dp)
+    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.navigationBarsPadding().height(56.dp)
     NavigationBar(
         modifier = modifier,
     ) {

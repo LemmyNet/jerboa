@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -97,7 +100,7 @@ android {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true
+    featureFlags = setOf(ComposeFeatureFlag.StrongSkipping)
 }
 
 baselineProfile {
