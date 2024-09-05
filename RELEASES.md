@@ -1,7 +1,17 @@
+# Jerboa 0.0.73 (2024-09-05)
+
+## What's Changed in 0.0.73
+
+- Fixes wrong height Navigation bar when descriptions where hidden. by @MV-GH in [#1650](https://github.com/LemmyNet/jerboa/pull/1650)
+- Fixes mostly systembars colors not matching with application by @MV-GH in [#1651](https://github.com/LemmyNet/jerboa/pull/1651)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.72...0.0.73
+
 # Jerboa 0.0.72 (2024-09-02)
 
 ## What's Changed in 0.0.72
 
+- Upping version. by @dessalines
 - Upgrading compose-bom to 2024.08 by @dessalines in [#1646](https://github.com/LemmyNet/jerboa/pull/1646)
 - Temp fix for incorrect coil image sizing. by @dessalines in [#1647](https://github.com/LemmyNet/jerboa/pull/1647)
 - Adding edge to edge support by @dessalines in [#1607](https://github.com/LemmyNet/jerboa/pull/1607)

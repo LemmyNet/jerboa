@@ -128,16 +128,15 @@ fun BottomAppBarAll(
         val colorScheme = MaterialTheme.colorScheme
 
         DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+            window.navigationBarColor = colorScheme.surfaceContainer.toArgb()
 
             onDispose {
                 window.navigationBarColor = colorScheme.background.toArgb()
             }
         }
     }
-
     // If descriptions are hidden, make the bar shorter
-    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.height(56.dp)
+    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.navigationBarsPadding().height(56.dp)
     NavigationBar(
         modifier = modifier,
     ) {

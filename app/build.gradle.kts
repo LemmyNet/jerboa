@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -21,8 +24,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 72
-        versionName = "0.0.72"
+        versionCode = 73
+        versionName = "0.0.73"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -97,7 +100,7 @@ android {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true
+    featureFlags = setOf(ComposeFeatureFlag.StrongSkipping)
 }
 
 baselineProfile {
