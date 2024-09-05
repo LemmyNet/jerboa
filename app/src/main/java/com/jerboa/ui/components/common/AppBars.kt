@@ -217,7 +217,7 @@ fun CommentNavigationBottomAppBar(
 ) {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
-        modifier = Modifier.height(50.dp),
+        modifier = Modifier.navigationBarsPadding().height(50.dp),
         content = {
             IconButton(modifier = Modifier.weight(.5f), onClick = {
                 scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
