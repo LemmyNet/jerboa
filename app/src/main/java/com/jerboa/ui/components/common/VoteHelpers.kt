@@ -13,7 +13,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
-import com.jerboa.api.API
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
@@ -22,7 +21,6 @@ import com.jerboa.feat.VoteType
 import com.jerboa.feat.default
 import com.jerboa.feat.formatPercent
 import com.jerboa.feat.upvotePercent
-import it.vercruysse.lemmyapi.LemmyApiBaseController
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 
 @Composable
@@ -44,13 +42,10 @@ fun VoteGeneric(
     }
 
     val hideScore = hideScores ||
-        (
-            !legacyScoresHidden(voteDisplayMode = voteDisplayMode) &&
-                when (type) {
-                    VoteType.Upvote -> !voteDisplayMode.upvotes
-                    VoteType.Downvote -> !voteDisplayMode.downvotes
-                }
-        )
+        when (type) {
+            VoteType.Upvote -> !voteDisplayMode.upvotes
+            VoteType.Downvote -> !voteDisplayMode.downvotes
+        }
 
     val voteStr = if (votes > 0 && !hideScore) {
         votes.toString()
@@ -92,7 +87,7 @@ fun VoteScore(
     val hideScore =
         voteDisplayMode.score && voteDisplayMode.upvotes && instantScores.score == instantScores.upvotes
 
-    if (voteDisplayMode.score && !hideScore && !legacyScoresHidden(voteDisplayMode)) {
+    if (voteDisplayMode.score && !hideScore) {
         ActionBarButton(
             onClick = onVoteClick,
             contentColor = iconAndColor.second,
@@ -126,7 +121,7 @@ fun UpvotePercentage(
         downvotes = instantScores.downvotes,
     )
 
-    if (voteDisplayMode.upvote_percentage && (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD) && !legacyScoresHidden(voteDisplayMode)) {
+    if (voteDisplayMode.upvote_percentage && (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)) {
         ActionBarButton(
             onClick = {},
             noClick = true,
@@ -186,6 +181,7 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 scoreColor(myVote = myVote),
             )
+
         else ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_outline),
@@ -201,6 +197,7 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
                 ImageVector.vectorResource(id = R.drawable.down_filled),
                 scoreColor(myVote = myVote),
             )
+
         else ->
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_outline),
@@ -216,17 +213,10 @@ fun scoreIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
                 Icons.Outlined.Favorite,
                 scoreColor(myVote = myVote),
             )
+
         else ->
             Pair(
                 Icons.Outlined.FavoriteBorder,
                 scoreColor(myVote = myVote),
             )
     }
-
-/**
- * If the show_scores is disabled, and we are the instance is pre 0.19.4, we fallback to legacy behaviour
- */
-private fun legacyScoresHidden(
-    voteDisplayMode: LocalUserVoteDisplayMode,
-    api: LemmyApiBaseController? = API.getInstanceOrNull(),
-): Boolean = api != null && !api.FF.hidePost() && !voteDisplayMode.score
