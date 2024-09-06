@@ -1,7 +1,16 @@
+# Jerboa 0.0.74 (2024-09-06)
+
+## What's Changed in 0.0.74
+
+- Fix missing parent comment navigation by @MV-GH in [#1656](https://github.com/LemmyNet/jerboa/pull/1656)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.73...0.0.74
+
 # Jerboa 0.0.73 (2024-09-05)
 
 ## What's Changed in 0.0.73
 
+- Upping version. by @dessalines
 - Fixes wrong height Navigation bar when descriptions where hidden. by @MV-GH in [#1650](https://github.com/LemmyNet/jerboa/pull/1650)
 - Fixes mostly systembars colors not matching with application by @MV-GH in [#1651](https://github.com/LemmyNet/jerboa/pull/1651)
 
