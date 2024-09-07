@@ -18,20 +18,19 @@ fun SwipeToNavigateBack(
     content: @Composable () -> Unit,
 ) {
     if (useSwipeBack == PostNavigationGestureMode.SwipeRight) {
-        SwipeToDismissBox(
-            state = rememberSwipeToDismissBoxState(
-                confirmValueChange = {
-                    when (it) {
-                        SwipeToDismissBoxValue.StartToEnd -> {
-                            onSwipeBack()
-                            true
-                        }
+        val swipeState = rememberSwipeToDismissBoxState()
 
-                        else -> false
-                    }
-                },
-                positionalThreshold = { it * 0.7f },
-            ),
+        when (swipeState.currentValue) {
+            SwipeToDismissBoxValue.StartToEnd -> {
+                onSwipeBack()
+            }
+
+            else -> {
+            }
+        }
+
+        SwipeToDismissBox(
+            state = swipeState,
             enableDismissFromEndToStart = false,
             backgroundContent = {
                 Box(
