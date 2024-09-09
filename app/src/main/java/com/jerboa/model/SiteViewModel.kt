@@ -18,6 +18,7 @@ import com.jerboa.api.toApiState
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
+import com.jerboa.feat.allHidden
 import com.jerboa.feat.default
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
@@ -216,6 +217,7 @@ class SiteViewModel(
                 res.data.my_user
                     ?.moderates
                     ?.map { it.community.id }
+
             else -> null
         }
 
@@ -249,12 +251,16 @@ class SiteViewModel(
     private fun legacyVoteDisplayMode(): LocalUserVoteDisplayMode =
         when (val res = siteRes) {
             is ApiState.Success ->
-                LocalUserVoteDisplayMode.default(
-                    res.data.my_user
+                // Legacy behaviour is hide all scores if show_scores is false
+                if (res.data.my_user
                         ?.local_user_view
                         ?.local_user
-                        ?.show_scores ?: true,
-                )
+                        ?.show_scores == false
+                ) {
+                    LocalUserVoteDisplayMode.allHidden()
+                } else {
+                    LocalUserVoteDisplayMode.default(false)
+                }
 
             else -> LocalUserVoteDisplayMode.default(true) // Legacy default
         }
