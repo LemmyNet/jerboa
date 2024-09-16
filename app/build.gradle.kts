@@ -123,7 +123,7 @@ dependencies {
     androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    implementation("me.zhanghai.compose.preference:library:1.0.0")
+    implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
