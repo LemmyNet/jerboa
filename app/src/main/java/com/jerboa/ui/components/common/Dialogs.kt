@@ -26,25 +26,6 @@ import com.jerboa.R
 import com.jerboa.getVersionCode
 import com.jerboa.model.AppSettingsViewModel
 
-val DONATION_MARKDOWN =
-    """
-    ### Support Jerboa
-    
-    [Jerboa](https://github.com/LemmyNet/jerboa) is free, open-source software, meaning no advertising, monetizing, or venture capital,
-    ever.
-
-    No one likes recurring donations, but they've proven to be the only
-    way open-source software like Lemmy can stay alive. If you find
-    yourself using Lemmy every day, please consider donating:
-
-    - [Support on Liberapay](https://liberapay.com/Lemmy).
-    - [Support on Patreon](https://www.patreon.com/dessalines).
-    - [Support on OpenCollective](https://opencollective.com/lemmy).
-    
-    ---
-
-    """.trimIndent()
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
@@ -76,7 +57,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                                 .verticalScroll(scrollState),
                     ) {
                         MyMarkdownText(
-                            markdown = DONATION_MARKDOWN + markdown,
+                            markdown = markdown,
                             onClick = {},
                         )
                     }

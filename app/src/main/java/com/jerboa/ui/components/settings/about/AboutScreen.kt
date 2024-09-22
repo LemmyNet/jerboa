@@ -10,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.Anchor
-import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Code
@@ -48,7 +47,6 @@ import me.zhanghai.compose.preference.ProvidePreferenceTheme
 
 const val GITHUB_URL = "https://github.com/LemmyNet/jerboa"
 const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
-const val DONATE_LINK = "https://join-lemmy.org/donate"
 const val JERBOA_LEMMY_ML_LINK = "https://lemmy.ml/c/jerboa"
 const val MASTODON_LINK = "https://mastodon.social/@LemmyDev"
 const val TORRENT_HELP_LINK = "https://join-lemmy.org/docs/users/02-media.html#torrents"
@@ -160,18 +158,6 @@ fun AboutScreen(
                         },
                         onClick = {
                             openLink(JERBOA_MATRIX_CHAT)
-                        },
-                    )
-                    Preference(
-                        title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.AttachMoney,
-                                contentDescription = null,
-                            )
-                        },
-                        onClick = {
-                            openLink(DONATE_LINK)
                         },
                     )
                     PreferenceCategory(
