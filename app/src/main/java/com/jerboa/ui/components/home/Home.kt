@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -66,9 +67,9 @@ fun HomeHeader(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val ctx = LocalContext.current
-    var showSortOptions by remember { mutableStateOf(false) }
-    var showListingTypeOptions by remember { mutableStateOf(false) }
-    var showMoreOptions by remember { mutableStateOf(false) }
+    var showSortOptions by rememberSaveable { mutableStateOf(false) }
+    var showListingTypeOptions by rememberSaveable { mutableStateOf(false) }
+    var showMoreOptions by rememberSaveable { mutableStateOf(false) }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
