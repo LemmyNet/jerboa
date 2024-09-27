@@ -1,7 +1,17 @@
+# Jerboa 0.0.77 (2024-09-27)
+
+## What's Changed in 0.0.77
+
+- Fix community search not relaunching after process death by @MV-GH in [#1681](https://github.com/LemmyNet/jerboa/pull/1681)
+- Fix popups disappearing on orientation change. by @MV-GH in [#1680](https://github.com/LemmyNet/jerboa/pull/1680)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.75...0.0.77
+
 # Jerboa 0.0.75 (2024-09-09)
 
 ## What's Changed in 0.0.75
 
+- Upping version. by @dessalines
 - Fix 'Swipe right to navigate back' to go back multiple times by @MV-GH in [#1660](https://github.com/LemmyNet/jerboa/pull/1660)
 - Fix legacy score behaviour by @MV-GH in [#1659](https://github.com/LemmyNet/jerboa/pull/1659)
 
