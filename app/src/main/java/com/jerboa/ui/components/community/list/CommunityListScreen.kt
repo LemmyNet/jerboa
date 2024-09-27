@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.feat.BlurNSFW
@@ -31,11 +31,7 @@ import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.Search
 import it.vercruysse.lemmyapi.dto.SearchType
 import it.vercruysse.lemmyapi.dto.SortType
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-private var fetchCommunitiesJob: Job? = null
 
 object CommunityListReturn {
     const val COMMUNITY = "community-list::return(community)"
@@ -57,6 +53,20 @@ fun CommunityListScreen(
         viewModel(factory = CommunityListViewModel.Companion.Factory(followList))
 
     var search by rememberSaveable { mutableStateOf("") }
+
+    // Upon launch from process death
+    LaunchedEffect(Unit) {
+        if (search.isNotEmpty()) {
+            communityListViewModel.searchCommunities(
+                form =
+                    Search(
+                        q = search,
+                        type_ = SearchType.Communities,
+                        sort = SortType.TopAll,
+                    ),
+            )
+        }
+    }
 
     val scope = rememberCoroutineScope()
 
@@ -85,19 +95,14 @@ fun CommunityListScreen(
                     search = search,
                     onSearchChange = {
                         search = it
-                        fetchCommunitiesJob?.cancel()
-                        fetchCommunitiesJob =
-                            scope.launch {
-                                delay(DEBOUNCE_DELAY)
-                                communityListViewModel.searchCommunities(
-                                    form =
-                                        Search(
-                                            q = search,
-                                            type_ = SearchType.Communities,
-                                            sort = SortType.TopAll,
-                                        ),
-                                )
-                            }
+                        communityListViewModel.searchCommunities(
+                            form =
+                                Search(
+                                    q = search,
+                                    type_ = SearchType.Communities,
+                                    sort = SortType.TopAll,
+                                ),
+                        )
                     },
                 )
             },
