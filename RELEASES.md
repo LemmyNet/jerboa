@@ -1,5 +1,3 @@
-# Jerboa 0.0.77 (2024-09-27)
-
 ## What's Changed in 0.0.77
 
 - Fix community search not relaunching after process death by @MV-GH in [#1681](https://github.com/LemmyNet/jerboa/pull/1681)
@@ -7,40 +5,28 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.75...0.0.77
 
-# Jerboa 0.0.75 (2024-09-09)
-
 ## What's Changed in 0.0.75
 
-- Upping version. by @dessalines
 - Fix 'Swipe right to navigate back' to go back multiple times by @MV-GH in [#1660](https://github.com/LemmyNet/jerboa/pull/1660)
 - Fix legacy score behaviour by @MV-GH in [#1659](https://github.com/LemmyNet/jerboa/pull/1659)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.74...0.0.75
 
-# Jerboa 0.0.74 (2024-09-06)
-
 ## What's Changed in 0.0.74
 
-- Upping version. by @dessalines
 - Fix missing parent comment navigation by @MV-GH in [#1656](https://github.com/LemmyNet/jerboa/pull/1656)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.73...0.0.74
 
-# Jerboa 0.0.73 (2024-09-05)
-
 ## What's Changed in 0.0.73
 
-- Upping version. by @dessalines
 - Fixes wrong height Navigation bar when descriptions where hidden. by @MV-GH in [#1650](https://github.com/LemmyNet/jerboa/pull/1650)
 - Fixes mostly systembars colors not matching with application by @MV-GH in [#1651](https://github.com/LemmyNet/jerboa/pull/1651)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.72...0.0.73
 
-# Jerboa 0.0.72 (2024-09-02)
-
 ## What's Changed in 0.0.72
 
-- Upping version. by @dessalines
 - Upgrading compose-bom to 2024.08 by @dessalines in [#1646](https://github.com/LemmyNet/jerboa/pull/1646)
 - Temp fix for incorrect coil image sizing. by @dessalines in [#1647](https://github.com/LemmyNet/jerboa/pull/1647)
 - Adding edge to edge support by @dessalines in [#1607](https://github.com/LemmyNet/jerboa/pull/1607)
@@ -57,20 +43,14 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.71...0.0.72
 
-# Jerboa 0.0.71 (2024-07-16)
-
 ## What's Changed in 0.0.71
 
-- Upping version. by @dessalines
 - Fix subscribed feed paging not working by @MV-GH in [#1597](https://github.com/LemmyNet/jerboa/pull/1597)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.70...0.0.71
 
-# Jerboa 0.0.70 (2024-07-15)
-
 ## What's Changed in 0.0.70
 
-- Upping version. by @dessalines
 - Fixing build script. by @dessalines in [#1595](https://github.com/LemmyNet/jerboa/pull/1595)
 - Fix show back button when clicking on tagged user by @Tyoda in [#1579](https://github.com/LemmyNet/jerboa/pull/1579)
 - Fix multiple spoiler blocks displaying incorrectly (#1577) by @Tyoda in [#1578](https://github.com/LemmyNet/jerboa/pull/1578)
@@ -87,22 +67,16 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.69...0.0.70
 
-# Jerboa 0.0.69 (2024-06-14)
-
 ## What's Changed in 0.0.69
 
-- Upping version. by @dessalines
 - Improve baseline documentation + update baseline profiles by @MV-GH in [#1551](https://github.com/LemmyNet/jerboa/pull/1551)
 - Fix edgecase with legacy show_scores by @MV-GH in [#1552](https://github.com/LemmyNet/jerboa/pull/1552)
 - Restore legacy 'Show Scores' option by @MV-GH in [#1544](https://github.com/LemmyNet/jerboa/pull/1544)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.68...0.0.69
 
-# Jerboa 0.0.68 (2024-06-13)
-
 ## What's Changed in 0.0.68
 
-- Upping version. by @dessalines
 - Add blocks screen by @MV-GH in [#1545](https://github.com/LemmyNet/jerboa/pull/1545)
 - Fix Loading bar clipping behind content by @MV-GH in [#1540](https://github.com/LemmyNet/jerboa/pull/1540)
 - Reduce recompositions due to TopAppBar by @MV-GH in [#1542](https://github.com/LemmyNet/jerboa/pull/1542)
@@ -114,11 +88,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.67...0.0.68
 
-# Jerboa 0.0.67 (2024-06-07)
-
 ## What's Changed in 0.0.67
 
-- Upping version. by @dessalines
 - Adding LocalUserVoteDisplayMode for saving, and displaying votes. by @dessalines in [#1529](https://github.com/LemmyNet/jerboa/pull/1529)
 - Add baseline profile info + update baseline profile by @MV-GH in [#1538](https://github.com/LemmyNet/jerboa/pull/1538)
 - Refactor deprecated M1 SwipeToDismiss, use M3 SwipeToDismissBox by @MV-GH in [#1537](https://github.com/LemmyNet/jerboa/pull/1537)
@@ -145,11 +116,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.66...0.0.67
 
-# Jerboa 0.0.66 (2024-04-09)
-
 ## What's Changed in 0.0.66
 
-- Upping version. by @dessalines
 - Bump deps by @MV-GH in [#1475](https://github.com/LemmyNet/jerboa/pull/1475)
 - Fix Saved comments footer empty space doesn't open post by @MV-GH in [#1472](https://github.com/LemmyNet/jerboa/pull/1472)
 - Fix Saved comments header does nothing by @MV-GH in [#1473](https://github.com/LemmyNet/jerboa/pull/1473)
@@ -159,11 +127,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.65...0.0.66
 
-# Jerboa 0.0.65 (2024-04-02)
-
 ## What's Changed in 0.0.65
 
-- Upping version. by @dessalines
 - Fixing a few other top app bar title sizes. by @dessalines in [#1466](https://github.com/LemmyNet/jerboa/pull/1466)
 - Rework fontsize, better defaults by @MV-GH in [#1452](https://github.com/LemmyNet/jerboa/pull/1452)
 - Upgrading deps. by @dessalines in [#1464](https://github.com/LemmyNet/jerboa/pull/1464)
@@ -176,11 +141,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.64...0.0.65
 
-# Jerboa 0.0.64 (2024-03-27)
-
 ## What's Changed in 0.0.64
 
-- Upping version. by @dessalines
 - Fixing woodpecker. by @dessalines in [#1460](https://github.com/LemmyNet/jerboa/pull/1460)
 - Moving to a new preferences library. by @dessalines in [#1451](https://github.com/LemmyNet/jerboa/pull/1451)
 - Subscriptions list ignores case when sorting by @MV-GH in [#1457](https://github.com/LemmyNet/jerboa/pull/1457)
@@ -188,35 +150,25 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.63...0.0.64
 
-# Jerboa 0.0.63 (2024-03-11)
-
 ## What's Changed in 0.0.63
 
-- Upping version. by @dessalines
 - Correcting a few wrong defaults. by @dessalines in [#1448](https://github.com/LemmyNet/jerboa/pull/1448)
 - Fix migrations 1 by @dessalines in [#1446](https://github.com/LemmyNet/jerboa/pull/1446)
 - Fix Strikethrough rendering by @MV-GH in [#1445](https://github.com/LemmyNet/jerboa/pull/1445)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.62...0.0.63
 
-# Jerboa 0.0.62 (2024-03-11)
-
 ## What's Changed in 0.0.62
 
-- Upping version. by @dessalines
 - Fix migration changing the the app settings by @MV-GH in [#1442](https://github.com/LemmyNet/jerboa/pull/1442)
 - Fix issues caused by edge to edge by @MV-GH in [#1443](https://github.com/LemmyNet/jerboa/pull/1443)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.61...0.0.62
 
-# Jerboa 0.0.61 (2024-03-09)
-
 ## What's Changed in 0.0.61
 
-- Upping version. by @dessalines
 - Fix generate changelog line. by @dessalines
 - Fixing donation line. by @dessalines in [#1435](https://github.com/LemmyNet/jerboa/pull/1435)
-- Adding distinct Full Score, and ScoreAndDownvote vote display modes. by @dessalines in [#1402](https://github.com/LemmyNet/jerboa/pull/1402)
 - Upgrading deps. by @dessalines in [#1434](https://github.com/LemmyNet/jerboa/pull/1434)
 - Use edge to edge by @MV-GH in [#1351](https://github.com/LemmyNet/jerboa/pull/1351)
 - Add non mirrored only votes swipe action by @MV-GH in [#1421](https://github.com/LemmyNet/jerboa/pull/1421)
@@ -232,7 +184,6 @@
 - Add nlnet grant line in readme. by @dessalines in [#1415](https://github.com/LemmyNet/jerboa/pull/1415)
 - Fix admin actions visibility for non admin mods by @MV-GH in [#1412](https://github.com/LemmyNet/jerboa/pull/1412)
 - Fix that non admin mods can see messages report tab by @MV-GH in [#1404](https://github.com/LemmyNet/jerboa/pull/1404)
-- Upping version. by @dessalines
 - Fix sidebar showing admin screen to all users by @MV-GH in [#1401](https://github.com/LemmyNet/jerboa/pull/1401)
 - Adding additional vote display modes by @dessalines in [#1378](https://github.com/LemmyNet/jerboa/pull/1378)
 - Show full error on post creation failing by @MV-GH in [#1396](https://github.com/LemmyNet/jerboa/pull/1396)
@@ -249,20 +200,14 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.59...0.0.61
 
-# Jerboa 0.0.59 (2024-02-16)
-
 ## What's Changed in 0.0.59
 
-- Upping version. by @dessalines
 - Adding lintVitalRelease to CI by @dessalines in [#1383](https://github.com/LemmyNet/jerboa/pull/1383)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.58...0.0.59
 
-# Jerboa 0.0.58 (2024-02-15)
-
 ## What's Changed in 0.0.58
 
-- Upping version. by @dessalines
 - Adding ability to ban users from profile pages. by @dessalines in [#1380](https://github.com/LemmyNet/jerboa/pull/1380)
 - Fixing view votes crash. Fixes #1357 by @dessalines in [#1379](https://github.com/LemmyNet/jerboa/pull/1379)
 - Add report queue by @dessalines in [#1360](https://github.com/LemmyNet/jerboa/pull/1360)
@@ -283,22 +228,16 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.57...0.0.58
 
-# Jerboa 0.0.57 (2024-02-06)
-
 ## What's Changed in 0.0.57
 
-- Upping version. by @dessalines
 - Fixing community pages, used wrong ID_TYPE. Fixes #1348 by @dessalines in [#1350](https://github.com/LemmyNet/jerboa/pull/1350)
 - Adding hack for swipe gesture Setting. #1338 by @dessalines in [#1349](https://github.com/LemmyNet/jerboa/pull/1349)
 - Adding release notes. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.56...0.0.57
 
-# Jerboa 0.0.56 (2024-02-05)
-
 ## What's Changed in 0.0.56
 
-- Upping version. by @dessalines
 - Making swipe colors softer. by @dessalines in [#1347](https://github.com/LemmyNet/jerboa/pull/1347)
 - Swipe post/comment to upvote/downvote/reply/save by @Snow4DV in [#1327](https://github.com/LemmyNet/jerboa/pull/1327)
 - Temp workaround for compose-settings height bug. by @dessalines in [#1345](https://github.com/LemmyNet/jerboa/pull/1345)
@@ -325,11 +264,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.55...0.0.56
 
-# Jerboa 0.0.55 (2023-12-18)
-
 ## What's Changed in 0.0.55
 
-- Upping version by @dessalines
 - Fix image upload by @MV-GH in [#1305](https://github.com/LemmyNet/jerboa/pull/1305)
 - Fix Posts failed loading, retry by @MV-GH in [#1302](https://github.com/LemmyNet/jerboa/pull/1302)
 - Improve Russian translations by @mittwerk in [#1300](https://github.com/LemmyNet/jerboa/pull/1300)
@@ -341,43 +277,31 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.54...0.0.55
 
-# Jerboa 0.0.54 (2023-12-15)
-
 ## What's Changed in 0.0.54
 
-- Upping version by @dessalines
 - Fix logging in failing by @MV-GH in [#1295](https://github.com/LemmyNet/jerboa/pull/1295)
 - Adding release notes. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.53...0.0.54
 
-# Jerboa 0.0.53 (2023-12-14)
-
 ## What's Changed in 0.0.53
 
-- Upping version by @dessalines
 - Fix empty url causing post creation failing by @MV-GH in [#1291](https://github.com/LemmyNet/jerboa/pull/1291)
 - Better fix for API creation in Verification procedure by @MV-GH in [#1290](https://github.com/LemmyNet/jerboa/pull/1290)
 - Updating releases.md by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.52...0.0.53
 
-# Jerboa 0.0.52 (2023-12-12)
-
 ## What's Changed in 0.0.52
 
-- Upping version by @dessalines
 - Fix crash on opening profile anonymous by @MV-GH in [#1288](https://github.com/LemmyNet/jerboa/pull/1288)
 - Fix crash on creating Post by @MV-GH in [#1287](https://github.com/LemmyNet/jerboa/pull/1287)
 - Adding release notes. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.51...0.0.52
 
-# Jerboa 0.0.51 (2023-12-12)
-
 ## What's Changed in 0.0.51
 
-- Upping version. by @dessalines
 - Increasing java memory to fix release build. by @dessalines in [#1286](https://github.com/LemmyNet/jerboa/pull/1286)
 - Initial MVP integration with my BackwardsCompatibleAPI by @MV-GH in [#1284](https://github.com/LemmyNet/jerboa/pull/1284)
 - v0.19 upgrade by @dessalines in [#1277](https://github.com/LemmyNet/jerboa/pull/1277)
@@ -387,11 +311,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.50...0.0.51
 
-# Jerboa 0.0.50 (2023-11-02)
-
 ## What's Changed in 0.0.50
 
-- Upping version. by @dessalines
 - Upgrading deps and gradle to 8.4 by @dessalines in [#1271](https://github.com/LemmyNet/jerboa/pull/1271)
 - Add BlurNsfwExceptFromNsfwCommunities to blur types by @MakcNmyc in [#1229](https://github.com/LemmyNet/jerboa/pull/1229)
 - Fix missing deduplication guard on profile by @MV-GH in [#1269](https://github.com/LemmyNet/jerboa/pull/1269)
@@ -409,11 +330,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.49...0.0.50
 
-# Jerboa 0.0.49 (2023-10-09)
-
 ## What's Changed in 0.0.49
 
-- Upping version. by @dessalines
 - Depend on upstream Cascade by @MV-GH in [#1256](https://github.com/LemmyNet/jerboa/pull/1256)
 - Upgrading gradle to 8.3 by @dessalines in [#1253](https://github.com/LemmyNet/jerboa/pull/1253)
 - Fixes missing comments causing `X more replies` to show instead the missing comments by @MV-GH in [#1240](https://github.com/LemmyNet/jerboa/pull/1240)
@@ -422,11 +340,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.48...0.0.49
 
-# Jerboa 0.0.48 (2023-09-27)
-
 ## What's Changed in 0.0.48
 
-- Upping version. by @dessalines
 - Fix post delete not working from within PostActivity by @MV-GH in [#1249](https://github.com/LemmyNet/jerboa/pull/1249)
 - Small refactor for shareLink and bump telephoto by @MV-GH in [#1246](https://github.com/LemmyNet/jerboa/pull/1246)
 - Sort crash logs by new, and display elapsed time by @MV-GH in [#1244](https://github.com/LemmyNet/jerboa/pull/1244)
@@ -434,11 +349,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.47...0.0.48
 
-# Jerboa 0.0.47 (2023-09-20)
-
 ## What's Changed in 0.0.47
 
-- Upping version. by @dessalines
 - Move save to the topbar of user settings and deduplicate topbar code by @MV-GH in [#1243](https://github.com/LemmyNet/jerboa/pull/1243)
 - Revert "Fix zooming difficulties" and temporary remove Swipe to exit in ImageViewer by @dessalines in [#1238](https://github.com/LemmyNet/jerboa/pull/1238)
 - Fix datetime parse failures causing app crash by @MV-GH in [#1235](https://github.com/LemmyNet/jerboa/pull/1235)
@@ -457,11 +369,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.46...0.0.47
 
-# Jerboa 0.0.46 (2023-09-05)
-
 ## What's Changed in 0.0.46
 
-- Upping version. by @dessalines
 - Update profiles and instance list by @MV-GH in [#1219](https://github.com/LemmyNet/jerboa/pull/1219)
 - Added dracula-theme, like in thumb-key by @0xFOSSMan in [#1218](https://github.com/LemmyNet/jerboa/pull/1218)
 - Support private tabs for FireFox by @dankeast in [#1216](https://github.com/LemmyNet/jerboa/pull/1216)
@@ -491,11 +400,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.45...0.0.46
 
-# Jerboa 0.0.45 (2023-08-23)
-
 ## What's Changed in 0.0.45
 
-- Upping version. by @dessalines
 - Improve woodpecker build times by @MV-GH in [#1139](https://github.com/LemmyNet/jerboa/pull/1139)
 - Update community block msg to display unblock if blocked already by @MV-GH in [#1185](https://github.com/LemmyNet/jerboa/pull/1185)
 - Add setting to enable swipe to go back in Look and Feel settings by @sthomas727 in [#1191](https://github.com/LemmyNet/jerboa/pull/1191)
@@ -516,14 +422,10 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.44...0.0.45
 
-# Jerboa 0.0.44 (2023-08-08)
-
 ## What's Changed in 0.0.44
 
-- Upping version. by @dessalines
 - Fix appbar rework by @MV-GH in [#1160](https://github.com/LemmyNet/jerboa/pull/1160)
 - Adding release notes. by @dessalines
-- Upping version. by @dessalines
 - Post actionbar design rework and options for it. by @MV-GH in [#1155](https://github.com/LemmyNet/jerboa/pull/1155)
 - Increase the zoom capability of the imageviewer by @MV-GH in [#1159](https://github.com/LemmyNet/jerboa/pull/1159)
 - Allow post mode change in Community by @ZJouba in [#1158](https://github.com/LemmyNet/jerboa/pull/1158)
@@ -541,11 +443,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.42...0.0.44
 
-# Jerboa 0.0.42 (2023-08-03)
-
 ## What's Changed in 0.0.42
 
-- Upping version. by @dessalines
 - Enchance imageviewer: Downloadprogressbar, error placeholder + retry, large images subsampling, SVG support by @MV-GH in [#1111](https://github.com/LemmyNet/jerboa/pull/1111)
 - Update drawer Subscriptions by @ZJouba in [#1131](https://github.com/LemmyNet/jerboa/pull/1131)
 - Update moderator list to be a isModerator function by @MV-GH in [#1130](https://github.com/LemmyNet/jerboa/pull/1130)
@@ -581,11 +480,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.41...0.0.42
 
-# Jerboa 0.0.41 (2023-07-21)
-
 ## What's Changed in 0.0.41
 
-- Upping version. by @dessalines
 - Don't color posts as read in post activity by @twizmwazin in [#1076](https://github.com/LemmyNet/jerboa/pull/1076)
 - Add spacer to bottom of comment lists by @twizmwazin in [#1074](https://github.com/LemmyNet/jerboa/pull/1074)
 - Show comment divider inside the left side border by @twizmwazin in [#1075](https://github.com/LemmyNet/jerboa/pull/1075)
@@ -625,11 +521,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.40...0.0.41
 
-# Jerboa 0.0.40 (2023-07-14)
-
 ## What's Changed in 0.0.40
 
-- Upping version. by @dessalines
 - Auto fill in community name for posts created in community by @MV-GH in [#1030](https://github.com/LemmyNet/jerboa/pull/1030)
 - Add option to show/hide post previews by @twizmwazin in [#1033](https://github.com/LemmyNet/jerboa/pull/1033)
 - Revert #767 should fix post opens the wrong one sometimes by @MV-GH in [#1029](https://github.com/LemmyNet/jerboa/pull/1029)
@@ -651,11 +544,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.39...0.0.40
 
-# Jerboa 0.0.39 (2023-07-10)
-
 ## What's Changed in 0.0.39
 
-- Upping version. by @dessalines
 - Add drawer to all main tabs and general drawer changes by @MV-GH in [#991](https://github.com/LemmyNet/jerboa/pull/991)
 - Add markdown preview by @MV-GH in [#1002](https://github.com/LemmyNet/jerboa/pull/1002)
 - Fix inbox loading all pages on startup instead of set unread/all mode by @MV-GH in [#1007](https://github.com/LemmyNet/jerboa/pull/1007)
@@ -685,11 +575,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.38...0.0.39
 
-# Jerboa 0.0.38 (2023-07-03)
-
 ## What's Changed in 0.0.38
 
-- Upping version. by @dessalines
 - Fix private messages being sent to yourself by @MV-GH in [#960](https://github.com/LemmyNet/jerboa/pull/960)
 - Add gitattributes file by @MV-GH in [#956](https://github.com/LemmyNet/jerboa/pull/956)
 - Show the users' federated name in drawer. by @camporter in [#937](https://github.com/LemmyNet/jerboa/pull/937)
@@ -733,11 +620,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.37...0.0.38
 
-# Jerboa 0.0.37 (2023-06-29)
-
 ## What's Changed in 0.0.37
 
-- Upping version. by @dessalines
 - Change app display name by @Undearius in [#904](https://github.com/LemmyNet/jerboa/pull/904)
 - Update baseline profiles by @MV-GH in [#906](https://github.com/LemmyNet/jerboa/pull/906)
 - Fix edit comment view text is being empty by @MV-GH in [#897](https://github.com/LemmyNet/jerboa/pull/897)
@@ -753,11 +637,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.36...0.0.37
 
-# Jerboa 0.0.36 (2023-06-26)
-
 ## What's Changed in 0.0.36
 
-- Upping version. by @dessalines
 - Add generate lemmy instance list gradle task by @MV-GH in [#884](https://github.com/LemmyNet/jerboa/pull/884)
 - Bump dependencies by @MV-GH in [#881](https://github.com/LemmyNet/jerboa/pull/881)
 - Reworked PickImage() composable by @sockenklaus in [#877](https://github.com/LemmyNet/jerboa/pull/877)
@@ -793,11 +674,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.35...0.0.36
 
-# Jerboa 0.0.35 (2023-06-22)
-
 ## What's Changed in 0.0.35
 
-- Upping version. by @dessalines
 - Fix thumbnail links being treated as images. Fixes #815 by @dessalines in [#816](https://github.com/LemmyNet/jerboa/pull/816)
 - Check server version against app minimum api version by @beatgammit in [#737](https://github.com/LemmyNet/jerboa/pull/737)
 - Fix links not working when exclamation mark before it by @MV-GH in [#802](https://github.com/LemmyNet/jerboa/pull/802)
@@ -898,13 +776,10 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.34...0.0.35
 
-# Jerboa 0.0.34 (2023-06-13)
-
 ## What's Changed in 0.0.34
 
 - Fix string issues. by @dessalines
 - Adding release notes. by @dessalines
-- Upping version. by @dessalines
 - Revamped BottomBar to match MD3 by @ironveil in [#567](https://github.com/LemmyNet/jerboa/pull/567)
 - Update Italian Translations by @andscape-dev in [#591](https://github.com/LemmyNet/jerboa/pull/591)
 - Show default icon for community links in sidebar by @a1studmuffin in [#590](https://github.com/LemmyNet/jerboa/pull/590)
@@ -953,11 +828,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.33...0.0.34
 
-# Jerboa 0.0.33 (2023-06-11)
-
 ## What's Changed in 0.0.33
 
-- Upping version. by @dessalines
 - Fixing broken DB. by @dessalines in [#511](https://github.com/LemmyNet/jerboa/pull/511)
 - Add bottom bar to community list by @abluescarab in [#497](https://github.com/LemmyNet/jerboa/pull/497)
 - Expanded default lemmy instances list to active users/mo > 100 by @shombando in [#505](https://github.com/LemmyNet/jerboa/pull/505)
@@ -1025,11 +897,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.32...0.0.33
 
-# Jerboa 0.0.32 (2023-06-05)
-
 ## What's Changed in 0.0.32
 
-- Upping version. by @dessalines
 - Fixed showNavBar issue. by @dessalines in [#420](https://github.com/LemmyNet/jerboa/pull/420)
 - Add option to disable showing the bottom navigation bar by @twizmwazin in [#412](https://github.com/LemmyNet/jerboa/pull/412)
 - Fix navigating to other instance communities and users by @Anna-log7 in [#413](https://github.com/LemmyNet/jerboa/pull/413)
@@ -1068,22 +937,16 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.31...0.0.32
 
-# Jerboa 0.0.31 (2023-06-01)
-
 ## What's Changed in 0.0.31
 
-- Upping version. by @dessalines
 - Fix padding bug by @dessalines in [#366](https://github.com/LemmyNet/jerboa/pull/366)
 - Adding izzy repo. by @dessalines
 - Adding release notes. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.30...0.0.31
 
-# Jerboa 0.0.30 (2023-04-25)
-
 ## What's Changed in 0.0.30
 
-- Upping version. by @dessalines
 - Use default bottom app bar. by @dessalines in [#360](https://github.com/LemmyNet/jerboa/pull/360)
 - Upgrading deps. by @dessalines in [#359](https://github.com/LemmyNet/jerboa/pull/359)
 - Adjust the status bar while using the system dark theme to not use dark icons by @russjr08 in [#358](https://github.com/LemmyNet/jerboa/pull/358)
@@ -1092,11 +955,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.29...0.0.30
 
-# Jerboa 0.0.29 (2023-03-24)
-
 ## What's Changed in 0.0.29
 
-- Upping version. by @dessalines
 - Making icon thumbnails smaller. by @dessalines in [#353](https://github.com/LemmyNet/jerboa/pull/353)
 - Adding woodpecker status badge. by @dessalines
 - Adding woodpecker 1 by @dessalines in [#352](https://github.com/LemmyNet/jerboa/pull/352)
@@ -1107,11 +967,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.28...0.0.29
 
-# Jerboa 0.0.28 (2023-03-02)
-
 ## What's Changed in 0.0.28
 
-- Upping version. by @dessalines
 - Adding comment mentions to inbox. Fixes #339 by @dessalines in [#344](https://github.com/LemmyNet/jerboa/pull/344)
 - Add report user by @dessalines in [#343](https://github.com/LemmyNet/jerboa/pull/343)
 - Upgrade from kapt to ksp. by @dessalines in [#342](https://github.com/LemmyNet/jerboa/pull/342)
@@ -1120,11 +977,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.27...0.0.28
 
-# Jerboa 0.0.27 (2023-02-19)
-
 ## What's Changed in 0.0.27
 
-- Upping version. by @dessalines
 - Adding instant post and comment voting. Fixes #299 by @dessalines in [#335](https://github.com/LemmyNet/jerboa/pull/335)
 - Fix font size round 2 by @dessalines in [#334](https://github.com/LemmyNet/jerboa/pull/334)
 - Revert "Making font size 16 by default. Fixes #330" by @dessalines in [#333](https://github.com/LemmyNet/jerboa/pull/333)
@@ -1136,8 +990,6 @@
 - Adding release notes. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.26...0.0.27
-
-# Jerboa 0.0.26 (2023-02-06)
 
 ## What's Changed in 0.0.26
 
@@ -1161,8 +1013,6 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.25...0.0.26
 
-# Jerboa 0.0.25 (2023-02-03)
-
 ## What's Changed in 0.0.25
 
 - Upgrading version. by @dessalines
@@ -1170,8 +1020,6 @@
 - Add to RELEASES.md by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.24...0.0.25
-
-# Jerboa 0.0.24 (2023-02-01)
 
 ## What's Changed in 0.0.24
 
@@ -1187,11 +1035,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.23...0.0.24
 
-# Jerboa 0.0.23 (2022-12-30)
-
 ## What's Changed in 0.0.23
 
-- Upping version. by @dessalines
 - Fix bad_url for torrent magnet links. Fixes #270 by @dessalines in [#271](https://github.com/LemmyNet/jerboa/pull/271)
 - Add donation link by @dessalines in [#269](https://github.com/LemmyNet/jerboa/pull/269)
 - Fix material 3 crash on android 11 and below devices. Fixes #264 by @dessalines in [#268](https://github.com/LemmyNet/jerboa/pull/268)
@@ -1199,21 +1044,15 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.22...0.0.23
 
-# Jerboa 0.0.22 (2022-12-22)
-
 ## What's Changed in 0.0.22
 
-- Upping version. by @dessalines
 - Material v3 by @dessalines in [#263](https://github.com/LemmyNet/jerboa/pull/263)
 - Updating releases.md by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.21...0.0.22
 
-# Jerboa 0.0.21 (2022-12-21)
-
 ## What's Changed in 0.0.21
 
-- Upping version. by @dessalines
 - Smaller action bars by @dessalines in [#261](https://github.com/LemmyNet/jerboa/pull/261)
 - Add about page by @dessalines in [#260](https://github.com/LemmyNet/jerboa/pull/260)
 - Adding light and dark theme options. Fixes #254 by @dessalines in [#259](https://github.com/LemmyNet/jerboa/pull/259)
@@ -1228,30 +1067,21 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.20...0.0.21
 
-# Jerboa 0.0.20 (2022-10-18)
-
 ## What's Changed in 0.0.20
 
-- Upping version. by @dessalines
 - Fix prettytime crash. Fixes #238 by @dessalines in [#239](https://github.com/LemmyNet/jerboa/pull/239)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.19...0.0.20
 
-# Jerboa 0.0.19 (2022-10-10)
-
 ## What's Changed in 0.0.19
 
-- Upping version. by @dessalines
 - Fix gradle release for f-droid by @dessalines
 - Adding to releases. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.18...0.0.19
 
-# Jerboa 0.0.18 (2022-10-10)
-
 ## What's Changed in 0.0.18
 
-- Upping version. by @dessalines
 - Fix account bug. Fixes #229 by @dessalines in [#237](https://github.com/LemmyNet/jerboa/pull/237)
 - Fix create post bug. Fixes #230 by @dessalines in [#236](https://github.com/LemmyNet/jerboa/pull/236)
 - Fix comment scrolling bug. Fixes #231 by @dessalines in [#235](https://github.com/LemmyNet/jerboa/pull/235)
@@ -1260,11 +1090,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.17...0.0.18
 
-# Jerboa 0.0.17 (2022-10-04)
-
 ## What's Changed in 0.0.17
 
-- Upping version by @dessalines
 - Adding deep links. by @dessalines in [#228](https://github.com/LemmyNet/jerboa/pull/228)
 - Fix deleted item header spacing. Fixes #222 by @dessalines in [#224](https://github.com/LemmyNet/jerboa/pull/224)
 - Lazycolumn 2 by @dessalines in [#223](https://github.com/LemmyNet/jerboa/pull/223)
@@ -1285,11 +1112,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.16...0.0.17
 
-# Jerboa 0.0.16 (2022-07-20)
-
 ## What's Changed in 0.0.16
 
-- Upping version by @dessalines
 - Make MarkdownTextField generic by @LunaticHacker in [#195](https://github.com/LemmyNet/jerboa/pull/195)
 - Upgrading android for jetbrains. by @dessalines in [#193](https://github.com/LemmyNet/jerboa/pull/193)
 - add fab for create post from community page by @LunaticHacker in [#184](https://github.com/LemmyNet/jerboa/pull/184)
@@ -1312,11 +1136,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.15...0.0.16
 
-# Jerboa 0.0.15 (2022-04-19)
-
 ## What's Changed in 0.0.15
 
-- Upping version by @dessalines
 - Comment tree rework 1 by @dessalines in [#162](https://github.com/LemmyNet/jerboa/pull/162)
 - Ability to delete posts and comments. Fixes #152 by @dessalines in [#161](https://github.com/LemmyNet/jerboa/pull/161)
 - Debounce search box input. Fixes #154 by @dessalines in [#157](https://github.com/LemmyNet/jerboa/pull/157)
@@ -1324,11 +1145,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.14...0.0.15
 
-# Jerboa 0.0.14 (2022-04-08)
-
 ## What's Changed in 0.0.14
 
-- Upping version by @dessalines
 - Alt markdown 1 by @dessalines in [#150](https://github.com/LemmyNet/jerboa/pull/150)
 - Adding round icon. Fixes #128 by @dessalines in [#151](https://github.com/LemmyNet/jerboa/pull/151)
 - Alt markdown 1 by @dessalines in [#146](https://github.com/LemmyNet/jerboa/pull/146)
@@ -1337,11 +1155,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.13...0.0.14
 
-# Jerboa 0.0.13 (2022-03-29)
-
 ## What's Changed in 0.0.13
 
-- Upping version. by @dessalines
 - Fix animation direction by @dessalines in [#140](https://github.com/LemmyNet/jerboa/pull/140)
 - Scroll to top on resort by @dessalines in [#139](https://github.com/LemmyNet/jerboa/pull/139)
 - Adding new sorts by @dessalines in [#138](https://github.com/LemmyNet/jerboa/pull/138)
@@ -1351,11 +1166,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.12...0.0.13
 
-# Jerboa 0.0.12 (2022-03-13)
-
 ## What's Changed in 0.0.12
 
-- Upping version by @dessalines
 - Fixing slow create post. Fixes #117 by @dessalines in [#126](https://github.com/LemmyNet/jerboa/pull/126)
 - Fix image height in landscape mode. Fixes #122 by @dessalines in [#125](https://github.com/LemmyNet/jerboa/pull/125)
 - Remove instant voting. Fixes #123 by @dessalines in [#124](https://github.com/LemmyNet/jerboa/pull/124)
@@ -1364,11 +1176,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.11...0.0.12
 
-# Jerboa 0.0.11 (2022-03-09)
-
 ## What's Changed in 0.0.11
 
-- Upping version by @dessalines
 - Adding deploy to device script. by @dessalines
 - Adding signing config to release. by @dessalines
 - Adding to gitignore. by @dessalines
@@ -1379,22 +1188,16 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.10...0.0.11
 
-# Jerboa 0.0.10 (2022-02-25)
-
 ## What's Changed in 0.0.10
 
-- Upping version by @dessalines
 - Adding link from text selection. Fixes #105 by @dessalines in [#107](https://github.com/LemmyNet/jerboa/pull/107)
 - Remember saved text for markdown areas. Fixes #104 by @dessalines in [#106](https://github.com/LemmyNet/jerboa/pull/106)
 - Adding release notes. by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.9...0.0.10
 
-# Jerboa 0.0.9 (2022-02-21)
-
 ## What's Changed in 0.0.9
 
-- Upping version by @dessalines
 - Adding a markdown helper. Fixes #38 by @dessalines in [#103](https://github.com/LemmyNet/jerboa/pull/103)
 - Various fixes. by @dessalines in [#101](https://github.com/LemmyNet/jerboa/pull/101)
 - Add link to Jerboa on F-Droid by @Adda0 in [#96](https://github.com/LemmyNet/jerboa/pull/96)
@@ -1406,11 +1209,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.8...0.0.9
 
-# Jerboa 0.0.8 (2022-02-17)
-
 ## What's Changed in 0.0.8
 
-- Upping version by @dessalines
 - Showing stickied / locked. Fixes #61 by @dessalines in [#95](https://github.com/LemmyNet/jerboa/pull/95)
 - Add no-background post listing. Fixes #91 by @dessalines in [#94](https://github.com/LemmyNet/jerboa/pull/94)
 - Don't show block person on your own profile. Fixes #93 by @dessalines
@@ -1419,11 +1219,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.7...0.0.8
 
-# Jerboa 0.0.7 (2022-02-07)
-
 ## What's Changed in 0.0.7
 
-- Upping version by @dessalines
 - Fix bottom bar correct screen. by @dessalines in [#86](https://github.com/LemmyNet/jerboa/pull/86)
 - Darkblue statusbar color. Fixes #79 by @dessalines in [#84](https://github.com/LemmyNet/jerboa/pull/84)
 - Downgrade compose to fix liststate bug. Fixes #81 by @dessalines in [#83](https://github.com/LemmyNet/jerboa/pull/83)
@@ -1432,11 +1229,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.6...0.0.7
 
-# Jerboa 0.0.6 (2022-02-03)
-
 ## What's Changed in 0.0.6
 
-- Upping version by @dessalines
 - Dont resort comments by @dessalines in [#77](https://github.com/LemmyNet/jerboa/pull/77)
 - Adding user and community blocking. Fixes #71 Fixes #58 by @dessalines in [#75](https://github.com/LemmyNet/jerboa/pull/75)
 - Saved page fix by @dessalines in [#74](https://github.com/LemmyNet/jerboa/pull/74)
@@ -1465,11 +1259,8 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.5...0.0.6
 
-# Jerboa 0.0.5 (2022-01-26)
-
 ## What's Changed in 0.0.5
 
-- Upping version by @dessalines
 - Fix null checks and crash. Fixes #60 . Fixes #37 by @dessalines
 - Adding loading indicators and disables. Fixes #57 by @dessalines
 - Adding comment header long click collapse. Fixes #51 by @dessalines
@@ -1489,8 +1280,6 @@
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.4...0.0.5
 
-# Jerboa 0.0.4 (2022-01-20)
-
 ## What's Changed in 0.0.4
 
 - Adding community sidebars. Fixes #44 by @dessalines
@@ -1502,8 +1291,6 @@
 - Adding releases.md by @dessalines
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.3...0.0.4
-
-# Jerboa 0.0.3 (2022-01-18)
 
 ## What's Changed in 0.0.3
 
