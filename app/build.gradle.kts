@@ -110,6 +110,9 @@ baselineProfile {
 }
 
 dependencies {
+    // Exporting / importing DB helper
+    implementation("com.github.dessalines:room-db-export-import:0.1.0")
+
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     // This is the "official" composeBom, but it breaks the imageviewer until 1.7 is released. See:
     // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
