@@ -496,9 +496,10 @@
     <string name="torrent_help">Lemmy can use a technology called BitTorrent to view or stream media. [Click here](%1$s) to learn how.</string>
     <string name="by">by</string>
     <string name="upvote_percentage">Upvote Percentage</string>
-    <string name="backup_database">Backup Database</string>
-    <string name="restore_database">Restore Database</string>
+    <string name="backup_database">Backup database</string>
+    <string name="restore_database">Restore database</string>
     <string name="restore_database_warning">Warning: This will clear out your current database</string>
     <string name="database_restored">Database Restored.</string>
     <string name="database_backed_up">Database Backed up.</string>
+    <string name="settings_screen_backup_and_restore">Backup and restore</string>
 </resources>

@@ -111,6 +111,8 @@ class JerboaAppState(
 
     fun toCrashLogs() = navController.navigate(Route.CRASH_LOGS)
 
+    fun toBackupAndRestore() = navController.navigate(Route.BACKUP_AND_RESTORE)
+
     fun openImageViewer(url: String) {
         val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
         navController.navigate(Route.ViewArgs.makeRoute(encodedUrl))
