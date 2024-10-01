@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.settings
 
 import android.util.Log
@@ -10,6 +8,7 @@ import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -28,14 +27,16 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsActivity(
+fun SettingsScreen(
     accountViewModel: AccountViewModel,
     onBack: () -> Unit,
     onClickLookAndFeel: () -> Unit,
     onClickAccountSettings: () -> Unit,
     onClickBlocks: () -> Unit,
     onClickAbout: () -> Unit,
+    onClickBackupAndRestore: () -> Unit,
 ) {
     Log.d("jerboa", "Got to settings screen")
 
@@ -96,6 +97,16 @@ fun SettingsActivity(
                             onClick = onClickBlocks,
                         )
                     }
+                    Preference(
+                        title = { Text(stringResource(R.string.settings_screen_backup_and_restore)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Restore,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = onClickBackupAndRestore,
+                    )
                     Preference(
                         title = { Text(stringResource(R.string.settings_screen_about)) },
                         icon = {
