@@ -52,7 +52,7 @@ android {
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
-            register("release") {
+            create("release") {
                 storeFile = file(project.property("RELEASE_STORE_FILE")!!)
                 storePassword = project.property("RELEASE_STORE_PASSWORD") as String?
                 keyAlias = project.property("RELEASE_KEY_ALIAS") as String?
@@ -67,10 +67,8 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfig = signingConfigs.getByName("release")
             }
 
             postprocessing {
