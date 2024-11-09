@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.person.UserTab
+import com.jerboa.ui.components.settings.block.BlocksTab
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.Post
@@ -119,6 +120,19 @@ fun getLocalizedStringForUserTab(
         UserTab.About -> ctx.getString(R.string.person_profile_screen_about)
         UserTab.Posts -> ctx.getString(R.string.person_profile_screen_posts)
         UserTab.Comments -> ctx.getString(R.string.person_profile_screen_comments)
+    }
+
+/**
+ * Returns localized Strings for BlocksTab Enum
+ */
+fun getLocalizedStringForBlocksTab(
+    ctx: Context,
+    tab: BlocksTab,
+): String =
+    when (tab) {
+        BlocksTab.Instances -> ctx.getString(R.string.blocked_instances)
+        BlocksTab.Communities -> ctx.getString(R.string.blocked_communities)
+        BlocksTab.Users -> ctx.getString(R.string.blocked_users)
     }
 
 /**

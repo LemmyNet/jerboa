@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
@@ -25,11 +29,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiAction
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.getLocalizedStringForBlocksTab
 import com.jerboa.model.BlockViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -51,6 +59,8 @@ import com.jerboa.ui.components.common.Title
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,7 +96,10 @@ fun BlocksScreen(
                     is ApiState.Failure -> ApiErrorText(res.msg)
                     is ApiState.Holder -> {
                         res.data.my_user?.let {
-                            BlockList(it)
+                            BlockList(
+                                userInfo = it,
+                                scope = rememberCoroutineScope()
+                            )
                         } ?: ApiEmptyText()
                     }
 
@@ -97,49 +110,88 @@ fun BlocksScreen(
     )
 }
 
+enum class BlocksTab {
+    Instances,
+    Communities,
+    Users
+}
+
 @Composable
-fun BlockList(userInfo: MyUserInfo) {
+fun BlockList(
+    userInfo: MyUserInfo,
+    scope: CoroutineScope
+) {
+
     val ctx = LocalContext.current
     val viewModel: BlockViewModel = viewModel()
+    val tabTitles = BlocksTab.entries.map { getLocalizedStringForBlocksTab(ctx, it) }
+    val pagerState = rememberPagerState { tabTitles.size }
 
     LaunchedEffect(userInfo) {
         viewModel.initData(userInfo)
     }
 
-    LazyColumn(
-        contentPadding = PaddingValues(MEDIUM_PADDING, 0.dp),
-    ) {
-        blockListHeader(R.string.blocked_instances)
-        itemsWithEmpty(
-            items = viewModel.instanceBlocks.value,
-            key = { "I${it.data.id}" },
-            emptyText = R.string.you_have_no_blocked_instances,
-        ) {
-            ItemBlockView(it.data.domain, null, it) {
-                viewModel.unBlockInstance(it.data, ctx)
+    Column {
+        TabRow(selectedTabIndex = pagerState.currentPage) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    text = { Text(text = title) },
+                )
             }
         }
+        HorizontalPager(
+            state = pagerState,
+            verticalAlignment = Alignment.Top,
+            modifier = Modifier.fillMaxSize(),
+        ) { tabIndex ->
+            LazyColumn(contentPadding = PaddingValues(MEDIUM_PADDING, 0.dp)) {
+                when (tabIndex) {
+                    BlocksTab.Instances.ordinal -> {
+                        itemsWithEmpty(
+                            items = viewModel.instanceBlocks.value,
+                            key = { "I${it.data.id}" },
+                            emptyText = R.string.you_have_no_blocked_instances,
+                        ) {
+                            ItemBlockView(it.data.domain, null, it) {
+                                viewModel.unBlockInstance(it.data, ctx)
+                            }
+                        }
+                    }
 
-        blockListHeader(R.string.blocked_communities)
-        itemsWithEmpty(
-            items = viewModel.communityBlocks.value,
-            key = { "C${it.data.id}" },
-            emptyText = R.string.you_have_no_blocked_communities,
-        ) {
-            ItemBlockView(it.data.name, it.data.actor_id, it) {
-                viewModel.unBlockCommunity(it.data, ctx)
-            }
-        }
+                    BlocksTab.Communities.ordinal -> {
+                        itemsWithEmpty(
+                            items = viewModel.communityBlocks.value,
+                            key = { "C${it.data.id}" },
+                            emptyText = R.string.you_have_no_blocked_communities,
+                        ) {
+                            ItemBlockView(it.data.name, it.data.actor_id, it) {
+                                viewModel.unBlockCommunity(it.data, ctx)
+                            }
+                        }
+                    }
 
-        blockListHeader(R.string.blocked_users)
-        itemsWithEmpty(
-            items = viewModel.personBlocks.value,
-            key = { "U${it.data.id}" },
-            emptyText = R.string.you_have_no_blocked_users,
-        ) {
-            ItemBlockView(it.data.name, it.data.actor_id, it) {
-                viewModel.unBlockPerson(it.data, ctx)
+                    BlocksTab.Users.ordinal -> {
+                        itemsWithEmpty(
+                            items = viewModel.personBlocks.value,
+                            key = { "U${it.data.id}" },
+                            emptyText = R.string.you_have_no_blocked_users,
+                        ) {
+                            ItemBlockView(it.data.name, it.data.actor_id, it) {
+                                viewModel.unBlockPerson(it.data, ctx)
+                            }
+                        }
+                    }
+
+                    else -> Unit
+                }
             }
+
         }
     }
 }
