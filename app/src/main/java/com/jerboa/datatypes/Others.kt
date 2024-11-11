@@ -123,19 +123,6 @@ fun getLocalizedStringForUserTab(
     }
 
 /**
- * Returns localized Strings for BlocksTab Enum
- */
-fun getLocalizedStringForBlocksTab(
-    ctx: Context,
-    tab: BlocksTab,
-): String =
-    when (tab) {
-        BlocksTab.Instances -> ctx.getString(R.string.blocked_instances)
-        BlocksTab.Communities -> ctx.getString(R.string.blocked_communities)
-        BlocksTab.Users -> ctx.getString(R.string.blocked_users)
-    }
-
-/**
  * Returns localized Strings for ListingType Enum
  */
 fun getLocalizedListingTypeName(

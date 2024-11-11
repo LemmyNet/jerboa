@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -46,7 +45,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiAction
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.getLocalizedStringForBlocksTab
 import com.jerboa.model.BlockViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -56,10 +54,8 @@ import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.Title
-import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,10 +92,7 @@ fun BlocksScreen(
                     is ApiState.Failure -> ApiErrorText(res.msg)
                     is ApiState.Holder -> {
                         res.data.my_user?.let {
-                            BlockList(
-                                userInfo = it,
-                                scope = rememberCoroutineScope()
-                            )
+                            BlockList(it)
                         } ?: ApiEmptyText()
                     }
 
@@ -110,21 +103,21 @@ fun BlocksScreen(
     )
 }
 
-enum class BlocksTab {
-    Instances,
-    Communities,
-    Users
+enum class BlocksTab(@StringRes val label: Int) {
+    Instances(R.string.blocked_instances),
+    Communities(R.string.blocked_communities),
+    Users(R.string.blocked_users)
 }
 
 @Composable
 fun BlockList(
-    userInfo: MyUserInfo,
-    scope: CoroutineScope
+    userInfo: MyUserInfo
 ) {
 
     val ctx = LocalContext.current
     val viewModel: BlockViewModel = viewModel()
-    val tabTitles = BlocksTab.entries.map { getLocalizedStringForBlocksTab(ctx, it) }
+    val scope = rememberCoroutineScope()
+    val tabTitles = BlocksTab.entries.map { ctx.getString(it.label) }
     val pagerState = rememberPagerState { tabTitles.size }
 
     LaunchedEffect(userInfo) {
@@ -206,17 +199,12 @@ inline fun <T> LazyListScope.itemsWithEmpty(
         item(
             contentType = "blockEmpty",
         ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(LARGE_PADDING),
-            )
-            Text(stringResource(emptyText))
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(LARGE_PADDING),
-            )
+            Box(
+                modifier = Modifier.fillParentMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(stringResource(emptyText))
+            }
         }
     } else {
         items(
