@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.person.UserTab
-import com.jerboa.ui.components.settings.block.BlocksTab
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.Post

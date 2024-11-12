@@ -103,17 +103,16 @@ fun BlocksScreen(
     )
 }
 
-enum class BlocksTab(@StringRes val label: Int) {
-    Instances(R.string.blocked_instances),
-    Communities(R.string.blocked_communities),
-    Users(R.string.blocked_users)
+enum class BlocksTab(
+    @StringRes val label: Int,
+) {
+    Instances(R.string.instances),
+    Communities(R.string.communities),
+    Users(R.string.users),
 }
 
 @Composable
-fun BlockList(
-    userInfo: MyUserInfo
-) {
-
+fun BlockList(userInfo: MyUserInfo) {
     val ctx = LocalContext.current
     val viewModel: BlockViewModel = viewModel()
     val scope = rememberCoroutineScope()
@@ -184,7 +183,6 @@ fun BlockList(
                     else -> Unit
                 }
             }
-
         }
     }
 }
@@ -201,7 +199,7 @@ inline fun <T> LazyListScope.itemsWithEmpty(
         ) {
             Box(
                 modifier = Modifier.fillParentMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(stringResource(emptyText))
             }

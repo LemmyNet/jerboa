@@ -487,9 +487,9 @@
     <string name="unable_to_retrieve">Unable to retrieve</string>
     <string name="blocks">Blocks</string>
     <string name="unblock">Unblock</string>
-    <string name="blocked_users">Users</string>
-    <string name="blocked_communities">Communities</string>
-    <string name="blocked_instances">Instances</string>
+    <string name="instances">Instances</string>
+    <string name="users">Users</string>
+    <string name="communities">Communities</string>
     <string name="you_have_no_blocked_users">You have no blocked users</string>
     <string name="you_have_no_blocked_communities">You have no blocked communities</string>
     <string name="you_have_no_blocked_instances">You have no blocked instances</string>
