@@ -484,9 +484,6 @@
   <string name="unable_to_retrieve">Klarte ikkje henta</string>
   <string name="blocks">Blokkering</string>
   <string name="unblock">Fjern blokkering</string>
-  <string name="blocked_users">Blokkerte brukarar</string>
-  <string name="blocked_communities">Blokkerte fellesskap</string>
-  <string name="blocked_instances">Blokkerte instansar</string>
   <string name="you_have_no_blocked_users">Du har ikkje nokon blokkerte brukarar</string>
   <string name="you_have_no_blocked_communities">Du har ikkje nokon blokkerte fellesskap</string>
   <string name="you_have_no_blocked_instances">Du har ikkje nokon blokkerte instansar</string>
