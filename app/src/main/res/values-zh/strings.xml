@@ -470,9 +470,6 @@
     <string name="unable_to_retrieve">无法检索</string>
     <string name="blocks">被禁者</string>
     <string name="unblock">解除屏蔽</string>
-    <string name="blocked_users">被屏蔽的用户</string>
-    <string name="blocked_communities">被屏蔽的社区</string>
-    <string name="blocked_instances">被屏蔽的实例</string>
     <string name="sorttype_topall">全部置顶</string>
     <string name="sorttype_topday">日置顶</string>
     <string name="sorttype_topmonth">月置顶</string>
