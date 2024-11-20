@@ -56,14 +56,16 @@ fun CreateEditPostBody(
     url: String,
     urlField: InputField,
     onUrlChange: (url: String) -> Unit,
+    sharedImage: Uri? = null,
+    onImagePicked: (image: Uri) -> Unit,
+    isUploadingImage: Boolean = false,
     altText: String,
     onAltTextChange: (altText: String) -> Unit,
     customThumbnailField: InputField,
     customThumbnail: String,
     onCustomThumbnailChange: (customThumbnail: String) -> Unit,
-    sharedImage: Uri? = null,
-    onImagePicked: (image: Uri) -> Unit,
-    isUploadingImage: Boolean = false,
+    onCustomThumbnailImagePicked: (image: Uri) -> Unit,
+    isUploadingCustomThumbnailImage: Boolean = false,
     isNsfw: Boolean,
     onIsNsfwChange: (isNsfw: Boolean) -> Unit,
     suggestedTitle: String? = null,
@@ -178,6 +180,22 @@ fun CreateEditPostBody(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            /**
+             * Pick and upload an image, show a preview if possible
+             */
+            PickImage(
+                onPickedImage = onCustomThumbnailImagePicked,
+                horizontalAlignment = Alignment.End,
+                isUploadingImage = isUploadingCustomThumbnailImage,
+            )
+
+            if (isImage(customThumbnail)) {
+                PictrsUrlImage(
+                    url = customThumbnail,
+                    blur = false,
+                )
+            }
         }
 
         /**
@@ -295,6 +313,7 @@ fun CreatePostBodyPreview() {
             )
         },
         error = null,
+        onCustomThumbnailImagePicked = {},
     )
 }
 
@@ -329,6 +348,7 @@ fun CreatePostBodyPreviewNoCommunity() {
             )
         },
         error = null,
+        onCustomThumbnailImagePicked = {},
     )
 }
 
@@ -356,5 +376,6 @@ fun EditPostBodyPreview() {
         padding = PaddingValues(),
         communitySelector = {},
         error = null,
+        onCustomThumbnailImagePicked = {},
     )
 }
