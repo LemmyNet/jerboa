@@ -522,6 +522,7 @@ class MainActivity : AppCompatActivity() {
                                     showPostLinkPreview = appSettings.showPostLinkPreviews,
                                     postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                     swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                    onClickBack = appState::popBackStack,
                                 )
                             }
                         }
@@ -556,6 +557,7 @@ class MainActivity : AppCompatActivity() {
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                onClickBack = appState::popBackStack,
                             )
                         }
 

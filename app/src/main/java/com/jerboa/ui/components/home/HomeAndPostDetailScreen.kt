@@ -139,6 +139,12 @@ fun HomeAndPostDetailScreen(
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                onClickBack = {
+                                    scope.launch {
+                                        selectedPostId = null
+                                        navigator.navigateBack()
+                                    }
+                                },
                             )
                         }
                     }

@@ -132,6 +132,7 @@ fun PostPane(
     showPostLinkPreview: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    onClickBack: () -> Unit,
 ) {
     Log.d("jerboa", "got to post pane")
 
@@ -232,7 +233,7 @@ fun PostPane(
                     navigationIcon = {
                         IconButton(
                             modifier = Modifier.testTag("jerboa:back"),
-                            onClick = appState::navigateUp,
+                            onClick = onClickBack,
                         ) {
                             Icon(
                                 Icons.AutoMirrored.Outlined.ArrowBack,
