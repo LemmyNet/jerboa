@@ -16,14 +16,13 @@ plugins {
 apply(from = "update_instances.gradle.kts")
 
 android {
-    buildToolsVersion = "34.0.0"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 77
         versionName = "0.0.77"
 
@@ -97,10 +96,6 @@ android {
     }
 }
 
-composeCompiler {
-    featureFlags = setOf(ComposeFeatureFlag.StrongSkipping)
-}
-
 baselineProfile {
     mergeIntoMain = true
     saveInSrc = true
@@ -116,6 +111,7 @@ dependencies {
     // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
     // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
 
+    // Compose BOM
     val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.08.00-alpha02")
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
@@ -123,6 +119,13 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    // Adaptive layouts
+    // TODO still need the alphas for pane features
+    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-alpha06")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-alpha06")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-alpha06")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 

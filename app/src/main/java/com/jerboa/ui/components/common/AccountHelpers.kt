@@ -27,6 +27,7 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
     return acc
 }
 
+// TODO why is this necessary when .toEnum() exists?
 fun getPostViewMode(appSettingsViewModel: AppSettingsViewModel): PostViewMode =
     getEnumFromIntSetting<PostViewMode>(appSettingsViewModel.appSettings) {
         it.postViewMode

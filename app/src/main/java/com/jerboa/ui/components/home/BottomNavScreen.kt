@@ -242,21 +242,14 @@ fun BottomNavScreen(
                     startDestination = NavTab.Home.name,
                 ) {
                     composable(route = NavTab.Home.name) {
-                        HomeScreen(
+                        HomeAndPostDetailScreen(
                             appState = appState,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
+                            appSettings = appSettings,
                             drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             padding = padding,
                         )
                     }

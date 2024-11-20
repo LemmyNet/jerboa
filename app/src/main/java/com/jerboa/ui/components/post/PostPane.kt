@@ -116,8 +116,8 @@ object PostViewReturn {
     ExperimentalComposeUiApi::class,
 )
 @Composable
-fun PostScreen(
-    id: Either<PostId, CommentId>,
+fun PostPane(
+    postOrCommentId: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
@@ -133,13 +133,19 @@ fun PostScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
-    Log.d("jerboa", "got to post screen")
+    Log.d("jerboa", "got to post pane")
 
     val ctx = LocalContext.current
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(postOrCommentId))
+
+    // Some hacky code required to update the screen for tablet view
+    // Necessary because the viewmodel initializes only once.
+    if (postViewModel.id !== postOrCommentId) {
+        postViewModel.reInitializeWithNewId(postOrCommentId)
+    }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, postViewModel::updatePost)
@@ -483,7 +489,7 @@ fun PostScreen(
                                     val commentTree =
                                         buildCommentsTree(
                                             commentsRes.data.comments,
-                                            id.fold(
+                                            postOrCommentId.fold(
                                                 { null },
                                                 { it },
                                             ),
