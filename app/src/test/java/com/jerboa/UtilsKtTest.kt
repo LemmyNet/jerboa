@@ -27,7 +27,11 @@ import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
-private const val MAGNET_LINK = "magnet:?xt=urn:btih:7ae3a882005bb337885f27610475543834642867&dn=Lenin%20-%20Socialism%20and%20Anarchism%20%5Baudiobook%5D%20by%20dessalines&tr=udp%3A%2F%2Ftracker.theoks.net%3A6969%2Fannounce"
+private const val MAGNET_LINK =
+    "magnet:?xt=urn:btih:7ae3a882005bb337885f27610475543834642867" +
+        "&dn=Lenin%20-%20Socialism%20and%20Anarchism%20%5Baudiobook" +
+        "%5D%20by%20dessalines" +
+        "&tr=udp%3A%2F%2Ftracker.theoks.net%3A6969%2Fannounce"
 
 @RunWith(JUnitParamsRunner::class)
 class UtilsKtTest {
