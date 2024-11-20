@@ -27,7 +27,9 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
     return acc
 }
 
-// TODO why is this necessary when .toEnum() exists?
+/**
+ * A special case of toEnumSafe, where the int still exists in the DB.
+ */
 fun getPostViewMode(appSettingsViewModel: AppSettingsViewModel): PostViewMode =
     getEnumFromIntSetting<PostViewMode>(appSettingsViewModel.appSettings) {
         it.postViewMode

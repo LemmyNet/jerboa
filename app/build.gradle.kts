@@ -106,13 +106,8 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    // This is the "official" composeBom, but it breaks the imageviewer until 1.7 is released. See:
-    // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
-    // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
-
     // Compose BOM
-    val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.08.00-alpha02")
+    val composeBom = platform("androidx.compose:compose-bom:2024.11.00")
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
