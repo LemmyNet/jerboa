@@ -1478,7 +1478,7 @@ fun String.toHttps(): String =
     }
 
 fun String.padUrlWithHttps(): String =
-    if (this.contains("://") || this.isBlank()) {
+    if (this.contains("://") || this.isBlank() || this.startsWith("magnet")) {
         this
     } else {
         "https://$this"
