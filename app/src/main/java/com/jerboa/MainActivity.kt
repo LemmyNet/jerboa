@@ -57,7 +57,7 @@ import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityScreen
 import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
-import com.jerboa.ui.components.home.BottomNavScreen
+import com.jerboa.ui.components.home.HomeNavScreen
 import com.jerboa.ui.components.home.legal.SiteLegalScreen
 import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
 import com.jerboa.ui.components.imageviewer.ImageViewerScreen
@@ -215,7 +215,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         composable(route = Route.HOME) {
-                            BottomNavScreen(
+                            HomeNavScreen(
                                 appState = appState,
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,

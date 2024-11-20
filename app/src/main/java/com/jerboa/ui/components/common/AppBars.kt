@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.common
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -26,8 +25,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,7 +38,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -112,99 +111,87 @@ fun SimpleTopAppBarPreview() {
     }
 }
 
-@Composable
-fun BottomAppBarAll(
+fun NavigationSuiteScope.adaptiveNavigationBar(
     selectedTab: NavTab,
-    onSelect: (NavTab) -> Unit,
+    onSelectTab: (NavTab) -> Unit,
     userViewType: UserViewType,
     unreadCounts: Long,
     unreadAppCount: Long?,
     unreadReportCount: Long?,
     showTextDescriptionsInNavbar: Boolean,
 ) {
-    // Check for preview mode
-    if (LocalContext.current is Activity) {
-        val window = (LocalContext.current as Activity).window
-        val colorScheme = MaterialTheme.colorScheme
-
-        DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceContainer.toArgb()
-
-            onDispose {
-                window.navigationBarColor = colorScheme.background.toArgb()
-            }
+    for (tab in NavTab.getEntries(userViewType)) {
+        val selected = tab == selectedTab
+        val iconBadgeCount = when (tab) {
+            NavTab.Inbox -> unreadCounts
+            NavTab.RegistrationApplications -> unreadAppCount
+            NavTab.Reports -> unreadReportCount
+            else -> null
         }
-    }
-    // If descriptions are hidden, make the bar shorter
-    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.navigationBarsPadding().height(56.dp)
-    NavigationBar(
-        modifier = modifier,
-    ) {
-        for (tab in NavTab.getEntries(userViewType)) {
-            val selected = tab == selectedTab
-            val iconBadgeCount = when (tab) {
-                NavTab.Inbox -> unreadCounts
-                NavTab.RegistrationApplications -> unreadAppCount
-                NavTab.Reports -> unreadReportCount
-                else -> null
-            }
 
-            NavigationBarItem(
-                icon = {
-                    NavbarIconAndBadge(
-                        iconBadgeCount = iconBadgeCount,
-                        icon =
-                            if (selected) {
-                                tab.iconFilled
-                            } else {
-                                tab.iconOutlined
-                            },
-                        contentDescription = stringResource(tab.contentDescriptionId),
+        item(
+            icon = {
+                NavbarIconAndBadge(
+                    iconBadgeCount = iconBadgeCount,
+                    icon =
+                        if (selected) {
+                            tab.iconFilled
+                        } else {
+                            tab.iconOutlined
+                        },
+                    contentDescription = stringResource(tab.contentDescriptionId),
+                )
+            },
+            label = {
+                if (showTextDescriptionsInNavbar) {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        fontSize = TextUnit(10f, TextUnitType.Sp),
+                        text = stringResource(tab.textId),
                     )
-                },
-                label = {
-                    if (showTextDescriptionsInNavbar) {
-                        Text(
-                            textAlign = TextAlign.Center,
-                            fontSize = TextUnit(10f, TextUnitType.Sp),
-                            text = stringResource(tab.textId),
-                        )
-                    }
-                },
-                selected = selected,
-                onClick = {
-                    onSelect(tab)
-                },
-            )
-        }
+                }
+            },
+            selected = selected,
+            onClick = {
+                onSelectTab(tab)
+            },
+        )
     }
 }
 
 @Preview
 @Composable
-fun BottomAppBarAllPreview() {
-    BottomAppBarAll(
-        selectedTab = NavTab.Home,
-        onSelect = {},
-        unreadCounts = 30,
-        unreadAppCount = 2,
-        unreadReportCount = 8,
-        userViewType = UserViewType.AdminOnly,
-        showTextDescriptionsInNavbar = true,
+fun AdaptiveNavigationBarPreview() {
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            adaptiveNavigationBar(
+                selectedTab = NavTab.Home,
+                onSelectTab = {},
+                unreadCounts = 30,
+                unreadAppCount = 2,
+                unreadReportCount = 8,
+                userViewType = UserViewType.AdminOnly,
+                showTextDescriptionsInNavbar = true,
+            )
+        },
     )
 }
 
 @Preview
 @Composable
-fun BottomAppBarAllNoDescriptionsPreview() {
-    BottomAppBarAll(
-        selectedTab = NavTab.Home,
-        onSelect = {},
-        unreadCounts = 30,
-        unreadAppCount = null,
-        unreadReportCount = null,
-        userViewType = UserViewType.Normal,
-        showTextDescriptionsInNavbar = false,
+fun AdaptiveNavigationBarNoDescriptionsPreview() {
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            adaptiveNavigationBar(
+                selectedTab = NavTab.Home,
+                onSelectTab = {},
+                unreadCounts = 30,
+                unreadAppCount = 2,
+                unreadReportCount = 8,
+                userViewType = UserViewType.AdminOnly,
+                showTextDescriptionsInNavbar = false,
+            )
+        },
     )
 }
 
