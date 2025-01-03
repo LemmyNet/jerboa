@@ -35,6 +35,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
@@ -73,6 +74,7 @@ import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
 import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
 import it.vercruysse.lemmyapi.datatypes.Tagline
@@ -80,7 +82,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun HomeScreen(
+fun HomePane(
     appState: JerboaAppState,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
@@ -96,8 +98,10 @@ fun HomeScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     padding: PaddingValues,
+    onPostClick: (PostView) -> Unit,
+    selectionState: SelectionVisibilityState<PostId>,
 ) {
-    Log.d("jerboa", "got to home screen")
+    Log.d("jerboa", "got to home pane")
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
@@ -176,6 +180,8 @@ fun HomeScreen(
                     snackbarHostState = snackbarHostState,
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    onPostClick = onPostClick,
+                    selectionState = selectionState,
                 )
             }
         },
@@ -225,6 +231,8 @@ fun MainPostListingsContent(
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    onPostClick: (PostView) -> Unit,
+    selectionState: SelectionVisibilityState<PostId>,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -296,9 +304,7 @@ fun MainPostListingsContent(
                     )
                 }
             },
-            onPostClick = { postView ->
-                appState.toPost(id = postView.post.id)
-            },
+            onPostClick = onPostClick,
             onSaveClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
                     appState,
@@ -440,6 +446,7 @@ fun MainPostListingsContent(
             postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
+            selectionState = selectionState,
         )
     }
 }
