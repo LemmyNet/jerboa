@@ -61,6 +61,7 @@ import com.jerboa.ui.components.inbox.InboxScreen
 import com.jerboa.ui.components.person.PersonProfileScreen
 import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsScreen
 import com.jerboa.ui.components.reports.ReportsScreen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -167,13 +168,15 @@ fun BottomNavScreen(
         selectedTab = tab
         val currentRoute = bottomNavController.currentDestination?.route
         if (currentRoute == tab.name && tab == NavTab.Home) {
-            scope.launch {
+            scope.launch(Dispatchers.Main) {
                 homeViewModel.lazyListState.animateScrollToItem(0)
             }
         } else {
-            bottomNavController.navigate(tab.name) {
-                launchSingleTop = true
-                popUpTo(bottomNavController.graph.id) // To make back button close the app.
+            scope.launch(Dispatchers.Main) {
+                bottomNavController.navigate(tab.name) {
+                    launchSingleTop = true
+                    popUpTo(bottomNavController.graph.id) // To make back button close the app.
+                }
             }
         }
     }

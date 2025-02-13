@@ -16,7 +16,6 @@ plugins {
 apply(from = "update_instances.gradle.kts")
 
 android {
-    buildToolsVersion = "34.0.0"
     compileSdk = 34
 
     defaultConfig {
@@ -95,10 +94,6 @@ android {
     buildFeatures {
         compose = true
     }
-}
-
-composeCompiler {
-    featureFlags = setOf(ComposeFeatureFlag.StrongSkipping)
 }
 
 baselineProfile {
