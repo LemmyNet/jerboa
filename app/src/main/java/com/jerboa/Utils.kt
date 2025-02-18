@@ -821,7 +821,7 @@ fun getCommentParentId(comment: Comment): CommentId? = getCommentParentId(commen
 fun getCommentParentId(commentPath: String): CommentId? {
     val split = commentPath.split(".").toMutableList()
     // remove the 0
-    split.removeFirst()
+    split.removeAt(0)
     return if (split.size > 1) {
         split[split.size - 2].toLong()
     } else {
@@ -1370,8 +1370,7 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
     this
         ?.activeNetwork
         ?.let(::getNetworkCapabilities)
-        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        ?: true
+        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) != false
 
 /**
  * When calling this, you must call ActivityResultLauncher.unregister()

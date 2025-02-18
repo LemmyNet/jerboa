@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
-
 
 plugins {
     id("com.android.application")
@@ -117,9 +115,9 @@ dependencies {
 
     // Adaptive layouts
     // TODO still need the alphas for pane features
-    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-alpha06")
-    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-alpha06")
-    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-alpha06")
+    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-beta02")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-beta02")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-beta02")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")

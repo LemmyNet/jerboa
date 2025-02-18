@@ -101,7 +101,7 @@ fun Drawer(
         myPerson = myUserInfo?.local_user_view?.person,
         showAccountAddMode = showAccountAddMode,
         onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
-        showAvatar = myUserInfo?.local_user_view?.local_user?.show_avatars ?: true,
+        showAvatar = myUserInfo?.local_user_view?.local_user?.show_avatars != false,
     )
     // Drawer items
     DrawerContent(
