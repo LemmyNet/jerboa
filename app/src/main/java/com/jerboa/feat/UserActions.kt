@@ -118,12 +118,12 @@ fun shareMedia(
 
             val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".provider", file)
             val shareIntent = Intent()
-            shareIntent.setAction(Intent.ACTION_SEND)
+            shareIntent.action = Intent.ACTION_SEND
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
             when (mediaType) {
-                PostType.Image -> shareIntent.setType("image/*")
-                PostType.Video -> shareIntent.setType("video/*")
-                PostType.Link -> shareIntent.setType("text/*")
+                PostType.Image -> shareIntent.type = "image/*"
+                PostType.Video -> shareIntent.type = "video/*"
+                PostType.Link -> shareIntent.type = "text/*"
             }
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))

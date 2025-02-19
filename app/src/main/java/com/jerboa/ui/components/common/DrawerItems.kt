@@ -97,3 +97,7 @@ fun IconAndTextDrawerItemWithMorePreview() {
         more = true,
     )
 }
+
+@Composable
+fun selectedItemContainerColor(selected: Boolean) =
+    if (!selected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant
