@@ -139,7 +139,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.7.0")
     implementation("io.coil-kt:coil-video:2.7.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.14.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.15.1")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
