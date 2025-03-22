@@ -205,8 +205,7 @@ class SiteViewModel(
                 res.data.my_user
                     ?.local_user_view
                     ?.local_user
-                    ?.show_avatars
-                    ?: true
+                    ?.show_avatars != false
 
             else -> true
         }

@@ -142,17 +142,17 @@ fun SettingsForm(
     val supportedListingTypes = remember { getSupportedEntries<ListingType>(API.version) }
     val defaultListingTypeState = remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
 
-    val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
-    val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
-    val showScoresStateLegacy = remember { mutableStateOf(luv?.local_user?.show_scores ?: true) }
-    val showScoresState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.score ?: false) }
-    val showUpvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvotes ?: false) }
-    val showDownvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.downvotes ?: false) }
-    val showUpvotePercentageState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvote_percentage ?: false) }
-    val showBotAccountState = remember { mutableStateOf(luv?.local_user?.show_bot_accounts ?: false) }
-    val botAccountState = remember { mutableStateOf(luv?.person?.bot_account ?: false) }
-    val showReadPostsState = remember { mutableStateOf(luv?.local_user?.show_read_posts ?: false) }
-    val sendNotificationsToEmailState = remember { mutableStateOf(luv?.local_user?.send_notifications_to_email ?: false) }
+    val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw == true) }
+    val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars == true) }
+    val showScoresStateLegacy = remember { mutableStateOf(luv?.local_user?.show_scores != false) }
+    val showScoresState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.score == true) }
+    val showUpvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvotes == true) }
+    val showDownvotesState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.downvotes == true) }
+    val showUpvotePercentageState = remember { mutableStateOf(luv?.local_user_vote_display_mode?.upvote_percentage == true) }
+    val showBotAccountState = remember { mutableStateOf(luv?.local_user?.show_bot_accounts == true) }
+    val botAccountState = remember { mutableStateOf(luv?.person?.bot_account == true) }
+    val showReadPostsState = remember { mutableStateOf(luv?.local_user?.show_read_posts == true) }
+    val sendNotificationsToEmailState = remember { mutableStateOf(luv?.local_user?.send_notifications_to_email == true) }
 
     siteViewModel.saveUserSettings =
         SaveUserSettings(

@@ -990,7 +990,7 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
 ) {
-    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
+    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } == true
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
