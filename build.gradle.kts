@@ -7,7 +7,7 @@ plugins {
     id("org.jmailen.kotlinter") version "5.0.1" apply false
     id("com.google.devtools.ksp") version "2.1.10-1.0.31" apply false
     id("com.android.test") version "8.9.0" apply false
-    id("androidx.baselineprofile") version "1.3.3" apply false
+    id("androidx.baselineprofile") version "1.3.4" apply false
 }
 
 subprojects {
