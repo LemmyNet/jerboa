@@ -866,7 +866,7 @@ fun saveMediaQ(
 ): Uri {
     val mimeTypeWithFallback = mimeType ?: when (mediaType) {
         PostType.Image -> "image/jpeg"
-        PostType.Video -> "video/mp4"
+        PostType.Video -> "video/mpeg"
         PostType.Link -> null
     }
 
