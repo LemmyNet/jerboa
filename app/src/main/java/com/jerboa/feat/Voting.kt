@@ -75,7 +75,7 @@ fun LocalUserVoteDisplayMode.Companion.default(score: Boolean? = false) =
         local_user_id = -1,
         upvotes = true,
         downvotes = true,
-        score = score ?: false,
+        score = score == true,
         upvote_percentage = false,
     )
 
