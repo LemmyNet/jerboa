@@ -864,10 +864,16 @@ fun saveMediaQ(
     displayName: String,
     mediaType: PostType,
 ): Uri {
+    val mimeTypeWithFallback = mimeType ?: when (mediaType) {
+        PostType.Image -> "image/jpeg"
+        PostType.Video -> "video/mpeg"
+        PostType.Link -> null
+    }
+
     val values =
         ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
-            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeTypeWithFallback)
             put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
         }
 
