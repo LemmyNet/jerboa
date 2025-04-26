@@ -147,10 +147,10 @@ dependencies {
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.7.0")
+    ksp("androidx.room:room-compiler:2.7.1")
 
     implementation("androidx.room:room-runtime:2.7.0")
-    annotationProcessor("androidx.room:room-compiler:2.7.0")
+    annotationProcessor("androidx.room:room-compiler:2.7.1")
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.7.0")
