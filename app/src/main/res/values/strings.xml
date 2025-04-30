@@ -502,4 +502,6 @@
     <string name="database_restored">Database Restored.</string>
     <string name="database_backed_up">Database Backed up.</string>
     <string name="settings_screen_backup_and_restore">Backup and restore</string>
+    <string name="donate">Donate</string>
+    <string name="donation_dialog_dismiss">No Thanks</string>
 </resources>

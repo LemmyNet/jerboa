@@ -253,6 +253,7 @@ val sampleLocalUser = LocalUser(
     enable_keyboard_navigation = false,
     enable_animated_images = false,
     collapse_bot_comments = false,
+    last_donation_notification = "2019-04-30T13:28:35.965035Z",
 )
 
 val sampleCommunity =
