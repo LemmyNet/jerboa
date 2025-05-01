@@ -1,23 +1,28 @@
 package com.jerboa.feat
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import com.jerboa.MainActivity
 import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.getInputStream
 import com.jerboa.registerActivityResultLauncher
-import com.jerboa.saveMediaP
-import com.jerboa.saveMediaQ
 import com.jerboa.startActivitySafe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 
 fun storeMedia(
     scope: CoroutineScope,
@@ -61,20 +67,22 @@ private fun actualStoreImage(
 
 // Needs to check for permission before this for API 29 and below
 private suspend fun saveMedia(
-    url: String,
+    rawUrl: String,
     context: Context,
     mediaType: PostType,
 ) {
     val toastId = if (mediaType == PostType.Image) R.string.saving_image else R.string.saving_media
     Toast.makeText(context, context.getString(toastId), Toast.LENGTH_SHORT).show()
 
-    val fileName = Uri.parse(url).pathSegments.last()
+    val uri = rawUrl.parseUriWithProxyImageSupport()
+    val url = uri.toString()
+    val fileName = uri.pathSegments.last()
     val extension = MimeTypeMap.getFileExtensionFromUrl(url)
     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
     try {
         withContext(Dispatchers.IO) {
-            context.getInputStream(url).use {
+            context.getInputStream(rawUrl).use {
                 if (SDK_INT < 29) {
                     saveMediaP(context, it, mimeType, fileName, mediaType)
                 } else {
@@ -99,41 +107,49 @@ private suspend fun saveMedia(
 fun shareMedia(
     scope: CoroutineScope,
     ctx: Context,
-    url: String,
+    rawUrl: String,
     mediaType: PostType,
 ) {
-    scope.launch(Dispatchers.Main) {
-        try {
-            val fileName = Uri.parse(url).pathSegments.last()
+    if (mediaType == PostType.Link) {
+        shareLink(rawUrl, ctx)
+        return
+    }
 
-            val file = File(ctx.cacheDir, fileName)
+    try {
+        val uri = rawUrl.parseUriWithProxyImageSupport()
+        val fileName = uri.pathSegments.last()
+        val file = File(ctx.cacheDir, fileName)
 
-            withContext(Dispatchers.IO) {
-                ctx.getInputStream(url).use { input ->
-                    file.outputStream().use {
-                        input.copyTo(it)
-                    }
+        scope.launch(Dispatchers.IO) {
+            ctx.getInputStream(rawUrl).use { input ->
+                file.outputStream().use {
+                    input.copyTo(it)
                 }
             }
-
-            val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".provider", file)
-            val shareIntent = Intent()
-            shareIntent.setAction(Intent.ACTION_SEND)
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
-            when (mediaType) {
-                PostType.Image -> shareIntent.setType("image/*")
-                PostType.Video -> shareIntent.setType("video/*")
-                PostType.Link -> shareIntent.setType("text/*")
-            }
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
-        } catch (e: IOException) {
-            Log.d("shareMedia", "failed", e)
-            Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Log.d("shareMedia", "invalid URL", e)
-            Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
         }
+
+        val fileUri = FileProvider.getUriForFile(ctx, ctx.packageName + ".fileprovider", file)
+
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, fileUri)
+            type = when (mediaType) {
+                PostType.Image -> "image/*"
+                PostType.Video -> "video/*"
+                PostType.Link -> throw IllegalStateException("Should be impossible")
+            }
+            clipData = ClipData.newRawUri(fileName, fileUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        }
+
+        ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
+    } catch (e: IOException) {
+        Log.d("shareMedia", "failed", e)
+        Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Log.d("shareMedia", "invalid URL", e)
+        Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -163,4 +179,80 @@ fun openMatrix(
 ) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://matrix.to/#/$matrixId"))
     ctx.startActivitySafe(intent)
+}
+
+@RequiresApi(Build.VERSION_CODES.Q)
+@Throws(IOException::class)
+private fun saveMediaQ(
+    ctx: Context,
+    inputStream: InputStream,
+    mimeType: String?,
+    displayName: String,
+    mediaType: PostType,
+): Uri {
+    val mimeTypeWithFallback = mimeType ?: when (mediaType) {
+        PostType.Image -> "image/jpeg"
+        PostType.Video -> "video/mpeg"
+        PostType.Link -> null
+    }
+
+    val values =
+        ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeTypeWithFallback)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
+        }
+
+    val resolver = ctx.contentResolver
+    var uri: Uri? = null
+
+    try {
+        val insert =
+            when (mediaType) {
+                PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
+            }
+
+        uri = resolver.insert(insert, values)
+            ?: throw IOException("Failed to create new MediaStore record.")
+
+        resolver.openOutputStream(uri)?.use {
+            inputStream.copyTo(it)
+        } ?: throw IOException("Failed to open output stream.")
+
+        return uri
+    } catch (e: IOException) {
+        uri?.let { orphanUri ->
+            // Don't leave an orphan entry in the MediaStore
+            resolver.delete(orphanUri, null, null)
+        }
+
+        throw e
+    }
+}
+
+// saveMedia that works for Android 9 and below
+private fun saveMediaP(
+    context: Context,
+    inputStream: InputStream,
+    mimeType: String?,
+    displayName: String,
+    // Link is here more like other media (think of PDF, doc, txt)
+    mediaType: PostType,
+) {
+    val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
+    val mediaDir = File(dir, "Jerboa")
+    val dest = File(mediaDir, displayName)
+
+    mediaDir.mkdirs() // make if not exist
+
+    inputStream.use { input ->
+        dest.outputStream().use {
+            input.copyTo(it)
+        }
+    }
+    // Makes it show up in gallery
+    val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
+    MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
 }

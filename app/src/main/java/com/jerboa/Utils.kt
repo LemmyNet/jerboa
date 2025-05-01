@@ -4,19 +4,16 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.webkit.MimeTypeMap.getFileExtensionFromUrl
@@ -25,7 +22,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
@@ -65,7 +61,6 @@ import okhttp3.Request
 import org.ocpsoft.prettytime.PrettyTime
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.MalformedURLException
@@ -854,82 +849,6 @@ private fun nsfwCheck(
     post: Post,
     community: Community,
 ): Boolean = post.nsfw || community.nsfw
-
-@RequiresApi(Build.VERSION_CODES.Q)
-@Throws(IOException::class)
-fun saveMediaQ(
-    ctx: Context,
-    inputStream: InputStream,
-    mimeType: String?,
-    displayName: String,
-    mediaType: PostType,
-): Uri {
-    val mimeTypeWithFallback = mimeType ?: when (mediaType) {
-        PostType.Image -> "image/jpeg"
-        PostType.Video -> "video/mpeg"
-        PostType.Link -> null
-    }
-
-    val values =
-        ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
-            put(MediaStore.MediaColumns.MIME_TYPE, mimeTypeWithFallback)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
-        }
-
-    val resolver = ctx.contentResolver
-    var uri: Uri? = null
-
-    try {
-        val insert =
-            when (mediaType) {
-                PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
-            }
-
-        uri = resolver.insert(insert, values)
-            ?: throw IOException("Failed to create new MediaStore record.")
-
-        resolver.openOutputStream(uri)?.use {
-            inputStream.copyTo(it)
-        } ?: throw IOException("Failed to open output stream.")
-
-        return uri
-    } catch (e: IOException) {
-        uri?.let { orphanUri ->
-            // Don't leave an orphan entry in the MediaStore
-            resolver.delete(orphanUri, null, null)
-        }
-
-        throw e
-    }
-}
-
-// saveMedia that works for Android 9 and below
-fun saveMediaP(
-    context: Context,
-    inputStream: InputStream,
-    mimeType: String?,
-    displayName: String,
-    // Link is here more like other media (think of PDF, doc, txt)
-    mediaType: PostType,
-) {
-    val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
-    val mediaDir = File(dir, "Jerboa")
-    val dest = File(mediaDir, displayName)
-
-    mediaDir.mkdirs() // make if not exist
-
-    inputStream.use { input ->
-        dest.outputStream().use {
-            input.copyTo(it)
-        }
-    }
-    // Makes it show up in gallery
-    val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
-    MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
-}
 
 /**
  * Converts a scalable pixel (sp) to an actual pixel (px)
