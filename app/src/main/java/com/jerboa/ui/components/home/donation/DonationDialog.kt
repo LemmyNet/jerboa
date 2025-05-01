@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -53,7 +53,7 @@ val DONATION_MARKDOWN =
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowDonationNotification(siteViewModel: SiteViewModel) {
-    var showDonationDialog by remember { mutableStateOf(false) }
+    var showDonationDialog by rememberSaveable { mutableStateOf(false) }
     val localUserViewModel: LocalUserViewModel = viewModel()
 
     LaunchedEffect(siteViewModel.siteRes) {
@@ -71,7 +71,7 @@ fun ShowDonationNotification(siteViewModel: SiteViewModel) {
                     val oneYearAgo = OffsetDateTime.now().minusYears(1)
                     showDonationDialog = lastDonationTime.isBefore(oneYearAgo)
                 } catch (e: Exception) {
-                    Log.d("ShowDonationNotification", "could not parse datetime", e)
+                    Log.e("ShowDonationNotification", "could not parse datetime", e)
                 }
             }
             else -> {}
@@ -102,8 +102,6 @@ fun DonationNotificationDialog(
     onClick: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    MarkdownHelper.init(LocalContext.current)
-
     AlertDialog(
         text = {
             Column {
@@ -135,5 +133,6 @@ fun DonationNotificationDialog(
 @Preview
 @Composable
 fun DonationNotificationDialogPreview() {
+    MarkdownHelper.init(LocalContext.current)
     DonationNotificationDialog({}, {})
 }

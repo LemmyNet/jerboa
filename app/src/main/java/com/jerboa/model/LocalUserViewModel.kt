@@ -10,23 +10,15 @@ class LocalUserViewModel : ViewModel() {
     fun markDonationNotificationShown(onComplete: () -> Unit) {
         if (API.getInstanceOrNull()?.FF?.markDonationDialogShown() == true) {
             viewModelScope.launch {
-                val result = runCatching {
-                    API.getInstance().markDonationDialogShown()
-                }
+                val result = API.getInstance().markDonationDialogShown()
 
                 result
-                    .onSuccess { response ->
-                        response
-                            .onSuccess {
-                                onComplete()
-                            }.onFailure {
-                                onComplete() // Still dismiss dialog even if API failed
-                                Log.d("markDonationNotificationShown", "mark donation shown request failed: $response")
-                            }
+                    .onSuccess {
+                        onComplete()
                     }.onFailure { throwable ->
                         // Network or other failure
                         onComplete()
-                        Log.d("markDonationNotificationShown", "mark donation shown request failed", throwable)
+                        Log.e("markDonationNotificationShown", "mark donation shown request failed", throwable)
                     }
             }
         } else {
