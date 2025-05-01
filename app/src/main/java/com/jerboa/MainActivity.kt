@@ -163,12 +163,9 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                 )
 
-                val changelogShown = appSettingsViewModel.shouldShowChangelog(
-                    currentVersionCode = ctx.getVersionCode())
-
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
-                ShowDonationNotification(changelogShown, siteViewModel)
+                ShowDonationNotification(siteViewModel = siteViewModel)
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
 

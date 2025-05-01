@@ -7,7 +7,6 @@ import com.jerboa.api.API
 import kotlinx.coroutines.launch
 
 class LocalUserViewModel : ViewModel() {
-
     fun markDonationNotificationShown(onComplete: () -> Unit) {
         if (API.getInstanceOrNull()?.FF?.markDonationDialogShown() == true) {
             viewModelScope.launch {
@@ -15,18 +14,20 @@ class LocalUserViewModel : ViewModel() {
                     API.getInstance().markDonationDialogShown()
                 }
 
-                result.onSuccess { response ->
-                    response.onSuccess {
+                result
+                    .onSuccess { response ->
+                        response
+                            .onSuccess {
+                                onComplete()
+                            }.onFailure {
+                                onComplete() // Still dismiss dialog even if API failed
+                                Log.d("markDonationNotificationShown", "mark donation shown request failed: $response")
+                            }
+                    }.onFailure { throwable ->
+                        // Network or other failure
                         onComplete()
-                    }.onFailure {
-                        onComplete() // Still dismiss dialog even if API failed
-                        Log.d("markDonationNotificationShown", "mark donation shown request failed: $response")
+                        Log.d("markDonationNotificationShown", "mark donation shown request failed", throwable)
                     }
-                }.onFailure { throwable ->
-                    // Network or other failure
-                    onComplete()
-                    Log.d("markDonationNotificationShown", "mark donation shown request failed", throwable)
-                }
             }
         } else {
             onComplete()

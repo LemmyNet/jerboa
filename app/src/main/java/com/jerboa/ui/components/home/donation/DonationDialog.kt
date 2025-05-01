@@ -7,6 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,53 +52,56 @@ val DONATION_MARKDOWN =
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ShowDonationNotification(changelogShown: Boolean, siteViewModel: SiteViewModel) {
-    var showDonationDialog by remember { mutableStateOf(true) }
+fun ShowDonationNotification(siteViewModel: SiteViewModel) {
+    var showDonationDialog by remember { mutableStateOf(false) }
+    val localUserViewModel: LocalUserViewModel = viewModel()
 
-    // Avoid showing donation notification twice if changelog was shown
-    if (changelogShown) return
+    LaunchedEffect(siteViewModel.siteRes) {
+        when (val siteRes = siteViewModel.siteRes) {
+            is ApiState.Success -> {
+                val lastDonationNotification = siteRes.data.my_user
+                    ?.local_user_view
+                    ?.local_user
+                    ?.last_donation_notification
+                    ?: return@LaunchedEffect
+                if (lastDonationNotification.isEmpty()) return@LaunchedEffect
 
-    when (val siteRes = siteViewModel.siteRes) {
-        is ApiState.Success -> {
-            val lastDonationNotification = siteRes.data.my_user?.local_user_view?.local_user?.last_donation_notification ?: return
-            if (lastDonationNotification.isEmpty()) return
-
-            val localUserViewModel: LocalUserViewModel = viewModel()
-
-            val lastDonationTime = try {
-                OffsetDateTime.parse(lastDonationNotification, DateTimeFormatter.ISO_DATE_TIME)
-            } catch (e: Exception) {
-                Log.d("ShowDonationNotification", "could not parse datetime", e)
-                return
-            }
-
-            val oneYearAgo = OffsetDateTime.now().minusYears(1)
-
-            // Show dialog if last donation notification was more than a year ago
-            if (lastDonationTime.isBefore(oneYearAgo) && showDonationDialog) {
-
-                val uriHandler = LocalUriHandler.current
-                val dismissDialog = {
-                    localUserViewModel.markDonationNotificationShown {
-                        showDonationDialog = false
-                    }
+                try {
+                    val lastDonationTime = OffsetDateTime.parse(lastDonationNotification, DateTimeFormatter.ISO_DATE_TIME)
+                    val oneYearAgo = OffsetDateTime.now().minusYears(1)
+                    showDonationDialog = lastDonationTime.isBefore(oneYearAgo)
+                } catch (e: Exception) {
+                    Log.d("ShowDonationNotification", "could not parse datetime", e)
                 }
-
-                DonationNotificationDialog(
-                    onClick = {
-                        uriHandler.openUri(DONATION_LINK)
-                        dismissDialog()
-                    },
-                    onDismiss = dismissDialog
-                )
             }
-        } else -> {}
+            else -> {}
+        }
+    }
+
+    if (showDonationDialog) {
+        val uriHandler = LocalUriHandler.current
+        DonationNotificationDialog(
+            onClick = {
+                uriHandler.openUri(DONATION_LINK)
+                localUserViewModel.markDonationNotificationShown {
+                    showDonationDialog = false
+                }
+            },
+            onDismiss = {
+                localUserViewModel.markDonationNotificationShown {
+                    showDonationDialog = false
+                }
+            },
+        )
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DonationNotificationDialog(onClick: () -> Unit, onDismiss: () -> Unit) {
+fun DonationNotificationDialog(
+    onClick: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     MarkdownHelper.init(LocalContext.current)
 
     AlertDialog(
@@ -110,7 +114,7 @@ fun DonationNotificationDialog(onClick: () -> Unit, onDismiss: () -> Unit) {
             }
         },
         confirmButton = {
-            Button (
+            Button(
                 onClick = onClick,
             ) {
                 Text(stringResource(R.string.donate))

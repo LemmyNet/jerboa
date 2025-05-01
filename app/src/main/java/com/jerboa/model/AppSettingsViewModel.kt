@@ -49,11 +49,6 @@ class AppSettingsViewModel(
                 Log.e("jerboa", "Failed to load changelog: $e")
             }
         }
-
-    fun shouldShowChangelog(currentVersionCode: Int): Boolean {
-        val settings = appSettings.value ?: return false
-        return settings.lastVersionCodeViewed != currentVersionCode
-    }
 }
 
 object AppSettingsViewModelFactory {
