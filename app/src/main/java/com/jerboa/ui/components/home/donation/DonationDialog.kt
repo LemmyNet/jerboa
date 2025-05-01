@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -20,13 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
+import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.model.LocalUserViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -54,7 +56,7 @@ val DONATION_MARKDOWN =
 @Composable
 fun ShowDonationNotification(siteViewModel: SiteViewModel) {
     var showDonationDialog by rememberSaveable { mutableStateOf(false) }
-    val localUserViewModel: LocalUserViewModel = viewModel()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(siteViewModel.siteRes) {
         when (val siteRes = siteViewModel.siteRes) {
@@ -83,12 +85,12 @@ fun ShowDonationNotification(siteViewModel: SiteViewModel) {
         DonationNotificationDialog(
             onClick = {
                 uriHandler.openUri(DONATION_LINK)
-                localUserViewModel.markDonationNotificationShown {
+                markDonationNotificationShown(scope = scope) {
                     showDonationDialog = false
                 }
             },
             onDismiss = {
-                localUserViewModel.markDonationNotificationShown {
+                markDonationNotificationShown(scope = scope) {
                     showDonationDialog = false
                 }
             },
@@ -135,4 +137,26 @@ fun DonationNotificationDialog(
 fun DonationNotificationDialogPreview() {
     MarkdownHelper.init(LocalContext.current)
     DonationNotificationDialog({}, {})
+}
+
+fun markDonationNotificationShown(
+    scope: CoroutineScope,
+    onComplete: () -> Unit,
+) {
+    if (API.getInstanceOrNull()?.FF?.markDonationDialogShown() == true) {
+        scope.launch {
+            val result = API.getInstance().markDonationDialogShown()
+
+            result
+                .onSuccess {
+                    onComplete()
+                }.onFailure { throwable ->
+                    // Network or other failure
+                    onComplete()
+                    Log.e("markDonationNotificationShown", "mark donation shown request failed", throwable)
+                }
+        }
+    } else {
+        onComplete()
+    }
 }
