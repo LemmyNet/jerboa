@@ -49,13 +49,12 @@ import com.jerboa.ui.components.comment.reply.CommentReplyScreen
 import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityScreen
 import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
 import com.jerboa.ui.components.home.BottomNavScreen
-import com.jerboa.ui.components.home.donation.ShowDonationNotification
+import com.jerboa.ui.components.home.ShowAppStartupDialogs
 import com.jerboa.ui.components.home.legal.SiteLegalScreen
 import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
 import com.jerboa.ui.components.imageviewer.ImageViewerScreen
@@ -163,9 +162,10 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                 )
 
-                ShowChangelog(appSettingsViewModel = appSettingsViewModel)
-
-                ShowDonationNotification(siteViewModel = siteViewModel)
+                ShowAppStartupDialogs(
+                    appSettingsViewModel = appSettingsViewModel,
+                    siteViewModel = siteViewModel,
+                )
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
 

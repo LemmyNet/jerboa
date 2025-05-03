@@ -8,13 +8,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,11 +17,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.getVersionCode
-import com.jerboa.model.AppSettingsViewModel
 
-val DONATION_MARKDOWN =
+val CHANGELOG_DONATION_MARKDOWN =
     """
     ### Support Jerboa
     
@@ -45,59 +39,105 @@ val DONATION_MARKDOWN =
 
     """.trimIndent()
 
+val LEMMY_DONATION_MARKDOWN =
+    """
+    ### Support Lemmy Development
+    
+    We are able to develop [Lemmy](https://github.com/LemmyNet/lemmy) as an **open source** platform free of tracking and
+    ads thanks to the generosity of our users.
+    
+    Once a year we ask you to consider donating to support our work.
+    Financial security allows us to continue maintaining and improving the platform.
+    If you’d like to make a one-time or recurring donation simply click the button below.
+    
+    **Thank you for using Lemmy.**
+    
+    Nutomic and Dessalines,
+    
+    Lemmy Developers
+
+    """.trimIndent()
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
-    val ctx = LocalContext.current
-    val lastVersionCodeViewed = appSettingsViewModel.appSettings
-        .observeAsState()
-        .value
-        ?.lastVersionCodeViewed
+fun ShowChangelog(
+    onClick: () -> Unit,
+    onDismiss: () -> Unit,
+    changelogMarkdown: String,
+) {
+    val scrollState = rememberScrollState()
 
-    lastVersionCodeViewed?.also { lastViewed ->
-        val currentVersionCode = ctx.getVersionCode()
-        val viewed = lastViewed == currentVersionCode
-
-        var whatsChangedDialogOpen by remember { mutableStateOf(!viewed) }
-
-        if (whatsChangedDialogOpen) {
-            val scrollState = rememberScrollState()
-            val markdown = appSettingsViewModel.changelog
-            LaunchedEffect(appSettingsViewModel) {
-                appSettingsViewModel.loadChangelog(ctx)
+    AlertDialog(
+        text = {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+            ) {
+                MyMarkdownText(
+                    markdown = CHANGELOG_DONATION_MARKDOWN + changelogMarkdown,
+                    onClick = {},
+                )
             }
+        },
+        confirmButton = {
+            Button(
+                onClick = onClick,
+                modifier = Modifier.fillMaxWidth().testTag("jerboa:changelogbtn"),
+            ) {
+                Text(stringResource(R.string.dialogs_done))
+            }
+        },
+        onDismissRequest = onDismiss,
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
+    )
+}
 
-            AlertDialog(
-                text = {
-                    Column(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .verticalScroll(scrollState),
-                    ) {
-                        MyMarkdownText(
-                            markdown = DONATION_MARKDOWN + markdown,
-                            onClick = {},
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            whatsChangedDialogOpen = false
-                            appSettingsViewModel.updateLastVersionCodeViewed(currentVersionCode)
-                        },
-                        modifier = Modifier.fillMaxWidth().testTag("jerboa:changelogbtn"),
-                    ) {
-                        Text(stringResource(R.string.dialogs_done))
-                    }
-                },
-                onDismissRequest = {
-                    whatsChangedDialogOpen = false
-                    appSettingsViewModel.updateLastVersionCodeViewed(currentVersionCode)
-                },
-                modifier = Modifier.semantics { testTagsAsResourceId = true },
-            )
-        }
-    }
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun DonationNotificationDialog(
+    onClick: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        text = {
+            Column {
+                MyMarkdownText(
+                    markdown = LEMMY_DONATION_MARKDOWN,
+                    onClick = {},
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onClick,
+            ) {
+                Text(stringResource(R.string.donate))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+            ) {
+                Text(stringResource(R.string.donation_dialog_dismiss))
+            }
+        },
+        onDismissRequest = onDismiss,
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
+    )
+}
+
+@Preview
+@Composable
+fun ChangelogDialogPreview() {
+    MarkdownHelper.init(LocalContext.current)
+    ShowChangelog({}, {}, "")
+}
+
+@Preview
+@Composable
+fun DonationNotificationDialogPreview() {
+    MarkdownHelper.init(LocalContext.current)
+    DonationNotificationDialog({}, {})
 }
