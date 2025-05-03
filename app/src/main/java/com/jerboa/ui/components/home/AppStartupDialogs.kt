@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -41,29 +40,10 @@ fun ShowAppStartupDialogs(
     val currentVersionCode = ctx.getVersionCode()
 
     val lastViewedVersion = appSettings?.lastVersionCodeViewed
-    val changelogNeedsToShow = lastViewedVersion != null && lastViewedVersion != currentVersionCode
 
-    val siteRes = siteViewModel.siteRes
-    val donationNeedsToShow = remember(siteRes, lastViewedVersion) {
-        if (!changelogNeedsToShow && siteRes is ApiState.Success) {
-            val lastDonationNotification = siteRes.data.my_user
-                ?.local_user_view
-                ?.local_user
-                ?.last_donation_notification
-                ?: return@remember false
-
-            try {
-                val lastDonationTime = OffsetDateTime.parse(lastDonationNotification)
-                val oneYearAgo = OffsetDateTime.now().minusYears(1)
-                lastViewedVersion == currentVersionCode && lastDonationTime.isBefore(oneYearAgo)
-            } catch (e: Exception) {
-                Log.e("ShowAppStartupDialogs", "Failed to parse donation time", e)
-                false
-            }
-        } else {
-            false
-        }
-    }
+    // Check which dialogs need to be shown
+    val changelogNeedsToShow = shouldShowChangelog(lastViewedVersion, currentVersionCode)
+    val donationNeedsToShow = shouldShowDonation(siteViewModel)
 
     // Determine which dialog to show
     LaunchedEffect(changelogNeedsToShow, donationNeedsToShow) {
@@ -115,6 +95,31 @@ fun ShowAppStartupDialogs(
     }
 }
 
+fun shouldShowChangelog(
+    lastViewedVersion: Int?,
+    currentVersionCode: Int,
+): Boolean = lastViewedVersion != null && lastViewedVersion != currentVersionCode
+
+fun shouldShowDonation(siteViewModel: SiteViewModel): Boolean {
+    val siteRes = siteViewModel.siteRes
+    if (siteRes !is ApiState.Success) return false
+
+    val lastDonationNotification = siteRes.data.my_user
+        ?.local_user_view
+        ?.local_user
+        ?.last_donation_notification
+        ?: return false
+
+    return try {
+        val lastDonationTime = OffsetDateTime.parse(lastDonationNotification)
+        val oneYearAgo = OffsetDateTime.now().minusYears(1)
+        lastDonationTime.isBefore(oneYearAgo)
+    } catch (e: Exception) {
+        Log.e("ShowAppStartupDialogs", "Failed to parse donation time", e)
+        false
+    }
+}
+
 fun markDonationNotificationShown(
     scope: CoroutineScope,
     onComplete: () -> Unit,
@@ -127,7 +132,8 @@ fun markDonationNotificationShown(
     }
 
     scope.launch {
-        runCatching { api.markDonationDialogShown() }
+        api
+            .markDonationDialogShown()
             .onSuccess { onComplete() }
             .onFailure {
                 Log.e("markDonationNotificationShown", "Failed to mark donation shown", it)
