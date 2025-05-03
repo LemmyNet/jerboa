@@ -47,6 +47,9 @@ fun ShowAppStartupDialogs(
 
     // Determine which dialog to show
     LaunchedEffect(changelogNeedsToShow, donationNeedsToShow) {
+        // If a dialog is already showing, don't interrupt it
+        if (activeDialog != null) return@LaunchedEffect
+
         if (changelogNeedsToShow) {
             activeDialog = DialogType.Changelog
         } else if (donationNeedsToShow) {
