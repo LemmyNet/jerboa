@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.profileinstaller.ProfileVerifier
 import androidx.profileinstaller.ProfileVerifier.CompilationStatus
+import com.jerboa.DONATE_LINK
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.ui.components.common.SimpleTopAppBar
@@ -48,7 +49,6 @@ import me.zhanghai.compose.preference.ProvidePreferenceTheme
 
 const val GITHUB_URL = "https://github.com/LemmyNet/jerboa"
 const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
-const val DONATE_LINK = "https://join-lemmy.org/donate"
 const val JERBOA_LEMMY_ML_LINK = "https://lemmy.ml/c/jerboa"
 const val MASTODON_LINK = "https://mastodon.social/@LemmyDev"
 const val TORRENT_HELP_LINK = "https://join-lemmy.org/docs/users/02-media.html#torrents"

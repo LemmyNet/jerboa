@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import com.jerboa.DONATE_LINK
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.getVersionCode
@@ -22,8 +23,6 @@ import com.jerboa.ui.components.common.ShowChangelog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
-
-const val DONATION_LINK = "https://join-lemmy.org/donate"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -81,7 +80,7 @@ fun ShowAppStartupDialogs(
             val uriHandler = LocalUriHandler.current
             DonationNotificationDialog(
                 onClick = {
-                    uriHandler.openUri(DONATION_LINK)
+                    uriHandler.openUri(DONATE_LINK)
                     markDonationNotificationShown(scope = scope) {
                         activeDialog = null
                     }
