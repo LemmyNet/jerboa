@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.BanFromCommunityData
@@ -642,6 +643,7 @@ fun UserTabs(
                                     postActionBarMode = postActionBarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
+                                    selectionState = SelectionVisibilityState.NoSelection,
                                 )
                             }
 

@@ -20,6 +20,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -52,9 +53,9 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toEnum
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
+import com.jerboa.ui.components.common.adaptiveNavigationBar
 import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxScreen
@@ -144,7 +145,7 @@ enum class NavTab(
     ExperimentalComposeUiApi::class,
 )
 @Composable
-fun BottomNavScreen(
+fun HomeNavScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
@@ -224,134 +225,131 @@ fun BottomNavScreen(
         },
         modifier = Modifier.semantics { testTagsAsResourceId = true },
         content = {
-            Scaffold(
-                snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
-                bottomBar = {
+            NavigationSuiteScaffold(
+                navigationSuiteItems = {
                     if (appSettings.showBottomNav && acc !== GuardAccount) {
-                        BottomAppBarAll(
+                        adaptiveNavigationBar(
                             selectedTab = selectedTab,
+                            userViewType = account.userViewType(),
                             unreadCounts = siteViewModel.unreadCount,
                             unreadAppCount = siteViewModel.unreadAppCount,
                             unreadReportCount = siteViewModel.unreadReportCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
-                            userViewType = account.userViewType(),
-                            onSelect = onSelectTab,
+                            onSelectTab = onSelectTab,
                         )
                     }
                 },
-            ) { padding ->
-                NavHost(
-                    navController = bottomNavController,
-                    startDestination = NavTab.Home.name,
-                ) {
-                    composable(route = NavTab.Home.name) {
-                        HomeScreen(
-                            appState = appState,
-                            homeViewModel = homeViewModel,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                            padding = padding,
-                        )
-                    }
+            ) {
+                Scaffold(
+                    snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
+                    content = { padding ->
+                        NavHost(
+                            navController = bottomNavController,
+                            startDestination = NavTab.Home.name,
+                        ) {
+                            composable(route = NavTab.Home.name) {
+                                HomeAndPostDetailScreen(
+                                    appState = appState,
+                                    homeViewModel = homeViewModel,
+                                    accountViewModel = accountViewModel,
+                                    siteViewModel = siteViewModel,
+                                    appSettingsViewModel = appSettingsViewModel,
+                                    appSettings = appSettings,
+                                    drawerState = drawerState,
+                                    padding = padding,
+                                )
+                            }
 
-                    composable(route = NavTab.Search.name) {
-                        CommunityListScreen(
-                            appState = appState,
-                            selectMode = false,
-                            followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            drawerState = drawerState,
-                            showAvatar = siteViewModel.showAvatar(),
-                            padding = padding,
-                        )
-                    }
+                            composable(route = NavTab.Search.name) {
+                                CommunityListScreen(
+                                    appState = appState,
+                                    selectMode = false,
+                                    followList = siteViewModel.getFollowList(),
+                                    blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    drawerState = drawerState,
+                                    showAvatar = siteViewModel.showAvatar(),
+                                    padding = padding,
+                                )
+                            }
 
-                    composable(route = NavTab.Inbox.name) {
-                        InboxScreen(
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            drawerState = drawerState,
-                            padding = padding,
-                        )
-                    }
+                            composable(route = NavTab.Inbox.name) {
+                                InboxScreen(
+                                    appState = appState,
+                                    accountViewModel = accountViewModel,
+                                    siteViewModel = siteViewModel,
+                                    blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    drawerState = drawerState,
+                                    padding = padding,
+                                )
+                            }
 
-                    composable(route = NavTab.RegistrationApplications.name) {
-                        RegistrationApplicationsScreen(
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            drawerState = drawerState,
-                            padding = padding,
-                        )
-                    }
+                            composable(route = NavTab.RegistrationApplications.name) {
+                                RegistrationApplicationsScreen(
+                                    appState = appState,
+                                    accountViewModel = accountViewModel,
+                                    siteViewModel = siteViewModel,
+                                    drawerState = drawerState,
+                                    padding = padding,
+                                )
+                            }
 
-                    composable(route = NavTab.Reports.name) {
-                        ReportsScreen(
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            padding = padding,
-                        )
-                    }
+                            composable(route = NavTab.Reports.name) {
+                                ReportsScreen(
+                                    appState = appState,
+                                    accountViewModel = accountViewModel,
+                                    siteViewModel = siteViewModel,
+                                    drawerState = drawerState,
+                                    blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    padding = padding,
+                                )
+                            }
 
-                    composable(route = NavTab.Saved.name) {
-                        PersonProfileScreen(
-                            personArg = Either.Left(account.id),
-                            savedMode = true,
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                            drawerState = drawerState,
-                            onBack = null,
-                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                            padding = padding,
-                        )
-                    }
+                            composable(route = NavTab.Saved.name) {
+                                PersonProfileScreen(
+                                    personArg = Either.Left(account.id),
+                                    savedMode = true,
+                                    appState = appState,
+                                    accountViewModel = accountViewModel,
+                                    appSettingsViewModel = appSettingsViewModel,
+                                    showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                    siteViewModel = siteViewModel,
+                                    useCustomTabs = appSettings.useCustomTabs,
+                                    usePrivateTabs = appSettings.usePrivateTabs,
+                                    blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                                    drawerState = drawerState,
+                                    onBack = null,
+                                    markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                                    postActionBarMode = appSettings.postActionBarMode.toEnum(),
+                                    swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                    padding = padding,
+                                )
+                            }
 
-                    composable(route = NavTab.Profile.name) {
-                        PersonProfileScreen(
-                            personArg = Either.Left(account.id),
-                            savedMode = false,
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                            drawerState = drawerState,
-                            onBack = null,
-                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                            padding = padding,
-                        )
-                    }
-                }
+                            composable(route = NavTab.Profile.name) {
+                                PersonProfileScreen(
+                                    personArg = Either.Left(account.id),
+                                    savedMode = false,
+                                    appState = appState,
+                                    accountViewModel = accountViewModel,
+                                    appSettingsViewModel = appSettingsViewModel,
+                                    showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                    siteViewModel = siteViewModel,
+                                    useCustomTabs = appSettings.useCustomTabs,
+                                    usePrivateTabs = appSettings.usePrivateTabs,
+                                    blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                                    drawerState = drawerState,
+                                    onBack = null,
+                                    markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                                    postActionBarMode = appSettings.postActionBarMode.toEnum(),
+                                    swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                    padding = padding,
+                                )
+                            }
+                        }
+                    },
+                )
             }
         },
     )

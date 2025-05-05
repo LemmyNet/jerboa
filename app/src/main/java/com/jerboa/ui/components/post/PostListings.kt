@@ -1,5 +1,7 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleLinkPostView
@@ -29,7 +32,8 @@ import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
-import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.components.common.selectedItemContainerColor
+import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -82,6 +86,7 @@ fun PostListings(
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
+    selectionState: SelectionVisibilityState<PostId>,
 ) {
     LazyColumn(
         state = listState,
@@ -97,58 +102,69 @@ fun PostListings(
             items = posts,
             contentType = { _, _ -> "Post" },
         ) { index, postView ->
-            PostListing(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onHidePostClick = onHidePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onViewVotesClick = onViewPostVotesClick,
-                onPersonClick = onPersonClick,
-                showCommunityName = showCommunityName,
-                fullBody = false,
-                account = account,
-                postViewMode = postViewMode,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                blurNSFW = blurNSFW,
-                appState = appState,
-                showPostLinkPreview = showPostLinkPreviews,
-                showIfRead = showIfRead,
-                voteDisplayMode = voteDisplayMode,
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-            ).let {
-                if (!postView.read && markAsReadOnScroll) {
-                    DisposableEffect(key1 = postView.post.id) {
-                        onDispose {
-                            if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
-                                onMarkAsRead(postView)
+
+            val selected = when (selectionState) {
+                is SelectionVisibilityState.ShowSelection -> selectionState.selectedItem == postView.post.id
+                SelectionVisibilityState.NoSelection -> false
+            }
+
+            Column(
+                modifier = Modifier
+                    .background(selectedItemContainerColor(selected)),
+            ) {
+                PostListing(
+                    postView = postView,
+                    admins = admins,
+                    moderators = moderators,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    onReplyClick = onReplyClick,
+                    onPostClick = onPostClick,
+                    onSaveClick = onSaveClick,
+                    onCommunityClick = onCommunityClick,
+                    onEditPostClick = onEditPostClick,
+                    onDeletePostClick = onDeletePostClick,
+                    onHidePostClick = onHidePostClick,
+                    onReportClick = onReportClick,
+                    onRemoveClick = onRemoveClick,
+                    onBanPersonClick = onBanPersonClick,
+                    onBanFromCommunityClick = onBanFromCommunityClick,
+                    onLockPostClick = onLockPostClick,
+                    onFeaturePostClick = onFeaturePostClick,
+                    onViewVotesClick = onViewPostVotesClick,
+                    onPersonClick = onPersonClick,
+                    showCommunityName = showCommunityName,
+                    fullBody = false,
+                    account = account,
+                    postViewMode = postViewMode,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = enableDownVotes,
+                    showAvatar = showAvatar,
+                    blurNSFW = blurNSFW,
+                    appState = appState,
+                    showPostLinkPreview = showPostLinkPreviews,
+                    showIfRead = showIfRead,
+                    voteDisplayMode = voteDisplayMode,
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                ).let {
+                    if (!postView.read && markAsReadOnScroll) {
+                        DisposableEffect(key1 = postView.post.id) {
+                            onDispose {
+                                if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
+                                    onMarkAsRead(postView)
+                                }
                             }
                         }
                     }
                 }
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = MEDIUM_PADDING),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                )
             }
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = SMALL_PADDING),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-            )
         }
 
         if (showPostAppendRetry) {
@@ -204,5 +220,6 @@ fun PreviewPostListings() {
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
         onReplyClick = {},
+        selectionState = SelectionVisibilityState.NoSelection,
     )
 }

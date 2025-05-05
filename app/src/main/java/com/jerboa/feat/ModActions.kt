@@ -46,7 +46,7 @@ fun futureDaysToUnixTime(days: Long?): Long? =
 fun amMod(
     moderators: List<PersonId>?,
     myId: PersonId,
-): Boolean = moderators?.contains(myId) ?: false
+): Boolean = moderators?.contains(myId) == true
 
 /**
  * In screens with posts from different communities we don't have access to moderators of those communities
