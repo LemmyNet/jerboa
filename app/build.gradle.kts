@@ -189,7 +189,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.0-SNAPSHOT")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     // For custom logging plugin
