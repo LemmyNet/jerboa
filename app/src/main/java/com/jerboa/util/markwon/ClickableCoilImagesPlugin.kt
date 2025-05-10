@@ -77,7 +77,7 @@ internal class ClickableImageFactory(
                 }
             }
 
-        return arrayOf(image, clickSpan)
+        return arrayOf<Any>(image, clickSpan)
     }
 }
 

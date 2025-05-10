@@ -13,10 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostType
 import com.jerboa.R
+import com.jerboa.copyToClipboard
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
@@ -39,7 +38,6 @@ fun LinkDropDownMenu(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
 ) {
-    val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
 
     if (link != null) {
@@ -86,13 +84,21 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.Link,
                 onClick = {
                     onDismissRequest()
-                    localClipboardManager.setText(AnnotatedString(link))
-                    Toast
-                        .makeText(
-                            ctx,
-                            ctx.getString(R.string.post_listing_link_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                    if (copyToClipboard(ctx, link, "Link")) {
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.post_listing_link_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    } else {
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.generic_error),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    }
                 },
             )
 
