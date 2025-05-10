@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Jerboa</string>
     <string name="AppBars_comments">%1$s 条评论</string>
     <string name="AppBars_created">已创建</string>
     <string name="AppBars_posts">%1$s 帖文</string>
@@ -406,14 +405,14 @@
     <string name="only_left_swipe_action_preset">只向左滑动</string>
     <string name="person_banned">禁止 %1$s</string>
     <string name="person_banned_for_x_days">禁止 %1$s %2$d 天</string>
-    <string name="person_banned_from_community">从 %2$d 禁止 %1$s</string>
-    <string name="person_banned_from_community_for_x_days">从 %2$d 禁止 %1$s %2$d 天</string>
+    <string name="person_banned_from_community">从 %2$s 禁止 %1$s</string>
+    <string name="person_banned_from_community_for_x_days">从 %2$s 禁止 %1$s %3$d 天</string>
     <string name="person_unbanned">已解禁 %1$s</string>
-    <string name="person_unbanned_from_community">从 %2$d 已解禁 %1$s</string>
+    <string name="person_unbanned_from_community">从 %2$s 已解禁 %1$s</string>
     <string name="ban_person">禁止 %1$s</string>
-    <string name="ban_person_from_community">从 %2$d 禁止 %1$s</string>
+    <string name="ban_person_from_community">从 %2$s 禁止 %1$s</string>
     <string name="unban_person">解禁 %1$s</string>
-    <string name="unban_person_from_community">从 %2$d 解禁 %1$s</string>
+    <string name="unban_person_from_community">从 %2$s 解禁 %1$s</string>
     <string name="remove_content">移除内容</string>
     <string name="permaban">永久封禁</string>
     <string name="days_until_expiration">到期前的天数</string>

@@ -816,7 +816,7 @@ fun getCommentParentId(comment: Comment): CommentId? = getCommentParentId(commen
 fun getCommentParentId(commentPath: String): CommentId? {
     val split = commentPath.split(".").toMutableList()
     // remove the 0
-    split.removeFirst()
+    split.removeAt(0)
     return if (split.size > 1) {
         split[split.size - 2].toLong()
     } else {
@@ -1175,8 +1175,7 @@ fun copyToClipboard(
 ): Boolean {
     val activity = context.findActivity()
     activity?.let {
-        val clipboard: ClipboardManager =
-            it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(clipLabel, textToCopy)
         clipboard.setPrimaryClip(clip)
         return true

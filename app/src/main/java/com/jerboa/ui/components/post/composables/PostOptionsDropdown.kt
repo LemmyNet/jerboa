@@ -25,11 +25,9 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.api.API.getInstanceOrNull
@@ -89,7 +87,6 @@ fun PostOptionsDropdown(
 ) {
     val ctx = LocalContext.current
     val api = getInstanceOrNull()
-    val localClipboardManager = LocalClipboardManager.current
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
 
     CascadeCenteredDropdownMenu(
@@ -128,13 +125,22 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Link,
                     onClick = {
                         onDismissRequest()
-                        localClipboardManager.setText(AnnotatedString(it))
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_link_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+
+                        if (copyToClipboard(ctx, it, "Link")) {
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_link_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                        } else {
+                            Toast
+                                .makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                        }
                     },
                 )
             }
@@ -145,13 +151,22 @@ fun PostOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     val permalink = postView.post.ap_id
-                    localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast
-                        .makeText(
-                            ctx,
-                            ctx.getString(R.string.post_listing_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+
+                    if (copyToClipboard(ctx, permalink, "Permalink")) {
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.post_listing_permalink_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    } else {
+                        Toast
+                            .makeText(
+                                ctx,
+                                ctx.getString(R.string.generic_error),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    }
                 },
             )
 
