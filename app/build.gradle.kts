@@ -30,9 +30,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+    }
+
+    lint {
+        disable += "MissingTranslation"
+        disable += "KtxExtensionAvailable"
+        disable += "UseKtx"
     }
 
     // Necessary for f-droid builds
@@ -94,6 +97,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 baselineProfile {
