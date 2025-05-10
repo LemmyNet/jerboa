@@ -2,7 +2,6 @@
 
 package com.jerboa.ui.components.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -38,11 +36,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -52,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
-import com.jerboa.ui.components.common.onAutofill
+import com.jerboa.ui.components.common.ifNotNull
 import it.vercruysse.lemmyapi.datatypes.Login
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -63,10 +60,8 @@ fun MyTextField(
     placeholder: String? = null,
     text: String,
     onValueChange: (String) -> Unit,
-    autofillTypes: List<AutofillType> = emptyList(),
+    autofillContentType: ContentType? = null,
 ) {
-    var wasAutofilled by remember { mutableStateOf(false) }
-
     OutlinedTextField(
         value = text,
         onValueChange = onValueChange,
@@ -79,14 +74,11 @@ fun MyTextField(
                 keyboardType = KeyboardType.Text,
                 autoCorrectEnabled = false,
             ),
-        modifier =
-            modifier
-                .width(OutlinedTextFieldDefaults.MinWidth)
-                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-                .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
-                    onValueChange(it)
-                    wasAutofilled = true
-                },
+        modifier = modifier
+            .width(OutlinedTextFieldDefaults.MinWidth)
+            .ifNotNull(autofillContentType) {
+                this.semantics { contentType = it}
+            }
     )
 }
 
@@ -97,22 +89,13 @@ fun PasswordField(
     password: String,
     onValueChange: (String) -> Unit,
 ) {
-    var wasAutofilled by remember { mutableStateOf(false) }
     var passwordVisibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         modifier =
             modifier
                 .width(OutlinedTextFieldDefaults.MinWidth)
-                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-                .onAutofill(
-                    LocalAutofillTree.current,
-                    LocalAutofill.current,
-                    listOf(AutofillType.Password),
-                ) {
-                    onValueChange(it)
-                    wasAutofilled = true
-                },
+                .semantics { contentType = ContentType.Password },
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
@@ -231,7 +214,7 @@ fun LoginForm(
             label = stringResource(R.string.login_email_or_username),
             text = username,
             onValueChange = { username = it },
-            autofillTypes = listOf(AutofillType.Username, AutofillType.EmailAddress),
+            autofillContentType = ContentType.Username + ContentType.EmailAddress,
         )
         PasswordField(
             password = password,
@@ -241,7 +224,7 @@ fun LoginForm(
             label = stringResource(R.string.login_totp),
             text = totp,
             onValueChange = { totp = it },
-            autofillTypes = listOf(AutofillType.SmsOtpCode),
+            autofillContentType = ContentType.SmsOtpCode,
         )
         Button(
             enabled = isValid && !loading,
