@@ -287,7 +287,6 @@
     <string name="title_min_3_chars">Заглавието трябва да е дълго поне 3 знака</string>
     <string name="title_required">Заглавието е задължително</string>
     <string name="topAppBar_back">Назад</string>
-    <string name="url" translatable="false">URL</string>
     <string name="url_invalid">Невалиден URL</string>
     <string name="utils_login_first">Първо влезте</string>
     <string name="upvote">Глас нагоре</string>
@@ -393,7 +392,6 @@
     <string name="posts_failed_loading">Неуспешно зареждане на публикации, опитайте отново</string>
     <string name="failed_sharing_media">Неуспешно споделяне на мултимедия!</string>
     <string name="app_settings_nothing">Нищо</string>
-    <string name="app_settings_blur_nsfw" translatable="false">NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_communities">NSFW освен от NSFW общности</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Освен NSFW в общност</string>
     <string name="time_ago_failed_to_parse">Неуспешно анализиране на дата и час</string>

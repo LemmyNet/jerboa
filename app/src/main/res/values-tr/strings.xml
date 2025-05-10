@@ -290,7 +290,6 @@
     <string name="title_min_3_chars">Başlık en az üç karakter olmalıdır</string>
     <string name="title_required">Başlık gerekli</string>
     <string name="topAppBar_back">Geri</string>
-    <string name="url" translatable="false">URL</string>
     <string name="url_invalid">Geçersiz URL</string>
     <string name="utils_login_first">Önce giriş yapın</string>
     <string name="upvote">Yukarı oy ver</string>
@@ -396,7 +395,6 @@
     <string name="posts_failed_loading">Gönderiler yüklenemedi, yeniden dene</string>
     <string name="failed_sharing_media">Medya paylaşılamadı!</string>
     <string name="app_settings_nothing">Hiçbiri</string>
-    <string name="app_settings_blur_nsfw" translatable="false">NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_communities">NSFW topluluklarından gelenler hariç NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Topluluk içindeki NSFW hariç</string>
     <string name="time_ago_failed_to_parse">Tarih saat ayrıştırılamadı</string>
