@@ -77,8 +77,8 @@ fun MyTextField(
         modifier = modifier
             .width(OutlinedTextFieldDefaults.MinWidth)
             .ifNotNull(autofillContentType) {
-                this.semantics { contentType = it}
-            }
+                this.semantics { contentType = it }
+            },
     )
 }
 

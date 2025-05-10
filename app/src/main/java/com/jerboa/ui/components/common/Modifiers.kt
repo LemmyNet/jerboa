@@ -23,7 +23,6 @@ inline fun <T> Modifier.ifNotNull(
     modifier: Modifier.(_: T) -> Modifier,
 ): Modifier = if (value != null) modifier(value) else this
 
-
 fun Modifier.getBlurredOrRounded(
     blur: Boolean,
     rounded: Boolean = false,
