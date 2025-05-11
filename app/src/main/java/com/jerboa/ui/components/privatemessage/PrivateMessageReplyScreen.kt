@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.privatemessage
 
 import android.util.Log
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -94,6 +95,7 @@ fun PrivateMessageReplyScreen(
                         modifier =
                             Modifier
                                 .padding(padding)
+                                .consumeWindowInsets(padding)
                                 .imePadding(),
                         showAvatar = siteViewModel.showAvatar(),
                     )

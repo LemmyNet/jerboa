@@ -115,7 +115,9 @@ fun MarkdownTextField(
                 value = text,
                 onValueChange = onTextChange,
                 label = { Text(text = placeholder) },
-                modifier = modifier.focusRequester(focusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences,
@@ -128,7 +130,9 @@ fun MarkdownTextField(
                 value = text,
                 onValueChange = onTextChange,
                 placeholder = { Text(text = placeholder) },
-                modifier = modifier.focusRequester(focusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences,

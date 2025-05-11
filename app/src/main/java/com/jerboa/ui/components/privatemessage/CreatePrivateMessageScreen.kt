@@ -3,7 +3,7 @@ package com.jerboa.ui.components.privatemessage
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -108,13 +108,13 @@ fun CreatePrivateMessageScreen(
                     Modifier
                         .verticalScroll(scrollState)
                         .padding(padding)
+                        .consumeWindowInsets(padding)
                         .imePadding(),
             ) {
                 MarkdownTextField(
                     text = textBody,
                     onTextChange = { textBody = it },
                     account = account,
-                    modifier = Modifier.fillMaxWidth(),
                     placeholder = stringResource(R.string.private_message_placeholder),
                 )
             }

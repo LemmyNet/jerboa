@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.comment.reply
 
 import android.util.Log
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -48,10 +49,7 @@ fun CommentReplyScreen(
     val replyItem = appState.getPrevReturn<ReplyItem>(CommentReplyReturn.COMMENT_SEND)
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(
-            TextFieldValue
-                (""),
-        )
+        mutableStateOf(TextFieldValue(""))
     }
 
     val focusManager = LocalFocusManager.current
@@ -101,6 +99,7 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                         )
@@ -116,6 +115,7 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
                         )
 
@@ -129,6 +129,7 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                         )
@@ -143,6 +144,7 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                         )
