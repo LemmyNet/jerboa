@@ -358,7 +358,6 @@ fun RegistrationApplicationItem(
                 text = denyReason,
                 onTextChange = { denyReason = it },
                 account = account,
-                modifier = Modifier.fillMaxWidth(),
                 placeholder = stringResource(R.string.type_your_reason),
             )
         }

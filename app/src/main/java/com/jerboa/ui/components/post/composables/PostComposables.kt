@@ -208,7 +208,6 @@ fun CreateEditPostBody(
             account = account,
             focusImmediate = false,
             placeholder = stringResource(R.string.post_edit_body_placeholder),
-            modifier = Modifier.fillMaxWidth(),
         )
 
         /**

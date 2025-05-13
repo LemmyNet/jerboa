@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -184,9 +185,10 @@ fun SettingsForm(
     Column(
         modifier =
             Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
-                .imePadding()
-                .verticalScroll(rememberScrollState()),
+                .consumeWindowInsets(padding)
+                .imePadding(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         SettingsTextField(
@@ -204,9 +206,6 @@ fun SettingsForm(
                 account = account,
                 outlined = true,
                 focusImmediate = false,
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
             )
         }
 
