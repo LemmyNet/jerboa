@@ -14,7 +14,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,10 +51,11 @@ fun CommentReplyScreen(
         mutableStateOf(TextFieldValue(""))
     }
 
-    val focusManager = LocalFocusManager.current
     val loading =
         when (commentReplyViewModel.createCommentRes) {
-            ApiState.Loading -> true
+            // When comment is created, still show loading so that ReplyItem is not entered composition
+            // again for a brief period, thus requesting focus again and opening keyboard
+            ApiState.Loading, is ApiState.Success -> true
             else -> false
         }
 
@@ -71,7 +71,6 @@ fun CommentReplyScreen(
                             replyItem,
                             ctx = ctx,
                             content = reply.text,
-                            focusManager = focusManager,
                         ) { cv ->
                             appState.apply {
                                 addReturn(CommentReplyReturn.COMMENT_VIEW, cv)
