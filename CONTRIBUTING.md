@@ -77,9 +77,9 @@ prettier --write "*.md" "*.yml"
 
 ## Adding translations
 
-Translations via [weblate](https://weblate.join-lemmy.org/engage/lemmy/):
+Translations via [weblate](https://weblate.join-lemmy.org/projects/lemmy/jerboa/):
 
-[![Translation status](https://weblate.join-lemmy.org/widget/lemmy/jerboa/multi-auto.svg)](https://weblate.join-lemmy.org/engage/lemmy/)
+[![Translation status](https://weblate.join-lemmy.org/widget/lemmy/jerboa/multi-auto.svg)](https://weblate.join-lemmy.org/projects/lemmy/jerboa/)
 
 ## Theming guide
 
