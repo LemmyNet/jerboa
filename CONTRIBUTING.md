@@ -77,11 +77,9 @@ prettier --write "*.md" "*.yml"
 
 ## Adding translations
 
-You can find the translations in the `app/src/main/res/values-{locale}/strings.xml` file.
-You can open it in android studio, right click and click open translations editor or you can
-directly edit the files.
+Translations via [weblate](https://weblate.join-lemmy.org/engage/lemmy/):
 
-If you add a new locale. Also add it in `locales_config.xml`. Don't forget to escape `'` in translations.
+[![Translation status](https://weblate.join-lemmy.org/widget/lemmy/jerboa/multi-auto.svg)](https://weblate.join-lemmy.org/engage/lemmy/)
 
 ## Theming guide
 
