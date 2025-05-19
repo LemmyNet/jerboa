@@ -67,9 +67,9 @@ Jerboa is made by Lemmy's developers, and is free, open-source software, meaning
 Jerboa and Lemmy are made possible by a generous grant from the [NLnet foundation](https://nlnet.nl/).
 
 - [Support on Liberapay](https://liberapay.com/Lemmy).
+- [Support on Ko-fi](https://ko-fi.com/lemmynet).
 - [Support on OpenCollective](https://opencollective.com/lemmy).
 - [Support on Patreon](https://www.patreon.com/dessalines).
-- [List of Sponsors](https://join-lemmy.org/donate).
 
 ### Crypto
 
