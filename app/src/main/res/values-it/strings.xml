@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppBars_comments">%1$s commenti</string>
     <string name="AppBars_created">Creata</string>
@@ -307,4 +308,5 @@
     <string name="back_dialog">Richiedi conferma per uscire</string>
     <string name="exit">Esci</string>
     <string name="back_dialog_title">Vuoi davvero uscire?</string>
+    <string name="title">Titolo</string>
 </resources>
