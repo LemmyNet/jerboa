@@ -60,7 +60,6 @@
     <string name="comment_node_goto_comment">댓글로 가기</string>
     <string name="comment_node_in">"in "</string>
     <string name="comment_node_more_replies">%1$s 개의 추가 답장</string>
-    <string name="comment_node_permalink_copied">퍼머링크가 복사되었습니다</string>
     <string name="comment_node_comment_copied">댓글 텍스트가 복사되었습니다</string>
     <string name="comment_node_report_comment">댓글 신고</string>
     <string name="comment_node_restore">복구</string>
@@ -226,7 +225,7 @@
     <string name="post_listing_go_to">%1$s로 가기</string>
     <string name="post_listing_link_copied">링크가 복사되었습니다</string>
     <string name="post_listing_new">( %1$s 개 신규 )</string>
-    <string name="post_listing_permalink_copied">퍼머링크가 복사되었습니다</string>
+    <string name="permalink_copied">퍼머링크가 복사되었습니다</string>
     <string name="post_listing_thumbnail_link_copied">썸네일 링크가 복사되었습니다</string>
     <string name="post_listing_title_copied">제목이 복사되었습니다</string>
     <string name="post_listing_name_copied">이름이 복사되었습니다</string>

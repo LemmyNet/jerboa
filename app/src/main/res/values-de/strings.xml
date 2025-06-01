@@ -163,9 +163,8 @@
     <string name="about_social">Sozial</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Zeige Inhalt für eingeklappte Kommentare</string>
-    <string name="comment_node_permalink_copied">Permalink kopiert</string>
     <string name="post_listing_link_copied">Link kopiert</string>
-    <string name="post_listing_permalink_copied">Permalink kopiert</string>
+    <string name="permalink_copied">Permalink kopiert</string>
     <string name="moreOptions">Zeige mehr Optionen</string>
     <string name="lessOptions">Zeige weniger Optionen</string>
     <string name="bottomBar_home">Gehe zur Startseite</string>

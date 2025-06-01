@@ -63,7 +63,6 @@
     <string name="comment_node_goto_comment">Към коментара</string>
     <string name="comment_node_in">"в "</string>
     <string name="comment_node_more_replies">още %1$s отговора</string>
-    <string name="comment_node_permalink_copied">Постоянната връзка е копирана</string>
     <string name="comment_node_comment_copied">Текстът на коментара е копиран</string>
     <string name="comment_node_report_comment">Докладване на коментара</string>
     <string name="comment_node_restore">Възстановяване</string>
@@ -236,7 +235,7 @@
     <string name="post_listing_go_to">Към %1$s</string>
     <string name="post_listing_link_copied">Връзката е копирана</string>
     <string name="post_listing_new">( %1$s нови )</string>
-    <string name="post_listing_permalink_copied">Постоянната връзка е копирана</string>
+    <string name="permalink_copied">Постоянната връзка е копирана</string>
     <string name="post_listing_thumbnail_link_copied">Връзката към миниобраза е копирана</string>
     <string name="post_listing_title_copied">Заглавието е копирано</string>
     <string name="post_listing_name_copied">Името е копирано</string>

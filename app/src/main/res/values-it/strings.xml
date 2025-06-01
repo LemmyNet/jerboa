@@ -61,7 +61,6 @@
     <string name="comment_node_goto_comment">Mostra commento</string>
     <string name="comment_node_in">"in "</string>
     <string name="comment_node_more_replies">%1$s altre risposte</string>
-    <string name="comment_node_permalink_copied">Permalink copiato</string>
     <string name="comment_node_comment_copied">Testo copiato</string>
     <string name="comment_node_report_comment">Segnala commento</string>
     <string name="comment_node_restore">Ripristina</string>
@@ -221,7 +220,7 @@
     <string name="post_listing_go_to">Vai a %1$s</string>
     <string name="post_listing_link_copied">Link copiato</string>
     <string name="post_listing_new">( %1$s nuovi )</string>
-    <string name="post_listing_permalink_copied">Permalink copiato</string>
+    <string name="permalink_copied">Permalink copiato</string>
     <string name="post_listing_thumbnail_link_copied">Link della miniatura copiato</string>
     <string name="post_listing_title_copied">Titolo copiato</string>
     <string name="post_listing_name_copied">Nome copiato</string>

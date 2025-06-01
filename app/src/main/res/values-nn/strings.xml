@@ -63,7 +63,6 @@
   <string name="comment_node_goto_comment">Gå til kommentar</string>
   <string name="comment_node_in">"i "</string>
   <string name="comment_node_more_replies">%1$s svar til</string>
-  <string name="comment_node_permalink_copied">Fastlenkje kopiert</string>
   <string name="comment_node_comment_copied">Kommentartekst kopiert</string>
   <string name="comment_node_report_comment">Rapporter kommentar</string>
   <string name="comment_node_restore">Gjenopprett</string>
@@ -237,7 +236,7 @@
   <string name="post_listing_go_to">Gå til %1$s</string>
   <string name="post_listing_link_copied">Lenkje kopiert</string>
   <string name="post_listing_new">(%1$s nye)</string>
-  <string name="post_listing_permalink_copied">Fastlenkje kopiert</string>
+  <string name="permalink_copied">Fastlenkje kopiert</string>
   <string name="post_listing_thumbnail_link_copied">Lenkje til miniatyrbilete kopiert</string>
   <string name="post_listing_title_copied">Tittel kopiert</string>
   <string name="post_listing_name_copied">Namn kopiert</string>

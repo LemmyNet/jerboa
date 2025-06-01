@@ -1,8 +1,8 @@
 package com.jerboa.ui.components.common
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.OpenInBrowser
@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostType
 import com.jerboa.R
-import com.jerboa.copyToClipboard
+import com.jerboa.feat.copyImageToClipboard
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
@@ -84,21 +85,7 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.Link,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, link, "Link")) {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_link_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    } else {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    }
+                    copyTextToClipboard(ctx, link, "Link", R.string.post_listing_link_copied)
                 },
             )
 
@@ -114,6 +101,14 @@ fun LinkDropDownMenu(
             when (mediaType) {
                 PostType.Image -> {
                     HorizontalDivider()
+                    PopupMenuItem(
+                        text = stringResource(R.string.copy_image),
+                        icon = Icons.Outlined.ContentCopy,
+                        onClick = {
+                            onDismissRequest()
+                            copyImageToClipboard(appState.coroutineScope, ctx, link)
+                        },
+                    )
                     PopupMenuItem(
                         text = stringResource(R.string.share_image),
                         icon = Icons.Outlined.Share,

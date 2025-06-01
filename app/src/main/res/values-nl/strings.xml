@@ -197,9 +197,8 @@
     <string name="addBookmark">Voeg toe aan bladwijzers</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Inhoud tonen voor samengevouwde reacties</string>
-    <string name="comment_node_permalink_copied">Permalink gekopieerd</string>
     <string name="post_listing_link_copied">Link gekopieerd</string>
-    <string name="post_listing_permalink_copied">Permalink gekopieerd</string>
+    <string name="permalink_copied">Permalink gekopieerd</string>
     <string name="markRead">Markeer als gelezen</string>
     <string name="markUnread">Markeer als niet gelezen</string>
     <string name="markdownHelper_formatBold">Opmaak als vette text</string>

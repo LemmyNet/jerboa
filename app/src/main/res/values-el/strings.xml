@@ -60,7 +60,6 @@
     <string name="comment_node_goto_comment">Πήγαινε στο σχόλιο</string>
     <string name="comment_node_in">"σε "</string>
     <string name="comment_node_more_replies">%1$s περισσότερες απαντήσεις</string>
-    <string name="comment_node_permalink_copied">Ο σύνδεσμος αντιγράφηκε</string>
     <string name="comment_node_comment_copied">Το κείμενο του σχολίου αντιγράφηκε</string>
     <string name="comment_node_report_comment">Αναφορά σχολίου</string>
     <string name="comment_node_restore">Επαναφορά</string>
@@ -220,7 +219,7 @@
     <string name="post_listing_go_to">Πήγαινε στο %1$s</string>
     <string name="post_listing_link_copied">Ο Σύνδεσμος Αντιγράφηκε</string>
     <string name="post_listing_new">( %1$s νέο )</string>
-    <string name="post_listing_permalink_copied">Ο Σύνδεσμος Αντιγράφηκε</string>
+    <string name="permalink_copied">Ο Σύνδεσμος Αντιγράφηκε</string>
     <string name="post_listing_thumbnail_link_copied">Ο Σύνδεσμος του thumbnail Αντιγράφηκε</string>
     <string name="post_listing_title_copied">Ο Τίτλος Αντιγράφηκε</string>
     <string name="post_listing_name_copied">Το Όνομα Αντιγράφηκε</string>

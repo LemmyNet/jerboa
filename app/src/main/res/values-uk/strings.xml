@@ -60,7 +60,6 @@
     <string name="comment_node_goto_comment">Перейти до коментаря</string>
     <string name="comment_node_in">&quot;в &quot;</string>
     <string name="comment_node_more_replies">%1$s більше відповідей</string>
-    <string name="comment_node_permalink_copied">Постійне посилання скопійовано</string>
     <string name="comment_node_comment_copied">Текст коментаря скопійовано</string>
     <string name="comment_node_report_comment">Поскаржитися на коментар</string>
     <string name="comment_node_restore">Відновити</string>
@@ -221,7 +220,7 @@
     <string name="post_listing_go_to">Перейти до %1$s</string>
     <string name="post_listing_link_copied">Посилання скопійовано</string>
     <string name="post_listing_new">( %1$s нових )</string>
-    <string name="post_listing_permalink_copied">Постійне посилання скопійовано</string>
+    <string name="permalink_copied">Постійне посилання скопійовано</string>
     <string name="post_listing_thumbnail_link_copied">Посилання на образок скопійовано</string>
     <string name="post_listing_title_copied">Назву скопійовано</string>
     <string name="post_listing_name_copied">Ім\'я скопійовано</string>

@@ -64,7 +64,6 @@
     <string name="comment_node_goto_comment">Goto Comment</string>
     <string name="comment_node_in">"in "</string>
     <string name="comment_node_more_replies">%1$s more replies</string>
-    <string name="comment_node_permalink_copied">Permalink Copied</string>
     <string name="comment_node_comment_copied">Comment Text Copied</string>
     <string name="comment_node_report_comment">Report Comment</string>
     <string name="comment_node_restore">Restore</string>
@@ -238,7 +237,7 @@
     <string name="post_listing_go_to">Go to %1$s</string>
     <string name="post_listing_link_copied">Link Copied</string>
     <string name="post_listing_new">( %1$s new )</string>
-    <string name="post_listing_permalink_copied">Permalink Copied</string>
+    <string name="permalink_copied">Permalink Copied</string>
     <string name="post_listing_thumbnail_link_copied">Thumbnail Link Copied</string>
     <string name="post_listing_title_copied">Title Copied</string>
     <string name="post_listing_name_copied">Name Copied</string>
@@ -504,4 +503,8 @@
     <string name="settings_screen_backup_and_restore">Backup and restore</string>
     <string name="donate">Donate</string>
     <string name="donation_dialog_dismiss">No, thanks</string>
+    <string name="copy_image">Copy image</string>
+    <string name="failed_copy_media">Failed to copy media</string>
+    <string name="copied">Copied</string>
+    <string name="media_copied">Media copied</string>
 </resources>

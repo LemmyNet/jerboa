@@ -48,7 +48,6 @@
     <string name="comment_node_goto_comment">Ugrás hozzászólásra</string>
     <string name="comment_node_in">"amiben "</string>
     <string name="comment_node_more_replies">%1$s további válasz</string>
-    <string name="comment_node_permalink_copied">Permahivatkozás másolva</string>
     <string name="comment_node_report_comment">Hozzászólás Jelentése</string>
     <string name="comment_node_view_context">Kontextus megtekintése</string>
     <string name="comment_node_view_original">Eredeti megtekintése</string>
@@ -232,7 +231,7 @@
     <string name="post_listing_delete">Törlés</string>
     <string name="post_listing_edit">Szerkeszt</string>
     <string name="post_listing_new">( %1$s új )</string>
-    <string name="post_listing_permalink_copied">Permahivatkozás másolva</string>
+    <string name="permalink_copied">Permahivatkozás másolva</string>
     <string name="post_listing_thumbnail_link_copied">Miniatűr hivatkozás másolva</string>
     <string name="post_listing_title_copied">Cím másolva</string>
     <string name="post_listing_name_copied">Név másolva</string>

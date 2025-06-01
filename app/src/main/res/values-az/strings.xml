@@ -60,7 +60,6 @@
     <string name="comment_node_goto_comment">Şərhə keç</string>
     <string name="comment_node_in">"də "</string>
     <string name="comment_node_more_replies">%1$s daha çox cavab</string>
-    <string name="comment_node_permalink_copied">Daimi Keçid Köçürüldü</string>
     <string name="comment_node_comment_copied">Şərh Mətni Köçürüldü</string>
     <string name="comment_node_report_comment">Şərhi Şikayət Et</string>
     <string name="comment_node_restore">Bərpa et</string>
@@ -226,7 +225,7 @@
     <string name="post_listing_go_to">%1$s keç</string>
     <string name="post_listing_link_copied">Bağlantı köçürüldü</string>
     <string name="post_listing_new">( %1$s yeni )</string>
-    <string name="post_listing_permalink_copied">Daimi Keçid Köçürüldü</string>
+    <string name="permalink_copied">Daimi Keçid Köçürüldü</string>
     <string name="post_listing_thumbnail_link_copied">Miniatür Bağlantı Köçürüldü</string>
     <string name="post_listing_title_copied">Başlıq Köçürüldü</string>
     <string name="post_listing_name_copied">Ad Köçürüldü</string>

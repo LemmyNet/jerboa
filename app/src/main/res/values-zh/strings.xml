@@ -63,7 +63,6 @@
     <string name="comment_node_goto_comment">前往评论</string>
     <string name="comment_node_in">于</string>
     <string name="comment_node_more_replies">%1$s 更多回复</string>
-    <string name="comment_node_permalink_copied">已复制永久链接</string>
     <string name="comment_node_comment_copied">评论文本已复制</string>
     <string name="comment_node_report_comment">报告评论</string>
     <string name="comment_node_restore">恢复</string>
@@ -239,7 +238,7 @@
     <string name="post_listing_go_to">前往 %1$s</string>
     <string name="post_listing_link_copied">链接已复制</string>
     <string name="post_listing_new">（%1$s 新）</string>
-    <string name="post_listing_permalink_copied">永久链接已复制</string>
+    <string name="permalink_copied">永久链接已复制</string>
     <string name="post_listing_thumbnail_link_copied">缩略图链接已复制</string>
     <string name="post_listing_title_copied">标题已复制</string>
     <string name="post_listing_name_copied">名称已复制</string>

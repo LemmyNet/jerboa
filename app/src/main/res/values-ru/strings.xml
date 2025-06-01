@@ -5,7 +5,6 @@
     <string name="comment_node_goto_comment">Перейти к комментарию</string>
     <string name="comment_node_in">в</string>
     <string name="comment_node_more_replies">%1$s других ответов</string>
-    <string name="comment_node_permalink_copied">Ссылка на комментарий скопирована</string>
     <string name="comment_node_comment_copied">Текст комментария скопирован</string>
     <string name="comment_node_report_comment">Пожаловаться на комментарий</string>
     <string name="comment_node_restore">Восстановить</string>
@@ -177,7 +176,7 @@
     <string name="post_listing_go_to">Перейти к %1$s</string>
     <string name="post_listing_link_copied">Ссылка скопирована</string>
     <string name="post_listing_new">( %1$s новых )</string>
-    <string name="post_listing_permalink_copied">Ссылка на публикацию скопирована</string>
+    <string name="permalink_copied">Ссылка на публикацию скопирована</string>
     <string name="post_listing_thumbnail_link_copied">Ссылка на миниатюру скопирована</string>
     <string name="post_listing_title_copied">Название скопировано</string>
     <string name="post_listing_name_copied">Имя скопировано</string>

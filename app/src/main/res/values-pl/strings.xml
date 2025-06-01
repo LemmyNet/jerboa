@@ -155,9 +155,8 @@
     <string name="about_social">Socialmedia</string>
     <string name="comment_node_in">"w "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Pokaż zawartość dla zwiniętych komentarzy</string>
-    <string name="comment_node_permalink_copied">Permalink Skopiowany</string>
     <string name="post_listing_link_copied">Link Skopiowany</string>
-    <string name="post_listing_permalink_copied">Permalink Skopiowany</string>
+    <string name="permalink_copied">Permalink Skopiowany</string>
     <string name="moreOptions">Pokaż więcej opcji</string>
     <string name="lessOptions">Pokaż mniej opcji</string>
     <string name="bottomBar_home">Idź na Główna</string>

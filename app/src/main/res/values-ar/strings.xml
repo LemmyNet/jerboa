@@ -60,7 +60,6 @@
     <string name="comment_node_goto_comment">إذهب إلى التعليق</string>
     <string name="comment_node_in">"في "</string>
     <string name="comment_node_more_replies">%1$s رد أكثر</string>
-    <string name="comment_node_permalink_copied">نُسِخ الرابط الدائم</string>
     <string name="comment_node_comment_copied">نُسِخ نصُّ التعليق</string>
     <string name="comment_node_report_comment">ارفع أمر التعليق</string>
     <string name="comment_node_restore">استعد</string>
@@ -231,7 +230,7 @@
     <string name="post_listing_go_to">إذهب إلى %1$s</string>
     <string name="post_listing_link_copied">نُسِخ الرابط</string>
     <string name="post_listing_new">( %1$s جديد )</string>
-    <string name="post_listing_permalink_copied">نُسِخ الرابط الدائم</string>
+    <string name="permalink_copied">نُسِخ الرابط الدائم</string>
     <string name="post_listing_thumbnail_link_copied">نُسِخ رابط المصغَّرة</string>
     <string name="post_listing_title_copied">نُسِخ العنوان</string>
     <string name="post_listing_name_copied">نُسِخ الاسم</string>

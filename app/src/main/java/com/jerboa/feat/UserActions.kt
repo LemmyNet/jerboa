@@ -2,6 +2,7 @@ package com.jerboa.feat
 
 import android.Manifest
 import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
 import com.jerboa.MainActivity
 import com.jerboa.PostType
@@ -138,7 +140,7 @@ fun shareMedia(
                 PostType.Video -> "video/*"
                 PostType.Link -> throw IllegalStateException("Should be impossible")
             }
-            clipData = ClipData.newRawUri(fileName, fileUri)
+            clipData = ClipData.newUri(ctx.contentResolver, fileName, fileUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
@@ -179,6 +181,66 @@ fun openMatrix(
 ) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://matrix.to/#/$matrixId"))
     ctx.startActivitySafe(intent)
+}
+
+/**
+ * Copy a given text to the clipboard, using the Kotlin context
+ *
+ * @param context The app context
+ * @param textToCopy Text to copy to the clipboard
+ * @param clipLabel Label
+ * @param resId Optional string resource ID, if included will be shown as a toast message
+ *
+ */
+fun copyTextToClipboard(
+    context: Context,
+    textToCopy: CharSequence,
+    clipLabel: CharSequence,
+    @StringRes resId: Int?,
+) {
+    val clipboard: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText(clipLabel, textToCopy)
+    clipboard.setPrimaryClip(clip)
+    if (resId != null) {
+        Toast.makeText(context, context.getString(resId), Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun copyImageToClipboard(
+    scope: CoroutineScope,
+    ctx: Context,
+    rawUrl: String,
+) {
+    try {
+        val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        val uri = rawUrl.parseUriWithProxyImageSupport()
+        val fileName = uri.pathSegments.last()
+        val file = File(ctx.cacheDir, fileName)
+
+        scope.launch(Dispatchers.IO) {
+            ctx.getInputStream(rawUrl).use { input ->
+                file.outputStream().use {
+                    input.copyTo(it)
+                }
+            }
+        }
+
+        val fileUri = FileProvider.getUriForFile(ctx, ctx.packageName + ".fileprovider", file)
+        clipboard.setPrimaryClip(ClipData.newUri(ctx.contentResolver, fileName, fileUri))
+
+        // Android 13+ should show a system message already
+        // see https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
+        if (SDK_INT <= 32) {
+            Toast.makeText(ctx, ctx.getString(R.string.media_copied), Toast.LENGTH_SHORT).show()
+        }
+    } catch (e: IOException) {
+        Log.d("copyMedia", "io failed", e)
+        Toast.makeText(ctx, R.string.failed_copy_media, Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Log.d("copyMedia", "invalid URL", e)
+        Toast.makeText(ctx, R.string.failed_copy_media, Toast.LENGTH_SHORT).show()
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
