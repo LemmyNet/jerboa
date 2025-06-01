@@ -57,6 +57,7 @@ import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
+import me.saket.telephoto.zoomable.OverzoomEffect
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -120,7 +121,7 @@ fun ImageViewerScreen(
             ).build()
     }
 
-    val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
+    val zoomableState = rememberZoomableState(ZoomSpec(maxZoomFactor = 20F, overzoomEffect = OverzoomEffect.NoLimits))
     val zoomableImageState = rememberZoomableImageState(zoomableState)
 
     Scaffold(
