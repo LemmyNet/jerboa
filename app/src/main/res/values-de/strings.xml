@@ -1,18 +1,14 @@
 <resources>
     <string name="comment_node_goto_comment">Zum Kommentar</string>
     <string name="comment_node_go_to">Gehe zu %1$s</string>
-    <string name="comment_node_view_source">Quelle anzeigen</string>
+    <string name="view_source">Quelle anzeigen</string>
     <string name="comment_node_copy_permalink">Permalink kopieren</string>
     <string name="comment_node_report_comment">Kommentar melden</string>
-    <string name="comment_node_edit">Bearbeiten</string>
-    <string name="comment_node_restore">Wiederherstellen</string>
-    <string name="comment_node_delete">Löschen</string>
     <string name="comment_node_more_replies">%1$s antworten</string>
     <string name="comment_node_view_post">Post anzeigen</string>
     <string name="comment_node_view_context">Kontext anzeigen</string>
     <string name="comment_body_removed">*Entfernt*</string>
     <string name="comment_body_deleted">*Gelöscht*</string>
-    <string name="comment_edit_edit">Bearbeiten</string>
     <string name="comment_edit_type_your_comment">Schreibe deinen Kommentar</string>
     <string name="comment_reply_reply">Antworten</string>
     <string name="comment_reply_type_your_comment">Schreibe deinen Kommentar</string>
@@ -89,12 +85,12 @@
     <string name="post_listing_new">( %1$s neu)</string>
     <string name="post_listing_comments_count">%1$s Kommentare</string>
     <string name="post_listing_go_to">Gehe zu %1$s</string>
-    <string name="post_listing_copy_link">Link kopieren</string>
+    <string name="copy_link">Link kopieren</string>
     <string name="post_listing_copy_permalink">Permalink kopieren</string>
     <string name="post_listing_report_post">Beitrag melden</string>
-    <string name="post_listing_edit">Bearbeiten</string>
-    <string name="post_listing_restore">Wiederherstellen</string>
-    <string name="post_listing_delete">Löschen</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="restore">Wiederherstellen</string>
+    <string name="delete">Löschen</string>
     <string name="private_message_to">"zu "</string>
     <string name="private_message_from">"von "</string>
     <string name="private_message_reply_reply">Antworten</string>
@@ -122,7 +118,6 @@
     <string name="account_settings_avatar">Avatar</string>
     <string name="account_settings_banner">Banner</string>
     <string name="account_settings_all">Alle</string>
-    <string name="account_settings_local">Lokal</string>
     <string name="account_settings_subscribed">Abonnements</string>
     <string name="account_settings_default_listing_type">Standard-Auflistungstyp</string>
     <string name="account_settings_default_sort_type">Standardsortierung</string>
@@ -163,7 +158,7 @@
     <string name="about_social">Sozial</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Zeige Inhalt für eingeklappte Kommentare</string>
-    <string name="post_listing_link_copied">Link kopiert</string>
+    <string name="ink_copied">Link kopiert</string>
     <string name="permalink_copied">Permalink kopiert</string>
     <string name="moreOptions">Zeige mehr Optionen</string>
     <string name="lessOptions">Zeige weniger Optionen</string>
@@ -211,8 +206,8 @@
     <string name="personProfile_viewAvatar">Avatar anzeigen</string>
     <string name="personProfile_viewBanner">Banner anzeigen</string>
     <string name="postListing_goToCommunity">Gehe zur Community</string>
-    <string name="postListing_locked">Geschlossen</string>
-    <string name="postListing_deleted">Gelöscht</string>
+    <string name="locked">Geschlossen</string>
+    <string name="deleted">Gelöscht</string>
     <string name="postListing_reply">Auf Betrag antworten</string>
     <string name="privateMessage_reply">Auf Nachricht antworten</string>
     <string name="topAppBar_back">Zurück</string>

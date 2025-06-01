@@ -1,18 +1,14 @@
 <resources>
     <string name="comment_node_goto_comment">コメントへ行く</string>
     <string name="comment_node_go_to">%1$sへ行く</string>
-    <string name="comment_node_view_source">原文を見る</string>
+    <string name="view_source">原文を見る</string>
     <string name="comment_node_copy_permalink">元リンクをコピー</string>
     <string name="comment_node_report_comment">コメントを報告</string>
-    <string name="comment_node_edit">編集</string>
-    <string name="comment_node_restore">復元</string>
-    <string name="comment_node_delete">削除</string>
     <string name="comment_node_more_replies">%1$s件の追加返信</string>
     <string name="comment_node_view_post">投稿を見る</string>
     <string name="comment_node_view_context">元の会話を表示</string>
     <string name="comment_body_removed">*管理者が削除*</string>
     <string name="comment_body_deleted">*投稿者が削除*</string>
-    <string name="comment_edit_edit">編集</string>
     <string name="comment_edit_type_your_comment">コメントを入力</string>
     <string name="comment_reply_reply">返信</string>
     <string name="comment_reply_type_your_comment">コメントを入力</string>
@@ -82,12 +78,12 @@
     <string name="post_listing_new">(新着 %1$s 件)</string>
     <string name="post_listing_comments_count">コメント%1$s件</string>
     <string name="post_listing_go_to">%1$sへ行く</string>
-    <string name="post_listing_copy_link">リンクをコピー</string>
+    <string name="copy_link">リンクをコピー</string>
     <string name="post_listing_copy_permalink">元リンクをコピー</string>
     <string name="post_listing_report_post">投稿を報告</string>
-    <string name="post_listing_edit">編集</string>
-    <string name="post_listing_restore">復元</string>
-    <string name="post_listing_delete">削除</string>
+    <string name="edit">編集</string>
+    <string name="restore">復元</string>
+    <string name="delete">削除</string>
     <string name="private_message_to">"受信者"</string>
     <string name="private_message_from">"送信者"</string>
     <string name="private_message_reply_reply">返信</string>
@@ -115,7 +111,6 @@
     <string name="account_settings_avatar">アバター</string>
     <string name="account_settings_banner">バナー</string>
     <string name="account_settings_all">すべて</string>
-    <string name="account_settings_local">ローカル</string>
     <string name="account_settings_subscribed">登録済み</string>
     <string name="account_settings_default_listing_type">表示タイプの既定</string>
     <string name="account_settings_default_sort_type">表示順の既定</string>
@@ -155,7 +150,7 @@
     <string name="about_social">ソーシャル</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">折りたたんだコメントのコンテンツを表示</string>
-    <string name="post_listing_link_copied">リンクをコピーしました</string>
+    <string name="ink_copied">リンクをコピーしました</string>
     <string name="permalink_copied">元リンクをコピーしました</string>
     <string name="moreOptions">追加オプションを表示</string>
     <string name="lessOptions">追加オプションを非表示</string>
@@ -206,8 +201,8 @@
     <string name="postListing_goToCommunity">コミュニティーに行く</string>
     <string name="postListing_featuredLocal">ローカルのお勧め</string>
     <string name="postListing_featuredCommunity">コミュニティ内にお勧め</string>
-    <string name="postListing_locked">凍結</string>
-    <string name="postListing_deleted">削除済み</string>
+    <string name="locked">凍結</string>
+    <string name="deleted">削除済み</string>
     <string name="postListing_reply">投稿に返信</string>
     <string name="privateMessage_reply">メッセージに返信</string>
     <string name="topAppBar_back">戻る</string>

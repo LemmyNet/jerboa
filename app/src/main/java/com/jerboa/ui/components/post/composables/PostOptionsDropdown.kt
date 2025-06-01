@@ -120,11 +120,11 @@ fun PostOptionsDropdown(
         ) {
             postView.post.url?.also {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_copy_link),
+                    text = stringResource(R.string.copy_link),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         onDismissRequest()
-                        copyTextToClipboard(ctx, it, "Link", R.string.post_listing_link_copied)
+                        copyTextToClipboard(ctx, it, "Link", R.string.ink_copied)
                     },
                 )
             }
@@ -200,7 +200,7 @@ fun PostOptionsDropdown(
         ) {
             postView.post.url?.also { url ->
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_share_link),
+                    text = stringResource(R.string.share_link),
                     icon = Icons.Outlined.Share,
                     onClick = {
                         onDismissRequest()
@@ -244,7 +244,7 @@ fun PostOptionsDropdown(
             }
 
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_share_post),
+                text = stringResource(R.string.share_post),
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()
@@ -284,7 +284,7 @@ fun PostOptionsDropdown(
                         if (viewSource) {
                             stringResource(R.string.post_listing_view_original)
                         } else {
-                            stringResource(R.string.post_listing_view_source)
+                            stringResource(R.string.view_source)
                         },
                     icon = Icons.Outlined.Description,
                     onClick = {
@@ -299,7 +299,7 @@ fun PostOptionsDropdown(
 
         if (isCreator) {
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_edit),
+                text = stringResource(R.string.edit),
                 icon = Icons.Outlined.Edit,
                 onClick = {
                     onDismissRequest()
@@ -309,7 +309,7 @@ fun PostOptionsDropdown(
 
             if (postView.post.deleted) {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_restore),
+                    text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
@@ -318,7 +318,7 @@ fun PostOptionsDropdown(
                 )
             } else {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_delete),
+                    text = stringResource(R.string.delete),
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()

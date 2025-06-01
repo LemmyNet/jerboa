@@ -110,7 +110,7 @@ fun CommentOptionsDropdown(
                 if (viewSource) {
                     stringResource(R.string.comment_node_view_original)
                 } else {
-                    stringResource(R.string.comment_node_view_source)
+                    stringResource(R.string.view_source)
                 },
             icon = Icons.Outlined.Description,
             onClick = {
@@ -123,7 +123,7 @@ fun CommentOptionsDropdown(
 
         if (isCreator) {
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_edit),
+                text = stringResource(R.string.edit),
                 icon = Icons.Outlined.Edit,
                 onClick = {
                     onDismissRequest()
@@ -133,7 +133,7 @@ fun CommentOptionsDropdown(
 
             if (commentView.comment.deleted) {
                 PopupMenuItem(
-                    text = stringResource(R.string.comment_node_restore),
+                    text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
@@ -142,7 +142,7 @@ fun CommentOptionsDropdown(
                 )
             } else {
                 PopupMenuItem(
-                    text = stringResource(R.string.comment_node_delete),
+                    text = stringResource(R.string.delete),
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()

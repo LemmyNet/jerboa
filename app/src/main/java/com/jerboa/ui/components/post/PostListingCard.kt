@@ -728,7 +728,7 @@ fun PostCommunityAndCreatorBlock(
                 DotSpacer(modifier = centerMod)
                 Icon(
                     imageVector = Icons.Outlined.CommentsDisabled,
-                    contentDescription = stringResource(R.string.postListing_locked),
+                    contentDescription = stringResource(R.string.locked),
                     tint = MaterialTheme.colorScheme.error,
                     modifier = centerMod.size(ACTION_BAR_ICON_SIZE),
                 )
@@ -737,7 +737,7 @@ fun PostCommunityAndCreatorBlock(
                 DotSpacer(modifier = centerMod)
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = stringResource(R.string.postListing_deleted),
+                    contentDescription = stringResource(R.string.deleted),
                     tint = MaterialTheme.colorScheme.error,
                     modifier = centerMod,
                 )

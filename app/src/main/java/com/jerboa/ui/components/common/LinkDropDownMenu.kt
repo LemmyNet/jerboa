@@ -81,16 +81,16 @@ fun LinkDropDownMenu(
             HorizontalDivider()
 
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_copy_link),
+                text = stringResource(R.string.copy_link),
                 icon = Icons.Outlined.Link,
                 onClick = {
                     onDismissRequest()
-                    copyTextToClipboard(ctx, link, "Link", R.string.post_listing_link_copied)
+                    copyTextToClipboard(ctx, link, "Link", R.string.ink_copied)
                 },
             )
 
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_share_link),
+                text = stringResource(R.string.share_link),
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()

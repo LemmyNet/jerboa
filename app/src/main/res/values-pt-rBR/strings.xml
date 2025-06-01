@@ -1,17 +1,13 @@
 <resources>
     <string name="comment_node_goto_comment">Ir ao Comentário</string>
-    <string name="comment_node_view_source">Ver Fonte</string>
+    <string name="view_source">Ver Fonte</string>
     <string name="comment_node_copy_permalink">Copiar Link do Comentário</string>
     <string name="comment_node_report_comment">Denunciar Comentário</string>
-    <string name="comment_node_edit">Editar</string>
-    <string name="comment_node_restore">Restaurar</string>
-    <string name="comment_node_delete">Apagar</string>
     <string name="comment_node_more_replies">mais %1$s respostas</string>
     <string name="comment_node_view_post">Ver Publicação</string>
     <string name="comment_node_view_context">Ver Contexto</string>
     <string name="comment_body_removed">*Removido*</string>
     <string name="comment_body_deleted">*Deletado*</string>
-    <string name="comment_edit_edit">Editar</string>
     <string name="comment_edit_type_your_comment">Digite seu comentário</string>
     <string name="comment_reply_reply">Responder</string>
     <string name="comment_reply_type_your_comment">Digite seu comentário</string>
@@ -81,12 +77,12 @@
     <string name="post_listing_new">( %1$s novos )</string>
     <string name="post_listing_comments_count">%1$s comentários</string>
     <string name="post_listing_go_to">Ir para %1$s</string>
-    <string name="post_listing_copy_link">Copiar Link</string>
+    <string name="copy_link">Copiar Link</string>
     <string name="post_listing_copy_permalink">Copiar Link da Publicação</string>
     <string name="post_listing_report_post">Denunciar Publicação</string>
-    <string name="post_listing_edit">Editar</string>
-    <string name="post_listing_restore">Restaurar</string>
-    <string name="post_listing_delete">Apagar</string>
+    <string name="edit">Editar</string>
+    <string name="restore">Restaurar</string>
+    <string name="delete">Apagar</string>
     <string name="private_message_to">"para "</string>
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Responder</string>
@@ -114,7 +110,6 @@
     <string name="account_settings_avatar">Avatar</string>
     <string name="account_settings_banner">Banner</string>
     <string name="account_settings_all">Tudo</string>
-    <string name="account_settings_local">Local</string>
     <string name="account_settings_subscribed">Participando</string>
     <string name="account_settings_default_listing_type">Tipo de Listagem Padrão</string>
     <string name="account_settings_default_sort_type">Ordenação Padrão</string>
@@ -154,7 +149,7 @@
     <string name="about_social">Social</string>
     <string name="comment_node_in">"em "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Mostrar conteúdo dos comentários retraídos</string>
-    <string name="post_listing_link_copied">Link Copiado</string>
+    <string name="ink_copied">Link Copiado</string>
     <string name="permalink_copied">Link da Publicação Copiado</string>
     <string name="person_profile_screen_about">Sobre</string>
     <string name="person_profile_screen_posts">Publicações</string>
