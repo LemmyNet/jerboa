@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.comment
 
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Shield
@@ -24,9 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
 import com.jerboa.api.API
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getContent
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
@@ -92,22 +91,7 @@ fun CommentOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     val permalink = commentView.comment.ap_id
-
-                    if (copyToClipboard(ctx, permalink, "Permalink")) {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.comment_node_permalink_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    } else {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    }
+                    copyTextToClipboard(ctx, permalink, "Permalink", R.string.permalink_copied)
                 },
             )
             val content = commentView.comment.getContent()
@@ -116,21 +100,7 @@ fun CommentOptionsDropdown(
                 icon = Icons.Outlined.ContentCopy,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, content, "comment")) {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.comment_node_comment_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    } else {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    }
+                    copyTextToClipboard(ctx, content, "comment", R.string.comment_node_comment_copied)
                 },
             )
         }
@@ -140,7 +110,7 @@ fun CommentOptionsDropdown(
                 if (viewSource) {
                     stringResource(R.string.comment_node_view_original)
                 } else {
-                    stringResource(R.string.comment_node_view_source)
+                    stringResource(R.string.view_source)
                 },
             icon = Icons.Outlined.Description,
             onClick = {
@@ -153,7 +123,7 @@ fun CommentOptionsDropdown(
 
         if (isCreator) {
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_edit),
+                text = stringResource(R.string.edit),
                 icon = Icons.Outlined.Edit,
                 onClick = {
                     onDismissRequest()
@@ -163,7 +133,7 @@ fun CommentOptionsDropdown(
 
             if (commentView.comment.deleted) {
                 PopupMenuItem(
-                    text = stringResource(R.string.comment_node_restore),
+                    text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
@@ -172,7 +142,7 @@ fun CommentOptionsDropdown(
                 )
             } else {
                 PopupMenuItem(
-                    text = stringResource(R.string.comment_node_delete),
+                    text = stringResource(R.string.delete),
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()
