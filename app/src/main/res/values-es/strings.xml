@@ -164,7 +164,7 @@
     <string name="about_social">Sociales</string>
     <string name="comment_node_in">"en "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Mostrar contenido de comentarios colapsados</string>
-    <string name="ink_copied">Enlace Copiado</string>
+    <string name="link_copied">Enlace Copiado</string>
     <string name="permalink_copied">Enlace Permanente Copiado</string>
     <string name="comment_next_parent">Siguiente Comentario Padre</string>
     <string name="comment_previous_parent">Comentario Padre Anterior</string>

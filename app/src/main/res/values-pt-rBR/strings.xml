@@ -149,7 +149,7 @@
     <string name="about_social">Social</string>
     <string name="comment_node_in">"em "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Mostrar conteúdo dos comentários retraídos</string>
-    <string name="ink_copied">Link Copiado</string>
+    <string name="link_copied">Link Copiado</string>
     <string name="permalink_copied">Link da Publicação Copiado</string>
     <string name="person_profile_screen_about">Sobre</string>
     <string name="person_profile_screen_posts">Publicações</string>

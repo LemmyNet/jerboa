@@ -213,7 +213,7 @@
     <string name="delete">Elimina</string>
     <string name="edit">Modifica</string>
     <string name="post_listing_go_to">Vai a %1$s</string>
-    <string name="ink_copied">Link copiato</string>
+    <string name="link_copied">Link copiato</string>
     <string name="post_listing_new">( %1$s nuovi )</string>
     <string name="permalink_copied">Permalink copiato</string>
     <string name="post_listing_thumbnail_link_copied">Link della miniatura copiato</string>
@@ -289,7 +289,7 @@
     <string name="dialogs_top_three_month">Top di 3 mesi</string>
     <string name="dialogs_top_six_month">Top di 6 mesi</string>
     <string name="dialogs_top_nine_month">Top di 9 mesi</string>
-    <string name="post_listing_view_original">Mostra originale</string>
+    <string name="view_original">Mostra originale</string>
     <string name="look_and_feel_show_text_descriptions_in_navbar">Mostra descrizioni nella barra di navigazione</string>
     <string name="person_iconBot">È un bot</string>
     <string name="download">Download</string>

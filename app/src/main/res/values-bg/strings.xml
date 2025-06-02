@@ -228,7 +228,7 @@
     <string name="delete">Изтриване</string>
     <string name="edit">Редактиране</string>
     <string name="post_listing_go_to">Към %1$s</string>
-    <string name="ink_copied">Връзката е копирана</string>
+    <string name="link_copied">Връзката е копирана</string>
     <string name="post_listing_new">( %1$s нови )</string>
     <string name="permalink_copied">Постоянната връзка е копирана</string>
     <string name="post_listing_thumbnail_link_copied">Връзката към миниобраза е копирана</string>
@@ -312,7 +312,7 @@
     <string name="dialogs_top_three_month">Топ за 3 месеца</string>
     <string name="dialogs_top_six_month">Топ за 6 месеца</string>
     <string name="dialogs_top_nine_month">Топ за 9 месеца</string>
-    <string name="post_listing_view_original">Преглед на оригинала</string>
+    <string name="view_original">Преглед на оригинала</string>
     <string name="download">Изтегляне</string>
     <string name="back_confirmation">Натиснете назад отново, за изход</string>
     <string name="no_back_confirmation">Без питане за потвърждение за изход</string>

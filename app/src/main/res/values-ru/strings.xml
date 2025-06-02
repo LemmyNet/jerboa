@@ -173,7 +173,7 @@
     <string name="delete">Удалить</string>
     <string name="edit">Отредактировать</string>
     <string name="post_listing_go_to">Перейти к %1$s</string>
-    <string name="ink_copied">Ссылка скопирована</string>
+    <string name="link_copied">Ссылка скопирована</string>
     <string name="post_listing_new">( %1$s новых )</string>
     <string name="permalink_copied">Ссылка на публикацию скопирована</string>
     <string name="post_listing_thumbnail_link_copied">Ссылка на миниатюру скопирована</string>
@@ -311,7 +311,7 @@
     <string name="dialogs_top_three_month">Лучшее за 3 месяца</string>
     <string name="dialogs_top_six_month">Лучшее за 6 месяцев</string>
     <string name="dialogs_top_nine_month">Лучшее за 9 месяцев</string>
-    <string name="post_listing_view_original">Показать оригинал</string>
+    <string name="view_original">Показать оригинал</string>
     <string name="download">Скачать</string>
     <string name="back_confirmation">Нажмите назад еще раз, чтобы выйти</string>
     <string name="no_back_confirmation">Не запрашивать подтверждение для выхода</string>

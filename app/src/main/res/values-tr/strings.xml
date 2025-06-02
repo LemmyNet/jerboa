@@ -228,7 +228,7 @@
     <string name="delete">Sil</string>
     <string name="edit">Düzenle</string>
     <string name="post_listing_go_to">%1$s\'e git</string>
-    <string name="ink_copied">Bağlantı Kopyalandı</string>
+    <string name="link_copied">Bağlantı Kopyalandı</string>
     <string name="post_listing_new">( %1$s yeni )</string>
     <string name="permalink_copied">Kalıcı Bağlantı Kopyalandı</string>
     <string name="post_listing_thumbnail_link_copied">Küçük Resim Bağlantısı Kopyalandı</string>
@@ -314,7 +314,7 @@
     <string name="dialogs_top_three_month">En İyi Üç Ay</string>
     <string name="dialogs_top_six_month">En İyi Altı Ay</string>
     <string name="dialogs_top_nine_month">En İyi Dokuz Ay</string>
-    <string name="post_listing_view_original">Orijinali Görüntüle</string>
+    <string name="view_original">Orijinali Görüntüle</string>
     <string name="download">İndir</string>
     <string name="back_confirmation">Çıkmak için tekrar geri basın</string>
     <string name="no_back_confirmation">Çıkmak için onay isteme</string>

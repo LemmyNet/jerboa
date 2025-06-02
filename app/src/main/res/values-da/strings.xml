@@ -150,7 +150,7 @@
     <string name="about_social">Sociale medier</string>
     <string name="comment_node_in">"i "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Vis indholdet af sammenfoldede kommentarer</string>
-    <string name="ink_copied">Link kopieret</string>
+    <string name="link_copied">Link kopieret</string>
     <string name="permalink_copied">Permanent link kopieret</string>
     <string name="moreOptions">Vis flere muligheder</string>
     <string name="lessOptions">Vis færre muligheder</string>

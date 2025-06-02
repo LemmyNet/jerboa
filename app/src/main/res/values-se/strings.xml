@@ -150,7 +150,7 @@
     <string name="about_social">Sociala Medier</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Visa Innehållet av Kollapsade Kommentarer</string>
-    <string name="ink_copied">Länk Kopierad</string>
+    <string name="link_copied">Länk Kopierad</string>
     <string name="permalink_copied">Permaliänk Kopierad</string>
     <string name="moreOptions">Visa fler alternativ</string>
     <string name="lessOptions">Visa färre alternativ</string>

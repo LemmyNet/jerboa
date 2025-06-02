@@ -218,7 +218,7 @@
     <string name="delete">Sil</string>
     <string name="edit">Redaktə et</string>
     <string name="post_listing_go_to">%1$s keç</string>
-    <string name="ink_copied">Bağlantı köçürüldü</string>
+    <string name="link_copied">Bağlantı köçürüldü</string>
     <string name="post_listing_new">( %1$s yeni )</string>
     <string name="permalink_copied">Daimi Keçid Köçürüldü</string>
     <string name="post_listing_thumbnail_link_copied">Miniatür Bağlantı Köçürüldü</string>
@@ -295,7 +295,7 @@
     <string name="dialogs_top_three_month">Bütün üç ay</string>
     <string name="dialogs_top_six_month">Bütün altı ay</string>
     <string name="dialogs_top_nine_month">Bütün doqquz ay</string>
-    <string name="post_listing_view_original">Orijinala Bax</string>
+    <string name="view_original">Orijinala Bax</string>
     <string name="download">Yüklə</string>
     <string name="back_confirmation">Çıxmaq üçün təkrar geri bas</string>
     <string name="no_back_confirmation">Çıxmaq üçün təsdiq tələb etmə</string>

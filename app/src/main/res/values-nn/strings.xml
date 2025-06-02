@@ -229,7 +229,7 @@
   <string name="delete">Slett</string>
   <string name="edit">Rediger</string>
   <string name="post_listing_go_to">Gå til %1$s</string>
-  <string name="ink_copied">Lenkje kopiert</string>
+  <string name="link_copied">Lenkje kopiert</string>
   <string name="post_listing_new">(%1$s nye)</string>
   <string name="permalink_copied">Fastlenkje kopiert</string>
   <string name="post_listing_thumbnail_link_copied">Lenkje til miniatyrbilete kopiert</string>
@@ -315,7 +315,7 @@
   <string name="dialogs_top_three_month">På topp siste tre månadar</string>
   <string name="dialogs_top_six_month">På topp siste seks månadar</string>
   <string name="dialogs_top_nine_month">På topp siste ni månadar</string>
-  <string name="post_listing_view_original">Vis opphavleg</string>
+  <string name="view_original">Vis opphavleg</string>
   <string name="download">Last ned</string>
   <string name="back_confirmation">Trykk «Tilbake» igjen for å avslutta</string>
   <string name="no_back_confirmation">Ikkje spør om stadfesting før avslutting</string>

@@ -218,7 +218,7 @@
     <string name="delete">삭제</string>
     <string name="edit">수정</string>
     <string name="post_listing_go_to">%1$s로 가기</string>
-    <string name="ink_copied">링크가 복사되었습니다</string>
+    <string name="link_copied">링크가 복사되었습니다</string>
     <string name="post_listing_new">( %1$s 개 신규 )</string>
     <string name="permalink_copied">퍼머링크가 복사되었습니다</string>
     <string name="post_listing_thumbnail_link_copied">썸네일 링크가 복사되었습니다</string>
@@ -295,7 +295,7 @@
     <string name="dialogs_top_three_month">3개월 내 최고</string>
     <string name="dialogs_top_six_month">6개월 내 최고</string>
     <string name="dialogs_top_nine_month">9개월 내 최고</string>
-    <string name="post_listing_view_original">원본 보기</string>
+    <string name="view_original">원본 보기</string>
     <string name="download">다운로드</string>
     <string name="back_confirmation">백 버튼을 다시 눌러 종료하세요</string>
     <string name="no_back_confirmation">종료 확인 묻지 않기</string>

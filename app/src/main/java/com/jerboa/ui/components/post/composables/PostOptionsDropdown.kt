@@ -124,7 +124,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Link,
                     onClick = {
                         onDismissRequest()
-                        copyTextToClipboard(ctx, it, "Link", R.string.ink_copied)
+                        copyTextToClipboard(ctx, it, "Link", R.string.link_copied)
                     },
                 )
             }
@@ -282,7 +282,7 @@ fun PostOptionsDropdown(
                 PopupMenuItem(
                     text =
                         if (viewSource) {
-                            stringResource(R.string.post_listing_view_original)
+                            stringResource(R.string.view_original)
                         } else {
                             stringResource(R.string.view_source)
                         },

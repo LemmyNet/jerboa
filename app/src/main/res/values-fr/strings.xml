@@ -149,7 +149,7 @@
     <string name="about_social">Social</string>
     <string name="comment_node_in">"dans "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Afficher le contenu des commentaires minimisés</string>
-    <string name="ink_copied">Lien copié</string>
+    <string name="link_copied">Lien copié</string>
     <string name="permalink_copied">Permalien copié</string>
     <string name="comment_next_parent">Commentaire parent suivant</string>
     <string name="comment_previous_parent">Commentaire parent précédent</string>

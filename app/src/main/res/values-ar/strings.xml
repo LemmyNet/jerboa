@@ -223,7 +223,7 @@
     <string name="delete">احذف</string>
     <string name="edit">حرِّر</string>
     <string name="post_listing_go_to">إذهب إلى %1$s</string>
-    <string name="ink_copied">نُسِخ الرابط</string>
+    <string name="link_copied">نُسِخ الرابط</string>
     <string name="post_listing_new">( %1$s جديد )</string>
     <string name="permalink_copied">نُسِخ الرابط الدائم</string>
     <string name="post_listing_thumbnail_link_copied">نُسِخ رابط المصغَّرة</string>
@@ -306,7 +306,7 @@
     <string name="dialogs_top_three_month">الأشهر آخر ثلاثة أشهر</string>
     <string name="dialogs_top_six_month">الأشهر آخر ستَّة أشهر</string>
     <string name="dialogs_top_nine_month">الأشهر آخر تسعة أشهر</string>
-    <string name="post_listing_view_original">أظهر الأصل</string>
+    <string name="view_original">أظهر الأصل</string>
     <string name="download">نزِّل</string>
     <string name="back_confirmation">اضغط «اخرج» مرةً أخرى تخرج</string>
     <string name="no_back_confirmation">لا تطلب التأكيد للخروج</string>

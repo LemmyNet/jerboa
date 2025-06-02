@@ -85,7 +85,7 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.Link,
                 onClick = {
                     onDismissRequest()
-                    copyTextToClipboard(ctx, link, "Link", R.string.ink_copied)
+                    copyTextToClipboard(ctx, link, "Link", R.string.link_copied)
                 },
             )
 

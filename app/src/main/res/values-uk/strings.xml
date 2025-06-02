@@ -213,7 +213,7 @@
     <string name="delete">Видалити</string>
     <string name="edit">Редагувати</string>
     <string name="post_listing_go_to">Перейти до %1$s</string>
-    <string name="ink_copied">Посилання скопійовано</string>
+    <string name="link_copied">Посилання скопійовано</string>
     <string name="post_listing_new">( %1$s нових )</string>
     <string name="permalink_copied">Постійне посилання скопійовано</string>
     <string name="post_listing_thumbnail_link_copied">Посилання на образок скопійовано</string>
@@ -289,7 +289,7 @@
     <string name="dialogs_top_three_month">Відбірне за три місяці</string>
     <string name="dialogs_top_six_month">Відбірне за шість місяців</string>
     <string name="dialogs_top_nine_month">Відбірне за дев\'ять місяців</string>
-    <string name="post_listing_view_original">Переглянути оригінал</string>
+    <string name="view_original">Переглянути оригінал</string>
     <string name="download">Завантажити</string>
     <string name="back_confirmation">Клацніть \`Повернутися\' ще раз, аби вийти</string>
     <string name="no_back_confirmation">Не запитувати підтвердження при виході</string>

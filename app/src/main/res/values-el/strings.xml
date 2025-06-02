@@ -212,7 +212,7 @@
     <string name="delete">Διαγραφή</string>
     <string name="edit">Επεξεργασία</string>
     <string name="post_listing_go_to">Πήγαινε στο %1$s</string>
-    <string name="ink_copied">Ο Σύνδεσμος Αντιγράφηκε</string>
+    <string name="link_copied">Ο Σύνδεσμος Αντιγράφηκε</string>
     <string name="post_listing_new">( %1$s νέο )</string>
     <string name="permalink_copied">Ο Σύνδεσμος Αντιγράφηκε</string>
     <string name="post_listing_thumbnail_link_copied">Ο Σύνδεσμος του thumbnail Αντιγράφηκε</string>
@@ -288,6 +288,6 @@
     <string name="dialogs_top_three_month">Κορυφαία Τριών Μηνών</string>
     <string name="dialogs_top_six_month">Κορυφαία Έξι Μηνών</string>
     <string name="dialogs_top_nine_month">Κορυφαία Εννέα Μηνών</string>
-    <string name="post_listing_view_original">Προβολή πρωτότυπου</string>
+    <string name="view_original">Προβολή πρωτότυπου</string>
     <string name="sorttype_controversial">Αμφιλεγόμενα</string>
 </resources>

@@ -284,7 +284,7 @@
     <string name="dialogs_top_twelve_hour">Top az elmúlt 12 órában</string>
     <string name="dialogs_top_three_month">Top az elmúlt 3 hónapban</string>
     <string name="post_screen_comments">Hozzászólások</string>
-    <string name="ink_copied">Hivatkozás másolva</string>
+    <string name="link_copied">Hivatkozás másolva</string>
     <string name="removeBookmark">Eltávolítás a könyvjelzőkből</string>
     <string name="settings_about_source_code_subtitle_part1">"A Jerboa egy ingyenes nyílt forráskódú sziftver, mely a következő licencek alá tartozik "</string>
     <string name="settings_screen_account_settings">%1$s beállítások</string>
@@ -314,7 +314,7 @@
     <string name="dialogs_top_hour">Top az elmúlt órában</string>
     <string name="dialogs_top_six_month">Top az elmúlt 6 hónapban</string>
     <string name="dialogs_top_nine_month">Top az elmúlt 9 hónapban</string>
-    <string name="post_listing_view_original">Eredeti megtekintése</string>
+    <string name="view_original">Eredeti megtekintése</string>
     <string name="download">Letöltés</string>
     <string name="back_confirmation">A kilépéshez nyomja meg még egyszer a visszát</string>
     <string name="no_back_confirmation">Ne kérjen megerősítést kilépéskor</string>

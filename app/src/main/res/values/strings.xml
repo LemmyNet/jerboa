@@ -230,7 +230,7 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="post_listing_go_to">Go to %1$s</string>
-    <string name="ink_copied">Link Copied</string>
+    <string name="link_copied">Link Copied</string>
     <string name="post_listing_new">( %1$s new )</string>
     <string name="permalink_copied">Permalink Copied</string>
     <string name="post_listing_thumbnail_link_copied">Thumbnail Link Copied</string>
@@ -317,7 +317,7 @@
     <string name="dialogs_top_three_month">Top Three Months</string>
     <string name="dialogs_top_six_month">Top Six Months</string>
     <string name="dialogs_top_nine_month">Top Nine Months</string>
-    <string name="post_listing_view_original">View Original</string>
+    <string name="view_original">View Original</string>
     <string name="download">Download</string>
     <string name="back_confirmation">Press back again to exit</string>
     <string name="no_back_confirmation">Do not ask for confirmation to exit</string>
