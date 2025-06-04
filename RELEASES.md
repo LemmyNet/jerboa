@@ -1,3 +1,37 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## What's Changed in 0.0.78
+
+- Add "Copy Image" action to Image context menu by @MV-GH in [#1840](https://github.com/LemmyNet/jerboa/pull/1840)
+- Fix deprecation zoomable constructor by @MV-GH in [#1841](https://github.com/LemmyNet/jerboa/pull/1841)
+- Adding weblate translations url. by @dessalines in [#1830](https://github.com/LemmyNet/jerboa/pull/1830)
+- Add ko-fi by @dessalines in [#1826](https://github.com/LemmyNet/jerboa/pull/1826)
+- Fixes #1755 Keyboard still open after creating comment by @MV-GH in [#1825](https://github.com/LemmyNet/jerboa/pull/1825)
+- Fixes #1748 Extra padding above IME keyboard by @MV-GH in [#1824](https://github.com/LemmyNet/jerboa/pull/1824)
+- Add Android 15 SDK support, Configure Android lint, deprecation fixes by @MV-GH in [#1823](https://github.com/LemmyNet/jerboa/pull/1823)
+- Add Lemmy Donation Dialog by @iByteABit256 in [#1813](https://github.com/LemmyNet/jerboa/pull/1813)
+- Add Image Proxy endpoint support to Share/Download actions by @MV-GH in [#1814](https://github.com/LemmyNet/jerboa/pull/1814)
+- Fixes: Webp images using image_proxy can't be saved in Android 10+ by @MV-GH in [#1801](https://github.com/LemmyNet/jerboa/pull/1801)
+- Fix rare crash on switching account #1757 by @MV-GH in [#1758](https://github.com/LemmyNet/jerboa/pull/1758)
+- Fixing bug with torrent magnet link posts. by @dessalines in [#1724](https://github.com/LemmyNet/jerboa/pull/1724)
+- Adding an image upload button for custom thumbnails. by @dessalines in [#1725](https://github.com/LemmyNet/jerboa/pull/1725)
+- Create strings.xml (zh) by @BingoKingo in [#1722](https://github.com/LemmyNet/jerboa/pull/1722)
+- Redesign for blocks screen by @rodrigo-fm in [#1718](https://github.com/LemmyNet/jerboa/pull/1718)
+- Bump LemmyApi to Support Lemmy 0.19.7 Features by @MV-GH in [#1719](https://github.com/LemmyNet/jerboa/pull/1719)
+- Fixing signing config. by @dessalines in [#1708](https://github.com/LemmyNet/jerboa/pull/1708)
+- Update Norwegian Nynorsk translation by @huftis in [#1695](https://github.com/LemmyNet/jerboa/pull/1695)
+- Adding the ability to export / import the database. by @dessalines in [#1685](https://github.com/LemmyNet/jerboa/pull/1685)
+- Running renovate every weekend. by @dessalines in [#1686](https://github.com/LemmyNet/jerboa/pull/1686)
+- Updating git cliff. by @dessalines in [#1682](https://github.com/LemmyNet/jerboa/pull/1682)
+
+## New Contributors
+
+- @BingoKingo made their first contribution in [#1722](https://github.com/LemmyNet/jerboa/pull/1722)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.77...0.0.78
+
 ## What's Changed in 0.0.77
 
 - Fix community search not relaunching after process death by @MV-GH in [#1681](https://github.com/LemmyNet/jerboa/pull/1681)
@@ -112,6 +146,7 @@
 
 ## New Contributors
 
+- @renovate[bot] made their first contribution in [#1535](https://github.com/LemmyNet/jerboa/pull/1535)
 - @TechVest made their first contribution in [#1480](https://github.com/LemmyNet/jerboa/pull/1480)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.66...0.0.67
@@ -124,6 +159,10 @@
 - Add tr locales by @mikropsoft in [#1477](https://github.com/LemmyNet/jerboa/pull/1477)
 - Moving to new LemmyNet repo. by @dessalines in [#1470](https://github.com/LemmyNet/jerboa/pull/1470)
 - Removing cardano, this was never used. by @dessalines in [#1467](https://github.com/LemmyNet/jerboa/pull/1467)
+
+## New Contributors
+
+- @mikropsoft made their first contribution in [#1477](https://github.com/LemmyNet/jerboa/pull/1477)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.65...0.0.66
 
@@ -338,6 +377,10 @@
 - Add Bulgarian translation by @salif in [#1252](https://github.com/LemmyNet/jerboa/pull/1252)
 - Adding release notes. by @dessalines
 
+## New Contributors
+
+- @salif made their first contribution in [#1252](https://github.com/LemmyNet/jerboa/pull/1252)
+
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.48...0.0.49
 
 ## What's Changed in 0.0.48
@@ -358,21 +401,17 @@
 - Fix link not opening in Chrome If private tabs setting is on without CustomTab being on by @MV-GH in [#1234](https://github.com/LemmyNet/jerboa/pull/1234)
 - Fix unread count not resetting when swapping to anon by @MV-GH in [#1233](https://github.com/LemmyNet/jerboa/pull/1233)
 - Bump deps by @MV-GH in [#1236](https://github.com/LemmyNet/jerboa/pull/1236)
-- Add Arabic Translations by @Ali-x98 in [#1226](https://github.com/LemmyNet/jerboa/pull/1226)
+- Add Arabic Translations in [#1226](https://github.com/LemmyNet/jerboa/pull/1226)
 - Refactor initiazable, Community navhost navigation and fix rare crash in inbox by @MV-GH in [#1210](https://github.com/LemmyNet/jerboa/pull/1210)
 - Fix PullRefreshIndicator theming and placement by @MV-GH in [#1220](https://github.com/LemmyNet/jerboa/pull/1220)
 - Adding release notes. by @dessalines
-
-## New Contributors
-
-- @Ali-x98 made their first contribution in [#1226](https://github.com/LemmyNet/jerboa/pull/1226)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.46...0.0.47
 
 ## What's Changed in 0.0.46
 
 - Update profiles and instance list by @MV-GH in [#1219](https://github.com/LemmyNet/jerboa/pull/1219)
-- Added dracula-theme, like in thumb-key by @0xFOSSMan in [#1218](https://github.com/LemmyNet/jerboa/pull/1218)
+- Added dracula-theme, like in thumb-key by @0xfossman in [#1218](https://github.com/LemmyNet/jerboa/pull/1218)
 - Support private tabs for FireFox by @dankeast in [#1216](https://github.com/LemmyNet/jerboa/pull/1216)
 - Replace all relevant dialogs with Animated Center Popup menus by @MV-GH in [#1200](https://github.com/LemmyNet/jerboa/pull/1200)
 - Add retry button when loading more posts fails by @MV-GH in [#1209](https://github.com/LemmyNet/jerboa/pull/1209)
@@ -393,7 +432,7 @@
 
 ## New Contributors
 
-- @0xFOSSMan made their first contribution in [#1218](https://github.com/LemmyNet/jerboa/pull/1218)
+- @0xfossman made their first contribution in [#1218](https://github.com/LemmyNet/jerboa/pull/1218)
 - @dankeast made their first contribution in [#1216](https://github.com/LemmyNet/jerboa/pull/1216)
 - @habbbe made their first contribution in [#1194](https://github.com/LemmyNet/jerboa/pull/1194)
 - @iByteABit256 made their first contribution in [#1106](https://github.com/LemmyNet/jerboa/pull/1106)
@@ -476,6 +515,7 @@
 ## New Contributors
 
 - @ogarcia made their first contribution in [#1118](https://github.com/LemmyNet/jerboa/pull/1118)
+- @huftis made their first contribution in [#1102](https://github.com/LemmyNet/jerboa/pull/1102)
 - @aaronkh made their first contribution in [#1092](https://github.com/LemmyNet/jerboa/pull/1092)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.41...0.0.42
@@ -551,7 +591,7 @@
 - Fix inbox loading all pages on startup instead of set unread/all mode by @MV-GH in [#1007](https://github.com/LemmyNet/jerboa/pull/1007)
 - Adding MV-GH to codeowners. by @dessalines
 - Update instance list by @MV-GH in [#982](https://github.com/LemmyNet/jerboa/pull/982)
-- Add toggle in settings to hide descriptions in navbar by @Sir-Photch in [#995](https://github.com/LemmyNet/jerboa/pull/995)
+- Add toggle in settings to hide descriptions in navbar by @shtrophic in [#995](https://github.com/LemmyNet/jerboa/pull/995)
 - Move more viewmodels into com.jerboa.model package by @twizmwazin in [#1000](https://github.com/LemmyNet/jerboa/pull/1000)
 - Update CONTRIBUTION.md by @MV-GH in [#997](https://github.com/LemmyNet/jerboa/pull/997)
 - Add Ukrainian Language Support to Jerboa - values-uk strings.xml by @Digharatta in [#996](https://github.com/LemmyNet/jerboa/pull/996)
@@ -571,7 +611,8 @@
 
 ## New Contributors
 
-- @Sir-Photch made their first contribution in [#995](https://github.com/LemmyNet/jerboa/pull/995)
+- @shtrophic made their first contribution in [#995](https://github.com/LemmyNet/jerboa/pull/995)
+- @Digharatta made their first contribution in [#996](https://github.com/LemmyNet/jerboa/pull/996)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.38...0.0.39
 
@@ -601,7 +642,7 @@
 - Merge branch 'issue/506' of https://github.com/ZJouba/jerboa into issue/506 by @IzakJoubert
 - Merge branch 'main' into issue/506 by @ZJouba
 - Remove `app_name` from strings.xml for `ko` by @MV-GH in [#924](https://github.com/LemmyNet/jerboa/pull/924)
-- Remove `app_name` from strings.xml for `ko`
+- Remove `app_name` from strings.xml for `ko` by @meinside
 - Changing button text with Boolean by @IzakJoubert
 - Merge remote-tracking branch 'upstream/main' into issue/506 by @IzakJoubert
 - Removing unknown translations by @IzakJoubert
@@ -614,8 +655,10 @@
 ## New Contributors
 
 - @frankivo made their first contribution in [#961](https://github.com/LemmyNet/jerboa/pull/961)
+- @sv1sjp made their first contribution in [#944](https://github.com/LemmyNet/jerboa/pull/944)
 - @MKabe made their first contribution in [#933](https://github.com/LemmyNet/jerboa/pull/933)
 - @IzakJoubert made their first contribution
+- @ZJouba made their first contribution
 - @AppearamidGuy made their first contribution
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.37...0.0.38
@@ -626,7 +669,7 @@
 - Update baseline profiles by @MV-GH in [#906](https://github.com/LemmyNet/jerboa/pull/906)
 - Fix edit comment view text is being empty by @MV-GH in [#897](https://github.com/LemmyNet/jerboa/pull/897)
 - Add blur option, fix non blurred community icons/banners by @MV-GH in [#896](https://github.com/LemmyNet/jerboa/pull/896)
-- Fix .zoomable functionality in ImageViewerDialog and add "swipe up to close" by @sockenklaus in [#894](https://github.com/LemmyNet/jerboa/pull/894)
+- Fix .zoomable functionality in ImageViewerDialog and add "swipe up to close" in [#894](https://github.com/LemmyNet/jerboa/pull/894)
 - Fix downvote on post in postview doing a upvote by @MV-GH in [#893](https://github.com/LemmyNet/jerboa/pull/893)
 - Nav scoped view models by @nahwneeth in [#817](https://github.com/LemmyNet/jerboa/pull/817)
 - Adding release notes. by @dessalines
@@ -641,9 +684,9 @@
 
 - Add generate lemmy instance list gradle task by @MV-GH in [#884](https://github.com/LemmyNet/jerboa/pull/884)
 - Bump dependencies by @MV-GH in [#881](https://github.com/LemmyNet/jerboa/pull/881)
-- Reworked PickImage() composable by @sockenklaus in [#877](https://github.com/LemmyNet/jerboa/pull/877)
+- Reworked PickImage() composable in [#877](https://github.com/LemmyNet/jerboa/pull/877)
 - QOL Remove unnecessary clickable areas from PostListingList by @lbenedetto in [#710](https://github.com/LemmyNet/jerboa/pull/710)
-- Consolidate composables for CreatePost and PostEdit by @sockenklaus in [#860](https://github.com/LemmyNet/jerboa/pull/860)
+- Consolidate composables for CreatePost and PostEdit in [#860](https://github.com/LemmyNet/jerboa/pull/860)
 - Add backwards compatible language picker by @MV-GH in [#873](https://github.com/LemmyNet/jerboa/pull/873)
 - Add totp field to login by @MV-GH in [#868](https://github.com/LemmyNet/jerboa/pull/868)
 - Include taglines with the scrollable post view by @beatgammit in [#875](https://github.com/LemmyNet/jerboa/pull/875)
@@ -656,12 +699,12 @@
 - Copy post and comment information to clipboard by @Noxor11 in [#850](https://github.com/LemmyNet/jerboa/pull/850)
 - Fix default sort and listing type to read from db by @beatgammit in [#854](https://github.com/LemmyNet/jerboa/pull/854)
 - Update French translation by @julroy67 in [#853](https://github.com/LemmyNet/jerboa/pull/853)
-- Added switch to mark new posts as NSFW / toggle tag on existing posts by @sockenklaus in [#833](https://github.com/LemmyNet/jerboa/pull/833)
+- Added switch to mark new posts as NSFW / toggle tag on existing posts in [#833](https://github.com/LemmyNet/jerboa/pull/833)
 - Fix for scrolling up past images in the comments jerks you back down by @nahwneeth in [#845](https://github.com/LemmyNet/jerboa/pull/845)
 - Make Search Page have consistent back button by @scme0 in [#849](https://github.com/LemmyNet/jerboa/pull/849)
 - Fix passwords in plaintext on logcat by @CharlieGitDB in [#834](https://github.com/LemmyNet/jerboa/pull/834)
 - Enable swiping on comments to go back to posts by @CharlieGitDB in [#785](https://github.com/LemmyNet/jerboa/pull/785)
-- Fix: Add Account fails when full server uri is used by @sockenklaus in [#805](https://github.com/LemmyNet/jerboa/pull/805)
+- Fix: Add Account fails when full server uri is used in [#805](https://github.com/LemmyNet/jerboa/pull/805)
 - Fixing incorrect dk language code. The correct one is da. by @dessalines in [#819](https://github.com/LemmyNet/jerboa/pull/819)
 - Adding release notes. by @dessalines
 
@@ -684,7 +727,7 @@
 - Adds nsfw tag to nsfw posts by @Chris-Kropp in [#786](https://github.com/LemmyNet/jerboa/pull/786)
 - Russian translation & Fixes of non-localized strings by @Snow4DV in [#794](https://github.com/LemmyNet/jerboa/pull/794)
 - Fix bug with pictrs url query param rewriting by @beatgammit in [#735](https://github.com/LemmyNet/jerboa/pull/735)
-- Changed icons for "Go to comment" and "Copy permalink" in CommmentOptionsDialog by @sockenklaus in [#781](https://github.com/LemmyNet/jerboa/pull/781)
+- Changed icons for "Go to comment" and "Copy permalink" in CommmentOptionsDialog in [#781](https://github.com/LemmyNet/jerboa/pull/781)
 - Quick comment navigation by @yate in [#749](https://github.com/LemmyNet/jerboa/pull/749)
 - Add benchmarks for TypicalUserJourney, Enable baselineprofile generator, and some metrics by @MV-GH in [#601](https://github.com/LemmyNet/jerboa/pull/601)
 - Remove remaining voteToggle unused translations by @Eskuero in [#776](https://github.com/LemmyNet/jerboa/pull/776)
@@ -694,10 +737,10 @@
 - Account Settings: Use Alorma Compose Settings Components by @sabieber in [#731](https://github.com/LemmyNet/jerboa/pull/731)
 - More Themes (Dark + Light) by @bynatejones in [#750](https://github.com/LemmyNet/jerboa/pull/750)
 - App settings should be visible if the user is not logged in by @yate in [#764](https://github.com/LemmyNet/jerboa/pull/764)
-- Added blur for Android version older than 12 by @sockenklaus in [#746](https://github.com/LemmyNet/jerboa/pull/746)
+- Added blur for Android version older than 12 in [#746](https://github.com/LemmyNet/jerboa/pull/746)
 - Fixing test failure. by @dessalines in [#762](https://github.com/LemmyNet/jerboa/pull/762)
 - Fix links not working in markdown tables by @MV-GH in [#744](https://github.com/LemmyNet/jerboa/pull/744)
-- Added close on click functionality to ImageViewerDialog. Solves #736 by @sockenklaus in [#738](https://github.com/LemmyNet/jerboa/pull/738)
+- Added close on click functionality to ImageViewerDialog. Solves #736 in [#738](https://github.com/LemmyNet/jerboa/pull/738)
 - missing monochrome tags for adaptive icons by @JosephGaiser in [#728](https://github.com/LemmyNet/jerboa/pull/728)
 - voteToggle unused resource removed from string resources by @scottmmjackson in [#699](https://github.com/LemmyNet/jerboa/pull/699)
 - Fixes image saving crashing on Android 9 and below by @MV-GH in [#696](https://github.com/LemmyNet/jerboa/pull/696)
@@ -729,12 +772,12 @@
 - Navigation enhancements: Bottom Navigation, screen transitions, back button by @nahwneeth in [#670](https://github.com/LemmyNet/jerboa/pull/670)
 - Fix numbers and text@text turning into links (#635) by @MV-GH in [#677](https://github.com/LemmyNet/jerboa/pull/677)
 - Fix image upload cancel crash by @noloman in [#671](https://github.com/LemmyNet/jerboa/pull/671)
-- don't have translucent background on image post thumbnail click by @vijaykramesh in [#625](https://github.com/LemmyNet/jerboa/pull/625)
+- don't have translucent background on image post thumbnail click in [#625](https://github.com/LemmyNet/jerboa/pull/625)
 - Added unit tests for easy-to-test utils by @beatgammit in [#629](https://github.com/LemmyNet/jerboa/pull/629)
 - Fixing rest of build warnings. by @dessalines in [#641](https://github.com/LemmyNet/jerboa/pull/641)
 - Edit German translation by @femoto in [#650](https://github.com/LemmyNet/jerboa/pull/650)
 - Update Italian translation and sort baseline strings lexicographically by @andreaippo in [#630](https://github.com/LemmyNet/jerboa/pull/630)
-- add danish translations by @vijaykramesh in [#666](https://github.com/LemmyNet/jerboa/pull/666)
+- add danish translations in [#666](https://github.com/LemmyNet/jerboa/pull/666)
 - Added spanish translations by @ArkoSammy12 in [#659](https://github.com/LemmyNet/jerboa/pull/659)
 - Polish translation by @OrginalS in [#655](https://github.com/LemmyNet/jerboa/pull/655)
 - Added comment sorting functionality by @a1studmuffin in [#495](https://github.com/LemmyNet/jerboa/pull/495)
@@ -757,22 +800,26 @@
 - @shezdy made their first contribution in [#800](https://github.com/LemmyNet/jerboa/pull/800)
 - @sabieber made their first contribution in [#801](https://github.com/LemmyNet/jerboa/pull/801)
 - @Chris-Kropp made their first contribution in [#786](https://github.com/LemmyNet/jerboa/pull/786)
+- @Snow4DV made their first contribution in [#794](https://github.com/LemmyNet/jerboa/pull/794)
+- @yate made their first contribution in [#749](https://github.com/LemmyNet/jerboa/pull/749)
 - @Eskuero made their first contribution in [#776](https://github.com/LemmyNet/jerboa/pull/776)
 - @LufyCZ made their first contribution in [#726](https://github.com/LemmyNet/jerboa/pull/726)
 - @bynatejones made their first contribution in [#750](https://github.com/LemmyNet/jerboa/pull/750)
 - @JosephGaiser made their first contribution in [#728](https://github.com/LemmyNet/jerboa/pull/728)
 - @scottmmjackson made their first contribution in [#699](https://github.com/LemmyNet/jerboa/pull/699)
+- @lbenedetto made their first contribution in [#687](https://github.com/LemmyNet/jerboa/pull/687)
 - @marcellogalhardo made their first contribution in [#617](https://github.com/LemmyNet/jerboa/pull/617)
 - @perepepepa made their first contribution in [#638](https://github.com/LemmyNet/jerboa/pull/638)
 - @gxtu made their first contribution in [#743](https://github.com/LemmyNet/jerboa/pull/743)
 - @ShinyLuxray made their first contribution
 - @APraxx made their first contribution
+- @nahwneeth made their first contribution in [#690](https://github.com/LemmyNet/jerboa/pull/690)
 - @noloman made their first contribution in [#671](https://github.com/LemmyNet/jerboa/pull/671)
-- @vijaykramesh made their first contribution in [#625](https://github.com/LemmyNet/jerboa/pull/625)
 - @femoto made their first contribution in [#650](https://github.com/LemmyNet/jerboa/pull/650)
 - @ArkoSammy12 made their first contribution in [#659](https://github.com/LemmyNet/jerboa/pull/659)
 - @OrginalS made their first contribution in [#655](https://github.com/LemmyNet/jerboa/pull/655)
 - @thebino made their first contribution in [#656](https://github.com/LemmyNet/jerboa/pull/656)
+- @vijaykramesh made their first contribution in [#623](https://github.com/LemmyNet/jerboa/pull/623)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.34...0.0.35
 
@@ -819,12 +866,17 @@
 ## New Contributors
 
 - @ironveil made their first contribution in [#567](https://github.com/LemmyNet/jerboa/pull/567)
+- @andscape-dev made their first contribution in [#591](https://github.com/LemmyNet/jerboa/pull/591)
+- @meinside made their first contribution in [#586](https://github.com/LemmyNet/jerboa/pull/586)
+- @beatgammit made their first contribution in [#580](https://github.com/LemmyNet/jerboa/pull/580)
 - @seamuslowry made their first contribution in [#528](https://github.com/LemmyNet/jerboa/pull/528)
 - @XanderV2001 made their first contribution in [#576](https://github.com/LemmyNet/jerboa/pull/576)
 - @igarshep made their first contribution in [#554](https://github.com/LemmyNet/jerboa/pull/554)
 - @tribut made their first contribution in [#564](https://github.com/LemmyNet/jerboa/pull/564)
+- @camporter made their first contribution in [#517](https://github.com/LemmyNet/jerboa/pull/517)
 - @calincara made their first contribution in [#534](https://github.com/LemmyNet/jerboa/pull/534)
 - @somehare made their first contribution in [#540](https://github.com/LemmyNet/jerboa/pull/540)
+- @andreaippo made their first contribution in [#533](https://github.com/LemmyNet/jerboa/pull/533)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.33...0.0.34
 
@@ -888,12 +940,19 @@
 ## New Contributors
 
 - @abluescarab made their first contribution in [#497](https://github.com/LemmyNet/jerboa/pull/497)
+- @shombando made their first contribution in [#505](https://github.com/LemmyNet/jerboa/pull/505)
+- @lsim made their first contribution in [#503](https://github.com/LemmyNet/jerboa/pull/503)
+- @MV-GH made their first contribution in [#504](https://github.com/LemmyNet/jerboa/pull/504)
+- @ made their first contribution in [#489](https://github.com/LemmyNet/jerboa/pull/489)
 - @vishalbiswas made their first contribution in [#490](https://github.com/LemmyNet/jerboa/pull/490)
 - @mitchellss made their first contribution
 - @taitsmith made their first contribution
+- @kuro-codes made their first contribution in [#447](https://github.com/LemmyNet/jerboa/pull/447)
 - @mxmvncnt made their first contribution in [#459](https://github.com/LemmyNet/jerboa/pull/459)
+- @pipe01 made their first contribution in [#444](https://github.com/LemmyNet/jerboa/pull/444)
 - @AntmanLFEz made their first contribution in [#432](https://github.com/LemmyNet/jerboa/pull/432)
 - @tuxiqae made their first contribution in [#450](https://github.com/LemmyNet/jerboa/pull/450)
+- @7heo made their first contribution in [#422](https://github.com/LemmyNet/jerboa/pull/422)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.32...0.0.33
 
@@ -932,7 +991,9 @@
 
 ## New Contributors
 
+- @twizmwazin made their first contribution in [#412](https://github.com/LemmyNet/jerboa/pull/412)
 - @Anna-log7 made their first contribution in [#413](https://github.com/LemmyNet/jerboa/pull/413)
+- @a1studmuffin made their first contribution
 - @oscarnylander made their first contribution in [#387](https://github.com/LemmyNet/jerboa/pull/387)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.31...0.0.32
@@ -952,6 +1013,10 @@
 - Adjust the status bar while using the system dark theme to not use dark icons by @russjr08 in [#358](https://github.com/LemmyNet/jerboa/pull/358)
 - Upgrade deps 11 by @dessalines in [#355](https://github.com/LemmyNet/jerboa/pull/355)
 - Adding to releases. by @dessalines
+
+## New Contributors
+
+- @russjr08 made their first contribution in [#358](https://github.com/LemmyNet/jerboa/pull/358)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.29...0.0.30
 
@@ -1351,5 +1416,9 @@
 - Starting to add accounts. by @dessalines
 - Reworking PostListing by @dessalines
 - Initial commit. by @dessalines
+
+## New Contributors
+
+- @dessalines made their first contribution
 
 <!-- generated by git-cliff -->
