@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.jerboa.benchmarks"
-    compileSdk = 34
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         testInstrumentationRunnerArguments += mapOf("suppressErrors" to "EMULATOR")
         minSdk = 28
-        targetSdk =  34
+        targetSdk =  35
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,9 +34,9 @@ android {
     // To use GMD please invoke generation through the command line:
     // ./gradlew :app:generateBaselineProfile
     testOptions.managedDevices.allDevices {
-        create<ManagedVirtualDevice>("pixel6Api34") {
+        create<ManagedVirtualDevice>("pixel6Api35") {
             device = "Pixel 6"
-            apiLevel = 34
+            apiLevel = 35
             systemImageSource = "google"
         }
     }
@@ -53,7 +53,7 @@ android {
 // This is the configuration block for the Baseline Profile plugin.
 // You can specify to run the generators on a managed devices or connected devices.
 baselineProfile {
-    managedDevices += "pixel6Api34"
+    managedDevices += "pixel6Api35"
     enableEmulatorDisplay = true
     useConnectedDevices = false
 }
