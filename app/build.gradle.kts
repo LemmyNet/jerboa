@@ -118,7 +118,7 @@ dependencies {
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
     androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
