@@ -467,7 +467,7 @@ fun Account.doIfReadyElseDisplayInfo(
     loginAsToast: Boolean = true,
     doAction: (Account) -> Unit,
 ) {
-    scope.launch {
+    scope.launch(Dispatchers.Main) {
         if (this@doIfReadyElseDisplayInfo.isReadyAndIfNotDisplayInfo(
                 appState,
                 ctx,

@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post.edit
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
@@ -63,8 +64,9 @@ fun PostEditScreen(
         )
     }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
+    var isUploadingCustomThumbnailImage by rememberSaveable { mutableStateOf(false) }
     var altText by rememberSaveable { mutableStateOf(postView.post.alt_text.orEmpty()) }
-    var customThumbnail by rememberSaveable { mutableStateOf("") }
+    var customThumbnail by rememberSaveable { mutableStateOf(postView.post.thumbnail_url.orEmpty()) }
 
     val nameField = validatePostName(ctx, name)
     val urlField = validateUrl(ctx, url)
@@ -115,11 +117,6 @@ fun PostEditScreen(
                 url = url,
                 urlField = urlField,
                 onUrlChange = { url = it },
-                altText = altText,
-                onAltTextChange = { altText = it },
-                customThumbnailField = customThumbnailField,
-                customThumbnail = customThumbnail,
-                onCustomThumbnailChange = { customThumbnail = it },
                 onImagePicked = { uri ->
                     if (!account.isAnon()) {
                         val imageIs = imageInputStreamFromUri(ctx, uri)
@@ -131,6 +128,22 @@ fun PostEditScreen(
                     }
                 },
                 isUploadingImage = isUploadingImage,
+                altText = altText,
+                onAltTextChange = { altText = it },
+                customThumbnailField = customThumbnailField,
+                customThumbnail = customThumbnail,
+                onCustomThumbnailChange = { customThumbnail = it },
+                isUploadingCustomThumbnailImage = isUploadingCustomThumbnailImage,
+                onCustomThumbnailImagePicked = { uri ->
+                    if (!account.isAnon() && uri != Uri.EMPTY) {
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
+                        scope.launch {
+                            isUploadingCustomThumbnailImage = true
+                            customThumbnail = API.uploadPictrsImage(imageIs, ctx)
+                            isUploadingCustomThumbnailImage = false
+                        }
+                    }
+                },
                 account = account,
                 padding = padding,
                 isNsfw = isNsfw,

@@ -49,12 +49,12 @@ import com.jerboa.ui.components.comment.reply.CommentReplyScreen
 import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityScreen
 import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
 import com.jerboa.ui.components.home.BottomNavScreen
+import com.jerboa.ui.components.home.ShowAppStartupDialogs
 import com.jerboa.ui.components.home.legal.SiteLegalScreen
 import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
 import com.jerboa.ui.components.imageviewer.ImageViewerScreen
@@ -72,9 +72,10 @@ import com.jerboa.ui.components.remove.post.PostRemoveScreen
 import com.jerboa.ui.components.report.comment.CreateCommentReportScreen
 import com.jerboa.ui.components.report.post.CreatePostReportScreen
 import com.jerboa.ui.components.reports.ReportsScreen
-import com.jerboa.ui.components.settings.SettingsActivity
+import com.jerboa.ui.components.settings.SettingsScreen
 import com.jerboa.ui.components.settings.about.AboutScreen
 import com.jerboa.ui.components.settings.account.AccountSettingsScreen
+import com.jerboa.ui.components.settings.backupandrestore.BackupAndRestoreScreen
 import com.jerboa.ui.components.settings.block.BlocksScreen
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsScreen
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelScreen
@@ -161,7 +162,10 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                 )
 
-                ShowChangelog(appSettingsViewModel = appSettingsViewModel)
+                ShowAppStartupDialogs(
+                    appSettingsViewModel = appSettingsViewModel,
+                    siteViewModel = siteViewModel,
+                )
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -716,13 +720,14 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.SETTINGS) {
-                        SettingsActivity(
+                        SettingsScreen(
                             accountViewModel = accountViewModel,
                             onBack = appState::popBackStack,
                             onClickAbout = appState::toAbout,
                             onClickAccountSettings = appState::toAccountSettings,
                             onClickBlocks = appState::toBlockView,
                             onClickLookAndFeel = appState::toLookAndFeel,
+                            onClickBackupAndRestore = appState::toBackupAndRestore,
                         )
                     }
 
@@ -744,6 +749,12 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel,
+                            onBack = appState::popBackStack,
+                        )
+                    }
+
+                    composable(route = Route.BACKUP_AND_RESTORE) {
+                        BackupAndRestoreScreen(
                             onBack = appState::popBackStack,
                         )
                     }

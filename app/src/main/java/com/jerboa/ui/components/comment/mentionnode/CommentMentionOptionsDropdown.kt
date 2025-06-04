@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.comment.mentionnode
 
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.outlined.Block
@@ -14,13 +13,11 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.getContent
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -41,7 +38,6 @@ fun CommentMentionsOptionsDropdown(
     canMod: Boolean,
     viewSource: Boolean,
 ) {
-    val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
 
     CascadeCenteredDropdownMenu(
@@ -76,13 +72,7 @@ fun CommentMentionsOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     val permalink = personMentionView.comment.ap_id
-                    localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast
-                        .makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_node_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                    copyTextToClipboard(ctx, permalink, "Permalink", R.string.permalink_copied)
                 },
             )
             val content = personMentionView.comment.getContent()
@@ -91,11 +81,7 @@ fun CommentMentionsOptionsDropdown(
                 icon = Icons.Outlined.ContentCopy,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, content, "comment")) {
-                        Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                    }
+                    copyTextToClipboard(ctx, content, "comment", R.string.comment_node_comment_copied)
                 },
             )
         }
@@ -105,7 +91,7 @@ fun CommentMentionsOptionsDropdown(
                 if (viewSource) {
                     stringResource(R.string.comment_node_view_original)
                 } else {
-                    stringResource(R.string.comment_node_view_source)
+                    stringResource(R.string.view_source)
                 },
             icon = Icons.Outlined.Description,
             onClick = {

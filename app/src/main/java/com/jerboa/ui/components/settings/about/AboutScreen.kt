@@ -269,7 +269,7 @@ fun AboutPreview() {
 
 fun getInstallCode(compilationStatus: CompilationStatus): String =
     when (compilationStatus.profileInstallResultCode) {
-        CompilationStatus.RESULT_CODE_NO_PROFILE -> "NO_PROFILE"
+        CompilationStatus.RESULT_CODE_NO_PROFILE_INSTALLED -> "NO_PROFILE_INSTALLED"
         CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE -> "COMPILED_WITH_PROFILE"
         CompilationStatus.RESULT_CODE_PROFILE_ENQUEUED_FOR_COMPILATION -> "PROFILE_ENQUEUED_FOR_COMPILATION"
         CompilationStatus.RESULT_CODE_ERROR_UNSUPPORTED_API_VERSION -> "ERROR_UNSUPPORTED_API_VERSION"

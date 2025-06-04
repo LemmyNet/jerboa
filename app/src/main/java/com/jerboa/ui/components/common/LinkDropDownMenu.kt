@@ -1,8 +1,8 @@
 package com.jerboa.ui.components.common
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.OpenInBrowser
@@ -13,10 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostType
 import com.jerboa.R
+import com.jerboa.feat.copyImageToClipboard
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
@@ -39,7 +39,6 @@ fun LinkDropDownMenu(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
 ) {
-    val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
 
     if (link != null) {
@@ -82,22 +81,16 @@ fun LinkDropDownMenu(
             HorizontalDivider()
 
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_copy_link),
+                text = stringResource(R.string.copy_link),
                 icon = Icons.Outlined.Link,
                 onClick = {
                     onDismissRequest()
-                    localClipboardManager.setText(AnnotatedString(link))
-                    Toast
-                        .makeText(
-                            ctx,
-                            ctx.getString(R.string.post_listing_link_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                    copyTextToClipboard(ctx, link, "Link", R.string.link_copied)
                 },
             )
 
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_share_link),
+                text = stringResource(R.string.share_link),
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()
@@ -108,6 +101,14 @@ fun LinkDropDownMenu(
             when (mediaType) {
                 PostType.Image -> {
                     HorizontalDivider()
+                    PopupMenuItem(
+                        text = stringResource(R.string.copy_image),
+                        icon = Icons.Outlined.ContentCopy,
+                        onClick = {
+                            onDismissRequest()
+                            copyImageToClipboard(appState.coroutineScope, ctx, link)
+                        },
+                    )
                     PopupMenuItem(
                         text = stringResource(R.string.share_image),
                         icon = Icons.Outlined.Share,

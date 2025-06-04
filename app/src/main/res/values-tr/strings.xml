@@ -17,7 +17,6 @@
     <string name="account_settings_default_sort_type">Varsayılan Sıralama Türü</string>
     <string name="account_settings_display_name">Görünen Ad</string>
     <string name="account_settings_email">E-posta</string>
-    <string name="account_settings_local">Yerel</string>
     <string name="account_settings_matrix_user">Matrix Kullanıcısı</string>
     <string name="account_settings_remove_current_avatar">Mevcut Avatarı Kaldır</string>
     <string name="account_settings_save_settings">Ayarları Kaydet</string>
@@ -30,8 +29,6 @@
     <string name="account_settings_show_scores">Puanları Göster</string>
     <string name="account_settings_subscribed">Abone Olunan</string>
     <string name="addBookmark">Yer imlerine ekle</string>
-    <string name="app_bars_dot_spacer" translatable="false">·</string>
-    <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Yer imlerime git</string>
     <string name="bottomBar_home">Ana sayfaya git</string>
     <string name="bottomBar_inbox">Gelen kutuma git</string>
@@ -52,26 +49,21 @@
     <string name="commentReply_send">Yanıtı gönder</string>
     <string name="comment_body_deleted">*Silindi*</string>
     <string name="comment_body_removed">*Kaldırıldı*</string>
-    <string name="comment_edit_edit">Düzenle</string>
     <string name="comment_edit_type_your_comment">Yorumunuzu yazın</string>
     <string name="comment_next_parent">Sonraki Üst Yorum</string>
     <string name="comment_previous_parent">Önceki Üst Yorum</string>
     <string name="comment_node_copy_permalink">Kalıcı Bağlantıyı Kopyala</string>
     <string name="comment_node_copy_comment">Yorum Metnini Kopyala</string>
-    <string name="comment_node_delete">Sil</string>
-    <string name="comment_node_edit">Düzenle</string>
     <string name="comment_node_go_to">%1$s\'e git</string>
     <string name="comment_node_goto_comment">Yoruma Git</string>
     <string name="comment_node_in">"içinde "</string>
     <string name="comment_node_more_replies">%1$s daha fazla yanıt</string>
-    <string name="comment_node_permalink_copied">Kalıcı Bağlantı Kopyalandı</string>
     <string name="comment_node_comment_copied">Yorum Metni Kopyalandı</string>
     <string name="comment_node_report_comment">Yorumu Bildir</string>
-    <string name="comment_node_restore">Geri Yükle</string>
     <string name="comment_node_view_context">Bağlamı Görüntüle</string>
     <string name="comment_node_view_original">Orijinali Görüntüle</string>
     <string name="comment_node_view_post">Gönderiyi Görüntüle</string>
-    <string name="comment_node_view_source">Kaynağı Görüntüle</string>
+    <string name="view_source">Kaynağı Görüntüle</string>
     <string name="comment_reply_reply">Yanıtla</string>
     <string name="comment_reply_type_your_comment">Yorumunuzu yazın</string>
     <string name="comment_save">Yorumu kaydet</string>
@@ -216,37 +208,37 @@
     <string name="person_profile_joined">Katıldı</string>
     <string name="person_profile_posts">%1$s gönderi</string>
     <string name="pictrs_image_upload_image">Resim Yükle</string>
-    <string name="postListing_deleted">Silindi</string>
+    <string name="deleted">Silindi</string>
     <string name="removed">Kaldırıldı</string>
     <string name="postListing_featuredCommunity">Toplulukta öne çıkarıldı</string>
     <string name="postListing_featuredLocal">Yerel olarak öne çıkarıldı</string>
     <string name="postListing_goToCommunity">Topluluğa git</string>
-    <string name="postListing_locked">Kilitlendi</string>
+    <string name="locked">Kilitlendi</string>
     <string name="postListing_reply">Gönderiye yanıt ver</string>
     <string name="post_screen_comments">Yorumlar</string>
     <string name="post_edit_body_placeholder">Gövde</string>
     <string name="post_edit_edit_post">Gönderiyi Düzenle</string>
     <string name="post_listing_comments_count">%1$s yorum</string>
-    <string name="post_listing_copy_link">Bağlantıyı kopyala</string>
+    <string name="copy_link">Bağlantıyı kopyala</string>
     <string name="post_listing_copy_permalink">Kalıcı Bağlantıyı Kopyala</string>
     <string name="post_listing_copy_thumbnail_link">Küçük Resim Bağlantısını Kopyala</string>
     <string name="post_listing_copy_title">Gönderi Başlığını Kopyala</string>
     <string name="post_listing_copy_name">Gönderi Adını Kopyala</string>
     <string name="post_listing_copy_text">Gönderi Metnini Kopyala</string>
-    <string name="post_listing_delete">Sil</string>
-    <string name="post_listing_edit">Düzenle</string>
+    <string name="delete">Sil</string>
+    <string name="edit">Düzenle</string>
     <string name="post_listing_go_to">%1$s\'e git</string>
-    <string name="post_listing_link_copied">Bağlantı Kopyalandı</string>
+    <string name="link_copied">Bağlantı Kopyalandı</string>
     <string name="post_listing_new">( %1$s yeni )</string>
-    <string name="post_listing_permalink_copied">Kalıcı Bağlantı Kopyalandı</string>
+    <string name="permalink_copied">Kalıcı Bağlantı Kopyalandı</string>
     <string name="post_listing_thumbnail_link_copied">Küçük Resim Bağlantısı Kopyalandı</string>
     <string name="post_listing_title_copied">Başlık Kopyalandı</string>
     <string name="post_listing_name_copied">Ad Kopyalandı</string>
     <string name="post_listing_text_copied">Metin Kopyalandı</string>
     <string name="post_listing_report_post">Gönderiyi Bildir</string>
-    <string name="post_listing_restore">Geri Yükle</string>
-    <string name="post_listing_share_link">Bağlantıyı Paylaş</string>
-    <string name="post_listing_share_post">Gönderiyi Paylaş</string>
+    <string name="restore">Geri Yükle</string>
+    <string name="share_link">Bağlantıyı Paylaş</string>
+    <string name="share_post">Gönderiyi Paylaş</string>
     <string name="privateMessage_reply">Mesajı yanıtla</string>
     <string name="private_message_from">"gönderen "</string>
     <string name="private_message_reply_reply">Yanıtla</string>
@@ -292,7 +284,6 @@
     <string name="title_min_3_chars">Başlık en az üç karakter olmalıdır</string>
     <string name="title_required">Başlık gerekli</string>
     <string name="topAppBar_back">Geri</string>
-    <string name="url" translatable="false">URL</string>
     <string name="url_invalid">Geçersiz URL</string>
     <string name="utils_login_first">Önce giriş yapın</string>
     <string name="upvote">Yukarı oy ver</string>
@@ -307,7 +298,6 @@
     <string name="inbox_screen_messages">Mesajlar</string>
     <string name="bookmarks_screen_saved">Kaydedilenler</string>
     <string name="generic_error">Bir hata oluştu</string>
-    <string name="create_edit_post_close">Kapat</string>
     <string name="lang_language">Dil</string>
     <string name="loading">Yükleniyor</string>
     <string name="blur_nsfw">NSFW görüntüleri bulanıklaştır</string>
@@ -324,8 +314,7 @@
     <string name="dialogs_top_three_month">En İyi Üç Ay</string>
     <string name="dialogs_top_six_month">En İyi Altı Ay</string>
     <string name="dialogs_top_nine_month">En İyi Dokuz Ay</string>
-    <string name="post_listing_view_source">Kaynağı Görüntüle</string>
-    <string name="post_listing_view_original">Orijinali Görüntüle</string>
+    <string name="view_original">Orijinali Görüntüle</string>
     <string name="download">İndir</string>
     <string name="back_confirmation">Çıkmak için tekrar geri basın</string>
     <string name="no_back_confirmation">Çıkmak için onay isteme</string>
@@ -398,7 +387,6 @@
     <string name="posts_failed_loading">Gönderiler yüklenemedi, yeniden dene</string>
     <string name="failed_sharing_media">Medya paylaşılamadı!</string>
     <string name="app_settings_nothing">Hiçbiri</string>
-    <string name="app_settings_blur_nsfw" translatable="false">NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_communities">NSFW topluluklarından gelenler hariç NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Topluluk içindeki NSFW hariç</string>
     <string name="time_ago_failed_to_parse">Tarih saat ayrıştırılamadı</string>
@@ -486,9 +474,6 @@
     <string name="unable_to_retrieve">Alınamıyor</string>
     <string name="blocks">Engellemeler</string>
     <string name="unblock">Engeli kaldır</string>
-    <string name="blocked_users">Engellenen kullanıcılar</string>
-    <string name="blocked_communities">Engellenen topluluklar</string>
-    <string name="blocked_instances">Engellenen örnekler</string>
     <string name="you_have_no_blocked_users">Engellenen kullanıcınız yok</string>
     <string name="you_have_no_blocked_communities">Engellenen topluluğunuz yok</string>
     <string name="you_have_no_blocked_instances">Engellenen örneğiniz yok</string>

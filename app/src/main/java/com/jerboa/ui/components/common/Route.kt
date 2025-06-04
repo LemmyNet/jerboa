@@ -54,6 +54,7 @@ object Route {
     const val ACCOUNT_SETTINGS = "accountSettings"
     const val ABOUT = "about"
     const val CRASH_LOGS = "crashLogs"
+    const val BACKUP_AND_RESTORE = "backupAndRestore"
 
     const val REGISTRATION_APPLICATIONS = "registrationApplications"
     const val REPORTS = "reports"

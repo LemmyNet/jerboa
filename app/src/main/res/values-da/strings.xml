@@ -1,18 +1,14 @@
 <resources>
     <string name="comment_node_goto_comment">Gå til kommentar</string>
     <string name="comment_node_go_to">Gå til %1$s</string>
-    <string name="comment_node_view_source">Vis kilde</string>
+    <string name="view_source">Vis kilde</string>
     <string name="comment_node_copy_permalink">Kopier permalink</string>
     <string name="comment_node_report_comment">Rapportér kommentar</string>
-    <string name="comment_node_edit">Rediger</string>
-    <string name="comment_node_restore">Gendan</string>
-    <string name="comment_node_delete">Slet</string>
     <string name="comment_node_more_replies">%1$s flere svar</string>
     <string name="comment_node_view_post">Vis indlæg</string>
     <string name="comment_node_view_context">Se sammenhæng</string>
     <string name="comment_body_removed">Fjernet</string>
     <string name="comment_body_deleted">Slettet</string>
-    <string name="comment_edit_edit">Rediger</string>
     <string name="comment_edit_type_your_comment">Skriv din kommentar</string>
     <string name="comment_reply_reply">Svar</string>
     <string name="comment_reply_type_your_comment">Skriv din kommentar</string>
@@ -82,12 +78,12 @@
     <string name="post_listing_new">( %1$s nye )</string>
     <string name="post_listing_comments_count">%1$s kommentarer</string>
     <string name="post_listing_go_to">Gå til %1$s</string>
-    <string name="post_listing_copy_link">Kopier link</string>
+    <string name="copy_link">Kopier link</string>
     <string name="post_listing_copy_permalink">Kopier permalænke</string>
     <string name="post_listing_report_post">Rapportér indlæg</string>
-    <string name="post_listing_edit">Rediger</string>
-    <string name="post_listing_restore">Gendan</string>
-    <string name="post_listing_delete">Slet</string>
+    <string name="edit">Rediger</string>
+    <string name="restore">Gendan</string>
+    <string name="delete">Slet</string>
     <string name="private_message_to">Til </string>
     <string name="private_message_from">Fra </string>
     <string name="private_message_reply_reply">Svar</string>
@@ -115,7 +111,6 @@
     <string name="account_settings_avatar">Profilbillede</string>
     <string name="account_settings_banner">Banner</string>
     <string name="account_settings_all">Alle</string>
-    <string name="account_settings_local">Lokale</string>
     <string name="account_settings_subscribed">Abonneret</string>
     <string name="account_settings_default_listing_type">Foretrukket Listevisningstype</string>
     <string name="account_settings_default_sort_type">Foretrukken sorteringsmetode</string>
@@ -155,9 +150,8 @@
     <string name="about_social">Sociale medier</string>
     <string name="comment_node_in">"i "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Vis indholdet af sammenfoldede kommentarer</string>
-    <string name="comment_node_permalink_copied">Permanent link kopieret</string>
-    <string name="post_listing_link_copied">Link kopieret</string>
-    <string name="post_listing_permalink_copied">Permanent link kopieret</string>
+    <string name="link_copied">Link kopieret</string>
+    <string name="permalink_copied">Permanent link kopieret</string>
     <string name="moreOptions">Vis flere muligheder</string>
     <string name="lessOptions">Vis færre muligheder</string>
     <string name="bottomBar_home">Gå til startsiden</string>
@@ -206,8 +200,8 @@
     <string name="postListing_goToCommunity">Gå til fællesskab</string>
     <string name="postListing_featuredLocal">Udvalgt lokalt</string>
     <string name="postListing_featuredCommunity">Udvalgt i fællesskab</string>
-    <string name="postListing_locked">Låst</string>
-    <string name="postListing_deleted">Slettet</string>
+    <string name="locked">Låst</string>
+    <string name="deleted">Slettet</string>
     <string name="postListing_reply">Besvar indlæg</string>
     <string name="privateMessage_reply">Besvar besked</string>
     <string name="topAppBar_back">Tilbage</string>

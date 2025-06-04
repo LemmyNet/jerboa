@@ -1,18 +1,14 @@
 <resources>
     <string name="comment_node_goto_comment">Gåtill Kommentar</string>
     <string name="comment_node_go_to">Gå till %1$s</string>
-    <string name="comment_node_view_source">Visa Källa</string>
+    <string name="view_source">Visa Källa</string>
     <string name="comment_node_copy_permalink">Kopiera Permalänk</string>
     <string name="comment_node_report_comment">Rapportera Kommentar</string>
-    <string name="comment_node_edit">Redigera</string>
-    <string name="comment_node_restore">Återställ</string>
-    <string name="comment_node_delete">Radera</string>
     <string name="comment_node_more_replies">%1$s fler svar</string>
     <string name="comment_node_view_post">Visa Inlägg</string>
     <string name="comment_node_view_context">Se Kontext</string>
     <string name="comment_body_removed">*Borttagen*</string>
     <string name="comment_body_deleted">*Raderad*</string>
-    <string name="comment_edit_edit">Redigera</string>
     <string name="comment_edit_type_your_comment">Skriv din kommentar</string>
     <string name="comment_reply_reply">Svara</string>
     <string name="comment_reply_type_your_comment">Skriv din kommentar</string>
@@ -82,12 +78,12 @@
     <string name="post_listing_new">( %1$s nya )</string>
     <string name="post_listing_comments_count">%1$s kommentarer</string>
     <string name="post_listing_go_to">Gå till %1$s</string>
-    <string name="post_listing_copy_link">Kopiera länk</string>
+    <string name="copy_link">Kopiera länk</string>
     <string name="post_listing_copy_permalink">Kopiera Permalänk</string>
     <string name="post_listing_report_post">Rapportera Inlägg</string>
-    <string name="post_listing_edit">Redigera</string>
-    <string name="post_listing_restore">Återställ</string>
-    <string name="post_listing_delete">Radera</string>
+    <string name="edit">Redigera</string>
+    <string name="restore">Återställ</string>
+    <string name="delete">Radera</string>
     <string name="private_message_to">"till "</string>
     <string name="private_message_from">"från "</string>
     <string name="private_message_reply_reply">Svara</string>
@@ -115,7 +111,6 @@
     <string name="account_settings_avatar">Profilbild</string>
     <string name="account_settings_banner">Fresk</string>
     <string name="account_settings_all">All</string>
-    <string name="account_settings_local">Lokala</string>
     <string name="account_settings_subscribed">Prenumererade</string>
     <string name="account_settings_default_listing_type">Föredragen Uppställning</string>
     <string name="account_settings_default_sort_type">Föredragen Sortering Enligt</string>
@@ -155,9 +150,8 @@
     <string name="about_social">Sociala Medier</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Visa Innehållet av Kollapsade Kommentarer</string>
-    <string name="comment_node_permalink_copied">Permalänk Kopierad</string>
-    <string name="post_listing_link_copied">Länk Kopierad</string>
-    <string name="post_listing_permalink_copied">Permaliänk Kopierad</string>
+    <string name="link_copied">Länk Kopierad</string>
+    <string name="permalink_copied">Permaliänk Kopierad</string>
     <string name="moreOptions">Visa fler alternativ</string>
     <string name="lessOptions">Visa färre alternativ</string>
     <string name="bottomBar_home">Gå hem</string>
@@ -206,8 +200,8 @@
     <string name="postListing_goToCommunity">Gå till gemenskap</string>
     <string name="postListing_featuredLocal">Uppmärksammat lokalt</string>
     <string name="postListing_featuredCommunity">Uppmärksammat i gemenskap</string>
-    <string name="postListing_locked">Låst</string>
-    <string name="postListing_deleted">Raderad</string>
+    <string name="locked">Låst</string>
+    <string name="deleted">Raderad</string>
     <string name="postListing_reply">Svara på inlägg</string>
     <string name="privateMessage_reply">Svara på meddelande</string>
     <string name="topAppBar_back">Tillbaka</string>

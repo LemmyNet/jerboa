@@ -20,4 +20,6 @@
     <locale android:name="ar"/>
     <locale android:name="bg"/>
     <locale android:name="tr"/>
+    <locale android:name="zh"/>
+    <locale android:name="hu"/>
 </locale-config>

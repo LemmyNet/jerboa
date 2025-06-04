@@ -96,6 +96,7 @@ fun CreatePostScreen(
         )
     }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
+    var isUploadingCustomThumbnailImage by rememberSaveable { mutableStateOf(false) }
     var altText by rememberSaveable { mutableStateOf("") }
     var customThumbnail by rememberSaveable { mutableStateOf("") }
 
@@ -200,13 +201,6 @@ fun CreatePostScreen(
                                 }
                             }
                     },
-                    altText = altText,
-                    onAltTextChange = { altText = it },
-                    customThumbnailField = customThumbnailField,
-                    customThumbnail = customThumbnail,
-                    onCustomThumbnailChange = { customThumbnail = it },
-                    suggestedTitle = suggestedTitle,
-                    suggestedTitleLoading = suggestedTitleLoading,
                     sharedImage = initialImage,
                     isUploadingImage = isUploadingImage,
                     onImagePicked = { uri ->
@@ -219,6 +213,24 @@ fun CreatePostScreen(
                             }
                         }
                     },
+                    altText = altText,
+                    onAltTextChange = { altText = it },
+                    customThumbnailField = customThumbnailField,
+                    customThumbnail = customThumbnail,
+                    onCustomThumbnailChange = { customThumbnail = it },
+                    isUploadingCustomThumbnailImage = isUploadingCustomThumbnailImage,
+                    onCustomThumbnailImagePicked = { uri ->
+                        if (!account.isAnon() && uri != Uri.EMPTY) {
+                            val imageIs = imageInputStreamFromUri(ctx, uri)
+                            scope.launch {
+                                isUploadingCustomThumbnailImage = true
+                                customThumbnail = API.uploadPictrsImage(imageIs, ctx)
+                                isUploadingCustomThumbnailImage = false
+                            }
+                        }
+                    },
+                    suggestedTitle = suggestedTitle,
+                    suggestedTitleLoading = suggestedTitleLoading,
                     account = account,
                     padding = padding,
                     isNsfw = isNsfw,

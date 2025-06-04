@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.crazylegend.crashyreporter.CrashyReporter
 import com.jerboa.R
-import com.jerboa.copyToClipboard
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.formatDuration
 import com.jerboa.showSnackbar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
@@ -127,7 +127,7 @@ fun CrashLog(
             modifier = Modifier.padding(MEDIUM_PADDING),
         ) {
             IconButton(onClick = {
-                copyToClipboard(ctx, crash, "crash")
+                copyTextToClipboard(ctx, crash, "crash", R.string.copied)
             }) {
                 Icon(
                     Icons.Outlined.ContentCopy,

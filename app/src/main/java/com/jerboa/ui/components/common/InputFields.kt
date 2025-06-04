@@ -41,7 +41,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -115,7 +115,9 @@ fun MarkdownTextField(
                 value = text,
                 onValueChange = onTextChange,
                 label = { Text(text = placeholder) },
-                modifier = modifier.focusRequester(focusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences,
@@ -128,7 +130,9 @@ fun MarkdownTextField(
                 value = text,
                 onValueChange = onTextChange,
                 placeholder = { Text(text = placeholder) },
-                modifier = modifier.focusRequester(focusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Sentences,
@@ -161,11 +165,10 @@ fun MarkdownTextField(
         )
     }
 
-    DisposableEffect(Unit) {
-        if (focusImmediate) {
+    if (focusImmediate) {
+        LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
-        onDispose { }
     }
 }
 

@@ -87,7 +87,7 @@ fun CommentEditScreen(
                             }
                         }
                     },
-                    title = stringResource(R.string.comment_edit_edit),
+                    title = stringResource(R.string.edit),
                     actionText = R.string.comment_edit_save,
                 )
             },

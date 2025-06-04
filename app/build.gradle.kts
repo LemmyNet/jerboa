@@ -8,32 +8,34 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
-    kotlin("plugin.serialization") version "2.0.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.21"
+    kotlin("plugin.serialization") version "2.1.21"
 
 }
 
 apply(from = "update_instances.gradle.kts")
 
 android {
-    buildToolsVersion = "34.0.0"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 78
-        versionName = "0.0.77-gplay"
+        targetSdk = 35
+        versionCode = 79
+        versionName = "0.0.78-gplay"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+    }
+
+    lint {
+        disable += "MissingTranslation"
+        disable += "KtxExtensionAvailable"
+        disable += "UseKtx"
     }
 
     // Necessary for f-droid builds
@@ -52,7 +54,7 @@ android {
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
-            register("release") {
+            create("release") {
                 storeFile = file(project.property("RELEASE_STORE_FILE")!!)
                 storePassword = project.property("RELEASE_STORE_PASSWORD") as String?
                 keyAlias = project.property("RELEASE_KEY_ALIAS") as String?
@@ -67,10 +69,8 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfig = signingConfigs.getByName("release")
             }
 
             postprocessing {
@@ -99,8 +99,8 @@ android {
     }
 }
 
-composeCompiler {
-    featureFlags = setOf(ComposeFeatureFlag.StrongSkipping)
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 baselineProfile {
@@ -110,16 +110,15 @@ baselineProfile {
 }
 
 dependencies {
-    // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    // This is the "official" composeBom, but it breaks the imageviewer until 1.7 is released. See:
-    // https://github.com/LemmyNet/jerboa/pull/1502#issuecomment-2137935525
-    // val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    // Exporting / importing DB helper
+    implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    val composeBom = platform("dev.chrisbanes.compose:compose-bom:2024.08.00-alpha02")
+    val composeBom = platform("androidx.compose:compose-bom:2025.06.00")
+
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
     androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
@@ -143,7 +142,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.7.0")
     implementation("io.coil-kt:coil-video:2.7.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.13.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.16.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -151,20 +150,20 @@ dependencies {
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.7.1")
 
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.1")
+    annotationProcessor("androidx.room:room-compiler:2.7.1")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-ktx:2.7.1")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.6.1")
+    testImplementation("androidx.room:room-testing:2.7.1")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.6.1")
+    androidTestImplementation("androidx.room:room-testing:2.7.1")
 
-    implementation("io.arrow-kt:arrow-core:1.2.4")
+    implementation("io.arrow-kt:arrow-core:2.1.2")
 
 
     implementation("androidx.compose.material3:material3")
@@ -178,14 +177,14 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    implementation("androidx.navigation:navigation-compose:2.8.1")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.13.0")
+    testImplementation("org.mockito:mockito-core:5.18.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 
     implementation("androidx.browser:browser:1.8.0")
@@ -193,9 +192,9 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.3.4-SNAPSHOT")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1-SNAPSHOT")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:2.3.12")
+    implementation("io.ktor:ktor-client-logging:3.1.3")
 }

@@ -1,18 +1,14 @@
 <resources>
     <string name="comment_node_goto_comment">Idź do Komentarza</string>
     <string name="comment_node_go_to">Idź do %1$s</string>
-    <string name="comment_node_view_source">Wyświetl Źródło</string>
+    <string name="view_source">Wyświetl Źródło</string>
     <string name="comment_node_copy_permalink">Skopiuj Permalink</string>
     <string name="comment_node_report_comment">Zgłoś Komentarz</string>
-    <string name="comment_node_edit">Edytuj</string>
-    <string name="comment_node_restore">Przywróć</string>
-    <string name="comment_node_delete">Usuń</string>
     <string name="comment_node_more_replies">%1$s więcej odpowiedzi</string>
     <string name="comment_node_view_post">Wyświetl Post</string>
     <string name="comment_node_view_context">Wyświetl Kontekst</string>
     <string name="comment_body_removed">*Usunięte*</string>
     <string name="comment_body_deleted">*Usunięte*</string>
-    <string name="comment_edit_edit">Edytuj</string>
     <string name="comment_edit_type_your_comment">Napisz swój komentarz</string>
     <string name="comment_reply_reply">Odpowiedz</string>
     <string name="comment_reply_type_your_comment">Napisz swój komentarz</string>
@@ -82,12 +78,12 @@
     <string name="post_listing_new">( %1$s nowe )</string>
     <string name="post_listing_comments_count">%1$s komentarzy</string>
     <string name="post_listing_go_to">Idź do %1$s</string>
-    <string name="post_listing_copy_link">Skopiuj link</string>
+    <string name="copy_link">Skopiuj link</string>
     <string name="post_listing_copy_permalink">Skopiuj Permalink</string>
     <string name="post_listing_report_post">Zgłoś Post</string>
-    <string name="post_listing_edit">Edytuj</string>
-    <string name="post_listing_restore">Przywróć</string>
-    <string name="post_listing_delete">Usuń</string>
+    <string name="edit">Edytuj</string>
+    <string name="restore">Przywróć</string>
+    <string name="delete">Usuń</string>
     <string name="private_message_to">"do "</string>
     <string name="private_message_from">"z "</string>
     <string name="private_message_reply_reply">Odpowiedz</string>
@@ -115,7 +111,6 @@
     <string name="account_settings_avatar">Awatar</string>
     <string name="account_settings_banner">Baner</string>
     <string name="account_settings_all">Wszystkie</string>
-    <string name="account_settings_local">Lokalne</string>
     <string name="account_settings_subscribed">Zasubskrybowane</string>
     <string name="account_settings_default_listing_type">Standardowy Typ Wyświetlania</string>
     <string name="account_settings_default_sort_type">Standardowy Typ Sortowania</string>
@@ -155,9 +150,8 @@
     <string name="about_social">Socialmedia</string>
     <string name="comment_node_in">"w "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Pokaż zawartość dla zwiniętych komentarzy</string>
-    <string name="comment_node_permalink_copied">Permalink Skopiowany</string>
-    <string name="post_listing_link_copied">Link Skopiowany</string>
-    <string name="post_listing_permalink_copied">Permalink Skopiowany</string>
+    <string name="link_copied">Link Skopiowany</string>
+    <string name="permalink_copied">Permalink Skopiowany</string>
     <string name="moreOptions">Pokaż więcej opcji</string>
     <string name="lessOptions">Pokaż mniej opcji</string>
     <string name="bottomBar_home">Idź na Główna</string>
@@ -207,8 +201,8 @@
     <string name="postListing_goToCommunity">Idź do społeczności</string>
     <string name="postListing_featuredLocal">Wyróżnione lokalnie</string>
     <string name="postListing_featuredCommunity">Wyróżnione w społeczności</string>
-    <string name="postListing_locked">Zablokowane</string>
-    <string name="postListing_deleted">Usunięte</string>
+    <string name="locked">Zablokowane</string>
+    <string name="deleted">Usunięte</string>
     <string name="postListing_reply">Odpowiedz na post</string>
     <string name="privateMessage_reply">Odpowiedz na wiadomość</string>
     <string name="topAppBar_back">Cofnij</string>
