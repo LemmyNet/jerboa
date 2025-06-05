@@ -2,8 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## What's Changed in 0.0.78
+## What's Changed in 0.0.79
 
+- Update baseline profiles by @MV-GH in [#1845](https://github.com/LemmyNet/jerboa/pull/1845)
+- Fixing changelog script. by @dessalines in [#1844](https://github.com/LemmyNet/jerboa/pull/1844)
 - Add "Copy Image" action to Image context menu by @MV-GH in [#1840](https://github.com/LemmyNet/jerboa/pull/1840)
 - Fix deprecation zoomable constructor by @MV-GH in [#1841](https://github.com/LemmyNet/jerboa/pull/1841)
 - Adding weblate translations url. by @dessalines in [#1830](https://github.com/LemmyNet/jerboa/pull/1830)
@@ -30,7 +32,7 @@ All notable changes to this project will be documented in this file.
 
 - @BingoKingo made their first contribution in [#1722](https://github.com/LemmyNet/jerboa/pull/1722)
 
-**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.77...0.0.78
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.77...0.0.79
 
 ## What's Changed in 0.0.77
 
