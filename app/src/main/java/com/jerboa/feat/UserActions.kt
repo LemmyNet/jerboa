@@ -100,6 +100,9 @@ private suspend fun saveMedia(
     } catch (e: IllegalArgumentException) {
         Log.d("saveMedia", "invalid URL", e)
         Toast.makeText(context, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Log.d("saveMedia", "unexpected error", e)
+        Toast.makeText(context, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -147,10 +150,10 @@ fun shareMedia(
 
         ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
     } catch (e: IOException) {
-        Log.d("shareMedia", "failed", e)
+        Log.d("shareMedia", "io failed", e)
         Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
-        Log.d("shareMedia", "invalid URL", e)
+        Log.d("shareMedia", "failed", e)
         Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
     }
 }
@@ -238,7 +241,7 @@ fun copyImageToClipboard(
         Log.d("copyMedia", "io failed", e)
         Toast.makeText(ctx, R.string.failed_copy_media, Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
-        Log.d("copyMedia", "invalid URL", e)
+        Log.d("copyMedia", "failed", e)
         Toast.makeText(ctx, R.string.failed_copy_media, Toast.LENGTH_SHORT).show()
     }
 }
