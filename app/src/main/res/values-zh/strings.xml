@@ -488,4 +488,13 @@
     <string name="database_restored">数据库已恢复。</string>
     <string name="database_backed_up">数据库已备份。</string>
     <string name="settings_screen_backup_and_restore">备份与恢复</string>
+    <string name="instances">实例</string>
+    <string name="users">用户</string>
+    <string name="communities">社群</string>
+    <string name="donate">捐赠</string>
+    <string name="donation_dialog_dismiss">不用了，谢谢</string>
+    <string name="copy_image">复制图像</string>
+    <string name="failed_copy_media">未能复制媒体文件</string>
+    <string name="copied">已复制</string>
+    <string name="media_copied">已复制媒体文件</string>
 </resources>
