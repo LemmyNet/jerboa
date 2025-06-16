@@ -49,11 +49,20 @@ steps:
     when:
       - event: pull_request
 
-  notify:
+  notify_success:
     image: alpine:3
     commands:
       - apk add curl
-      - "curl -d'Jerboa build ${CI_PIPELINE_STATUS}: ${CI_PIPELINE_URL}' ntfy.sh/jerboa_ci"
+      - "curl -H'Title: ✔️ ${CI_REPO_NAME}/${CI_COMMIT_SOURCE_BRANCH}' -d'${CI_PIPELINE_URL}' ntfy.sh/jerboa_ci"
     when:
       - event: pull_request
-        status: [failure, success]
+        status: [success]
+
+  notify_failure:
+    image: alpine:3
+    commands:
+      - apk add curl
+      - "curl -H'Title: ❌ ${CI_REPO_NAME}/${CI_COMMIT_SOURCE_BRANCH}' -d'${CI_PIPELINE_URL}' ntfy.sh/jerboa_ci"
+    when:
+      - event: pull_request
+        status: [failure]
