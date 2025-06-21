@@ -156,7 +156,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.7.2")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.7.1")
+    implementation("androidx.room:room-ktx:2.7.2")
 
     // optional - Test helpers
     testImplementation("androidx.room:room-testing:2.7.1")
