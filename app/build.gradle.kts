@@ -193,7 +193,7 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1-SNAPSHOT")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     // For custom logging plugin
     implementation("io.ktor:ktor-client-logging:3.1.3")
