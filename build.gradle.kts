@@ -5,7 +5,7 @@ plugins {
     id("com.android.library") version "8.10.1" apply false
     id("org.jetbrains.kotlin.android") version "2.2.0" apply false
     id("org.jmailen.kotlinter") version "5.1.1" apply false
-    id("com.google.devtools.ksp") version "2.1.21-2.0.2" apply false
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
     id("com.android.test") version "8.10.1" apply false
     id("androidx.baselineprofile") version "1.3.4" apply false
 }
