@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="show_upvotes">顯示推數</string>
+    <string name="delete">刪除</string>
+    <string name="loading">載入中</string>
+    <string name="show_downvotes">顯示噓數</string>
+    <string name="show_upvote_percentage">顯示推票比例</string>
+    <string name="locked">已鎖定</string>
+</resources>
