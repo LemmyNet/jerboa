@@ -16,4 +16,11 @@
     <string name="reporter">檢舉人</string>
     <string name="days_until_expiration">距離到期天數</string>
     <string name="by">由</string>
+    <string name="title">標題</string>
+    <string name="reports">檢舉</string>
+    <string name="hide_post">隱藏貼文</string>
+    <string name="unhide_post">解除隱藏貼文</string>
+    <string name="post_hidden">貼文已隱藏</string>
+    <string name="post_unhidden">貼文已取消隱藏</string>
+    <string name="donate">贊助</string>
 </resources>
