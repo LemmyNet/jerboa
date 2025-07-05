@@ -201,5 +201,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.1.3")
+    implementation("io.ktor:ktor-client-logging:3.2.1")
 }
