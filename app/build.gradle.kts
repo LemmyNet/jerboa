@@ -146,6 +146,11 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.7.0")
     implementation("io.coil-kt:coil-svg:2.7.0")
     implementation("io.coil-kt:coil-video:2.7.0")
+    // TODO Also need embed video player in card mode
+    // Media3 for video playback
+    implementation("androidx.media3:media3-exoplayer:1.7.1")
+    implementation("androidx.media3:media3-ui:1.7.1")
+    implementation("androidx.media3:media3-common:1.7.1")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.16.0")
     // Animated dropdowns

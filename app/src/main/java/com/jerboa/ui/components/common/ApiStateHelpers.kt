@@ -17,12 +17,21 @@ fun ApiErrorText(
     paddingValues: PaddingValues = PaddingValues(),
 ) {
     msg.message?.also {
-        Text(
-            text = it,
-            modifier = Modifier.padding(paddingValues),
-            color = MaterialTheme.colorScheme.error,
-        )
+       ApiErrorText(it, paddingValues = paddingValues)
     }
+}
+
+@Composable
+fun ApiErrorText(
+    msg: String,
+    modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(),
+) {
+    Text(
+        text = msg,
+        modifier = modifier.padding(paddingValues),
+        color = MaterialTheme.colorScheme.error,
+    )
 }
 
 fun apiErrorToast(

@@ -423,6 +423,7 @@ fun pictrsImageThumbnail(
 
 fun isImage(url: String): Boolean = imageRegex.matches(url)
 
+// TODO: removed?
 fun getPostType(url: String): PostType = if (isImage(url)) PostType.Image else PostType.Link
 
 val imageRegex =

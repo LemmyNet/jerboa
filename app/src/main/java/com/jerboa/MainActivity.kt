@@ -58,6 +58,8 @@ import com.jerboa.ui.components.home.ShowAppStartupDialogs
 import com.jerboa.ui.components.home.legal.SiteLegalScreen
 import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
 import com.jerboa.ui.components.imageviewer.ImageViewerScreen
+import com.jerboa.ui.components.videoviewer.VideoViewerScreen
+import com.jerboa.isVideo
 import com.jerboa.ui.components.inbox.InboxScreen
 import com.jerboa.ui.components.login.LoginScreen
 import com.jerboa.ui.components.person.PersonProfileScreen
@@ -797,7 +799,11 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.ViewArgs(it)
 
-                        ImageViewerScreen(url = args.url, appState = appState)
+                        if (isVideo(args.url)) {
+                            VideoViewerScreen(url = args.url, appState = appState)
+                        } else {
+                            ImageViewerScreen(url = args.url, appState = appState)
+                        }
                     }
 
                     composable(

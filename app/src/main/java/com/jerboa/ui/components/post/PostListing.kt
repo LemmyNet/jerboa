@@ -294,7 +294,7 @@ fun ThumbnailTile(
     appState: JerboaAppState,
 ) {
     post.url?.also { url ->
-        val postType = getPostType(url)
+        val postType = PostType.fromURL(url)
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
