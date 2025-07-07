@@ -58,8 +58,6 @@ import com.jerboa.ui.components.home.ShowAppStartupDialogs
 import com.jerboa.ui.components.home.legal.SiteLegalScreen
 import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
 import com.jerboa.ui.components.imageviewer.ImageViewerScreen
-import com.jerboa.ui.components.videoviewer.VideoViewerScreen
-import com.jerboa.isVideo
 import com.jerboa.ui.components.inbox.InboxScreen
 import com.jerboa.ui.components.login.LoginScreen
 import com.jerboa.ui.components.person.PersonProfileScreen
@@ -81,6 +79,7 @@ import com.jerboa.ui.components.settings.backupandrestore.BackupAndRestoreScreen
 import com.jerboa.ui.components.settings.block.BlocksScreen
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsScreen
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelScreen
+import com.jerboa.ui.components.videoviewer.VideoViewerScreen
 import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
 import com.jerboa.ui.components.viewvotes.post.PostLikesScreen
 import com.jerboa.ui.theme.JerboaTheme
@@ -181,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                     exitTransition =
                         {
                             // No animation for image viewer
-                            if (this.targetState.destination.route == Route.VIEW) {
+                            if (this.targetState.destination.route == Route.IMAGE_VIEW) {
                                 ExitTransition.None
                             } else {
                                 slideOutHorizontally { -it }
@@ -189,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                         },
                     popEnterTransition = {
                         // No animation for image viewer
-                        if (this.initialState.destination.route == Route.VIEW) {
+                        if (this.initialState.destination.route == Route.IMAGE_VIEW) {
                             EnterTransition.None
                         } else {
                             slideInHorizontally { -it }
@@ -785,11 +784,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
-                        route = Route.VIEW,
+                        route = Route.IMAGE_VIEW,
                         arguments =
                             listOf(
-                                navArgument(Route.ViewArgs.URL) {
-                                    type = Route.ViewArgs.URL_TYPE
+                                navArgument(Route.ImageViewArgs.URL) {
+                                    type = Route.ImageViewArgs.URL_TYPE
                                 },
                             ),
                         enterTransition = { EnterTransition.None },
@@ -797,13 +796,25 @@ class MainActivity : AppCompatActivity() {
                         popEnterTransition = { EnterTransition.None },
                         popExitTransition = { ExitTransition.None },
                     ) {
-                        val args = Route.ViewArgs(it)
+                        val args = Route.ImageViewArgs(it)
+                        ImageViewerScreen(url = args.url, appState = appState)
+                    }
 
-                        if (isVideo(args.url)) {
-                            VideoViewerScreen(url = args.url, appState = appState)
-                        } else {
-                            ImageViewerScreen(url = args.url, appState = appState)
-                        }
+                    composable(
+                        route = Route.VIDEO_VIEW,
+                        arguments =
+                            listOf(
+                                navArgument(Route.VideoViewArgs.URL) {
+                                    type = Route.VideoViewArgs.URL_TYPE
+                                },
+                            ),
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None },
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                    ) {
+                        val args = Route.VideoViewArgs(it)
+                        VideoViewerScreen(url = args.url, appState = appState)
                     }
 
                     composable(

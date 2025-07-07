@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
@@ -990,7 +989,7 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
 ) {
-    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
+    val imagePost = postView.post.url?.let { getPostType(it) == PostLinkType.Image } ?: false
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
@@ -1012,8 +1011,6 @@ fun PostTitleBlock(
     }
 }
 
-@ExperimentalLayoutApi
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
@@ -1047,7 +1044,6 @@ fun PostTitleAndImageLink(
     }
 }
 
-@ExperimentalLayoutApi
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,

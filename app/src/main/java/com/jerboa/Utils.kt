@@ -424,7 +424,7 @@ fun pictrsImageThumbnail(
 fun isImage(url: String): Boolean = imageRegex.matches(url)
 
 // TODO: removed?
-fun getPostType(url: String): PostType = if (isImage(url)) PostType.Image else PostType.Link
+fun getPostType(url: String): PostLinkType = if (isImage(url)) PostLinkType.Image else PostLinkType.Link
 
 val imageRegex =
     Regex(
@@ -766,7 +766,7 @@ enum class PostViewMode(
 /**
  * For a given post, what sort of content Jerboa treats it as.
  */
-enum class PostType {
+enum class PostLinkType {
     /**
      * A Link to an external website. Opens the browser.
      */
@@ -780,14 +780,13 @@ enum class PostType {
     /**
      * A Video. Should open the built-in video viewer.
      * Also matches audio only
-     * (Not currently available).
      */
     Video,
 
     ;
 
     companion object {
-        fun fromURL(url: String): PostType =
+        fun fromURL(url: String): PostLinkType =
             if (isImage(url)) {
                 Image
             } else if (isVideo(url)) {

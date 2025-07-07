@@ -74,7 +74,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.jerboa.JerboaAppState
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
@@ -197,13 +197,13 @@ fun VideoViewerScreen(
         },
         content = { paddingValues ->
             Box(
-                Modifier.background(backColor)
+                Modifier.background(backColor),
             ) {
                 if (playError != null) {
                     ApiErrorText(
                         msg = "${playError!!.errorCodeName}: ${playError!!.cause?.message}",
                         paddingValues = paddingValues,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
 
@@ -261,18 +261,18 @@ fun VideoViewerScreen(
                                     }
 
                                     controller.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                                }
+                                },
                         )
 
                         Column(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Bottom
+                            verticalArrangement = Arrangement.Bottom,
                         ) {
                             VideoControlBar(
                                 exoPlayer = exoPlayer,
                                 isPlaying = isPlaying,
                                 showControls = showControls,
-                                onPlayPauseClick = togglePlayPause
+                                onPlayPauseClick = togglePlayPause,
                             )
                         }
                     }
@@ -315,7 +315,7 @@ fun VideoViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, url, PostType.Video)
+                    shareMedia(appState.coroutineScope, ctx, url, PostLinkType.Video)
                 },
             ) {
                 Icon(
@@ -327,7 +327,7 @@ fun VideoViewerHeader(
 
             IconButton(
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, url, PostType.Video)
+                    storeMedia(appState.coroutineScope, ctx, url, PostLinkType.Video)
                 },
             ) {
                 Icon(
@@ -376,32 +376,32 @@ fun VideoControlBar(
             .alpha(controlsAlpha)
             .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
             .padding(8.dp)
-            .navigationBarsPadding()
+            .navigationBarsPadding(),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onPlayPauseClick) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
                     // TODO stringResrouce
                     contentDescription = if (isPlaying) "Pause" else "Play",
-                    tint = Color.White
+                    tint = Color.White,
                 )
             }
 
             Text(
                 text = formatTime(currentPosition),
                 color = Color.White,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
 
             // Customized to enable buffered progress tracking + white theming
             val colors = SliderDefaults.colors(
                 thumbColor = Color.White,
                 activeTrackColor = Color.White,
-                inactiveTrackColor = Color.White.copy(alpha = 0.3f)
+                inactiveTrackColor = Color.White.copy(alpha = 0.3f),
             )
             val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
             Slider(
@@ -431,7 +431,7 @@ fun VideoControlBar(
                             inactiveTrackColor = Color.White.copy(alpha = 0.3f),
                         ),
                         drawStopIndicator = null,
-                        modifier = Modifier.height(4.dp)
+                        modifier = Modifier.height(4.dp),
                     )
                     // Add buffered progress track
                     Box(
@@ -440,17 +440,16 @@ fun VideoControlBar(
                             .height(4.dp)
                             .background(
                                 color = Color.White.copy(alpha = 0.5f),
-                                shape = MaterialTheme.shapes.extraSmall
-                            )
+                                shape = MaterialTheme.shapes.extraSmall,
+                            ),
                     )
-                }
-
+                },
             )
 
             Text(
                 text = formatTime(totalDuration),
                 color = Color.White,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
 
             // TODO: hide if no audio available, like GIFs
@@ -458,12 +457,12 @@ fun VideoControlBar(
                 onClick = {
                     isMuted = !isMuted
                     exoPlayer.volume = if (isMuted) 0f else 1f
-                }
+                },
             ) {
                 Icon(
                     imageVector = if (isMuted) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,
                     contentDescription = if (isMuted) "Unmute" else "Mute",
-                    tint = Color.White
+                    tint = Color.White,
                 )
             }
         }
@@ -477,17 +476,16 @@ fun VideoViewerHeaderPreview() {
         Box(
             modifier = Modifier
                 .background(Color.Black)
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             VideoViewerHeader(
                 showTopBar = true,
                 url = "https://example.com/video.mp4",
-                appState = rememberJerboaAppState()
+                appState = rememberJerboaAppState(),
             )
         }
     }
 }
-
 
 @SuppressLint("DefaultLocale")
 fun formatTime(millis: Long): String {
@@ -501,7 +499,6 @@ fun formatTime(millis: Long): String {
         String.format("%02d:%02d", minutes, seconds)
     }
 }
-
 
 @Composable
 @Preview(name = "Video Viewer Screen")

@@ -50,7 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
@@ -226,7 +226,7 @@ fun ViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, url, PostType.Image)
+                    shareMedia(appState.coroutineScope, ctx, url, PostLinkType.Image)
                 },
             ) {
                 Icon(
@@ -239,7 +239,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, url, PostType.fromURL(url))
+                    storeMedia(appState.coroutineScope, ctx, url, PostLinkType.fromURL(url))
                 },
             ) {
                 Icon(

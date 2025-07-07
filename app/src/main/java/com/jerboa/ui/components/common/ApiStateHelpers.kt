@@ -17,7 +17,7 @@ fun ApiErrorText(
     paddingValues: PaddingValues = PaddingValues(),
 ) {
     msg.message?.also {
-       ApiErrorText(it, paddingValues = paddingValues)
+        ApiErrorText(it, paddingValues = paddingValues)
     }
 }
 

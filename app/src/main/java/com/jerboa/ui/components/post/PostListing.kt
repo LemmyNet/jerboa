@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.jerboa.JerboaAppState
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
@@ -46,7 +46,6 @@ import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
-import com.jerboa.getPostType
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.SwipeToAction
@@ -294,14 +293,14 @@ fun ThumbnailTile(
     appState: JerboaAppState,
 ) {
     post.url?.also { url ->
-        val postType = PostType.fromURL(url)
+        val postLinkType = PostLinkType.fromURL(url)
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
             .combinedClickable(
                 onClick = {
-                    if (postType != PostType.Link) {
-                        appState.openImageViewer(url)
+                    if (postLinkType != PostLinkType.Link) {
+                        appState.openMediaViewer(url, postLinkType)
                     } else {
                         appState.openLink(
                             url,
@@ -320,7 +319,7 @@ fun ThumbnailTile(
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
                     blur = blurEnabled,
-                    roundBottomEndCorner = postType != PostType.Link,
+                    roundBottomEndCorner = postLinkType != PostLinkType.Link,
                     contentDescription = post.alt_text,
                     modifier = postLinkPicMod,
                 )
@@ -343,7 +342,7 @@ fun ThumbnailTile(
             }
 
             // Display a caret in the bottom right corner to denote this as an image
-            if (postType != PostType.Link) {
+            if (postLinkType != PostLinkType.Link) {
                 Icon(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
@@ -352,8 +351,8 @@ fun ThumbnailTile(
                             .size(THUMBNAIL_CARET_SIZE)
                             .align(Alignment.BottomEnd),
                     tint =
-                        when (postType) {
-                            PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                        when (postLinkType) {
+                            PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
                             else -> MaterialTheme.jerboaColorScheme.imageHighlight
                         },
                 )

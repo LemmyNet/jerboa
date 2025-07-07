@@ -39,7 +39,6 @@ import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -115,7 +114,24 @@ class JerboaAppState(
 
     fun openImageViewer(url: String) {
         val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
-        navController.navigate(Route.ViewArgs.makeRoute(encodedUrl))
+        navController.navigate(Route.ImageViewArgs.makeRoute(encodedUrl))
+    }
+
+    fun openVideoViewer(url: String) {
+        val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
+        navController.navigate(Route.VideoViewArgs.makeRoute(encodedUrl))
+    }
+
+    fun openMediaViewer(
+        url: String,
+        mediaType: PostLinkType? = null,
+    ) {
+        val fullType = mediaType ?: PostLinkType.fromURL(url)
+        if (fullType == PostLinkType.Video) {
+            openVideoViewer(url)
+        } else {
+            openImageViewer(url)
+        }
     }
 
     fun toPostEdit(postView: PostView) {
