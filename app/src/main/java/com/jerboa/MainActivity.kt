@@ -118,6 +118,13 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val appState = rememberJerboaAppState()
 
+                DisposableEffect(Unit) {
+
+                    onDispose {
+                        appState.release()
+                    }
+                }
+
                 val showConfirmationDialog = remember { mutableStateOf(false) }
 
                 if (showConfirmationDialog.value) {

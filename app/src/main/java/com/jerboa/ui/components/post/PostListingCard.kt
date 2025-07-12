@@ -3,11 +3,14 @@ package com.jerboa.ui.components.post
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,7 +67,6 @@ import com.jerboa.feat.canMod
 import com.jerboa.feat.default
 import com.jerboa.feat.needBlur
 import com.jerboa.feat.simulateModerators
-import com.jerboa.getPostType
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.rememberJerboaAppState
@@ -74,6 +76,7 @@ import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.DotSpacer
+import com.jerboa.ui.components.common.EmbeddedVideoPlayer
 import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsUrlImage
@@ -989,25 +992,38 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
 ) {
-    val imagePost = postView.post.url?.let { getPostType(it) == PostLinkType.Image } ?: false
+    val postUrl = postView.post.url
+    val postType = postUrl?.let { PostLinkType.fromURL(it) }
+    val imagePost = postType == PostLinkType.Image
+    val videoPost = postType == PostLinkType.Video
 
-    if (imagePost && expandedImage) {
-        PostTitleAndImageLink(
-            postView = postView,
-            appState = appState,
-            showIfRead = showIfRead,
-            blurNSFW = blurNSFW,
-        )
-    } else {
-        PostTitleAndThumbnail(
-            postView = postView,
-            account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            appState = appState,
-            showIfRead = showIfRead,
-            blurNSFW = blurNSFW,
-        )
+    when {
+        imagePost && expandedImage -> {
+            PostTitleAndImageLink(
+                postView = postView,
+                appState = appState,
+                showIfRead = showIfRead,
+                blurNSFW = blurNSFW,
+            )
+        }
+        videoPost && expandedImage -> {
+            PostTitleAndVideoLink(
+                postView = postView,
+                appState = appState,
+                showIfRead = showIfRead,
+            )
+        }
+        else -> {
+            PostTitleAndThumbnail(
+                postView = postView,
+                account = account,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                appState = appState,
+                showIfRead = showIfRead,
+                blurNSFW = blurNSFW,
+            )
+        }
     }
 }
 
@@ -1041,6 +1057,40 @@ fun PostTitleAndImageLink(
                         onLongClick = { appState.showLinkPopup(cUrl) },
                     ),
         )
+    }
+}
+
+@Composable
+fun PostTitleAndVideoLink(
+    postView: PostView,
+    appState: JerboaAppState,
+    showIfRead: Boolean,
+) {
+    val url = postView.post.url?.toHttps()
+
+    // Title of the post
+    PostName(
+        post = postView.post,
+        read = postView.read,
+        showIfRead = showIfRead,
+        modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+    )
+
+    url?.let { cUrl ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                // TODO: hardcoded should by dynamic by video
+                .aspectRatio(16f / 9f) // Standard video aspect ratio
+        ) {
+            EmbeddedVideoPlayer(
+                id = postView.post.id,
+                url = cUrl,
+                title = postView.post.name,
+                appState = appState,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 

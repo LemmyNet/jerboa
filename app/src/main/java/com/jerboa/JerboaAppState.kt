@@ -3,16 +3,20 @@ package com.jerboa
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import android.content.Context
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.model.ReplyItem
+import com.jerboa.state.VideoAppState
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
@@ -64,6 +68,11 @@ class JerboaAppState(
     val coroutineScope: CoroutineScope,
 ) {
     val linkDropdownExpanded = mutableStateOf<String?>(null)
+    val videoAppState: VideoAppState = VideoAppState()
+
+    fun release(){
+        videoAppState.releaseExoPlayer()
+    }
 
     fun toPrivateMessageReply(privateMessageView: PrivateMessageView) {
         sendReturnForwards(PrivateMessage.PM_VIEW, privateMessageView)

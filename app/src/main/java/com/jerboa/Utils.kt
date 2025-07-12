@@ -423,9 +423,6 @@ fun pictrsImageThumbnail(
 
 fun isImage(url: String): Boolean = imageRegex.matches(url)
 
-// TODO: removed?
-fun getPostType(url: String): PostLinkType = if (isImage(url)) PostLinkType.Image else PostLinkType.Link
-
 val imageRegex =
     Regex(
         pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",

@@ -375,7 +375,7 @@ fun VideoControlBar(
             .fillMaxWidth()
             .alpha(controlsAlpha)
             .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
-            .padding(8.dp)
+            .padding(horizontal = 4.dp)
             .navigationBarsPadding(),
     ) {
         Row(
@@ -385,8 +385,7 @@ fun VideoControlBar(
             IconButton(onClick = onPlayPauseClick) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                    // TODO stringResrouce
-                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    contentDescription = stringResource(if (isPlaying) R.string.pause else R.string.play),
                     tint = Color.White,
                 )
             }
@@ -461,7 +460,7 @@ fun VideoControlBar(
             ) {
                 Icon(
                     imageVector = if (isMuted) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,
-                    contentDescription = if (isMuted) "Unmute" else "Mute",
+                    contentDescription = stringResource(if (isMuted) R.string.unmute else R.string.mute),
                     tint = Color.White,
                 )
             }
