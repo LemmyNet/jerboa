@@ -140,7 +140,7 @@ fun PostListingCard(
     blurNSFW: BlurNSFW,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
-    showIfRead: Boolean = false,
+    showIfRead: Boolean,
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
 ) {
