@@ -33,3 +33,8 @@
 
 # Ktor needs this
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# Until https://issuetracker.google.com/issues/425120571 is fixed
+-keepclassmembers class androidx.compose.ui.graphics.layer.view.ViewLayerContainer {
+    protected void dispatchGetDisplayList();
+}
