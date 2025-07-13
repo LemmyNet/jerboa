@@ -243,6 +243,7 @@ fun PostListing(
                         blurNSFW = blurNSFW,
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
+                        showIfRead = showIfRead,
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                     )

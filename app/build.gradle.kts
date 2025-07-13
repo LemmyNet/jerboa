@@ -187,7 +187,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     testImplementation("junit:junit:4.13.2")
@@ -206,5 +206,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.1.3")
+    implementation("io.ktor:ktor-client-logging:3.2.1")
 }
