@@ -64,8 +64,7 @@ import kotlin.math.abs
  * @param modifier The modifier to apply to the composable
  */
 
-// TODO: IN POST MODE should not be playing but URL image
-// aspect ratio based on url metadata
+// TODO aspect ratio based on url metadata
 // whole custom video hosts extract video stuff
 
 @Composable

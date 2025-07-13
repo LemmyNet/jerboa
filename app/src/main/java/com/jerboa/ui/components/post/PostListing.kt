@@ -233,7 +233,7 @@ fun PostListing(
                         viewSource = viewSource,
                         showReply = showReply,
                         showCommunityName = showCommunityName,
-                        fullBody = false,
+                        fullBody = fullBody,
                         account = account,
                         expandedImage = false,
                         enableDownVotes = enableDownVotes,

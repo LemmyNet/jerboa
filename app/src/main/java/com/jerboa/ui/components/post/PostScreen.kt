@@ -444,7 +444,7 @@ fun PostScreen(
                                     showReply = true,
                                     fullBody = true,
                                     account = account,
-                                    postViewMode = PostViewMode.Card,
+                                    postViewMode = PostViewMode.SmallCard,
                                     enableDownVotes = siteViewModel.enableDownvotes(),
                                     showAvatar = siteViewModel.showAvatar(),
                                     showVotingArrowsInListView = showVotingArrowsInListView,
