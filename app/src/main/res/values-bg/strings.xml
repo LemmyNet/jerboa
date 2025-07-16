@@ -286,7 +286,7 @@
     <string name="utils_login_first">Първо влезте</string>
     <string name="upvote">Глас нагоре</string>
     <string name="downvote">Глас надолу</string>
-    <string name="upvoted">Гласувано нагоре</string>
+    <string name="upvoted">Харесани</string>
     <string name="downvoted">Гласувано надолу</string>
     <string name="saved_image">Запазено изображение</string>
     <string name="saving_image">Запазване на изображение…</string>
@@ -485,4 +485,8 @@
     <string name="blocks">Блокирани</string>
     <string name="unblock">Отблокиране</string>
     <string name="unable_to_retrieve">Не може да се извлече</string>
+    <string name="copy_image">Копиране на изображението</string>
+    <string name="failed_copy_media">Неуспешно копиране на медията</string>
+    <string name="copied">Копирано</string>
+    <string name="media_copied">Медията е копирана</string>
 </resources>
