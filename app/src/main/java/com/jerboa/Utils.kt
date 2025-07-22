@@ -51,6 +51,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
+import com.jerboa.ui.components.videoviewer.api.VideoHostComposer
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.CoroutineScope
@@ -786,7 +787,7 @@ enum class PostLinkType {
         fun fromURL(url: String): PostLinkType =
             if (isImage(url)) {
                 Image
-            } else if (isVideo(url)) {
+            } else if (VideoHostComposer.isVideo(url)) {
                 Video
             } else {
                 Link
@@ -1309,12 +1310,6 @@ fun Context.getInputStream(url: String): InputStream {
     }
 }
 
-val videoRgx =
-    Regex(
-        pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov|webm))",
-    )
-
-fun isVideo(url: String): Boolean = url.matches(videoRgx)
 
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
 
