@@ -28,7 +28,7 @@ steps:
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:
-      - event: pull_request
+      - event: [pull_request, tag]
 
   check_android_lint:
     image: *android_image
