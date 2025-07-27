@@ -23,9 +23,15 @@ steps:
     image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
+      - echo "$KEYSTORE" base64 -di > keystore
+      - echo "\n$SIGNING_PROPS" >> gradle.properties
       - ./gradlew assembleRelease
       - ./gradlew bundleRelease
     environment:
+      KEYSTORE:
+        from_secret: keystore
+      SIGNING_PROPS:
+        from_secret: signing_props
       GRADLE_USER_HOME: ".gradle"
     when:
       - event: [pull_request, tag]
