@@ -24,6 +24,7 @@ steps:
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleRelease
+      - ./gradlew bundleRelease
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:
@@ -48,6 +49,17 @@ steps:
       GRADLE_USER_HOME: ".gradle"
     when:
       - event: pull_request
+
+  publish:
+    image: woodpeckerci/plugin-release
+    settings:
+      api_key:
+        from_secret: ACCESS_TOKEN
+      files:
+        - app/build/outputs/apk/release/app-release.apk
+        - app/build/outputs/bundle/release/app-release.aab
+    when:
+      - event: tag
 
   notify_success:
     image: alpine:3
