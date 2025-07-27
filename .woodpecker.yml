@@ -23,8 +23,8 @@ steps:
     image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
-      - echo "$KEYSTORE" base64 -di > keystore
-      - echo "\n$SIGNING_PROPS" >> gradle.properties
+      - echo "$KEYSTORE" base64 -di > app/keystore
+      - echo -e "\n$SIGNING_PROPS" >> gradle.properties
       - ./gradlew assembleRelease
       - ./gradlew bundleRelease
     environment:
