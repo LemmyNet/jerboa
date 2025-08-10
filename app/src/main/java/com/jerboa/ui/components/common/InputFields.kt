@@ -231,11 +231,11 @@ fun CreateLinkDialog(
                     val replacement = "[$text]($link)"
                     val out =
                         value.text.replaceRange(
-                            value.selection.start,
-                            value.selection.end,
+                            value.selection.min,
+                            value.selection.max,
                             replacement,
                         )
-                    val end = value.selection.start + replacement.length
+                    val end = value.selection.min + replacement.length
                     val cursor = TextRange(end, end)
                     onClickOk(TextFieldValue(out, cursor))
                 },
@@ -330,34 +330,34 @@ fun simpleMarkdownSurround(
     surround: Boolean = true,
 ) {
     val out =
-        if (value.selection.start == value.selection.end) {
-            var altered = value.text.insert(value.selection.start, markdownChar)
+        if (value.selection.min == value.selection.max) {
+            var altered = value.text.insert(value.selection.min, markdownChar)
             if (surround) {
-                altered = altered.insert(value.selection.start + markdownChar.length, markdownChar)
+                altered = altered.insert(value.selection.min + markdownChar.length, markdownChar)
             }
-            val cursor = TextRange(value.selection.start + markdownChar.length)
+            val cursor = TextRange(value.selection.min + markdownChar.length)
 
             TextFieldValue(altered, cursor)
         } else {
             var altered =
                 value.text
-                    .insert(value.selection.start, markdownChar)
+                    .insert(value.selection.min, markdownChar)
             if (surround) {
                 altered =
                     altered
-                        .insert(value.selection.end + markdownChar.length, markdownChar)
+                        .insert(value.selection.max + markdownChar.length, markdownChar)
             }
 
             // TODO weird glitch when its the last item
-            val start = value.selection.start + markdownChar.length
+            val start = value.selection.min + markdownChar.length
             val end =
                 if (surround) {
-                    value.selection.end + markdownChar.length
+                    value.selection.max + markdownChar.length
                 } else {
-                    value.selection.end
+                    value.selection.max
                 }
             val cursor =
-                if (value.selection.end == value.text.length) {
+                if (value.selection.max == value.text.length) {
                     TextRange(start)
                 } else {
                     TextRange(
@@ -378,26 +378,26 @@ fun simpleMarkdownSurround(
     onValueChange: (TextFieldValue) -> Unit,
 ) {
     val out =
-        if (value.selection.start == value.selection.end) {
+        if (value.selection.min == value.selection.max) {
             val altered =
                 value.text
-                    .insert(value.selection.start, startText)
-                    .insert(value.selection.start + startText.length, endText)
+                    .insert(value.selection.min, startText)
+                    .insert(value.selection.min + startText.length, endText)
 
-            val cursor = TextRange(value.selection.start + startText.length)
+            val cursor = TextRange(value.selection.min + startText.length)
 
             TextFieldValue(altered, cursor)
         } else {
             val altered =
                 value.text
-                    .insert(value.selection.start, startText)
-                    .insert(value.selection.end + startText.length, endText)
+                    .insert(value.selection.min, startText)
+                    .insert(value.selection.max + startText.length, endText)
 
-            val start = value.selection.start + startText.length
-            val end = value.selection.end + endText.length
+            val start = value.selection.min + startText.length
+            val end = value.selection.max + endText.length
 
             val cursor =
-                if (value.selection.end == value.text.length) {
+                if (value.selection.max == value.text.length) {
                     TextRange(start)
                 } else {
                     TextRange(start, end)
