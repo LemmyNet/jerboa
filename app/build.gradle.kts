@@ -118,7 +118,7 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.07.00")
+    val composeBom = platform("androidx.compose:compose-bom:2025.08.00")
 
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
