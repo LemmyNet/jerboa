@@ -8,8 +8,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0"
-    kotlin("plugin.serialization") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
+    kotlin("plugin.serialization") version "2.2.10"
 
 }
 
@@ -31,8 +31,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 35
-        versionCode = 79
-        versionName = "0.0.79"
+        versionCode = 80
+        versionName = "0.0.80"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -117,7 +117,7 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.06.01")
+    val composeBom = platform("androidx.compose:compose-bom:2025.08.00")
 
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
@@ -189,15 +189,15 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    implementation("androidx.navigation:navigation-compose:2.9.1")
+    implementation("androidx.navigation:navigation-compose:2.9.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.18.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("org.mockito:mockito-core:5.19.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.0.0")
 
     implementation("androidx.browser:browser:1.8.0")
 
@@ -208,5 +208,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.2.1")
+    implementation("io.ktor:ktor-client-logging:3.2.3")
 }
