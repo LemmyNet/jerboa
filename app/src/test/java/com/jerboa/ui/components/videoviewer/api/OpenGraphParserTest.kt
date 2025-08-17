@@ -19,7 +19,6 @@ class OpenGraphParserTest {
     fun `should find properties fields`() {
         val props = OpenGraphParser.findAllPropertiesFromHtml(sendVidSamplePage)
 
-        println(props)
         assertTrue(props.isNotEmpty())
         assertTrue(props.contains(Pair("og:video:type", "video/mp4")))
     }
