@@ -238,12 +238,12 @@ fun EmbeddedVideoPlayer(
 
     DisposableEffect(Unit) {
         onDispose {
-            // Edge case: sometimes it doesn't removed
+            // Edge case: sometimes it doesn't get removed
             videoAppState.removeVideoDistance(id)
         }
     }
 
-    // Only show blurred thumbnail if blur is enabled
+    // Only show blurred thumbnail
     if (blur) {
         Box(
             modifier = Modifier

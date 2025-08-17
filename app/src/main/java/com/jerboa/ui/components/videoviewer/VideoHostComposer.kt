@@ -9,9 +9,9 @@ import kotlinx.coroutines.withContext
 
 class VideoHostComposer {
     companion object {
-        private val lruCache = object : LinkedHashMap<String, Result<EmbeddedData>?>(100, 0.75f, true) {
+        private val lruCache = object : LinkedHashMap<String, Result<EmbeddedData>?>(200, 0.75f, true) {
             override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Result<EmbeddedData>?>): Boolean {
-                return size > 100 // Limit cache to 100 entries
+                return size > 200 // Limit cache to 200 entries
             }
         }
 
