@@ -136,6 +136,7 @@ fun VideoViewerScreen(
     val exoPlayer = remember {
         val player = ExoPlayer.Builder(ctx).build()
         player.setMediaItem(MediaItem.fromUri(Uri.parse(url)))
+        player.volume = if (appState.videoAppState.isVideoPlayerMuted.value) 0f else 1f
         player.prepare()
         player.playWhenReady = true
         player.repeatMode = Player.REPEAT_MODE_ONE
@@ -155,6 +156,12 @@ fun VideoViewerScreen(
             }
         })
         player
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
     }
 
     // Pauses the video when the app is in the background
@@ -271,8 +278,13 @@ fun VideoViewerScreen(
                             VideoControlBar(
                                 exoPlayer = exoPlayer,
                                 isPlaying = isPlaying,
+                                isMuted = appState.videoAppState.isVideoPlayerMuted.value,
                                 showControls = showControls,
                                 onPlayPauseClick = togglePlayPause,
+                                onMuteClick = {
+                                    appState.videoAppState.isVideoPlayerMuted.value = !appState.videoAppState.isVideoPlayerMuted.value
+                                    exoPlayer.volume = if (appState.videoAppState.isVideoPlayerMuted.value) 0f else 1f
+                                },
                             )
                         }
                     }
@@ -345,8 +357,10 @@ fun VideoViewerHeader(
 fun VideoControlBar(
     exoPlayer: ExoPlayer,
     isPlaying: Boolean,
+    isMuted: Boolean,
     showControls: Boolean,
     onPlayPauseClick: () -> Unit,
+    onMuteClick: () -> Unit,
 ) {
     val controlsAlpha by animateFloatAsState(
         targetValue = if (showControls) 1f else 0f,
@@ -354,7 +368,6 @@ fun VideoControlBar(
         label = "controlsAlpha",
     )
 
-    var isMuted by remember { mutableStateOf(false) }
     var currentPosition by remember { mutableLongStateOf(0L) }
     var totalDuration by remember { mutableLongStateOf(0L) }
     var bufferedPosition by remember { mutableLongStateOf(0L) }
@@ -451,12 +464,9 @@ fun VideoControlBar(
                 textAlign = TextAlign.Center,
             )
 
-            // TODO: hide if no audio available, like GIFs
+            // TODO: hide if no audio available
             IconButton(
-                onClick = {
-                    isMuted = !isMuted
-                    exoPlayer.volume = if (isMuted) 0f else 1f
-                },
+                onClick = onMuteClick,
             ) {
                 Icon(
                     imageVector = if (isMuted) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,

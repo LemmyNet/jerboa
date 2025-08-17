@@ -5,25 +5,26 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 
 @Stable
 class VideoAppState {
-
-    var exoPlayer: ExoPlayer? = null
+    private var exoPlayer: ExoPlayer? = null
 
     val activeEmbedId = mutableStateOf<Long?>(null)
 
     // Map to store the distance from top for each video
     private val videoDistances = mutableMapOf<Long, Float>()
 
-    val isVideoMuted = mutableStateOf(true)
+    val isVideoPlayerMuted = mutableStateOf(true)
+    val isEmbedVideoMuted = mutableStateOf(true)
 
     @Synchronized
     fun getOrCreateExoPlayer(context: Context): ExoPlayer {
         if (exoPlayer == null) {
             exoPlayer = ExoPlayer.Builder(context).build().apply {
                 repeatMode = Player.REPEAT_MODE_ONE
-                volume = if (isVideoMuted.value) 0f else 1f
+                volume = if (isEmbedVideoMuted.value) 0f else 1f
             }
         }
         return exoPlayer!!
@@ -35,11 +36,15 @@ class VideoAppState {
     }
 
     fun toggleVideoMute() {
-        isVideoMuted.value = !isVideoMuted.value
-        exoPlayer?.volume = if (isVideoMuted.value) 0f else 1f
+        isEmbedVideoMuted.value = !isEmbedVideoMuted.value
+        exoPlayer?.volume = if (isEmbedVideoMuted.value) 0f else 1f
     }
 
-    fun updateVideoDistance(id: Long, distance: Float, isVisible: Boolean) {
+    fun updateVideoDistance(
+        id: Long,
+        distance: Float,
+        isVisible: Boolean,
+    ) {
         if (isVisible) {
             videoDistances[id] = distance
 

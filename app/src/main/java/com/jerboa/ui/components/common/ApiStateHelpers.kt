@@ -30,7 +30,7 @@ fun ApiErrorText(
     Text(
         text = msg,
         modifier = modifier.padding(paddingValues),
-        color = MaterialTheme.colorScheme.error,
+        color = MaterialTheme.colorScheme.onError,
     )
 }
 

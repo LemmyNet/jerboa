@@ -32,7 +32,7 @@ fun Modifier.getBlurredOrRounded(
     if (rounded) {
         lModifier = lModifier.clip(RoundedCornerShape(12f))
     }
-    if (blur && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    if (blur && Build.VERSION.SDK_INT >= 31) {
         lModifier = lModifier.blur(radius = 100.dp)
     }
     return lModifier

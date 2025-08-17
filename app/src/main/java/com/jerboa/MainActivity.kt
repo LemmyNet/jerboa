@@ -119,7 +119,6 @@ class MainActivity : AppCompatActivity() {
                 val appState = rememberJerboaAppState()
 
                 DisposableEffect(Unit) {
-
                     onDispose {
                         appState.release()
                     }

@@ -104,7 +104,7 @@ fun BlocksScreen(
 }
 
 enum class BlocksTab(
-    @StringRes val label: Int,
+    @param:StringRes val label: Int,
 ) {
     Instances(R.string.instances),
     Communities(R.string.communities),
