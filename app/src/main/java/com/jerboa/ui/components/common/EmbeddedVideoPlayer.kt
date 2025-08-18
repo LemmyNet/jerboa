@@ -186,24 +186,14 @@ fun EmbeddedVideoPlayer(
 
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_PAUSE -> {
-                    exoPlayer.pause()
-                }
-
-                Lifecycle.Event.ON_RESUME -> {
-                    if (isActive) {
-                        exoPlayer.play()
-                    }
-                }
-
+                Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
+                Lifecycle.Event.ON_RESUME -> exoPlayer.play()
                 else -> {}
             }
         }
 
-        // Add player listener
         val playerListener = object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
-                Log.d("EmbeddedVideoPlayer", "ExoPlayer state changed to $state for $title")
                 when (state) {
                     Player.STATE_READY -> {
                         videoState = VideoState.SUCCESS
@@ -228,17 +218,11 @@ fun EmbeddedVideoPlayer(
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
             exoPlayer.removeListener(playerListener)
-
-            if (videoAppState.activeEmbedId.value == id) {
-                exoPlayer.pause()
-            }
-            videoAppState.removeVideoDistance(id)
         }
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            // Edge case: sometimes it doesn't get removed
             videoAppState.removeVideoDistance(id)
         }
     }
