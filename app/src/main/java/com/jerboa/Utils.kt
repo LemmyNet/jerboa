@@ -51,6 +51,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
+import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.CoroutineScope
@@ -423,8 +424,6 @@ fun pictrsImageThumbnail(
 
 fun isImage(url: String): Boolean = imageRegex.matches(url)
 
-fun getPostType(url: String): PostType = if (isImage(url)) PostType.Image else PostType.Link
-
 val imageRegex =
     Regex(
         pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
@@ -718,7 +717,7 @@ fun Context.findActivity(): Activity? =
     }
 
 enum class ThemeMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     System(R.string.look_and_feel_theme_system),
     SystemBlack(R.string.look_and_feel_theme_system_black),
@@ -728,7 +727,7 @@ enum class ThemeMode(
 }
 
 enum class ThemeColor(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     Dynamic(R.string.look_and_feel_theme_color_dynamic),
     Beach(R.string.look_and_feel_theme_color_beach),
@@ -743,7 +742,7 @@ enum class ThemeColor(
 }
 
 enum class PostViewMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
@@ -765,7 +764,7 @@ enum class PostViewMode(
 /**
  * For a given post, what sort of content Jerboa treats it as.
  */
-enum class PostType {
+enum class PostLinkType {
     /**
      * A Link to an external website. Opens the browser.
      */
@@ -779,18 +778,17 @@ enum class PostType {
     /**
      * A Video. Should open the built-in video viewer.
      * Also matches audio only
-     * (Not currently available).
      */
     Video,
 
     ;
 
     companion object {
-        fun fromURL(url: String): PostType =
-            if (isImage(url)) {
-                Image
-            } else if (isVideo(url)) {
+        fun fromURL(url: String): PostLinkType =
+            if (DirectFileVideoHost.isDirectUrl(url)) {
                 Video
+            } else if (isImage(url)) {
+                Image
             } else {
                 Link
             }
@@ -1311,13 +1309,6 @@ fun Context.getInputStream(url: String): InputStream {
             ?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }
-
-val videoRgx =
-    Regex(
-        pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov|webm))",
-    )
-
-fun isVideo(url: String): Boolean = url.matches(videoRgx)
 
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
 

@@ -26,7 +26,7 @@ import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.serialization.Serializable
 
 data class CommentSortData(
-    @StringRes val text: Int,
+    @param:StringRes val text: Int,
     val icon: ImageVector,
 )
 
@@ -40,8 +40,8 @@ val CommentSortType.data: CommentSortData
     }
 
 data class SortData(
-    @StringRes val shortForm: Int,
-    @StringRes val longForm: Int,
+    @param:StringRes val shortForm: Int,
+    @param:StringRes val longForm: Int,
     val icon: ImageVector,
 )
 

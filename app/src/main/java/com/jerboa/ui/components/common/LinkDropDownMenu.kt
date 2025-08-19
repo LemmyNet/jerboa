@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.feat.copyImageToClipboard
 import com.jerboa.feat.copyTextToClipboard
@@ -42,7 +42,7 @@ fun LinkDropDownMenu(
     val ctx = LocalContext.current
 
     if (link != null) {
-        val mediaType = PostType.fromURL(link)
+        val mediaType = PostLinkType.fromURL(link)
 
         CenteredPopupMenu(
             expanded = true,
@@ -62,10 +62,10 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.OpenInFull,
                 onClick = {
                     onDismissRequest()
-                    if (mediaType == PostType.Image) {
-                        appState.openImageViewer(link)
-                    } else {
+                    if (mediaType == PostLinkType.Link) {
                         appState.openLink(link, useCustomTabs, usePrivateTabs)
+                    } else {
+                        appState.openMediaViewer(link, mediaType)
                     }
                 },
             )
@@ -99,7 +99,7 @@ fun LinkDropDownMenu(
             )
 
             when (mediaType) {
-                PostType.Image -> {
+                PostLinkType.Image -> {
                     HorizontalDivider()
                     PopupMenuItem(
                         text = stringResource(R.string.copy_image),
@@ -127,7 +127,7 @@ fun LinkDropDownMenu(
                     )
                 }
 
-                PostType.Video -> {
+                PostLinkType.Video -> {
                     HorizontalDivider()
                     PopupMenuItem(
                         text = stringResource(R.string.share_video),
@@ -147,7 +147,7 @@ fun LinkDropDownMenu(
                     )
                 }
 
-                PostType.Link -> {
+                PostLinkType.Link -> {
                     if (isMedia(link)) {
                         HorizontalDivider()
                         PopupMenuItem(
@@ -155,7 +155,7 @@ fun LinkDropDownMenu(
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(appState.coroutineScope, ctx, link, PostType.Link)
+                                shareMedia(appState.coroutineScope, ctx, link, PostLinkType.Link)
                             },
                         )
                         PopupMenuItem(
@@ -163,7 +163,7 @@ fun LinkDropDownMenu(
                             icon = Icons.Outlined.Download,
                             onClick = {
                                 onDismissRequest()
-                                storeMedia(appState.coroutineScope, ctx, link, PostType.Link)
+                                storeMedia(appState.coroutineScope, ctx, link, PostLinkType.Link)
                             },
                         )
                     }

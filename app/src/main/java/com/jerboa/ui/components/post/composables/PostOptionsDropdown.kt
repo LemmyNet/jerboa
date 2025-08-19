@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
@@ -208,8 +208,8 @@ fun PostOptionsDropdown(
                     },
                 )
 
-                when (val mediaType = PostType.fromURL(url)) {
-                    PostType.Image ->
+                when (val mediaType = PostLinkType.fromURL(url)) {
+                    PostLinkType.Image ->
                         PopupMenuItem(
                             text = stringResource(R.string.share_image),
                             icon = Icons.Outlined.Share,
@@ -219,7 +219,7 @@ fun PostOptionsDropdown(
                             },
                         )
 
-                    PostType.Video ->
+                    PostLinkType.Video ->
                         PopupMenuItem(
                             text = stringResource(R.string.share_video),
                             icon = Icons.Outlined.Share,
@@ -229,14 +229,14 @@ fun PostOptionsDropdown(
                             },
                         )
 
-                    PostType.Link ->
+                    PostLinkType.Link ->
                         if (isMedia(url)) {
                             PopupMenuItem(
                                 text = stringResource(R.string.share_media),
                                 icon = Icons.Outlined.Share,
                                 onClick = {
                                     onDismissRequest()
-                                    shareMedia(scope, ctx, url, PostType.Link)
+                                    shareMedia(scope, ctx, url, PostLinkType.Link)
                                 },
                             )
                         }

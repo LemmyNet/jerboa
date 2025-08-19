@@ -500,4 +500,8 @@
     <string name="failed_copy_media">Failed to copy media</string>
     <string name="copied">Copied</string>
     <string name="media_copied">Media copied</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
 </resources>

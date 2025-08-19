@@ -1,6 +1,6 @@
 package com.jerboa.ui.components.post
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -44,10 +45,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
+import com.jerboa.datatypes.getAspectRatio
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
@@ -65,7 +67,6 @@ import com.jerboa.feat.canMod
 import com.jerboa.feat.default
 import com.jerboa.feat.needBlur
 import com.jerboa.feat.simulateModerators
-import com.jerboa.getPostType
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.rememberJerboaAppState
@@ -73,8 +74,11 @@ import com.jerboa.siFormat
 import com.jerboa.toHttps
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
+import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.DotSpacer
+import com.jerboa.ui.components.common.EmbeddedDataLoader
+import com.jerboa.ui.components.common.EmbeddedVideoPlayer
 import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsUrlImage
@@ -83,9 +87,12 @@ import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.common.VoteScore
 import com.jerboa.ui.components.common.fadingEdge
+import com.jerboa.ui.components.common.ifNotNull
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.components.post.composables.PostOptionsDropdown
+import com.jerboa.ui.components.videoviewer.VideoHostComposer
+import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -990,30 +997,47 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
 ) {
-    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
+    val postUrl = postView.post.url
+    val postType = postUrl?.let { PostLinkType.fromURL(it) }
+    val imagePost = postType == PostLinkType.Image
+    // Also support hosts that we don't manually support (Through OGP), but they must link directly to a playable link.
+    val videoPost = postType == PostLinkType.Video ||
+        DirectFileVideoHost.isDirectUrl(postView.post.embed_video_url) ||
+        (postUrl != null && VideoHostComposer.isVideo(postUrl))
 
-    if (imagePost && expandedImage) {
-        PostTitleAndImageLink(
-            postView = postView,
-            appState = appState,
-            showIfRead = showIfRead,
-            blurNSFW = blurNSFW,
-        )
-    } else {
-        PostTitleAndThumbnail(
-            postView = postView,
-            account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            appState = appState,
-            showIfRead = showIfRead,
-            blurNSFW = blurNSFW,
-        )
+    when {
+        videoPost && expandedImage -> {
+            PostTitleAndVideoLink(
+                postView = postView,
+                appState = appState,
+                showIfRead = showIfRead,
+                blurNSFW = blurNSFW,
+            )
+        }
+
+        imagePost && expandedImage -> {
+            PostTitleAndImageLink(
+                postView = postView,
+                appState = appState,
+                showIfRead = showIfRead,
+                blurNSFW = blurNSFW,
+            )
+        }
+
+        else -> {
+            PostTitleAndThumbnail(
+                postView = postView,
+                account = account,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                appState = appState,
+                showIfRead = showIfRead,
+                blurNSFW = blurNSFW,
+            )
+        }
     }
 }
 
-@ExperimentalLayoutApi
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
@@ -1037,17 +1061,56 @@ fun PostTitleAndImageLink(
             url = cUrl,
             blur = blurNSFW.needBlur(postView),
             contentDescription = postView.post.alt_text,
-            modifier =
-                Modifier
-                    .combinedClickable(
-                        onClick = { appState.openImageViewer(cUrl) },
-                        onLongClick = { appState.showLinkPopup(cUrl) },
-                    ),
+            modifier = Modifier
+                .ifNotNull(postView.image_details?.getAspectRatio()) {
+                    aspectRatio(it)
+                }.combinedClickable(
+                    onClick = { appState.openImageViewer(cUrl) },
+                    onLongClick = { appState.showLinkPopup(cUrl) },
+                ),
         )
     }
 }
 
-@ExperimentalLayoutApi
+@Composable
+fun PostTitleAndVideoLink(
+    postView: PostView,
+    appState: JerboaAppState,
+    blurNSFW: BlurNSFW,
+    showIfRead: Boolean,
+) {
+    // Title of the post
+    PostName(
+        post = postView.post,
+        read = postView.read,
+        showIfRead = showIfRead,
+        modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+    )
+
+    EmbeddedDataLoader(postView.post, postView.image_details) {
+        if (it.isFailure) {
+            Text(text = "Failed to load video data")
+            ApiErrorText(it.exceptionOrNull()!!)
+            Log.e("EmbeddedVideoPlayer", "Failed to load video data", it.exceptionOrNull())
+        } else {
+            val videoData = it.getOrThrow()
+            if (videoData.videoUrl != null) {
+                EmbeddedVideoPlayer(
+                    id = postView.post.id,
+                    thumbnailUrl = videoData.thumbnailUrl,
+                    videoUrl = videoData.videoUrl,
+                    title = videoData.title,
+                    // Need fixed aspect ratio for videos, to prevent feed hopping
+                    aspectRatio = videoData.aspectRatio ?: (16F / 9F),
+                    hostId = videoData.typeName,
+                    blur = blurNSFW.needBlur(postView),
+                    appState = appState,
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
@@ -1076,6 +1139,7 @@ fun PostTitleAndThumbnail(
         }
         ThumbnailTile(
             post = postView.post,
+            imageDetails = postView.image_details,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurEnabled = blurNSFW.needBlur(postView),

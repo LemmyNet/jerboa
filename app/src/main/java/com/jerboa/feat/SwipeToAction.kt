@@ -70,7 +70,7 @@ data class ActionColor(
 enum class SwipeToActionPreset(
     val leftActions: List<SwipeToActionType>,
     val rightActions: List<SwipeToActionType>,
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     Disabled(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
     TwoSides(

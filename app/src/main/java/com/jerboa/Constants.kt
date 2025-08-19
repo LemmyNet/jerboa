@@ -1,5 +1,7 @@
 package com.jerboa
 
+import kotlinx.serialization.json.Json
+
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
@@ -13,3 +15,8 @@ val ALLOWED_SCHEMES = listOf("http", "https", "magnet")
 
 // URLs
 const val DONATE_LINK = "https://join-lemmy.org/donate"
+
+val JSON = Json {
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+}

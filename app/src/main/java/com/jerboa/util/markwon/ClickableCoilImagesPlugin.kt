@@ -73,7 +73,7 @@ internal class ClickableImageFactory(
             object : URLSpan(image.drawable.destination) {
                 override fun onClick(view: View) {
                     view.cancelPendingInputEvents()
-                    appState.openImageViewer(image.drawable.destination)
+                    appState.openMediaViewer(image.drawable.destination)
                 }
             }
 

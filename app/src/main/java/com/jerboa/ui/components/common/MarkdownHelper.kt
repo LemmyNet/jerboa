@@ -12,15 +12,12 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.FontRes
-import androidx.annotation.IdRes
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.viewinterop.AndroidView
@@ -160,31 +157,25 @@ object MarkdownHelper {
         onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
-        BoxWithConstraints {
-            val canvasWidthMaybe = with(LocalDensity.current) { maxWidth.toPx() }.toInt()
-            val textSizeMaybe = with(LocalDensity.current) { style.fontSize.toPx() }
-
-            AndroidView(
-                factory = { ctx ->
-                    createTextView(
-                        context = ctx,
-                        color = color,
-                        style = style,
-                        viewId = null,
-                        onClick = onClick,
-                        onLongClick = onLongClick,
-                    )
-                },
-                update = { textView ->
-                    val md = markwon!!.toMarkdown(markdown)
-                    for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
-                        img.drawable.initWithKnownDimensions(canvasWidthMaybe, textSizeMaybe)
-                    }
-                    markwon!!.setParsedMarkdown(textView, md)
-                },
-                modifier = modifier,
-            )
-        }
+        AndroidView(
+            factory = { ctx ->
+                createTextView(
+                    context = ctx,
+                    color = color,
+                    style = style,
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                )
+            },
+            update = { textView ->
+                val md = markwon!!.toMarkdown(markdown)
+                for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
+                    img.drawable.initWithKnownDimensions(textView.maxWidth, textView.textSize)
+                }
+                markwon!!.setParsedMarkdown(textView, md)
+            },
+            modifier = modifier,
+        )
     }
 
     private fun createTextView(
@@ -193,7 +184,6 @@ object MarkdownHelper {
         textAlign: TextAlign? = null,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
-        @IdRes viewId: Int? = null,
         onClick: (() -> Unit)? = null,
         onLongClick: ((View) -> Boolean)? = null,
     ): TextView {
@@ -216,7 +206,6 @@ object MarkdownHelper {
             }
             width = maxWidth
 
-            viewId?.let { id = viewId }
             textAlign?.let { align ->
                 textAlignment =
                     when (align) {
