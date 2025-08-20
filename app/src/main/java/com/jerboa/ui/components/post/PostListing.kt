@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -27,13 +28,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.jerboa.JerboaAppState
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
@@ -46,7 +50,7 @@ import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
-import com.jerboa.getPostType
+import com.jerboa.ui.components.common.EmbeddedDataLoader
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.SwipeToAction
@@ -56,9 +60,11 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
+import com.jerboa.ui.theme.Shapes
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.jerboaColorScheme
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.ImageDetails
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
@@ -234,7 +240,7 @@ fun PostListing(
                         viewSource = viewSource,
                         showReply = showReply,
                         showCommunityName = showCommunityName,
-                        fullBody = false,
+                        fullBody = fullBody,
                         account = account,
                         expandedImage = false,
                         enableDownVotes = enableDownVotes,
@@ -289,43 +295,63 @@ fun PostListing(
 @Composable
 fun ThumbnailTile(
     post: Post,
+    imageDetails: ImageDetails?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurEnabled: Boolean,
     appState: JerboaAppState,
 ) {
-    post.url?.also { url ->
-        val postType = getPostType(url)
+    if (post.url == null) {
+        return
+    }
+
+    EmbeddedDataLoader(post, imageDetails, {
+        AsyncImage(
+            model = null,
+            contentDescription = null,
+            placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_mono),
+            error = rememberAsyncImagePainter(R.drawable.ic_launcher_mono),
+            modifier = Modifier.size(POST_LINK_PIC_SIZE).clip(Shapes.large),
+        )
+    }) {
+        if (it.isFailure) {
+            Log.e("EmbeddedData", "Data failed loading", it.exceptionOrNull())
+            return@EmbeddedDataLoader
+        }
+        val embeddedData = it.getOrThrow()
+        val targetUrl = embeddedData.videoUrl ?: post.url ?: return@EmbeddedDataLoader
+        val postLinkType = PostLinkType.fromURL(targetUrl)
+        val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType == PostLinkType.Image) post.url else null
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
             .combinedClickable(
                 onClick = {
-                    if (postType != PostType.Link) {
-                        appState.openImageViewer(url)
+                    if (postLinkType != PostLinkType.Link) {
+                        appState.openMediaViewer(targetUrl, postLinkType)
                     } else {
                         appState.openLink(
-                            url,
+                            targetUrl,
                             useCustomTabs,
                             usePrivateTabs,
                         )
                     }
                 },
                 onLongClick = {
-                    appState.showLinkPopup(url)
+                    appState.showLinkPopup(targetUrl)
                 },
             )
 
         Box {
-            post.thumbnail_url?.also { thumbnail ->
+            if (thumbnailUrl != null) {
                 PictrsThumbnailImage(
-                    thumbnail = thumbnail,
+                    thumbnail = thumbnailUrl,
                     blur = blurEnabled,
-                    roundBottomEndCorner = postType != PostType.Link,
+                    roundBottomEndCorner = postLinkType != PostLinkType.Link,
                     contentDescription = post.alt_text,
                     modifier = postLinkPicMod,
                 )
-            } ?: run {
+            } else {
                 Card(
                     modifier = postLinkPicMod,
                     shape = MaterialTheme.shapes.large,
@@ -343,8 +369,8 @@ fun ThumbnailTile(
                 }
             }
 
-            // Display a caret in the bottom right corner to denote this as an image
-            if (postType != PostType.Link) {
+            // Display a caret in the bottom right corner to denote this as an image/video
+            if (postLinkType != PostLinkType.Link) {
                 Icon(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
@@ -353,8 +379,8 @@ fun ThumbnailTile(
                             .size(THUMBNAIL_CARET_SIZE)
                             .align(Alignment.BottomEnd),
                     tint =
-                        when (postType) {
-                            PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                        when (postLinkType) {
+                            PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
                             else -> MaterialTheme.jerboaColorScheme.imageHighlight
                         },
                 )

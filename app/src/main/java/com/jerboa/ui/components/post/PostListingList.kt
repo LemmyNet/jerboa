@@ -183,6 +183,7 @@ fun PostListingList(
             }
             ThumbnailTile(
                 post = postView.post,
+                imageDetails = postView.image_details,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurEnabled = blurNSFW.needBlur(postView),

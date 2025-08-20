@@ -184,7 +184,7 @@ fun InboxScreen(
 }
 
 enum class InboxTab(
-    @StringRes val textId: Int,
+    @param:StringRes val textId: Int,
 ) {
     Replies(R.string.inbox_screen_replies),
     Mentions(R.string.inbox_screen_mentions),

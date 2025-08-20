@@ -49,7 +49,6 @@ class ExampleUnitTest {
                     SortType.Active,
                 )
             val out = api.getPosts(form).getOrThrow()
-            println(out.posts[0])
             assertNotNull(out.posts)
         }
 

@@ -143,7 +143,7 @@ fun ReportsScreen(
 }
 
 enum class ReportsTab(
-    @StringRes val textId: Int,
+    @param:StringRes val textId: Int,
     val adminOnly: Boolean = false,
 ) {
     Posts(R.string.person_profile_screen_posts),

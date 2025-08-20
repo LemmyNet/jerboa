@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.model.ReplyItem
+import com.jerboa.state.VideoAppState
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
@@ -39,7 +40,6 @@ import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -65,6 +65,11 @@ class JerboaAppState(
     val coroutineScope: CoroutineScope,
 ) {
     val linkDropdownExpanded = mutableStateOf<String?>(null)
+    val videoAppState: VideoAppState = VideoAppState()
+
+    fun release() {
+        videoAppState.releaseExoPlayer()
+    }
 
     fun toPrivateMessageReply(privateMessageView: PrivateMessageView) {
         sendReturnForwards(PrivateMessage.PM_VIEW, privateMessageView)
@@ -115,7 +120,24 @@ class JerboaAppState(
 
     fun openImageViewer(url: String) {
         val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
-        navController.navigate(Route.ViewArgs.makeRoute(encodedUrl))
+        navController.navigate(Route.ImageViewArgs.makeRoute(encodedUrl))
+    }
+
+    fun openVideoViewer(url: String) {
+        val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
+        navController.navigate(Route.VideoViewArgs.makeRoute(encodedUrl))
+    }
+
+    fun openMediaViewer(
+        url: String,
+        mediaType: PostLinkType? = null,
+    ) {
+        val fullType = mediaType ?: PostLinkType.fromURL(url)
+        if (fullType == PostLinkType.Video) {
+            openVideoViewer(url)
+        } else {
+            openImageViewer(url)
+        }
     }
 
     fun toPostEdit(postView: PostView) {
