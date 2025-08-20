@@ -40,9 +40,9 @@
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | ![img_1](./fastlane/metadata/android/en-US/images/phoneScreenshots/01.png) | ![img_2](fastlane/metadata/android/en-US/images/phoneScreenshots/02.png) |
 
-Jerboa is a native-android client for Lemmy, built using the native Android Toolkit, Jetpack Compose.
+Jerboa is an Android client for Lemmy, built using the native Android toolkit and Jetpack Compose.
 
-**Warning**: You can submit issues, but between Lemmy and lemmy-ui, I probably won't have too much time to work on them. Learn jetpack compose like I did if you want to help make this app better.
+**Note**: You can submit issues, but between Lemmy and lemmy-ui, the developers probably won't have too much time to work on them. You can learn Jetpack Compose and contribute if you want to help make this app better.
 
 ### Built With
 
@@ -52,7 +52,7 @@ Jerboa is a native-android client for Lemmy, built using the native Android Tool
 
 ## Features
 
-- Open source, [AGPL License](/LICENSE).
+- Open-source, [AGPL License](/LICENSE).
 
 ## Installation / Releases
 
