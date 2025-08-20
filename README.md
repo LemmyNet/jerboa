@@ -20,9 +20,9 @@
     <br />
     <a href="https://join-lemmy.org">Join Lemmy</a>
     ·
-    <a href="https://github.com/LemmyNet/jerboa/issues">Report Bug</a>
+    <a href="https://github.com/LemmyNet/jerboa/issues">Report bug</a>
     ·
-    <a href="https://github.com/LemmyNet/jerboa/issues">Request Feature</a>
+    <a href="https://github.com/LemmyNet/jerboa/issues">Request feature</a>
     ·
     <a href="https://github.com/LemmyNet/jerboa/blob/main/RELEASES.md">Releases</a>
   </p>
@@ -40,11 +40,11 @@
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | ![img_1](./fastlane/metadata/android/en-US/images/phoneScreenshots/01.png) | ![img_2](fastlane/metadata/android/en-US/images/phoneScreenshots/02.png) |
 
-Jerboa is a native-android client for Lemmy, built using the native Android Toolkit, Jetpack Compose.
+Jerboa is a native Android client for Lemmy, built using the native Android toolkit and Jetpack Compose.
 
-**Warning**: You can submit issues, but between Lemmy and lemmy-ui, I probably won't have too much time to work on them. Learn jetpack compose like I did if you want to help make this app better.
+**Warning**: You can submit issues, but between Lemmy and lemmy-ui the developers probably won't have too much time to work on them. You can learn Jetpack Compose and contribute if you want to help make this app better.
 
-### Built With
+### Built with
 
 - [Android Jetpack Compose](https://developer.android.com/jetpack/compose)
 - [Kotlin](https://kotlinlang.org/)
@@ -57,13 +57,13 @@ Jerboa is a native-android client for Lemmy, built using the native Android Tool
 ## Installation / Releases
 
 - [Releases](https://github.com/LemmyNet/jerboa/releases)
-- [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.jerboa)
 - [F-Droid](https://f-droid.org/en/packages/com.jerboa/)
 - [Google Play](https://play.google.com/store/apps/details?id=com.jerboa)
+- [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.jerboa)
 
 ## Support / Donate
 
-Jerboa is made by Lemmy's developers, and is free, open-source software, meaning no advertising, monetizing, or venture capital, ever. Your donations directly support full-time development of the project.
+Jerboa is made by Lemmy's developers, and is free, open source software, meaning no advertising, monetizing, or venture capital, ever. Your donations directly support full-time development of the project.
 
 Jerboa and Lemmy are made possible by a generous grant from the [NLnet foundation](https://nlnet.nl/).
 
@@ -81,7 +81,7 @@ Jerboa and Lemmy are made possible by a generous grant from the [NLnet foundatio
 ## Contact
 
 - [Mastodon](https://mastodon.social/@LemmyDev)
-- [Jerboa dev chat](https://matrix.to/#/#jerboa-dev:matrix.org)
+- [Jerboa developer chat](https://matrix.to/#/#jerboa-dev:matrix.org)
 - [Lemmy chat](https://matrix.to/#/#lemmy:matrix.org)
 
 ## Credits
