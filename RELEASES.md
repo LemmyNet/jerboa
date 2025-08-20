@@ -1,6 +1,9 @@
-# Changelog
+## What's Changed in 0.0.83
 
-All notable changes to this project will be documented in this file.
+- Add Video screen viewer, FeedVideoPlayer, plus support for popular non OGP videohosts. by @MV-GH in [#1922](https://github.com/LemmyNet/jerboa/pull/1922)
+- Fix #1884, rare case markdown actions can cause crashes by @MV-GH in [#1889](https://github.com/LemmyNet/jerboa/pull/1889)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.80...0.0.83
 
 ## What's Changed in 0.0.80
 
