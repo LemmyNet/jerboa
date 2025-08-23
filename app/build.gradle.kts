@@ -13,7 +13,8 @@ plugins {
 
 }
 
-apply(from = "update_instances.gradle.kts")
+// Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
+//apply(from = "update_instances.gradle.kts")
 
 
 kotlin {
@@ -24,13 +25,13 @@ kotlin {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 83
         versionName = "0.0.83"
 
@@ -79,6 +80,9 @@ android {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                // We default to debug if no config provided
+                signingConfig = signingConfigs.getByName("debug")
             }
 
             postprocessing {
@@ -101,6 +105,8 @@ android {
     buildFeatures {
         compose = true
     }
+    // Match build tools with CI image
+    buildToolsVersion = "35.0.1"
 }
 
 ksp {
@@ -199,7 +205,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.19.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.0.0")
 
-    implementation("androidx.browser:browser:1.8.0")
+    implementation("androidx.browser:browser:1.9.0")
 
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
