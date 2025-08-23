@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.android.application") version "8.10.1" apply false
+    id("com.android.application") version "8.12.1" apply false
     id("com.android.library") version "8.10.1" apply false
     id("org.jetbrains.kotlin.android") version "2.2.10" apply false
     id("org.jmailen.kotlinter") version "5.2.0" apply false
