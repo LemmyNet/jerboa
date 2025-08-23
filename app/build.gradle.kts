@@ -80,9 +80,6 @@ android {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
-            } else {
-                // We default to debug if no config provided
-                signingConfig = signingConfigs.getByName("debug")
             }
 
             postprocessing {
