@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="comment_node_goto_comment">Ir a comentario</string>
     <string name="comment_node_go_to">Ir a %1$s</string>
