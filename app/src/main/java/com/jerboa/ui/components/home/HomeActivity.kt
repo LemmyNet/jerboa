@@ -95,6 +95,7 @@ fun HomeScreen(
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
     padding: PaddingValues,
 ) {
     Log.d("jerboa", "got to home screen")
@@ -176,6 +177,7 @@ fun HomeScreen(
                     snackbarHostState = snackbarHostState,
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    disableVideoAutoplay = disableVideoAutoplay,
                 )
             }
         },
@@ -225,6 +227,7 @@ fun MainPostListingsContent(
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -440,6 +443,7 @@ fun MainPostListingsContent(
             postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
+            disableVideoAutoplay = disableVideoAutoplay,
         )
     }
 }

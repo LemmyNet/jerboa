@@ -132,6 +132,7 @@ fun PostScreen(
     showPostLinkPreview: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
 ) {
     Log.d("jerboa", "got to post screen")
 
@@ -457,6 +458,7 @@ fun PostScreen(
                                     voteDisplayMode = siteViewModel.voteDisplayMode(),
                                     postActionBarMode = postActionBarMode,
                                     swipeToActionPreset = swipeToActionPreset,
+                                    disableVideoAutoplay = disableVideoAutoplay,
                                 )
                             }
 

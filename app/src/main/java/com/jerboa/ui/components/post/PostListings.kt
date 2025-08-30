@@ -82,6 +82,7 @@ fun PostListings(
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
 ) {
     LazyColumn(
         state = listState,
@@ -134,6 +135,7 @@ fun PostListings(
                 voteDisplayMode = voteDisplayMode,
                 postActionBarMode = postActionBarMode,
                 swipeToActionPreset = swipeToActionPreset,
+                disableVideoAutoplay = disableVideoAutoplay,
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
                     DisposableEffect(key1 = postView.post.id) {
@@ -204,5 +206,6 @@ fun PreviewPostListings() {
         showPostAppendRetry = false,
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
         onReplyClick = {},
+        disableVideoAutoplay = false,
     )
 }
