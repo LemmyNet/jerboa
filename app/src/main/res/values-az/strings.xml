@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppBars_comments">%1$s şərh</string>
     <string name="AppBars_created">Yaradıldı</string>
@@ -87,7 +88,7 @@
     <string name="create_post_create_post">Elan yarat</string>
     <string name="create_post_tag_nsfw">Elanı NSFW kimi işarələ</string>
     <string name="create_report_report">Hesabat</string>
-    <string name="create_report_type_your_reason">">Səbəbin yaz</string>
+    <string name="create_report_type_your_reason">"&gt;Səbəbin yaz</string>
     <string name="create_report_view_model_report_created">Hesabat yaradıldı</string>
     <string name="create_report_view_model_report_fail">Hesabat yaratmaq mümkün olmadı: %1$s </string>
     <string name="dialog_moreOptions">Daha çox seçim</string>
