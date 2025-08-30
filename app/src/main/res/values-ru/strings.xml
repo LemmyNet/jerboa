@@ -407,5 +407,4 @@
     <string name="only_right_swipe_action_preset">Только справа</string>
     <string name="only_left_swipe_action_preset">Только слева</string>
     <string name="swipe_action_preset_only_votes">Только оценки</string>
-
 </resources>
