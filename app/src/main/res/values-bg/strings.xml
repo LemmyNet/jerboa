@@ -13,7 +13,7 @@
     <string name="account_settings_avatar">Профилна снимка</string>
     <string name="account_settings_banner">Тапет</string>
     <string name="account_settings_bio">Биография</string>
-    <string name="account_settings_bot_account">Бот акаунт</string>
+    <string name="account_settings_bot_account">Профил на бот</string>
     <string name="account_settings_default_listing_type">Показване по подразбиране</string>
     <string name="account_settings_default_sort_type">Подреждане по подразбиране</string>
     <string name="account_settings_display_name">Показвано име</string>
