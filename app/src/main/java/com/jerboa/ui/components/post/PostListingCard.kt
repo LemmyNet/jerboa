@@ -1018,12 +1018,13 @@ fun PostTitleBlock(
         (postUrl != null && VideoHostComposer.isVideo(postUrl))
 
     when {
-        videoPost && expandedImage && !disableVideoAutoplay -> {
+        videoPost && expandedImage -> {
             PostTitleAndVideoLink(
                 postView = postView,
                 appState = appState,
                 showIfRead = showIfRead,
                 blurNSFW = blurNSFW,
+                disableVideoAutoplay = disableVideoAutoplay,
             )
         }
 
@@ -1090,6 +1091,7 @@ fun PostTitleAndVideoLink(
     appState: JerboaAppState,
     blurNSFW: BlurNSFW,
     showIfRead: Boolean,
+    disableVideoAutoplay: Boolean,
 ) {
     // Title of the post
     PostName(
@@ -1116,6 +1118,7 @@ fun PostTitleAndVideoLink(
                     aspectRatio = videoData.aspectRatio ?: (16F / 9F),
                     hostId = videoData.typeName,
                     blur = blurNSFW.needBlur(postView),
+                    disableVideoAutoplay = disableVideoAutoplay,
                     appState = appState,
                 )
             }
