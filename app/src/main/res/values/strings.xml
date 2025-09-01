@@ -368,6 +368,7 @@
     <string name="post_actionbar_mode_short_right">Short righthand post actionbar</string>
     <string name="post_actionbar">Post action bar mode</string>
     <string name="settings_autoplaygifs">Autoplay GIFs</string>
+    <string name="settings_disable_video_autoplay">Disable video autoplay</string>
     <string name="community_unblock_community">Unblock community</string>
     <string name="blocked_element_toast">%1$s is blocked</string>
     <string name="unblocked_element_toast">%1$s is unblocked</string>

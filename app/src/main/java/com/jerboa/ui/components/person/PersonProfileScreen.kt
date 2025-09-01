@@ -123,6 +123,7 @@ fun PersonProfileScreen(
     postActionBarMode: PostActionBarMode,
     onBack: (() -> Unit)?,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to person screen")
@@ -307,6 +308,7 @@ fun PersonProfileScreen(
                     voteDisplayMode = siteViewModel.voteDisplayMode(),
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    disableVideoAutoplay = disableVideoAutoplay,
                 )
             }
         },
@@ -343,6 +345,7 @@ fun UserTabs(
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -642,6 +645,7 @@ fun UserTabs(
                                     postActionBarMode = postActionBarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
+                                    disableVideoAutoplay = disableVideoAutoplay,
                                 )
                             }
 

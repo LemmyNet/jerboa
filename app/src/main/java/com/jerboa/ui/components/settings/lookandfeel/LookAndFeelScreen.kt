@@ -96,6 +96,7 @@ fun LookAndFeelScreen(
     var showPostLinkPreviewModeState by remember { mutableStateOf(settings.showPostLinkPreviews) }
     var markAsReadOnScrollState by remember { mutableStateOf(settings.markAsReadOnScroll) }
     var autoPlayGifsState by remember { mutableStateOf(settings.autoPlayGifs) }
+    var disableVideoAutoplayState by remember { mutableStateOf(settings.disableVideoAutoplay == 1) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -128,6 +129,7 @@ fun LookAndFeelScreen(
                 autoPlayGifs = autoPlayGifsState,
                 postNavigationGestureMode = postNavigationGestureModeState.ordinal,
                 swipeToActionPreset = swipeToActionPresetState.ordinal,
+                disableVideoAutoplay = if (disableVideoAutoplayState) 1 else 0,
             ),
         )
     }
@@ -519,6 +521,16 @@ fun LookAndFeelScreen(
                         },
                         title = {
                             Text(stringResource(id = R.string.settings_autoplaygifs))
+                        },
+                    )
+                    SwitchPreference(
+                        value = disableVideoAutoplayState,
+                        onValueChange = {
+                            disableVideoAutoplayState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.settings_disable_video_autoplay))
                         },
                     )
                 }
