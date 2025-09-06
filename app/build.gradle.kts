@@ -82,13 +82,7 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
 
-            postprocessing {
-                isRemoveUnusedCode = true
-                isObfuscate = false
-                isOptimizeCode = true
-                isRemoveUnusedResources = true
-                proguardFiles("proguard-rules.pro")
-            }
+            proguardFiles("proguard-rules.pro")
         }
         debug {
             applicationIdSuffix = ".debug"
