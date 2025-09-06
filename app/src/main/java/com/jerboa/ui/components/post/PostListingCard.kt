@@ -150,6 +150,7 @@ fun PostListingCard(
     showIfRead: Boolean,
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
+    disableVideoAutoplay: Boolean,
 ) {
     Column(
         modifier =
@@ -178,6 +179,7 @@ fun PostListingCard(
             onCommunityClick = onCommunityClick,
             showAvatar = showAvatar,
             showCommunityName = showCommunityName,
+            disableVideoAutoplay = disableVideoAutoplay,
         )
 
         Spacer(modifier = Modifier.padding(vertical = VERTICAL_SPACING))
@@ -259,6 +261,7 @@ fun PreviewPostListingCard() {
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -303,6 +306,7 @@ fun PreviewLinkPostListing() {
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -347,6 +351,7 @@ fun PreviewImagePostListingCard() {
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = true,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -391,6 +396,7 @@ fun PreviewImagePostListingSmallCard() {
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -435,6 +441,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -818,6 +825,7 @@ fun PostTitleAttributionBody(
     blurNSFW: BlurNSFW,
     showCommunityName: Boolean,
     showAvatar: Boolean,
+    disableVideoAutoplay: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
@@ -842,6 +850,7 @@ fun PostTitleAttributionBody(
             appState = appState,
             showIfRead = showIfRead,
             blurNSFW = blurNSFW,
+            disableVideoAutoplay = disableVideoAutoplay,
         )
 
         // The metadata card
@@ -931,6 +940,7 @@ fun PreviewStoryTitleAndMetadata() {
         onCommunityClick = {},
         showAvatar = true,
         showCommunityName = true,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -955,6 +965,7 @@ fun PreviewSourcePost() {
         onCommunityClick = {},
         showAvatar = true,
         showCommunityName = true,
+        disableVideoAutoplay = false,
     )
 }
 
@@ -996,6 +1007,7 @@ fun PostTitleBlock(
     appState: JerboaAppState,
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
+    disableVideoAutoplay: Boolean,
 ) {
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
@@ -1012,6 +1024,7 @@ fun PostTitleBlock(
                 appState = appState,
                 showIfRead = showIfRead,
                 blurNSFW = blurNSFW,
+                disableVideoAutoplay = disableVideoAutoplay,
             )
         }
 
@@ -1078,6 +1091,7 @@ fun PostTitleAndVideoLink(
     appState: JerboaAppState,
     blurNSFW: BlurNSFW,
     showIfRead: Boolean,
+    disableVideoAutoplay: Boolean,
 ) {
     // Title of the post
     PostName(
@@ -1104,6 +1118,7 @@ fun PostTitleAndVideoLink(
                     aspectRatio = videoData.aspectRatio ?: (16F / 9F),
                     hostId = videoData.typeName,
                     blur = blurNSFW.needBlur(postView),
+                    disableVideoAutoplay = disableVideoAutoplay,
                     appState = appState,
                 )
             }

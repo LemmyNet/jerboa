@@ -133,6 +133,7 @@ fun EmbeddedVideoPlayer(
     title: String?,
     hostId: String?,
     blur: Boolean,
+    disableVideoAutoplay: Boolean,
     appState: JerboaAppState,
 ) {
     val context = LocalContext.current
@@ -149,9 +150,11 @@ fun EmbeddedVideoPlayer(
     val exoPlayer = remember { videoAppState.getOrCreateExoPlayer(context) }
 
     // Check if this video is the active one
-    LaunchedEffect(videoAppState.activeEmbedId.value) {
-        isActive = videoAppState.activeEmbedId.value == id
-        isExoPlayerInitialized = false
+    if (!disableVideoAutoplay) {
+        LaunchedEffect(videoAppState.activeEmbedId.value) {
+            isActive = videoAppState.activeEmbedId.value == id
+            isExoPlayerInitialized = false
+        }
     }
 
     LaunchedEffect(isActive) {

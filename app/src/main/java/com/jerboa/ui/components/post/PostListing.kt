@@ -114,6 +114,7 @@ fun PostListing(
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
 ) {
     val ctx = LocalContext.current
     // This stores vote data
@@ -209,6 +210,7 @@ fun PostListing(
                         showIfRead = showIfRead,
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
+                        disableVideoAutoplay = disableVideoAutoplay,
                     )
 
                 PostViewMode.SmallCard ->
@@ -253,6 +255,7 @@ fun PostListing(
                         showIfRead = showIfRead,
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
+                        disableVideoAutoplay = disableVideoAutoplay,
                     )
 
                 PostViewMode.List ->

@@ -557,6 +557,15 @@ val MIGRATION_32_33 =
         }
     }
 
+val MIGRATION_33_34 =
+    object : Migration(33, 34) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE AppSettings ADD COLUMN disable_video_autoplay INTEGER NOT NULL DEFAULT 0",
+            )
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -592,4 +601,5 @@ val MIGRATIONS_LIST =
         MIGRATION_30_31,
         MIGRATION_31_32,
         MIGRATION_32_33,
+        MIGRATION_33_34,
     )

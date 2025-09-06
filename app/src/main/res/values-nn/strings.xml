@@ -328,7 +328,7 @@
     <string name="home_switch_anon">Byt til anonym</string>
     <string name="login_already_logged_in">Du er alt innlogga med denne kontoen</string>
     <string name="mark_as_read_on_scroll">Merk som lesne ved rulling</string>
-    <string name="actionbar_info_header">%1$s\@%2$s-info</string>
+    <string name="actionbar_info_header">%1$s@%2$s-info</string>
     <string name="person_profile_dm_person">Send ei melding</string>
     <string name="private_message_failed">Feil ved sending av melding. Prøver på nytt …</string>
     <string name="private_message_placeholder">Skriv meldinga her</string>
