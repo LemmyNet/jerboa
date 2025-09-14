@@ -438,7 +438,7 @@
     <string name="answer">Отговор</string>
     <string name="deny_reason">Причина за отказ</string>
     <string name="applications_request_shorthand">Приложения</string>
-    <string name="reports">Докладвания</string>
+    <string name="reports">Доклади</string>
     <string name="reporter">Докладвано от</string>
     <string name="resolved_by">Обработено от</string>
     <string name="unresolve">Отваряне наново</string>
