@@ -8,8 +8,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
-    kotlin("plugin.serialization") version "2.2.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20"
+    kotlin("plugin.serialization") version "2.2.20"
 
 }
 
