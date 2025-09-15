@@ -97,7 +97,7 @@ android {
         compose = true
     }
     // Match build tools with CI image
-    buildToolsVersion = "35.0.1"
+    buildToolsVersion = "36.0.0"
 }
 
 ksp {
