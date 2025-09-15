@@ -43,6 +43,7 @@ const val DEFAULT_SHOW_POST_LINK_PREVIEWS = 1
 const val DEFAULT_POST_ACTION_BAR_MODE = 0
 const val DEFAULT_AUTO_PLAY_GIFS = 0
 const val DEFAULT_SWIPE_TO_ACTION_PRESET = 0
+const val DEFAULT_DISABLE_AUTO_PLAY = 0
 
 val APP_SETTINGS_DEFAULT =
     AppSettings(
@@ -70,10 +71,11 @@ val APP_SETTINGS_DEFAULT =
         postActionBarMode = DEFAULT_POST_ACTION_BAR_MODE,
         autoPlayGifs = DEFAULT_AUTO_PLAY_GIFS.toBool(),
         swipeToActionPreset = DEFAULT_SWIPE_TO_ACTION_PRESET,
+        disableVideoAutoplay = DEFAULT_DISABLE_AUTO_PLAY,
     )
 
 @Database(
-    version = 33,
+    version = 34,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

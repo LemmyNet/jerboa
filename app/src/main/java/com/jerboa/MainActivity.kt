@@ -256,6 +256,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                         )
                     }
 
@@ -300,6 +301,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                         )
                     }
 
@@ -342,6 +344,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                         )
                     }
 
@@ -381,6 +384,7 @@ class MainActivity : AppCompatActivity() {
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                         )
                     }
 
@@ -528,6 +532,7 @@ class MainActivity : AppCompatActivity() {
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             )
                         }
                     }
@@ -562,6 +567,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                         )
                     }
 

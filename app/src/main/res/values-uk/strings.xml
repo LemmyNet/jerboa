@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppBars_comments">%1$s коментарів</string>
     <string name="AppBars_created">Створено</string>
@@ -54,7 +55,7 @@
     <string name="comment_node_copy_comment">Копіювати текст коментаря</string>
     <string name="comment_node_go_to">Перейти до %1$s</string>
     <string name="comment_node_goto_comment">Перейти до коментаря</string>
-    <string name="comment_node_in">&quot;в &quot;</string>
+    <string name="comment_node_in">"в "</string>
     <string name="comment_node_more_replies">%1$s більше відповідей</string>
     <string name="comment_node_comment_copied">Текст коментаря скопійовано</string>
     <string name="comment_node_report_comment">Поскаржитися на коментар</string>
@@ -225,10 +226,10 @@
     <string name="share_link">Поділитися посиланням</string>
     <string name="share_post">Поділитися дописом</string>
     <string name="privateMessage_reply">Відповісти на повідомлення</string>
-    <string name="private_message_from">&quot;від &quot;</string>
+    <string name="private_message_from">"від "</string>
     <string name="private_message_reply_reply">Відповісти</string>
     <string name="private_message_reply_type_your_message_placeholder">Введіть ваше повідомлення</string>
-    <string name="private_message_to">&quot;до &quot;</string>
+    <string name="private_message_to">"до "</string>
     <string name="removeBookmark">Видалити із закладок</string>
     <string name="selectSort">Впорядкувати за</string>
     <string name="settings_about_about">Про нас</string>
@@ -239,7 +240,7 @@
     <string name="settings_about_join_c_jerboa">Приєднатися до c/jerboa</string>
     <string name="settings_about_open_source">Відкритий джерельний код</string>
     <string name="settings_about_source_code">Джерельний код</string>
-    <string name="settings_about_source_code_subtitle_part1">&quot;Джербоа - це вільне програмне забезпечення з відкритим джерельним кодом, ліцензоване згідно з &quot;</string>
+    <string name="settings_about_source_code_subtitle_part1">"Джербоа - це вільне програмне забезпечення з відкритим джерельним кодом, ліцензоване згідно з "</string>
     <string name="settings_about_source_code_subtitle_part2">загальною публічною ліцензією GNU Affero v3.0</string>
     <string name="settings_about_support">Підтримка</string>
     <string name="settings_about_version">Версія: %1$s</string>

@@ -170,7 +170,7 @@ object MarkdownHelper {
             update = { textView ->
                 val md = markwon!!.toMarkdown(markdown)
                 for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
-                    img.drawable.initWithKnownDimensions(textView.maxWidth, textView.textSize)
+                    img.drawable.initWithKnownDimensions(textView.width, textView.textSize)
                 }
                 markwon!!.setParsedMarkdown(textView, md)
             },

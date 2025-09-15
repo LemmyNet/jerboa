@@ -8,12 +8,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
-    kotlin("plugin.serialization") version "2.2.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20"
+    kotlin("plugin.serialization") version "2.2.20"
 
 }
 
-apply(from = "update_instances.gradle.kts")
+// Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
+//apply(from = "update_instances.gradle.kts")
 
 
 kotlin {
@@ -24,13 +25,13 @@ kotlin {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 83
         versionName = "0.0.83-gplay"
 
@@ -81,13 +82,7 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
 
-            postprocessing {
-                isRemoveUnusedCode = true
-                isObfuscate = false
-                isOptimizeCode = true
-                isRemoveUnusedResources = true
-                proguardFiles("proguard-rules.pro")
-            }
+            proguardFiles("proguard-rules.pro")
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -101,6 +96,8 @@ android {
     buildFeatures {
         compose = true
     }
+    // Match build tools with CI image
+    buildToolsVersion = "35.0.1"
 }
 
 ksp {
@@ -117,7 +114,7 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.08.00")
+    val composeBom = platform("androidx.compose:compose-bom:2025.09.00")
 
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
@@ -162,18 +159,18 @@ dependencies {
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.7.2")
+    ksp("androidx.room:room-compiler:2.8.0")
 
-    implementation("androidx.room:room-runtime:2.7.2")
-    annotationProcessor("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.room:room-runtime:2.8.0")
+    annotationProcessor("androidx.room:room-compiler:2.8.0")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.7.2")
+    implementation("androidx.room:room-ktx:2.8.0")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.7.2")
+    testImplementation("androidx.room:room-testing:2.8.0")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.7.2")
+    androidTestImplementation("androidx.room:room-testing:2.8.0")
 
     implementation("io.arrow-kt:arrow-core:2.1.2")
 
@@ -189,7 +186,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    implementation("androidx.navigation:navigation-compose:2.9.3")
+    implementation("androidx.navigation:navigation-compose:2.9.4")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     testImplementation("junit:junit:4.13.2")
@@ -199,7 +196,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.19.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.0.0")
 
-    implementation("androidx.browser:browser:1.8.0")
+    implementation("androidx.browser:browser:1.9.0")
 
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
@@ -208,5 +205,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.2.3")
+    implementation("io.ktor:ktor-client-logging:3.3.0")
 }

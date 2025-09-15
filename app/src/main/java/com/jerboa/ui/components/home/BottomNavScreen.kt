@@ -51,6 +51,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
+import com.jerboa.toBool
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.GuardAccount
@@ -260,6 +261,7 @@ fun BottomNavScreen(
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             padding = padding,
                         )
                     }
@@ -326,6 +328,7 @@ fun BottomNavScreen(
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             padding = padding,
                         )
                     }
@@ -348,6 +351,7 @@ fun BottomNavScreen(
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             padding = padding,
                         )
                     }
