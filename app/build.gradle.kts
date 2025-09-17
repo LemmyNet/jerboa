@@ -82,7 +82,14 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
 
-            proguardFiles("proguard-rules.pro")
+            // Keep using until AGP 9.0 then research proguard rules to retain debug info for stack traces
+            postprocessing {
+                isRemoveUnusedCode = true
+                isObfuscate = false
+                isOptimizeCode = true
+                isRemoveUnusedResources = true
+                proguardFiles("proguard-rules.pro")
+            }
         }
         debug {
             applicationIdSuffix = ".debug"
