@@ -233,4 +233,9 @@
     <string name="downvote">Duim omlaag</string>
     <string name="upvoted">Geüpvoted</string>
     <string name="downvoted">Duim omlaag gekregen</string>
+    <string name="lock_post">Bericht vergrendelen</string>
+    <string name="unlock_post">Bericht ontgrendelen</string>
+    <string name="remove_post">Bericht verwijderen</string>
+    <string name="reporter">Rapporteur</string>
+    <string name="reports">Rapporten</string>
 </resources>

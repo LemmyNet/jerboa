@@ -32,8 +32,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 36
-        versionCode = 83
-        versionName = "0.0.83-gplay"
+        versionCode = 84
+        versionName = "0.0.84-gplay"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -82,7 +82,14 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
 
-            proguardFiles("proguard-rules.pro")
+            // Keep using until AGP 9.0 then research proguard rules to retain debug info for stack traces
+            postprocessing {
+                isRemoveUnusedCode = true
+                isObfuscate = false
+                isOptimizeCode = true
+                isRemoveUnusedResources = true
+                proguardFiles("proguard-rules.pro")
+            }
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -97,7 +104,7 @@ android {
         compose = true
     }
     // Match build tools with CI image
-    buildToolsVersion = "35.0.1"
+    buildToolsVersion = "36.0.0"
 }
 
 ksp {
@@ -151,7 +158,7 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-dash:1.8.0")
     implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.8.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.16.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.17.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -193,7 +200,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.19.0")
+    testImplementation("org.mockito:mockito-core:5.20.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.0.0")
 
     implementation("androidx.browser:browser:1.9.0")
