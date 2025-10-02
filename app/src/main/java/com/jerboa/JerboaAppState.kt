@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -187,11 +188,13 @@ class JerboaAppState(
         navController.navigate(Route.COMMUNITY_SIDEBAR)
     }
 
+    @Stable
     fun toProfile(
         id: PersonId,
-        saved: Boolean = false,
+//        saved: Boolean = false,
     ) {
-        navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
+        Log.i("JerboaAppState", "toProfile: $id")
+        navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "${false}"))
     }
 
     fun toPostLikes(postId: PostId) {
