@@ -188,13 +188,11 @@ class JerboaAppState(
         navController.navigate(Route.COMMUNITY_SIDEBAR)
     }
 
-    @Stable
     fun toProfile(
         id: PersonId,
-//        saved: Boolean = false,
+        saved: Boolean = false,
     ) {
-        Log.i("JerboaAppState", "toProfile: $id")
-        navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "${false}"))
+        navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
     }
 
     fun toPostLikes(postId: PostId) {
