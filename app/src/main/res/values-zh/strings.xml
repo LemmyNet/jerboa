@@ -385,10 +385,10 @@
     <string name="post_restored">帖文已恢复</string>
     <string name="remove_comment">删除评论</string>
     <string name="restore_comment">恢复评论</string>
-    <string name="remove_post">删除帖文</string>
+    <string name="remove_post">移除帖子</string>
     <string name="restore_post">恢复帖文</string>
-    <string name="lock_post">锁定帖文</string>
-    <string name="unlock_post">解锁帖文</string>
+    <string name="lock_post">锁定帖子</string>
+    <string name="unlock_post">帖子锁定解除</string>
     <string name="type_your_reason">输入您的理由</string>
     <string name="swipe_action_preset_disabled">已禁用</string>
     <string name="swipe_action_preset_default">两侧</string>
@@ -434,7 +434,7 @@
     <string name="unresolve">未解决</string>
     <string name="unresolved_by">未解决经</string>
     <string name="reason">原因</string>
-    <string name="creator">创作者</string>
+    <string name="creator">创建者</string>
     <string name="message">消息</string>
     <string name="report_person">报告 %1$s</string>
     <string name="block_person">屏蔽 %1$s</string>
