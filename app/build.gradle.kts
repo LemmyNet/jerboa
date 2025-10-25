@@ -175,9 +175,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.3")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.8.2")
+    testImplementation("androidx.room:room-testing:2.8.3")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.8.2")
+    androidTestImplementation("androidx.room:room-testing:2.8.3")
 
     implementation("io.arrow-kt:arrow-core:2.1.2")
 
