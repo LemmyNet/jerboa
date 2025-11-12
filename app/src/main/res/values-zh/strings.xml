@@ -57,7 +57,7 @@
     <string name="comment_node_copy_comment">复制评论文本</string>
     <string name="comment_node_go_to">前往 %1$s</string>
     <string name="comment_node_goto_comment">前往评论</string>
-    <string name="comment_node_in">于</string>
+    <string name="comment_node_in">"于· "</string>
     <string name="comment_node_more_replies">%1$s 更多回复</string>
     <string name="comment_node_comment_copied">评论文本已复制</string>
     <string name="comment_node_report_comment">举报评论</string>
@@ -108,7 +108,9 @@
     <string name="dialogs_top_all">总榜</string>
     <string name="dialogs_old">旧闻</string>
     <string name="dialogs_unread">未读</string>
-    <string name="dialogs_server_version_outdated">服务器版本（%1$s）低于最小支持版本（%2$s）。\\n\\n 请通知您的管理员，并登录到另一个实例，或者注销后使用默认实例。</string>
+    <string name="dialogs_server_version_outdated">服务器版本（%1$s）低于最低支持的版本（%2$s）。
+\n
+\n请通知您的管理员并登录到另一个实例，或退出并使用默认实例。</string>
     <string name="dialogs_server_version_outdated_short">服务器版本（%1$s）过低。</string>
     <string name="floating_createPost">创建帖文</string>
     <string name="form_submit">提交</string>
@@ -216,7 +218,7 @@
     <string name="postListing_featuredCommunity">社区特色</string>
     <string name="postListing_featuredLocal">本站特色</string>
     <string name="postListing_goToCommunity">进入社区</string>
-    <string name="locked">锁定</string>
+    <string name="locked">已锁定</string>
     <string name="postListing_reply">回复帖文</string>
     <string name="post_screen_comments">评论</string>
     <string name="post_edit_body_placeholder">正文</string>
@@ -241,7 +243,7 @@
     <string name="post_listing_report_post">举报帖子</string>
     <string name="restore">恢复</string>
     <string name="share_link">分享链接</string>
-    <string name="share_post">分享帖文</string>
+    <string name="share_post">分享贴子</string>
     <string name="privateMessage_reply">回复消息</string>
     <string name="private_message_from">自</string>
     <string name="private_message_reply_reply">回复</string>
@@ -428,7 +430,7 @@
     <string name="answer">答案</string>
     <string name="deny_reason">拒绝原因</string>
     <string name="applications_request_shorthand">应用</string>
-    <string name="reports">报告</string>
+    <string name="reports">举报</string>
     <string name="reporter">报告者</string>
     <string name="resolved_by">解决者</string>
     <string name="unresolve">未解决</string>
