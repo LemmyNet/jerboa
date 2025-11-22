@@ -51,14 +51,20 @@ class LoginViewModel : ViewModel() {
 
                 val msg =
                     when (e) {
-                        is UnknownHostException ->
+                        is UnknownHostException -> {
                             ctx.getString(
                                 R.string.login_view_model_is_not_a_lemmy_instance,
                                 instance,
                             )
+                        }
 
-                        is NotSupportedException -> ctx.getString(R.string.server_version_not_supported, instance)
-                        else -> matchLoginErrorMsgToStringRes(ctx, e)
+                        is NotSupportedException -> {
+                            ctx.getString(R.string.server_version_not_supported, instance)
+                        }
+
+                        else -> {
+                            matchLoginErrorMsgToStringRes(ctx, e)
+                        }
                     }
 
                 Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()

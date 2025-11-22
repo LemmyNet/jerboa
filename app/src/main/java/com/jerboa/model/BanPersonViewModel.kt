@@ -73,6 +73,7 @@ class BanPersonViewModel : ViewModel() {
                     focusManager.clearFocus()
                     onSuccess(personView)
                 }
+
                 else -> {}
             }
         }

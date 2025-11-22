@@ -209,7 +209,7 @@ fun PostOptionsDropdown(
                 )
 
                 when (val mediaType = PostLinkType.fromURL(url)) {
-                    PostLinkType.Image ->
+                    PostLinkType.Image -> {
                         PopupMenuItem(
                             text = stringResource(R.string.share_image),
                             icon = Icons.Outlined.Share,
@@ -218,8 +218,9 @@ fun PostOptionsDropdown(
                                 shareMedia(scope, ctx, url, mediaType)
                             },
                         )
+                    }
 
-                    PostLinkType.Video ->
+                    PostLinkType.Video -> {
                         PopupMenuItem(
                             text = stringResource(R.string.share_video),
                             icon = Icons.Outlined.Share,
@@ -228,8 +229,9 @@ fun PostOptionsDropdown(
                                 shareMedia(scope, ctx, url, mediaType)
                             },
                         )
+                    }
 
-                    PostLinkType.Link ->
+                    PostLinkType.Link -> {
                         if (isMedia(url)) {
                             PopupMenuItem(
                                 text = stringResource(R.string.share_media),
@@ -240,6 +242,7 @@ fun PostOptionsDropdown(
                                 },
                             )
                         }
+                    }
                 }
             }
 

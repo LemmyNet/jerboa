@@ -62,6 +62,7 @@ class PostRemoveViewModel : ViewModel() {
                     focusManager.clearFocus()
                     onSuccess(postView)
                 }
+
                 else -> {}
             }
         }

@@ -62,6 +62,7 @@ class CommentRemoveViewModel : ViewModel() {
                     focusManager.clearFocus()
                     onSuccess(commentView)
                 }
+
                 else -> {}
             }
         }

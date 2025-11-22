@@ -69,9 +69,15 @@ fun BlocksScreen(
     LaunchedEffect(Unit) {
         Log.d("BlocksScreen", "Refreshing site")
         when (val res = siteViewModel.siteRes) {
-            is ApiState.Success -> siteViewModel.getSite(ApiState.Appending(res.data))
+            is ApiState.Success -> {
+                siteViewModel.getSite(ApiState.Appending(res.data))
+            }
+
             is ApiState.Loading, is ApiState.Appending -> {}
-            else -> siteViewModel.getSite()
+
+            else -> {
+                siteViewModel.getSite()
+            }
         }
     }
 
@@ -89,14 +95,19 @@ fun BlocksScreen(
                 JerboaLoadingBar(siteViewModel.siteRes)
 
                 when (val res = siteViewModel.siteRes) {
-                    is ApiState.Failure -> ApiErrorText(res.msg)
+                    is ApiState.Failure -> {
+                        ApiErrorText(res.msg)
+                    }
+
                     is ApiState.Holder -> {
                         res.data.my_user?.let {
                             BlockList(it)
                         } ?: ApiEmptyText()
                     }
 
-                    else -> Unit
+                    else -> {
+                        Unit
+                    }
                 }
             }
         },
@@ -180,7 +191,9 @@ fun BlockList(userInfo: MyUserInfo) {
                         }
                     }
 
-                    else -> Unit
+                    else -> {
+                        Unit
+                    }
                 }
             }
         }
@@ -239,6 +252,7 @@ fun ItemBlockView(
         ) {
             when (action) {
                 is ApiAction.Loading -> CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+
                 is ApiAction.Failed -> Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = stringResource(id = R.string.retry),

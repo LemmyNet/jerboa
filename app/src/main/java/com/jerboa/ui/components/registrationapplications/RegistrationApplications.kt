@@ -190,8 +190,14 @@ fun RegistrationApplications(
         JerboaLoadingBar(registrationApplicationsViewModel.applicationsRes)
 
         when (val appsRes = registrationApplicationsViewModel.applicationsRes) {
-            ApiState.Empty -> ApiEmptyText()
-            is ApiState.Failure -> ApiErrorText(appsRes.msg)
+            ApiState.Empty -> {
+                ApiEmptyText()
+            }
+
+            is ApiState.Failure -> {
+                ApiErrorText(appsRes.msg)
+            }
+
             is ApiState.Holder -> {
                 val apps = appsRes.data.registration_applications
                 LazyColumn(

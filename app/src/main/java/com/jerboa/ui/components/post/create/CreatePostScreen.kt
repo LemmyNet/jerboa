@@ -132,11 +132,21 @@ fun CreatePostScreen(
             }
         } else {
             when (val res = createPostViewModel.siteMetadataRes) {
-                ApiState.Empty -> MetaDataRes(null, false)
-                ApiState.Loading -> MetaDataRes(null, true)
-                is ApiState.Success ->
+                ApiState.Empty -> {
+                    MetaDataRes(null, false)
+                }
+
+                ApiState.Loading -> {
+                    MetaDataRes(null, true)
+                }
+
+                is ApiState.Success -> {
                     MetaDataRes(res.data.metadata.title, false)
-                else -> MetaDataRes(null, false)
+                }
+
+                else -> {
+                    MetaDataRes(null, false)
+                }
             }
         }
     Surface(color = MaterialTheme.colorScheme.background) {

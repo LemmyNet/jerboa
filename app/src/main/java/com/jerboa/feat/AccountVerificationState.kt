@@ -242,8 +242,14 @@ suspend fun Account.checkAccountVerification(
                     CheckState.from(!this.isAnon())
                 }
 
-                AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
-                AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
+                AccountVerificationState.HAS_INTERNET -> {
+                    checkInternet(ctx)
+                }
+
+                AccountVerificationState.INSTANCE_ALIVE -> {
+                    checkInstance(this.instance)
+                }
+
                 AccountVerificationState.ACCOUNT_DELETED -> {
                     api = API.createTempInstanceSafe(this.instance, this.jwt)
                     val p = checkIfAccountIsDeleted(this, api)
@@ -251,15 +257,24 @@ suspend fun Account.checkAccountVerification(
                     p.first
                 }
 
-                AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
-                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
-                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED ->
+                AccountVerificationState.ACCOUNT_BANNED -> {
+                    checkIfAccountIsBanned(userRes!!.data)
+                }
+
+                AccountVerificationState.JWT_VERIFIED -> {
+                    checkIfJWTValid(api)
+                }
+
+                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> {
                     checkIfSiteRetrievalSucceeded(
                         siteViewModel,
                         this,
                     ).first
+                }
 
-                AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
+                AccountVerificationState.CHECKS_COMPLETE -> {
+                    CheckState.Passed
+                }
             }
 
         Log.d("verification", "Verified ${verifyState.name} with ${checkState::class.simpleName}")
@@ -292,7 +307,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
     actionPerform: suspend () -> Unit,
 ) {
     when (this.first) {
-        AccountVerificationState.INSTANCE_ALIVE ->
+        AccountVerificationState.INSTANCE_ALIVE -> {
             when (val t = this.second) {
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
@@ -312,6 +327,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
 
                 else -> {}
             }
+        }
 
         AccountVerificationState.ACCOUNT_BANNED -> {
             when (val t = this.second) {
@@ -331,7 +347,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
     }
 
     when (this.first to this.second) {
-        AccountVerificationState.NOT_CHECKED to CheckState.Failed ->
+        AccountVerificationState.NOT_CHECKED to CheckState.Failed -> {
             if (loginAsToast) {
                 loginFirstToast(ctx)
             } else {
@@ -341,20 +357,23 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                     actionPerform,
                 )
             }
+        }
 
-        AccountVerificationState.HAS_INTERNET to CheckState.Failed ->
+        AccountVerificationState.HAS_INTERNET to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
                 ctx.getString(R.string.no_network),
                 ctx.getString(R.string.retry),
                 actionPerform,
             )
+        }
 
-        AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed ->
+        AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
                 ctx.getString(R.string.verification_account_deleted),
                 ctx.getString(R.string.verification_delete_account),
                 actionPerform,
             )
+        }
 
         AccountVerificationState.ACCOUNT_DELETED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
@@ -438,7 +457,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                             }
                         }
 
-                        else ->
+                        else -> {
                             this.isReadyAndIfNotDisplayInfo(
                                 appState,
                                 ctx,
@@ -447,6 +466,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                                 accountVM,
                                 loginAsToast,
                             )
+                        }
                     }
                 }
                 return it.first == AccountVerificationState.CHECKS_COMPLETE

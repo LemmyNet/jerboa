@@ -57,6 +57,7 @@ fun PrivateMessageReplyScreen(
             // When message is created, still show loading so that PrivateMessageView is not entered composition
             // again for a brief period, thus requesting focus again and opening keyboard
             ApiState.Loading, is ApiState.Success -> true
+
             else -> false
         }
 

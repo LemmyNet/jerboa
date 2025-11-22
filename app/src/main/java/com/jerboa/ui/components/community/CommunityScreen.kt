@@ -116,8 +116,14 @@ fun CommunityScreen(
         topBar = {
             Column {
                 when (val communityRes = communityViewModel.communityRes) {
-                    ApiState.Empty -> ApiEmptyText()
-                    is ApiState.Failure -> ApiErrorText(communityRes.msg)
+                    ApiState.Empty -> {
+                        ApiEmptyText()
+                    }
+
+                    is ApiState.Failure -> {
+                        ApiErrorText(communityRes.msg)
+                    }
+
                     ApiState.Loading -> {
                         LoadingBar()
                     }
@@ -190,14 +196,23 @@ fun CommunityScreen(
                 JerboaLoadingBar(communityViewModel.postsRes)
 
                 when (val postsRes = communityViewModel.postsRes) {
-                    ApiState.Empty -> ApiEmptyText()
-                    is ApiState.Failure -> ApiErrorText(postsRes.msg)
+                    ApiState.Empty -> {
+                        ApiEmptyText()
+                    }
+
+                    is ApiState.Failure -> {
+                        ApiErrorText(postsRes.msg)
+                    }
+
                     is ApiState.Holder -> {
                         val communityRes = communityViewModel.communityRes
                         val moderators =
                             remember(communityRes) {
                                 when (communityRes) {
-                                    is ApiState.Success -> communityRes.data.moderators
+                                    is ApiState.Success -> {
+                                        communityRes.data.moderators
+                                    }
+
                                     else -> {
                                         null
                                     }

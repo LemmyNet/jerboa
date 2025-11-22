@@ -168,7 +168,7 @@ fun PostListing(
     val swipeableContent: @Composable RowScope.() -> Unit = {
         Row {
             when (postViewMode) {
-                PostViewMode.Card ->
+                PostViewMode.Card -> {
                     PostListingCard(
                         postView = postView,
                         admins = admins,
@@ -212,8 +212,9 @@ fun PostListing(
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
                     )
+                }
 
-                PostViewMode.SmallCard ->
+                PostViewMode.SmallCard -> {
                     PostListingCard(
                         postView = postView,
                         admins = admins,
@@ -257,8 +258,9 @@ fun PostListing(
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
                     )
+                }
 
-                PostViewMode.List ->
+                PostViewMode.List -> {
                     PostListingList(
                         postView = postView,
                         instantScores = instantScores,
@@ -276,6 +278,7 @@ fun PostListing(
                         enableDownVotes = enableDownVotes,
                         voteDisplayMode = voteDisplayMode,
                     )
+                }
             }
         }
     }

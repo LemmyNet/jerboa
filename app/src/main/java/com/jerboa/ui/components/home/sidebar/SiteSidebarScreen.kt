@@ -31,7 +31,10 @@ fun SiteSidebarScreen(
 
     val title =
         when (val siteRes = siteViewModel.siteRes) {
-            is ApiState.Success -> stringResource(R.string.site_info_name, siteRes.data.site_view.site.name)
+            is ApiState.Success -> {
+                stringResource(R.string.site_info_name, siteRes.data.site_view.site.name)
+            }
+
             else -> {
                 stringResource(R.string.loading)
             }
@@ -58,6 +61,7 @@ fun SiteSidebarScreen(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 },
@@ -66,9 +70,18 @@ fun SiteSidebarScreen(
         content = { padding ->
             Box(modifier = Modifier.padding(padding)) {
                 when (val siteRes = siteViewModel.siteRes) {
-                    ApiState.Empty -> ApiEmptyText()
-                    is ApiState.Failure -> ApiErrorText(siteRes.msg)
-                    ApiState.Loading -> LoadingBar()
+                    ApiState.Empty -> {
+                        ApiEmptyText()
+                    }
+
+                    is ApiState.Failure -> {
+                        ApiErrorText(siteRes.msg)
+                    }
+
+                    ApiState.Loading -> {
+                        LoadingBar()
+                    }
+
                     is ApiState.Success -> {
                         SiteSidebar(
                             siteRes = siteRes.data,
@@ -76,6 +89,7 @@ fun SiteSidebarScreen(
                             onPersonClick = appState::toProfile,
                         )
                     }
+
                     else -> {}
                 }
             }

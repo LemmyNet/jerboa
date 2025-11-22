@@ -232,8 +232,14 @@ fun ReportsTabs(
                         JerboaLoadingBar(reportsViewModel.postReportsRes)
 
                         when (val reportsRes = reportsViewModel.postReportsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(reportsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(reportsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val reports = reportsRes.data.post_reports
                                 LazyColumn(
@@ -318,8 +324,14 @@ fun ReportsTabs(
                         JerboaLoadingBar(reportsViewModel.commentReportsRes)
 
                         when (val reportsRes = reportsViewModel.commentReportsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(reportsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(reportsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val reports = reportsRes.data.comment_reports
                                 LazyColumn(
@@ -399,8 +411,14 @@ fun ReportsTabs(
                         JerboaLoadingBar(reportsViewModel.messageReportsRes)
 
                         when (val reportsRes = reportsViewModel.messageReportsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(reportsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(reportsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val reports = reportsRes.data.private_message_reports
                                 LazyColumn(

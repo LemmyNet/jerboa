@@ -1243,14 +1243,30 @@ fun matchLoginErrorMsgToStringRes(
     e: Throwable,
 ): String {
     return when (e.message) {
-        "incorrect_login" -> ctx.getString(R.string.login_view_model_incorrect_login)
-        "email_not_verified" -> ctx.getString(R.string.login_view_model_email_not_verified)
-        "registration_denied" -> ctx.getString(R.string.login_view_model_registration_denied)
-        "registration_application_pending", "registration_application_is_pending" ->
-            ctx.getString(R.string.login_view_model_registration_pending)
+        "incorrect_login" -> {
+            ctx.getString(R.string.login_view_model_incorrect_login)
+        }
 
-        "missing_totp_token" -> ctx.getString(R.string.login_view_model_missing_totp)
-        "incorrect_totp_token" -> ctx.getString(R.string.login_view_model_incorrect_totp)
+        "email_not_verified" -> {
+            ctx.getString(R.string.login_view_model_email_not_verified)
+        }
+
+        "registration_denied" -> {
+            ctx.getString(R.string.login_view_model_registration_denied)
+        }
+
+        "registration_application_pending", "registration_application_is_pending" -> {
+            ctx.getString(R.string.login_view_model_registration_pending)
+        }
+
+        "missing_totp_token" -> {
+            ctx.getString(R.string.login_view_model_missing_totp)
+        }
+
+        "incorrect_totp_token" -> {
+            ctx.getString(R.string.login_view_model_incorrect_totp)
+        }
+
         else -> {
             return if (e.message?.contains("timeout") == true) {
                 ctx.getString(R.string.login_view_model_timeout)

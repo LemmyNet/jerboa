@@ -274,14 +274,17 @@ fun LazyListScope.commentNodeItem(
                             instantScores.update(VoteType.Upvote)
                         onUpvoteClick(commentView)
                     }
+
                     SwipeToActionType.Downvote -> {
                         instantScores =
                             instantScores.update(VoteType.Downvote)
                         onDownvoteClick(commentView)
                     }
+
                     SwipeToActionType.Reply -> {
                         onReplyClick(commentView)
                     }
+
                     SwipeToActionType.Save -> {
                         onSaveClick(commentView)
                     }
