@@ -189,8 +189,14 @@ fun EmbeddedVideoPlayer(
 
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
-                Lifecycle.Event.ON_RESUME -> exoPlayer.play()
+                Lifecycle.Event.ON_PAUSE -> {
+                    exoPlayer.pause()
+                }
+
+                Lifecycle.Event.ON_RESUME -> {
+                    exoPlayer.play()
+                }
+
                 else -> {}
             }
         }
@@ -203,7 +209,10 @@ fun EmbeddedVideoPlayer(
                         isExoPlayerInitialized = true
                     }
 
-                    Player.STATE_BUFFERING -> videoState = VideoState.LOADING
+                    Player.STATE_BUFFERING -> {
+                        videoState = VideoState.LOADING
+                    }
+
                     Player.STATE_IDLE, Player.STATE_ENDED -> {}
                 }
             }
@@ -340,7 +349,7 @@ fun EmbeddedVideoPlayer(
 
             // Countdown timer (right corner)
             when (videoState) {
-                VideoState.LOADING ->
+                VideoState.LOADING -> {
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
@@ -354,8 +363,9 @@ fun EmbeddedVideoPlayer(
                             strokeWidth = 2.dp,
                         )
                     }
+                }
 
-                VideoState.SUCCESS ->
+                VideoState.SUCCESS -> {
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
@@ -369,6 +379,7 @@ fun EmbeddedVideoPlayer(
                             color = Color.White,
                         )
                     }
+                }
 
                 VideoState.FAILED -> {}
             }

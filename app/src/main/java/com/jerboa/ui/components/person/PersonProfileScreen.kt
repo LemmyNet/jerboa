@@ -182,7 +182,10 @@ fun PersonProfileScreen(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
-                is ApiState.Failure -> apiErrorToast(ctx, profileRes.msg)
+                is ApiState.Failure -> {
+                    apiErrorToast(ctx, profileRes.msg)
+                }
+
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
@@ -391,9 +394,18 @@ fun UserTabs(
             when (tabI) {
                 UserTab.About.ordinal -> {
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
-                        ApiState.Empty -> ApiEmptyText()
-                        is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> LoadingBar()
+                        ApiState.Empty -> {
+                            ApiEmptyText()
+                        }
+
+                        is ApiState.Failure -> {
+                            ApiErrorText(profileRes.msg)
+                        }
+
+                        ApiState.Loading -> {
+                            LoadingBar()
+                        }
+
                         is ApiState.Success -> {
                             val listState = rememberLazyListState()
 
@@ -452,8 +464,14 @@ fun UserTabs(
                         JerboaLoadingBar(personProfileViewModel.personDetailsRes)
 
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(profileRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 PostListings(
                                     posts = profileRes.data.posts.toList(),
@@ -661,8 +679,14 @@ fun UserTabs(
                     ) {
                         JerboaLoadingBar(personProfileViewModel.personDetailsRes)
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(profileRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val nodes = commentsToFlatNodes(profileRes.data.comments)
 

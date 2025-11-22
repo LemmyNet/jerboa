@@ -92,9 +92,7 @@ fun CreateEditPostBody(
         error?.let {
             ApiErrorText(msg = error)
         }
-        /**
-         * Post Name / Title TextField
-         */
+        // Post Name / Title TextField
         OutlinedTextField(
             value = name,
             onValueChange = onNameChange,
@@ -105,9 +103,7 @@ fun CreateEditPostBody(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        /**
-         * Post URL TextField
-         */
+        // Post URL TextField
         OutlinedTextField(
             value = url,
             onValueChange = onUrlChange,
@@ -119,9 +115,7 @@ fun CreateEditPostBody(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        /**
-         * Show title suggestion for web links
-         */
+        // Show title suggestion for web links
         if (suggestedTitleLoading) {
             CircularProgressIndicator()
         } else {
@@ -134,9 +128,7 @@ fun CreateEditPostBody(
             }
         }
 
-        /**
-         * Pick and upload an image, show a preview if possible
-         */
+        // Pick and upload an image, show a preview if possible
         PickImage(
             onPickedImage = onImagePicked,
             sharedImage = sharedImage,
@@ -151,9 +143,7 @@ fun CreateEditPostBody(
                 contentDescription = altText,
             )
 
-            /**
-             * Alt text field. Only show if its a url image.
-             */
+            // Alt text field. Only show if its a url image.
             if (api != null && api.FF.hidePost()) {
                 OutlinedTextField(
                     value = altText,
@@ -166,9 +156,7 @@ fun CreateEditPostBody(
             }
         }
 
-        /**
-         * Post custom thumbnail
-         */
+        // Post custom thumbnail
         if (api != null && api.FF.hidePost()) {
             OutlinedTextField(
                 value = customThumbnail,
@@ -181,9 +169,7 @@ fun CreateEditPostBody(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            /**
-             * Pick and upload an image, show a preview if possible
-             */
+            // Pick and upload an image, show a preview if possible
             PickImage(
                 onPickedImage = onCustomThumbnailImagePicked,
                 horizontalAlignment = Alignment.End,
@@ -198,9 +184,7 @@ fun CreateEditPostBody(
             }
         }
 
-        /**
-         * Markdown field for post body
-         */
+        // Markdown field for post body
         MarkdownTextField(
             text = body,
             onTextChange = onBodyChange,
@@ -210,14 +194,10 @@ fun CreateEditPostBody(
             placeholder = stringResource(R.string.post_edit_body_placeholder),
         )
 
-        /**
-         * Show community selector if necessary
-         */
+        // Show community selector if necessary
         communitySelector()
 
-        /**
-         * Checkbox to mark post NSFW
-         */
+        // Checkbox to mark post NSFW
         CheckboxField(label = stringResource(R.string.create_post_tag_nsfw), checked = isNsfw, onCheckedChange = onIsNsfwChange)
     }
 }

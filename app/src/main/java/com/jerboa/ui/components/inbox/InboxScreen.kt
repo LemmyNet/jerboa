@@ -287,8 +287,14 @@ fun InboxTabs(
                         JerboaLoadingBar(inboxViewModel.repliesRes)
 
                         when (val repliesRes = inboxViewModel.repliesRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(repliesRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(repliesRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
@@ -443,8 +449,14 @@ fun InboxTabs(
                         JerboaLoadingBar(inboxViewModel.mentionsRes)
 
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(mentionsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
@@ -621,8 +633,14 @@ fun InboxTabs(
                         JerboaLoadingBar(inboxViewModel.messagesRes)
 
                         when (val messagesRes = inboxViewModel.messagesRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(messagesRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(messagesRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(

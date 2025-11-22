@@ -317,8 +317,14 @@ fun MainPostScreenBody(
     postViewModel.parentListStateIndexes.clear()
     var lazyListIndexTracker = 2
     when (val postRes = postViewModel.postRes) {
-        is ApiState.Loading -> LoadingBar()
-        is ApiState.Failure -> ApiErrorText(postRes.msg)
+        is ApiState.Loading -> {
+            LoadingBar()
+        }
+
+        is ApiState.Failure -> {
+            ApiErrorText(postRes.msg)
+        }
+
         is ApiState.Success -> {
             val postView = postRes.data.post_view
             val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
@@ -519,13 +525,14 @@ fun MainPostScreenBody(
                 }
 
                 when (val commentsRes = postViewModel.commentsRes) {
-                    is ApiState.Failure ->
+                    is ApiState.Failure -> {
                         item(key = "error") {
                             apiErrorToast(
                                 ctx,
                                 commentsRes.msg,
                             )
                         }
+                    }
 
                     is ApiState.Holder -> {
                         val commentTree =

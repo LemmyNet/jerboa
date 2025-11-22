@@ -88,6 +88,7 @@ class BanFromCommunityViewModel : ViewModel() {
                         ),
                     )
                 }
+
                 else -> {}
             }
         }

@@ -135,9 +135,11 @@ class MainActivity : AppCompatActivity() {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(appState.navController, ctx)
                         }
+
                         BackConfirmationMode.Dialog -> {
                             this@MainActivity.addConfirmationDialog(appState.navController) { showConfirmationDialog.value = true }
                         }
+
                         BackConfirmationMode.None -> {}
                     }
 

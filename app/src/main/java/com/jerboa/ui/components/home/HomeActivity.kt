@@ -234,8 +234,14 @@ fun MainPostListingsContent(
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading -> LoadingBar()
-        is ApiState.Failure -> ApiErrorText(siteRes.msg)
+        ApiState.Loading -> {
+            LoadingBar()
+        }
+
+        is ApiState.Failure -> {
+            ApiErrorText(siteRes.msg)
+        }
+
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
@@ -257,8 +263,13 @@ fun MainPostListingsContent(
                 listOf()
             }
 
-            is ApiState.Holder -> postsRes.data
-            else -> listOf()
+            is ApiState.Holder -> {
+                postsRes.data
+            }
+
+            else -> {
+                listOf()
+            }
         }
 
         PostListings(
