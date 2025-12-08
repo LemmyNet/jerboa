@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat.getString
 import androidx.core.content.FileProvider
 import com.jerboa.MainActivity
 import com.jerboa.PostLinkType
@@ -48,7 +49,7 @@ fun storeMedia(
                 if (granted) {
                     actualStoreImage(scope, ctx, url, mediaType)
                 } else {
-                    Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, getString(ctx, R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 }
             }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     } else {
@@ -148,7 +149,7 @@ fun shareMedia(
             addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
 
-        ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
+        ctx.startActivitySafe(Intent.createChooser(shareIntent, getString(ctx, R.string.share)))
     } catch (e: IOException) {
         Log.d("shareMedia", "io failed", e)
         Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
@@ -171,7 +172,7 @@ fun shareLink(
             putExtra(Intent.EXTRA_TEXT, url)
             type = "text/plain"
         }
-    val shareIntent = Intent.createChooser(intent, ctx.getString(R.string.share))
+    val shareIntent = Intent.createChooser(intent, getString(ctx, R.string.share))
     ctx.startActivitySafe(shareIntent)
 }
 
@@ -235,7 +236,7 @@ fun copyImageToClipboard(
         // Android 13+ should show a system message already
         // see https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
         if (SDK_INT <= 32) {
-            Toast.makeText(ctx, ctx.getString(R.string.media_copied), Toast.LENGTH_SHORT).show()
+            Toast.makeText(ctx, getString(ctx, R.string.media_copied), Toast.LENGTH_SHORT).show()
         }
     } catch (e: IOException) {
         Log.d("copyMedia", "io failed", e)

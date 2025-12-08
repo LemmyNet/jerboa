@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
@@ -189,7 +190,7 @@ fun PersonProfileScreen(
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
-                        personName = ctx.getString(R.string.loading),
+                        personName = getString(ctx, R.string.loading),
                         myProfile = false,
                         banned = false,
                         canBan = false,
@@ -220,7 +221,7 @@ fun PersonProfileScreen(
                         scrollBehavior = scrollBehavior,
                         personName =
                             if (savedMode) {
-                                ctx.getString(R.string.bookmarks_screen_saved)
+                                getString(ctx, R.string.bookmarks_screen_saved)
                             } else {
                                 person.name
                             },

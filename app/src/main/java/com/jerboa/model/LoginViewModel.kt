@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -21,6 +22,7 @@ import it.vercruysse.lemmyapi.exception.NotSupportedException
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
+@SuppressLint("LocalContextGetResourceValueCall")
 class LoginViewModel : ViewModel() {
     var loading by mutableStateOf(false)
         private set

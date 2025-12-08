@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
@@ -79,7 +80,7 @@ fun toastException(
 }
 
 fun loginFirstToast(ctx: Context) {
-    Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
+    Toast.makeText(ctx, getString(ctx, R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
 data class MissingCommentView(
@@ -619,22 +620,22 @@ fun validatePostName(
 ): InputField =
     if (name.isEmpty()) {
         InputField(
-            label = ctx.getString(R.string.title_required),
+            label = getString(ctx, R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = ctx.getString(R.string.title_min_3_chars),
+            label = getString(ctx, R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = ctx.getString(R.string.title_less_than_200_chars),
+            label = getString(ctx, R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = ctx.getString(R.string.title),
+            label = getString(ctx, R.string.title),
             hasError = false,
         )
     }
@@ -642,11 +643,11 @@ fun validatePostName(
 fun validateUrl(
     ctx: Context,
     url: String,
-    label: String = ctx.getString(R.string.url),
+    label: String = getString(ctx, R.string.url),
 ): InputField =
     if (url.isNotEmpty() && !ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         InputField(
-            label = ctx.getString(R.string.url_invalid),
+            label = getString(ctx, R.string.url_invalid),
             hasError = true,
         )
     } else {
@@ -1244,35 +1245,35 @@ fun matchLoginErrorMsgToStringRes(
 ): String {
     return when (e.message) {
         "incorrect_login" -> {
-            ctx.getString(R.string.login_view_model_incorrect_login)
+            getString(ctx, R.string.login_view_model_incorrect_login)
         }
 
         "email_not_verified" -> {
-            ctx.getString(R.string.login_view_model_email_not_verified)
+            getString(ctx, R.string.login_view_model_email_not_verified)
         }
 
         "registration_denied" -> {
-            ctx.getString(R.string.login_view_model_registration_denied)
+            getString(ctx, R.string.login_view_model_registration_denied)
         }
 
         "registration_application_pending", "registration_application_is_pending" -> {
-            ctx.getString(R.string.login_view_model_registration_pending)
+            getString(ctx, R.string.login_view_model_registration_pending)
         }
 
         "missing_totp_token" -> {
-            ctx.getString(R.string.login_view_model_missing_totp)
+            getString(ctx, R.string.login_view_model_missing_totp)
         }
 
         "incorrect_totp_token" -> {
-            ctx.getString(R.string.login_view_model_incorrect_totp)
+            getString(ctx, R.string.login_view_model_incorrect_totp)
         }
 
         else -> {
             return if (e.message?.contains("timeout") == true) {
-                ctx.getString(R.string.login_view_model_timeout)
+                getString(ctx, R.string.login_view_model_timeout)
             } else {
                 Log.d("login", "failed", e)
-                ctx.getString(R.string.login_view_model_login_failed)
+                getString(ctx, R.string.login_view_model_login_failed)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -24,6 +25,7 @@ import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import kotlinx.coroutines.launch
 
+@SuppressLint("LocalContextGetResourceValueCall")
 class BanFromCommunityViewModel : ViewModel() {
     var banFromCommunityRes: ApiState<BanFromCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set

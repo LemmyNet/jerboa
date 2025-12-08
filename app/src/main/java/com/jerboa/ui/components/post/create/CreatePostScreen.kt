@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
@@ -102,7 +103,7 @@ fun CreatePostScreen(
 
     val nameField = validatePostName(ctx, name)
     val urlField = validateUrl(ctx, url)
-    val customThumbnailField = validateUrl(ctx, customThumbnail, ctx.getString(R.string.custom_thumbnail))
+    val customThumbnailField = validateUrl(ctx, customThumbnail, getString(ctx, R.string.custom_thumbnail))
     val formValid = !nameField.hasError && !urlField.hasError && !customThumbnailField.hasError && (selectedCommunity !== null)
 
     LaunchedEffect(initialUrl) {

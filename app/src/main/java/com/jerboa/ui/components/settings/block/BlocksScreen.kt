@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiAction
@@ -127,7 +128,7 @@ fun BlockList(userInfo: MyUserInfo) {
     val ctx = LocalContext.current
     val viewModel: BlockViewModel = viewModel()
     val scope = rememberCoroutineScope()
-    val tabTitles = BlocksTab.entries.map { ctx.getString(it.label) }
+    val tabTitles = BlocksTab.entries.map { getString(ctx, it.label) }
     val pagerState = rememberPagerState { tabTitles.size }
 
     LaunchedEffect(userInfo) {

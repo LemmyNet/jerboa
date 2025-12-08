@@ -1,11 +1,13 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.R
@@ -20,6 +22,7 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostReportResponse
 import kotlinx.coroutines.launch
 
+@SuppressLint("LocalContextGetResourceValueCall")
 class CreateReportViewModel : ViewModel() {
     var commentReportRes: ApiState<CommentReportResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -50,7 +53,7 @@ class CreateReportViewModel : ViewModel() {
                     }
 
                     is ApiState.Success -> {
-                        ctx.getString(R.string.create_report_view_model_report_created)
+                        getString(ctx, R.string.create_report_view_model_report_created)
                     }
 
                     else -> {
@@ -88,7 +91,7 @@ class CreateReportViewModel : ViewModel() {
                     }
 
                     is ApiState.Success -> {
-                        ctx.getString(R.string.create_report_view_model_report_created)
+                        getString(ctx, R.string.create_report_view_model_report_created)
                     }
 
                     else -> {
