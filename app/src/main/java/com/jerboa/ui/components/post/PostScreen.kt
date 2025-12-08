@@ -41,6 +41,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -137,7 +138,7 @@ fun PostScreen(
 ) {
     Log.d("jerboa", "got to post screen")
 
-    val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
 
@@ -216,7 +217,7 @@ fun PostScreen(
                     title = {
                         DualHeaderTitle(
                             topText = stringResource(R.string.post_screen_comments),
-                            bottomText = getLocalizedCommentSortTypeName(ctx, selectedSortType),
+                            bottomText = getLocalizedCommentSortTypeName(resources, selectedSortType),
                         )
                     },
                     navigationIcon = {
@@ -309,6 +310,7 @@ fun MainPostScreenBody(
     disableVideoAutoplay: Boolean,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
 
     val commentsWithToggledActionBar = postViewModel.commentsWithToggledActionBar
@@ -348,6 +350,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -365,6 +368,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -388,6 +392,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -413,6 +418,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -430,6 +436,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -460,6 +467,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -477,6 +485,7 @@ fun MainPostScreenBody(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -592,6 +601,7 @@ fun MainPostScreenBody(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -612,6 +622,7 @@ fun MainPostScreenBody(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -637,6 +648,7 @@ fun MainPostScreenBody(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -659,6 +671,7 @@ fun MainPostScreenBody(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -676,6 +689,7 @@ fun MainPostScreenBody(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -705,6 +719,7 @@ fun MainPostScreenBody(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,

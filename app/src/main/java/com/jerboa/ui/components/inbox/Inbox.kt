@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
@@ -88,11 +89,11 @@ fun InboxHeaderTitle(
     selectedUnreadOrAll: UnreadOrAll,
     unreadCount: Long? = null,
 ) {
-    val ctx = LocalContext.current
+    val resources = LocalResources.current
     var title = stringResource(R.string.inbox_inbox)
 
     if (unreadCount != null && unreadCount > 0) {
         title += " ($unreadCount)"
     }
-    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
+    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(resources, selectedUnreadOrAll))
 }

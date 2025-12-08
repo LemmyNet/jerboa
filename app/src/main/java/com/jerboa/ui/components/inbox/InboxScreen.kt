@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.inbox
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
@@ -85,6 +87,7 @@ fun InboxScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -119,6 +122,7 @@ fun InboxScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -142,6 +146,7 @@ fun InboxScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -173,6 +178,7 @@ fun InboxScreen(
                     inboxViewModel = inboxViewModel,
                     siteViewModel = siteViewModel,
                     ctx = ctx,
+                    resources = resources,
                     account = account,
                     scope = scope,
                     blurNSFW = blurNSFW,
@@ -198,6 +204,7 @@ fun InboxTabs(
     inboxViewModel: InboxViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
@@ -249,6 +256,7 @@ fun InboxTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -271,6 +279,7 @@ fun InboxTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -315,6 +324,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -331,6 +341,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -352,6 +363,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -386,6 +398,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -433,6 +446,7 @@ fun InboxTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -480,6 +494,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -496,6 +511,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -517,6 +533,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -533,6 +550,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -575,6 +593,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -617,6 +636,7 @@ fun InboxTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,

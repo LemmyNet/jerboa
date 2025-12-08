@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -25,7 +26,6 @@ import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import kotlinx.coroutines.launch
 
-@SuppressLint("LocalContextGetResourceValueCall")
 class BanFromCommunityViewModel : ViewModel() {
     var banFromCommunityRes: ApiState<BanFromCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -38,6 +38,7 @@ class BanFromCommunityViewModel : ViewModel() {
         reason: String,
         expireDays: Long? = null,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onSuccess: (BanFromCommunityData) -> Unit,
     ) {
@@ -67,17 +68,17 @@ class BanFromCommunityViewModel : ViewModel() {
                     val message =
                         if (ban) {
                             if (expireDays !== null) {
-                                ctx.getString(
+                                resources.getString(
                                     R.string.person_banned_from_community_for_x_days,
                                     personNameShown,
                                     communityNameShown,
                                     expireDays,
                                 )
                             } else {
-                                ctx.getString(R.string.person_banned_from_community, personNameShown, communityNameShown)
+                                resources.getString(R.string.person_banned_from_community, personNameShown, communityNameShown)
                             }
                         } else {
-                            ctx.getString(R.string.person_unbanned_from_community, personNameShown, communityNameShown)
+                            resources.getString(R.string.person_unbanned_from_community, personNameShown, communityNameShown)
                         }
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
 

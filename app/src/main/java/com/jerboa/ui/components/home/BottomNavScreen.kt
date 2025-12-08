@@ -33,6 +33,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -158,6 +159,7 @@ fun BottomNavScreen(
         derivedStateOf { acc ?: AnonAccount }
     }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 
@@ -187,6 +189,7 @@ fun BottomNavScreen(
             account.doIfReadyElseDisplayInfo(
                 appState,
                 ctx,
+                resources,
                 snackbarHostState,
                 scope,
                 siteViewModel,

@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.reports
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
@@ -70,6 +72,7 @@ fun ReportsScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -105,6 +108,7 @@ fun ReportsScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -133,6 +137,7 @@ fun ReportsScreen(
                 reportsViewModel = reportsViewModel,
                 siteViewModel = siteViewModel,
                 ctx = ctx,
+                resources = resources,
                 account = account,
                 scope = scope,
                 blurNSFW = blurNSFW,
@@ -158,6 +163,7 @@ fun ReportsTabs(
     reportsViewModel: ReportsViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
@@ -202,6 +208,7 @@ fun ReportsTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -216,6 +223,7 @@ fun ReportsTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -268,6 +276,7 @@ fun ReportsTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -294,6 +303,7 @@ fun ReportsTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -308,6 +318,7 @@ fun ReportsTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -355,6 +366,7 @@ fun ReportsTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -381,6 +393,7 @@ fun ReportsTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -395,6 +408,7 @@ fun ReportsTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -440,6 +454,7 @@ fun ReportsTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,

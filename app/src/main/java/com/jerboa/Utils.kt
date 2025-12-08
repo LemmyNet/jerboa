@@ -8,6 +8,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -39,7 +40,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getString
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
@@ -80,8 +80,11 @@ fun toastException(
     Toast.makeText(ctx, error.message ?: "UNKNOWN EXCEPTION", Toast.LENGTH_SHORT).show()
 }
 
-fun loginFirstToast(ctx: Context) {
-    Toast.makeText(ctx, getString(ctx, R.string.utils_login_first), Toast.LENGTH_SHORT).show()
+fun loginFirstToast(
+    ctx: Context,
+    resources: Resources,
+) {
+    Toast.makeText(ctx, resources.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
 data class MissingCommentView(
@@ -615,42 +618,40 @@ data class InputField(
     val hasError: Boolean,
 )
 
-@SuppressLint("LocalContextGetResourceValueCall")
 fun validatePostName(
-    ctx: Context,
+    resources: Resources,
     name: String,
 ): InputField =
     if (name.isEmpty()) {
         InputField(
-            label = ctx.getString(R.string.title_required),
+            label = resources.getString(R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = ctx.getString(R.string.title_min_3_chars),
+            label = resources.getString(R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = ctx.getString(R.string.title_less_than_200_chars),
+            label = resources.getString(R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = ctx.getString(R.string.title),
+            label = resources.getString(R.string.title),
             hasError = false,
         )
     }
 
-@SuppressLint("LocalContextGetResourceValueCall")
 fun validateUrl(
-    ctx: Context,
+    resources: Resources,
     url: String,
-    label: String = ctx.getString(R.string.url),
+    label: String = resources.getString(R.string.url),
 ): InputField =
     if (url.isNotEmpty() && !ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         InputField(
-            label = ctx.getString(R.string.url_invalid),
+            label = resources.getString(R.string.url_invalid),
             hasError = true,
         )
     } else {
@@ -1243,40 +1244,40 @@ inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
 }
 
 fun matchLoginErrorMsgToStringRes(
-    ctx: Context,
+    resources: Resources,
     e: Throwable,
 ): String {
     return when (e.message) {
         "incorrect_login" -> {
-            getString(ctx, R.string.login_view_model_incorrect_login)
+            resources.getString(R.string.login_view_model_incorrect_login)
         }
 
         "email_not_verified" -> {
-            getString(ctx, R.string.login_view_model_email_not_verified)
+            resources.getString(R.string.login_view_model_email_not_verified)
         }
 
         "registration_denied" -> {
-            getString(ctx, R.string.login_view_model_registration_denied)
+            resources.getString(R.string.login_view_model_registration_denied)
         }
 
         "registration_application_pending", "registration_application_is_pending" -> {
-            getString(ctx, R.string.login_view_model_registration_pending)
+            resources.getString(R.string.login_view_model_registration_pending)
         }
 
         "missing_totp_token" -> {
-            getString(ctx, R.string.login_view_model_missing_totp)
+            resources.getString(R.string.login_view_model_missing_totp)
         }
 
         "incorrect_totp_token" -> {
-            getString(ctx, R.string.login_view_model_incorrect_totp)
+            resources.getString(R.string.login_view_model_incorrect_totp)
         }
 
         else -> {
             return if (e.message?.contains("timeout") == true) {
-                getString(ctx, R.string.login_view_model_timeout)
+                resources.getString(R.string.login_view_model_timeout)
             } else {
                 Log.d("login", "failed", e)
-                getString(ctx, R.string.login_view_model_login_failed)
+                resources.getString(R.string.login_view_model_login_failed)
             }
         }
     }

@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.PostLinkType
@@ -85,6 +86,7 @@ fun PostOptionsDropdown(
     scope: CoroutineScope,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val api = getInstanceOrNull()
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
 
@@ -204,7 +206,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Share,
                     onClick = {
                         onDismissRequest()
-                        shareLink(url, ctx)
+                        shareLink(url, ctx, resources)
                     },
                 )
 
@@ -215,7 +217,7 @@ fun PostOptionsDropdown(
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(scope, ctx, url, mediaType)
+                                shareMedia(scope, ctx, resources, url, mediaType)
                             },
                         )
                     }
@@ -226,7 +228,7 @@ fun PostOptionsDropdown(
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(scope, ctx, url, mediaType)
+                                shareMedia(scope, ctx, resources, url, mediaType)
                             },
                         )
                     }
@@ -238,7 +240,7 @@ fun PostOptionsDropdown(
                                 icon = Icons.Outlined.Share,
                                 onClick = {
                                     onDismissRequest()
-                                    shareMedia(scope, ctx, url, PostLinkType.Link)
+                                    shareMedia(scope, ctx, resources, url, PostLinkType.Link)
                                 },
                             )
                         }
@@ -251,7 +253,7 @@ fun PostOptionsDropdown(
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()
-                    shareLink(postView.post.ap_id, ctx)
+                    shareLink(postView.post.ap_id, ctx, resources)
                 },
             )
         }

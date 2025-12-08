@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -40,6 +41,7 @@ fun LinkDropDownMenu(
     usePrivateTabs: Boolean,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     if (link != null) {
         val mediaType = PostLinkType.fromURL(link)
@@ -94,7 +96,7 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()
-                    shareLink(link, ctx)
+                    shareLink(link, ctx, resources)
                 },
             )
 
@@ -106,7 +108,7 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
                             onDismissRequest()
-                            copyImageToClipboard(appState.coroutineScope, ctx, link)
+                            copyImageToClipboard(appState.coroutineScope, ctx, resources, link)
                         },
                     )
                     PopupMenuItem(
@@ -114,7 +116,7 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Share,
                         onClick = {
                             onDismissRequest()
-                            shareMedia(appState.coroutineScope, ctx, link, mediaType)
+                            shareMedia(appState.coroutineScope, ctx, resources, link, mediaType)
                         },
                     )
                     PopupMenuItem(
@@ -122,7 +124,7 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Download,
                         onClick = {
                             onDismissRequest()
-                            storeMedia(appState.coroutineScope, ctx, link, mediaType)
+                            storeMedia(appState.coroutineScope, ctx, resources, link, mediaType)
                         },
                     )
                 }
@@ -134,7 +136,7 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Share,
                         onClick = {
                             onDismissRequest()
-                            shareMedia(appState.coroutineScope, ctx, link, mediaType)
+                            shareMedia(appState.coroutineScope, ctx, resources, link, mediaType)
                         },
                     )
                     PopupMenuItem(
@@ -142,7 +144,7 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Download,
                         onClick = {
                             onDismissRequest()
-                            storeMedia(appState.coroutineScope, ctx, link, mediaType)
+                            storeMedia(appState.coroutineScope, ctx, resources, link, mediaType)
                         },
                     )
                 }
@@ -155,7 +157,7 @@ fun LinkDropDownMenu(
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(appState.coroutineScope, ctx, link, PostLinkType.Link)
+                                shareMedia(appState.coroutineScope, ctx, resources, link, PostLinkType.Link)
                             },
                         )
                         PopupMenuItem(
@@ -163,7 +165,7 @@ fun LinkDropDownMenu(
                             icon = Icons.Outlined.Download,
                             onClick = {
                                 onDismissRequest()
-                                storeMedia(appState.coroutineScope, ctx, link, PostLinkType.Link)
+                                storeMedia(appState.coroutineScope, ctx, resources, link, PostLinkType.Link)
                             },
                         )
                     }
