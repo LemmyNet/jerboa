@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Scale
 import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.core.content.ContextCompat.getString
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.person.UserTab
@@ -126,9 +127,9 @@ fun getLocalizedStringForUserTab(
     tab: UserTab,
 ): String =
     when (tab) {
-        UserTab.About -> ctx.getString(R.string.person_profile_screen_about)
-        UserTab.Posts -> ctx.getString(R.string.person_profile_screen_posts)
-        UserTab.Comments -> ctx.getString(R.string.person_profile_screen_comments)
+        UserTab.About -> getString(ctx, R.string.person_profile_screen_about)
+        UserTab.Posts -> getString(ctx, R.string.person_profile_screen_posts)
+        UserTab.Comments -> getString(ctx, R.string.person_profile_screen_comments)
     }
 
 /**
@@ -139,10 +140,10 @@ fun getLocalizedListingTypeName(
     listingType: ListingType,
 ): String =
     when (listingType) {
-        ListingType.All -> ctx.getString(R.string.home_all)
-        ListingType.Local -> ctx.getString(R.string.home_local)
-        ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
-        ListingType.ModeratorView -> ctx.getString(R.string.home_moderator_view)
+        ListingType.All -> getString(ctx, R.string.home_all)
+        ListingType.Local -> getString(ctx, R.string.home_local)
+        ListingType.Subscribed -> getString(ctx, R.string.home_subscribed)
+        ListingType.ModeratorView -> getString(ctx, R.string.home_moderator_view)
     }
 
 /**
@@ -153,11 +154,11 @@ fun getLocalizedCommentSortTypeName(
     commentSortType: CommentSortType,
 ): String =
     when (commentSortType) {
-        CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-        CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-        CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-        CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+        CommentSortType.Hot -> getString(ctx, R.string.sorttype_hot)
+        CommentSortType.New -> getString(ctx, R.string.sorttype_new)
+        CommentSortType.Old -> getString(ctx, R.string.sorttype_old)
+        CommentSortType.Top -> getString(ctx, R.string.dialogs_top)
+        CommentSortType.Controversial -> getString(ctx, R.string.sorttype_controversial)
     }
 
 /**
@@ -168,8 +169,8 @@ fun getLocalizedUnreadOrAllName(
     unreadOrAll: UnreadOrAll,
 ): String =
     when (unreadOrAll) {
-        UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
-        UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+        UnreadOrAll.Unread -> getString(ctx, R.string.dialogs_unread)
+        UnreadOrAll.All -> getString(ctx, R.string.dialogs_all)
     }
 
 /**

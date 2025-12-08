@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.core.content.ContextCompat.getString
 import androidx.core.os.LocaleListCompat
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -203,7 +204,7 @@ fun LookAndFeelScreen(
                         },
                         values = ThemeMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         icon = {
                             Icon(
@@ -228,7 +229,7 @@ fun LookAndFeelScreen(
                         },
                         values = ThemeColor.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         icon = {
                             Icon(
@@ -253,7 +254,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostViewMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         icon = {
                             Icon(
@@ -278,7 +279,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostNavigationGestureMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         icon = {
                             Icon(
@@ -303,7 +304,7 @@ fun LookAndFeelScreen(
                         },
                         values = BackConfirmationMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         icon = {
                             Icon(
@@ -328,7 +329,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostActionBarMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         title = {
                             Text(text = stringResource(R.string.post_actionbar))
@@ -352,7 +353,7 @@ fun LookAndFeelScreen(
                         },
                         values = BlurNSFW.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         title = { Text(stringResource(id = R.string.blur_nsfw)) },
                         icon = {
@@ -375,7 +376,7 @@ fun LookAndFeelScreen(
                         },
                         values = SwipeToActionPreset.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         title = { Text(stringResource(id = R.string.swipe_to_action_presets)) },
                         icon = {

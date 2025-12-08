@@ -34,6 +34,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.content.ContextCompat.getString
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -278,11 +279,11 @@ fun SettingsForm(
                 state = defaultSortTypeState,
                 values = supportedSortTypes,
                 valueToText = {
-                    AnnotatedString(ctx.getString(it.data.longForm))
+                    AnnotatedString(getString(ctx, it.data.longForm))
                 },
                 title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
                 summary = {
-                    Text(ctx.getString(defaultSortTypeState.value.data.longForm))
+                    Text(getString(ctx, defaultSortTypeState.value.data.longForm))
                 },
             )
 

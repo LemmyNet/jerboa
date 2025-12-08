@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.R
@@ -52,9 +53,9 @@ class PostRemoveViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.post_removed)
+                            getString(ctx, R.string.post_removed)
                         } else {
-                            ctx.getString(R.string.post_restored)
+                            getString(ctx, R.string.post_restored)
                         }
                     val postView = res.data.post_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()

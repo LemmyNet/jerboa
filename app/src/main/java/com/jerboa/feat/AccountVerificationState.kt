@@ -1,5 +1,5 @@
 package com.jerboa.feat
-
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.core.content.ContextCompat.getString
 import androidx.core.content.getSystemService
 import com.jerboa.JerboaAppState
 import com.jerboa.MainActivity
@@ -300,6 +301,7 @@ suspend fun Account.checkAccountVerification(
     return Pair(curVerificationState.toEnum<AccountVerificationState>(), checkState)
 }
 
+@SuppressLint("LocalContextGetResourceValueCall")
 suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificationInfo(
     ctx: Context,
     snackbarHostState: SnackbarHostState,
@@ -312,7 +314,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
                         ctx.getString(R.string.verification_failed_instance, t.msg),
-                        ctx.getString(R.string.retry),
+                        getString(ctx, R.string.retry),
                         actionPerform,
                     )
                 }
@@ -320,7 +322,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 is CheckState.ConnectionFailedMsg -> {
                     snackbarHostState.doSnackbarAction(
                         ctx.getString(R.string.verification_connection_failed_instance, t.msg),
-                        ctx.getString(R.string.retry),
+                        getString(ctx, R.string.retry),
                         actionPerform,
                     )
                 }
@@ -334,7 +336,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
                         ctx.getString(R.string.verification_failed_user_banned, t.msg),
-                        ctx.getString(R.string.retry),
+                        getString(ctx, R.string.retry),
                         actionPerform,
                     )
                 }
@@ -352,8 +354,8 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 loginFirstToast(ctx)
             } else {
                 snackbarHostState.doSnackbarAction(
-                    ctx.getString(R.string.verification_no_account),
-                    ctx.getString(R.string.login_login),
+                    getString(ctx, R.string.verification_no_account),
+                    getString(ctx, R.string.login_login),
                     actionPerform,
                 )
             }
@@ -361,48 +363,48 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
 
         AccountVerificationState.HAS_INTERNET to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.no_network),
-                ctx.getString(R.string.retry),
+                getString(ctx, R.string.no_network),
+                getString(ctx, R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_account_deleted),
-                ctx.getString(R.string.verification_delete_account),
+                getString(ctx, R.string.verification_account_deleted),
+                getString(ctx, R.string.verification_delete_account),
                 actionPerform,
             )
         }
 
         AccountVerificationState.ACCOUNT_DELETED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_retrieve_profile),
-                ctx.getString(R.string.retry),
+                getString(ctx, R.string.verification_failed_retrieve_profile),
+                getString(ctx, R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_token_expired),
-                ctx.getString(R.string.verification_login_again),
+                getString(ctx, R.string.verification_token_expired),
+                getString(ctx, R.string.verification_login_again),
                 actionPerform,
             )
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_verify_token),
-                ctx.getString(R.string.retry),
+                getString(ctx, R.string.verification_failed_verify_token),
+                getString(ctx, R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_retrieve_site),
-                ctx.getString(R.string.retry),
+                getString(ctx, R.string.verification_failed_retrieve_site),
+                getString(ctx, R.string.retry),
                 actionPerform,
             )
         }
@@ -411,6 +413,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
 
 val lockAccount = mutableSetOf<Account>()
 
+@SuppressLint("LocalContextGetResourceValueCall")
 suspend fun Account.isReadyAndIfNotDisplayInfo(
     appState: JerboaAppState,
     ctx: Context,

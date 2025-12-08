@@ -19,21 +19,21 @@ steps:
     when:
       - event: pull_request
 
-  build_project:
-    image: *android_image
-    commands:
-      - sudo chown -R circleci:circleci .
-      - ./gradlew assembleRelease
-    environment:
-      GRADLE_USER_HOME: ".gradle"
-    when:
-      - event: pull_request
-
   check_android_lint:
     image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew lint
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  build_project:
+    image: *android_image
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew assembleRelease
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:

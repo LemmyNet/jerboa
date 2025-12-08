@@ -1,5 +1,6 @@
 package com.jerboa
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
@@ -79,7 +81,7 @@ fun toastException(
 }
 
 fun loginFirstToast(ctx: Context) {
-    Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
+    Toast.makeText(ctx, getString(ctx, R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
 data class MissingCommentView(
@@ -613,6 +615,7 @@ data class InputField(
     val hasError: Boolean,
 )
 
+@SuppressLint("LocalContextGetResourceValueCall")
 fun validatePostName(
     ctx: Context,
     name: String,
@@ -639,6 +642,7 @@ fun validatePostName(
         )
     }
 
+@SuppressLint("LocalContextGetResourceValueCall")
 fun validateUrl(
     ctx: Context,
     url: String,
@@ -1244,35 +1248,35 @@ fun matchLoginErrorMsgToStringRes(
 ): String {
     return when (e.message) {
         "incorrect_login" -> {
-            ctx.getString(R.string.login_view_model_incorrect_login)
+            getString(ctx, R.string.login_view_model_incorrect_login)
         }
 
         "email_not_verified" -> {
-            ctx.getString(R.string.login_view_model_email_not_verified)
+            getString(ctx, R.string.login_view_model_email_not_verified)
         }
 
         "registration_denied" -> {
-            ctx.getString(R.string.login_view_model_registration_denied)
+            getString(ctx, R.string.login_view_model_registration_denied)
         }
 
         "registration_application_pending", "registration_application_is_pending" -> {
-            ctx.getString(R.string.login_view_model_registration_pending)
+            getString(ctx, R.string.login_view_model_registration_pending)
         }
 
         "missing_totp_token" -> {
-            ctx.getString(R.string.login_view_model_missing_totp)
+            getString(ctx, R.string.login_view_model_missing_totp)
         }
 
         "incorrect_totp_token" -> {
-            ctx.getString(R.string.login_view_model_incorrect_totp)
+            getString(ctx, R.string.login_view_model_incorrect_totp)
         }
 
         else -> {
             return if (e.message?.contains("timeout") == true) {
-                ctx.getString(R.string.login_view_model_timeout)
+                getString(ctx, R.string.login_view_model_timeout)
             } else {
                 Log.d("login", "failed", e)
-                ctx.getString(R.string.login_view_model_login_failed)
+                getString(ctx, R.string.login_view_model_login_failed)
             }
         }
     }

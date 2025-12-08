@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -22,6 +23,7 @@ import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import kotlinx.coroutines.launch
 
+@SuppressLint("LocalContextGetResourceValueCall")
 class BanPersonViewModel : ViewModel() {
     var banPersonRes: ApiState<BanPersonResponse> by mutableStateOf(ApiState.Empty)
         private set
