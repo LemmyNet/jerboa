@@ -34,8 +34,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 
-@SuppressLint("LocalContextGetResourceValueCall")
-
 // Order is important, as it classifies in which order it does the checks
 enum class AccountVerificationState {
     /**
@@ -303,6 +301,7 @@ suspend fun Account.checkAccountVerification(
     return Pair(curVerificationState.toEnum<AccountVerificationState>(), checkState)
 }
 
+@SuppressLint("LocalContextGetResourceValueCall")
 suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificationInfo(
     ctx: Context,
     snackbarHostState: SnackbarHostState,
@@ -414,6 +413,7 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
 
 val lockAccount = mutableSetOf<Account>()
 
+@SuppressLint("LocalContextGetResourceValueCall")
 suspend fun Account.isReadyAndIfNotDisplayInfo(
     appState: JerboaAppState,
     ctx: Context,
