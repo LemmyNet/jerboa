@@ -1,5 +1,6 @@
 package com.jerboa
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -614,40 +615,42 @@ data class InputField(
     val hasError: Boolean,
 )
 
+@SuppressLint("LocalContextGetResourceValueCall")
 fun validatePostName(
     ctx: Context,
     name: String,
 ): InputField =
     if (name.isEmpty()) {
         InputField(
-            label = getString(ctx, R.string.title_required),
+            label = ctx.getString(R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = getString(ctx, R.string.title_min_3_chars),
+            label = ctx.getString(R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = getString(ctx, R.string.title_less_than_200_chars),
+            label = ctx.getString(R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = getString(ctx, R.string.title),
+            label = ctx.getString(R.string.title),
             hasError = false,
         )
     }
 
+@SuppressLint("LocalContextGetResourceValueCall")
 fun validateUrl(
     ctx: Context,
     url: String,
-    label: String = getString(ctx, R.string.url),
+    label: String = ctx.getString(R.string.url),
 ): InputField =
     if (url.isNotEmpty() && !ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         InputField(
-            label = getString(ctx, R.string.url_invalid),
+            label = ctx.getString(R.string.url_invalid),
             hasError = true,
         )
     } else {
