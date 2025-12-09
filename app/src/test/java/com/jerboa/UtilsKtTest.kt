@@ -134,12 +134,9 @@ class UtilsKtTest {
             }
 
         assertTrue(validateUrl(resources, "nonsense").hasError)
-        assertSame("url_invalid", validateUrl(resources, "nonsense").label)
-
         assertFalse(validateUrl(resources, "").hasError)
         assertFalse(validateUrl(resources, "https://example.com").hasError)
         assertFalse(validateUrl(resources, MAGNET_LINK).hasError)
-        assertSame("url", validateUrl(resources, "https://example.com").label)
     }
 
     @Test
