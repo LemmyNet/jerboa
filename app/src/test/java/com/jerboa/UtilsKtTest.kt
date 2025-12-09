@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.compose.ui.unit.dp
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.feat.InstantScores
@@ -112,34 +113,33 @@ class UtilsKtTest {
 
     @Test
     fun testValidatePostName() {
-        val ctx =
-            mock<Context> {
+        val resources =
+            mock<Resources> {
                 on { getString(anyInt()) } doReturn ""
             }
 
-        assertTrue(validatePostName(ctx, "").hasError)
-        assertTrue(validatePostName(ctx, "a").hasError)
-        assertTrue(validatePostName(ctx, "a".repeat(MAX_POST_TITLE_LENGTH)).hasError)
+        assertTrue(validatePostName(resources, "").hasError)
+        assertTrue(validatePostName(resources, "a").hasError)
+        assertTrue(validatePostName(resources, "a".repeat(MAX_POST_TITLE_LENGTH)).hasError)
 
-        assertFalse(validatePostName(ctx, "totally fine").hasError)
-        assertFalse(validatePostName(ctx, "a".repeat(MAX_POST_TITLE_LENGTH - 1)).hasError)
+        assertFalse(validatePostName(resources, "totally fine").hasError)
+        assertFalse(validatePostName(resources, "a".repeat(MAX_POST_TITLE_LENGTH - 1)).hasError)
     }
 
     @Test
     fun testValidateUrl() {
-        val ctx =
-            mock<Context> {
-                on { getString(R.string.url) } doReturn "url"
-                on { getString(R.string.url_invalid) } doReturn "url_invalid"
+        val resources =
+            mock<Resources> {
+                on { getString(anyInt()) } doReturn ""
             }
 
-        assertTrue(validateUrl(ctx, "nonsense").hasError)
-        assertSame("url_invalid", validateUrl(ctx, "nonsense").label)
+        assertTrue(validateUrl(resources, "nonsense").hasError)
+        assertSame("url_invalid", validateUrl(resources, "nonsense").label)
 
-        assertFalse(validateUrl(ctx, "").hasError)
-        assertFalse(validateUrl(ctx, "https://example.com").hasError)
-        assertFalse(validateUrl(ctx, MAGNET_LINK).hasError)
-        assertSame("url", validateUrl(ctx, "https://example.com").label)
+        assertFalse(validateUrl(resources, "").hasError)
+        assertFalse(validateUrl(resources, "https://example.com").hasError)
+        assertFalse(validateUrl(resources, MAGNET_LINK).hasError)
+        assertSame("url", validateUrl(resources, "https://example.com").label)
     }
 
     @Test
