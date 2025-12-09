@@ -1,6 +1,7 @@
 package com.jerboa.datatypes
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
@@ -13,7 +14,6 @@ import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Scale
 import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.core.content.ContextCompat.getString
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.person.UserTab
@@ -123,54 +123,54 @@ val SortType.data: SortData
  * Returns localized Strings for UserTab Enum
  */
 fun getLocalizedStringForUserTab(
-    ctx: Context,
+    resources: Resources,
     tab: UserTab,
 ): String =
     when (tab) {
-        UserTab.About -> getString(ctx, R.string.person_profile_screen_about)
-        UserTab.Posts -> getString(ctx, R.string.person_profile_screen_posts)
-        UserTab.Comments -> getString(ctx, R.string.person_profile_screen_comments)
+        UserTab.About -> resources.getString(R.string.person_profile_screen_about)
+        UserTab.Posts -> resources.getString(R.string.person_profile_screen_posts)
+        UserTab.Comments -> resources.getString(R.string.person_profile_screen_comments)
     }
 
 /**
  * Returns localized Strings for ListingType Enum
  */
 fun getLocalizedListingTypeName(
-    ctx: Context,
+    resources: Resources,
     listingType: ListingType,
 ): String =
     when (listingType) {
-        ListingType.All -> getString(ctx, R.string.home_all)
-        ListingType.Local -> getString(ctx, R.string.home_local)
-        ListingType.Subscribed -> getString(ctx, R.string.home_subscribed)
-        ListingType.ModeratorView -> getString(ctx, R.string.home_moderator_view)
+        ListingType.All -> resources.getString(R.string.home_all)
+        ListingType.Local -> resources.getString(R.string.home_local)
+        ListingType.Subscribed -> resources.getString(R.string.home_subscribed)
+        ListingType.ModeratorView -> resources.getString(R.string.home_moderator_view)
     }
 
 /**
  * Returns localized Strings for CommentSortType Enum
  */
 fun getLocalizedCommentSortTypeName(
-    ctx: Context,
+    resources: Resources,
     commentSortType: CommentSortType,
 ): String =
     when (commentSortType) {
-        CommentSortType.Hot -> getString(ctx, R.string.sorttype_hot)
-        CommentSortType.New -> getString(ctx, R.string.sorttype_new)
-        CommentSortType.Old -> getString(ctx, R.string.sorttype_old)
-        CommentSortType.Top -> getString(ctx, R.string.dialogs_top)
-        CommentSortType.Controversial -> getString(ctx, R.string.sorttype_controversial)
+        CommentSortType.Hot -> resources.getString(R.string.sorttype_hot)
+        CommentSortType.New -> resources.getString(R.string.sorttype_new)
+        CommentSortType.Old -> resources.getString(R.string.sorttype_old)
+        CommentSortType.Top -> resources.getString(R.string.dialogs_top)
+        CommentSortType.Controversial -> resources.getString(R.string.sorttype_controversial)
     }
 
 /**
  * Returns localized Strings for UnreadOrAll Enum
  */
 fun getLocalizedUnreadOrAllName(
-    ctx: Context,
+    resources: Resources,
     unreadOrAll: UnreadOrAll,
 ): String =
     when (unreadOrAll) {
-        UnreadOrAll.Unread -> getString(ctx, R.string.dialogs_unread)
-        UnreadOrAll.All -> getString(ctx, R.string.dialogs_all)
+        UnreadOrAll.Unread -> resources.getString(R.string.dialogs_unread)
+        UnreadOrAll.All -> resources.getString(R.string.dialogs_all)
     }
 
 /**

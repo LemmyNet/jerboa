@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -308,6 +309,7 @@ fun VideoViewerHeader(
     )
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     TopAppBar(
         colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)),
@@ -327,7 +329,7 @@ fun VideoViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, url, PostLinkType.Video)
+                    shareMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Video)
                 },
             ) {
                 Icon(
@@ -339,7 +341,7 @@ fun VideoViewerHeader(
 
             IconButton(
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, url, PostLinkType.Video)
+                    storeMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Video)
                 },
             ) {
                 Icon(

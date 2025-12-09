@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.person
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
@@ -132,6 +133,7 @@ fun PersonProfileScreen(
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -190,7 +192,7 @@ fun PersonProfileScreen(
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
-                        personName = getString(ctx, R.string.loading),
+                        personName = resources.getString(R.string.loading),
                         myProfile = false,
                         banned = false,
                         canBan = false,
@@ -221,7 +223,7 @@ fun PersonProfileScreen(
                         scrollBehavior = scrollBehavior,
                         personName =
                             if (savedMode) {
-                                getString(ctx, R.string.bookmarks_screen_saved)
+                                resources.getString(R.string.bookmarks_screen_saved)
                             } else {
                                 person.name
                             },
@@ -246,6 +248,7 @@ fun PersonProfileScreen(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -296,6 +299,7 @@ fun PersonProfileScreen(
                     personProfileViewModel = personProfileViewModel,
                     siteViewModel = siteViewModel,
                     ctx = ctx,
+                    resources = resources,
                     account = account,
                     scope = scope,
                     postListState = postListState,
@@ -333,6 +337,7 @@ fun UserTabs(
     personProfileViewModel: PersonProfileViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     postListState: LazyListState,
@@ -354,11 +359,11 @@ fun UserTabs(
     val tabTitles =
         if (savedMode) {
             listOf(
-                getLocalizedStringForUserTab(ctx, UserTab.Posts),
-                getLocalizedStringForUserTab(ctx, UserTab.Comments),
+                getLocalizedStringForUserTab(resources, UserTab.Posts),
+                getLocalizedStringForUserTab(resources, UserTab.Comments),
             )
         } else {
-            UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
+            UserTab.entries.map { getLocalizedStringForUserTab(resources, it) }
         }
     val pagerState = rememberPagerState { tabTitles.size }
 
@@ -483,6 +488,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -503,6 +509,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -525,6 +532,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -551,6 +559,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -567,6 +576,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -596,6 +606,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -612,6 +623,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -745,6 +757,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -761,6 +774,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -782,6 +796,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -813,6 +828,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -829,6 +845,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -861,6 +878,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,

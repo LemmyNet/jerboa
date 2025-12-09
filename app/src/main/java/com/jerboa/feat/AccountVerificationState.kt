@@ -1,13 +1,13 @@
 package com.jerboa.feat
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.core.content.ContextCompat.getString
 import androidx.core.content.getSystemService
 import com.jerboa.JerboaAppState
 import com.jerboa.MainActivity
@@ -301,9 +301,9 @@ suspend fun Account.checkAccountVerification(
     return Pair(curVerificationState.toEnum<AccountVerificationState>(), checkState)
 }
 
-@SuppressLint("LocalContextGetResourceValueCall")
 suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificationInfo(
     ctx: Context,
+    resources: Resources,
     snackbarHostState: SnackbarHostState,
     loginAsToast: Boolean = false,
     actionPerform: suspend () -> Unit,
@@ -313,16 +313,16 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
             when (val t = this.second) {
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_failed_instance, t.msg),
-                        getString(ctx, R.string.retry),
+                        resources.getString(R.string.verification_failed_instance, t.msg),
+                        resources.getString(R.string.retry),
                         actionPerform,
                     )
                 }
 
                 is CheckState.ConnectionFailedMsg -> {
                     snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_connection_failed_instance, t.msg),
-                        getString(ctx, R.string.retry),
+                        resources.getString(R.string.verification_connection_failed_instance, t.msg),
+                        resources.getString(R.string.retry),
                         actionPerform,
                     )
                 }
@@ -335,8 +335,8 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
             when (val t = this.second) {
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_failed_user_banned, t.msg),
-                        getString(ctx, R.string.retry),
+                        resources.getString(R.string.verification_failed_user_banned, t.msg),
+                        resources.getString(R.string.retry),
                         actionPerform,
                     )
                 }
@@ -351,11 +351,11 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
     when (this.first to this.second) {
         AccountVerificationState.NOT_CHECKED to CheckState.Failed -> {
             if (loginAsToast) {
-                loginFirstToast(ctx)
+                loginFirstToast(ctx, resources)
             } else {
                 snackbarHostState.doSnackbarAction(
-                    getString(ctx, R.string.verification_no_account),
-                    getString(ctx, R.string.login_login),
+                    resources.getString(R.string.verification_no_account),
+                    resources.getString(R.string.login_login),
                     actionPerform,
                 )
             }
@@ -363,48 +363,48 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
 
         AccountVerificationState.HAS_INTERNET to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                getString(ctx, R.string.no_network),
-                getString(ctx, R.string.retry),
+                resources.getString(R.string.no_network),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                getString(ctx, R.string.verification_account_deleted),
-                getString(ctx, R.string.verification_delete_account),
+                resources.getString(R.string.verification_account_deleted),
+                resources.getString(R.string.verification_delete_account),
                 actionPerform,
             )
         }
 
         AccountVerificationState.ACCOUNT_DELETED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
-                getString(ctx, R.string.verification_failed_retrieve_profile),
-                getString(ctx, R.string.retry),
+                resources.getString(R.string.verification_failed_retrieve_profile),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                getString(ctx, R.string.verification_token_expired),
-                getString(ctx, R.string.verification_login_again),
+                resources.getString(R.string.verification_token_expired),
+                resources.getString(R.string.verification_login_again),
                 actionPerform,
             )
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
-                getString(ctx, R.string.verification_failed_verify_token),
-                getString(ctx, R.string.retry),
+                resources.getString(R.string.verification_failed_verify_token),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                getString(ctx, R.string.verification_failed_retrieve_site),
-                getString(ctx, R.string.retry),
+                resources.getString(R.string.verification_failed_retrieve_site),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
@@ -413,10 +413,10 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
 
 val lockAccount = mutableSetOf<Account>()
 
-@SuppressLint("LocalContextGetResourceValueCall")
 suspend fun Account.isReadyAndIfNotDisplayInfo(
     appState: JerboaAppState,
     ctx: Context,
+    resources: Resources,
     snackbarHostState: SnackbarHostState,
     siteViewModel: SiteViewModel? = null,
     accountViewModel: AccountViewModel? = null,
@@ -425,7 +425,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
     val ready = isReady()
     if (!ready) {
         if (lockAccount.contains(this)) {
-            Toast.makeText(ctx, ctx.getString(R.string.verification_account_busy, this.name), Toast.LENGTH_SHORT).show()
+            Toast.makeText(ctx, resources.getString(R.string.verification_account_busy, this.name), Toast.LENGTH_SHORT).show()
             return false
         } else {
             lockAccount.add(this)
@@ -437,6 +437,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
 
                 it.showSnackbarForVerificationInfo(
                     ctx,
+                    resources,
                     snackbarHostState,
                     loginAsToast,
                 ) {
@@ -464,6 +465,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                             this.isReadyAndIfNotDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 siteVM,
                                 accountVM,
@@ -483,6 +485,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
 fun Account.doIfReadyElseDisplayInfo(
     appState: JerboaAppState,
     ctx: Context,
+    resources: Resources,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
     siteViewModel: SiteViewModel? = null,
@@ -494,6 +497,7 @@ fun Account.doIfReadyElseDisplayInfo(
         if (this@doIfReadyElseDisplayInfo.isReadyAndIfNotDisplayInfo(
                 appState,
                 ctx,
+                resources,
                 snackbarHostState,
                 siteViewModel,
                 accountViewModel,
@@ -517,9 +521,12 @@ suspend fun SnackbarHostState.doSnackbarAction(
     }
 }
 
-fun Account.isReadyAndIfNotShowSimplifiedInfoToast(ctx: Context): Boolean =
+fun Account.isReadyAndIfNotShowSimplifiedInfoToast(
+    ctx: Context,
+    resources: Resources,
+): Boolean =
     if (this.isAnon()) {
-        loginFirstToast(ctx)
+        loginFirstToast(ctx, resources)
         false
     } else if (!this.isReady()) {
         Toast.makeText(ctx, R.string.verification_account_not_read, Toast.LENGTH_SHORT).show()

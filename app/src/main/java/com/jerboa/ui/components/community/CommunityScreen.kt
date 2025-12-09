@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
@@ -92,6 +93,7 @@ fun CommunityScreen(
     Log.d("jerboa", "got to community screen")
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val account = getCurrentAccount(accountViewModel)
@@ -155,6 +157,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -174,6 +177,7 @@ fun CommunityScreen(
                                 shareLink(
                                     communityRes.data.community_view.community.actor_id,
                                     ctx,
+                                    resources,
                                 )
                             },
                             onClickBack = appState::navigateUp,
@@ -232,6 +236,7 @@ fun CommunityScreen(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -260,6 +265,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -277,6 +283,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -297,6 +304,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -324,6 +332,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -341,6 +350,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -371,6 +381,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -388,6 +399,7 @@ fun CommunityScreen(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,
@@ -459,6 +471,7 @@ fun CommunityScreen(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,

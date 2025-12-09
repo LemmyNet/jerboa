@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -353,13 +354,14 @@ fun ActionBarButton(
     requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     val barMod =
         if (noClick) {
             modifier
         } else {
             modifier.clickable(onClick = {
-                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
                     onClick()
                 }
             })
@@ -412,13 +414,14 @@ fun ActionBarButtonAndBadge(
     requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     val barMod =
         if (noClick) {
             modifier
         } else {
             modifier.clickable(onClick = {
-                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
                     onClick()
                 }
             })

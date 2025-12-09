@@ -2,12 +2,12 @@ package com.jerboa.model
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.R
@@ -22,7 +22,6 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostReportResponse
 import kotlinx.coroutines.launch
 
-@SuppressLint("LocalContextGetResourceValueCall")
 class CreateReportViewModel : ViewModel() {
     var commentReportRes: ApiState<CommentReportResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -33,6 +32,7 @@ class CreateReportViewModel : ViewModel() {
         commentId: CommentId,
         reason: String,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onBack: () -> Unit,
     ) {
@@ -49,11 +49,11 @@ class CreateReportViewModel : ViewModel() {
             val message =
                 when (val res = commentReportRes) {
                     is ApiState.Failure -> {
-                        ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                        resources.getString(R.string.create_report_view_model_report_fail, res.msg.message)
                     }
 
                     is ApiState.Success -> {
-                        getString(ctx, R.string.create_report_view_model_report_created)
+                        resources.getString(R.string.create_report_view_model_report_created)
                     }
 
                     else -> {
@@ -71,6 +71,7 @@ class CreateReportViewModel : ViewModel() {
         postId: PostId,
         reason: String,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onBack: () -> Unit,
     ) {
@@ -87,11 +88,11 @@ class CreateReportViewModel : ViewModel() {
             val message =
                 when (val res = postReportRes) {
                     is ApiState.Failure -> {
-                        ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                        resources.getString(R.string.create_report_view_model_report_fail, res.msg.message)
                     }
 
                     is ApiState.Success -> {
-                        getString(ctx, R.string.create_report_view_model_report_created)
+                        resources.getString(R.string.create_report_view_model_report_created)
                     }
 
                     else -> {

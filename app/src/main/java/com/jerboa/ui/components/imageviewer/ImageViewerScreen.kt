@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,6 +72,7 @@ fun ImageViewerScreen(
     appState: JerboaAppState,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
@@ -207,6 +209,7 @@ fun ViewerHeader(
     )
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     TopAppBar(
         colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)),
@@ -226,7 +229,7 @@ fun ViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, url, PostLinkType.Image)
+                    shareMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Image)
                 },
             ) {
                 Icon(
@@ -239,7 +242,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, url, PostLinkType.fromURL(url))
+                    storeMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.fromURL(url))
                 },
             ) {
                 Icon(

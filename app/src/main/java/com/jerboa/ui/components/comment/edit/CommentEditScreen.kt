@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,6 +59,7 @@ fun CommentEditScreen(
 
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val focusManager = LocalFocusManager.current
 
     Surface(color = MaterialTheme.colorScheme.background) {
@@ -71,6 +73,7 @@ fun CommentEditScreen(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             accountViewModel = accountViewModel,
