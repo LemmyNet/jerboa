@@ -28,4 +28,5 @@
     <string name="lock_post">鎖定貼文</string>
     <string name="unlock_post">解除鎖定貼文</string>
     <string name="share_post">分享貼文</string>
+    <string name="view_source">檢視原始碼</string>
 </resources>
