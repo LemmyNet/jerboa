@@ -156,7 +156,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.9.0")
     implementation("androidx.media3:media3-exoplayer-hls:1.9.0")
     implementation("androidx.media3:media3-exoplayer-dash:1.9.0")
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.8.0")
+    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.9.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.18.0")
     // Animated dropdowns
