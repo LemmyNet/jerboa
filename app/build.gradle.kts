@@ -179,7 +179,7 @@ dependencies {
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 
-    implementation("io.arrow-kt:arrow-core:2.2.0")
+    implementation("io.arrow-kt:arrow-core:2.2.1.1")
 
 
     implementation("androidx.compose.material3:material3")
