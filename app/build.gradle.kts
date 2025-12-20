@@ -151,7 +151,7 @@ dependencies {
     implementation("io.coil-kt:coil-video:2.7.0")
 
     // Media3 for video playback
-    implementation("androidx.media3:media3-exoplayer:1.8.0")
+    implementation("androidx.media3:media3-exoplayer:1.9.0")
     implementation("androidx.media3:media3-ui:1.8.0")
     implementation("androidx.media3:media3-common:1.9.0")
     implementation("androidx.media3:media3-exoplayer-hls:1.8.0")
