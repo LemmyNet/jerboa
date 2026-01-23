@@ -1,11 +1,12 @@
 @file:Suppress("UnstableApiUsage")
+import com.android.build.api.dsl.ApplicationExtension
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+//    id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.0"
@@ -24,7 +25,7 @@ kotlin {
     }
 }
 
-android {
+configure<ApplicationExtension> {
     compileSdk = 36
 
     defaultConfig {
@@ -57,7 +58,7 @@ android {
 
     sourceSets {
         // Adds exported schema location as test app assets.
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("$projectDir/schemas")
     }
 
 
@@ -83,13 +84,18 @@ android {
             }
 
             // Keep using until AGP 9.0 then research proguard rules to retain debug info for stack traces
-            postprocessing {
-                isRemoveUnusedCode = true
-                isObfuscate = false
-                isOptimizeCode = true
-                isRemoveUnusedResources = true
-                proguardFiles("proguard-rules.pro")
-            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles("proguard-rules.pro")
+// TODO: removed
+
+//            postprocessing {
+//                isRemoveUnusedCode = true
+//                isObfuscate = false
+//                isOptimizeCode = true
+//                isRemoveUnusedResources = true
+//                proguardFiles("proguard-rules.pro")
+//            }
         }
         debug {
             applicationIdSuffix = ".debug"
