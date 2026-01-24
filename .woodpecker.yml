@@ -3,7 +3,7 @@ variables:
 
 steps:
   prettier_markdown_check:
-    image: jauderho/prettier:3.8.0-alpine
+    image: jauderho/prettier:3.8.1-alpine
     commands:
       - prettier -c "*.md" "*.yml"
     when:
