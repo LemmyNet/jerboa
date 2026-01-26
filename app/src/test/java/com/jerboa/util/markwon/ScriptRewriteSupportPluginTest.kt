@@ -56,5 +56,13 @@ class ScriptRewriteSupportPluginTest {
             listOf("~ 99 ~", "~ 99 ~"),
             listOf("~ 99~", "~ 99~"),
             listOf("~99 ~", "~99 ~"),
+            listOf(
+                "Here's a simple footnote[^1].\n\n[^1]: <This is the first footnote.>",
+                "Here's a simple footnote[^1].\n\n[^1]: <This is the first footnote.>",
+            ),
+            listOf(
+                "[^0] steht an und wir als Hochschulgruppe KIT GameJam laden euch herzlich ein, bei uns am Global Game Jam teilzunehmen. im **TRIANGEL**[^1]",
+                "[^0] steht an und wir als Hochschulgruppe KIT GameJam laden euch herzlich ein, bei uns am Global Game Jam teilzunehmen. im **TRIANGEL**[^1]",
+            ),
         )
 }
