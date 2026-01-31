@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 import com.android.build.api.dsl.ManagedVirtualDevice
+import com.android.build.api.dsl.TestExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -15,7 +16,7 @@ kotlin {
     }
 }
 
-android {
+configure<TestExtension> {
     namespace = "com.jerboa.benchmarks"
     compileSdk = 36
 
