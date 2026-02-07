@@ -1,5 +1,5 @@
 variables:
-  - &android_image "cimg/android:2026.01"
+  - &android_image "cimg/android:2026.02"
 
 steps:
   prettier_markdown_check:
