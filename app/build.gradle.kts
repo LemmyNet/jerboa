@@ -32,8 +32,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 36
-        versionCode = 84
-        versionName = "0.0.84-gplay"
+        versionCode = 85
+        versionName = "0.0.85-gplay"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
