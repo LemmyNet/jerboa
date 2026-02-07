@@ -48,6 +48,7 @@ fun MainDrawer(
                     }
                     res.data.my_user
                 }
+
                 is ApiState.Failure -> {
                     // Invalidate account
                     if (account.isReady()) {
@@ -56,7 +57,10 @@ fun MainDrawer(
 
                     null
                 }
-                else -> null
+
+                else -> {
+                    null
+                }
             },
         follows = when (val res = siteViewModel.siteRes) {
             is ApiState.Success -> {
@@ -65,7 +69,10 @@ fun MainDrawer(
                     ?.sortedBy { it.community.title.lowercase() }
                     .orEmpty()
             }
-            else -> emptyList()
+
+            else -> {
+                emptyList()
+            }
         },
         unreadCount = siteViewModel.unreadCount,
         unreadAppCount = siteViewModel.unreadAppCount,

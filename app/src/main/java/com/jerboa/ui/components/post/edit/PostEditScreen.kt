@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,6 +47,7 @@ fun PostEditScreen(
     Log.d("jerboa", "got to post edit screen")
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
@@ -68,9 +70,9 @@ fun PostEditScreen(
     var altText by rememberSaveable { mutableStateOf(postView.post.alt_text.orEmpty()) }
     var customThumbnail by rememberSaveable { mutableStateOf(postView.post.thumbnail_url.orEmpty()) }
 
-    val nameField = validatePostName(ctx, name)
-    val urlField = validateUrl(ctx, url)
-    val customThumbnailField = validateUrl(ctx, customThumbnail, ctx.getString(R.string.custom_thumbnail))
+    val nameField = validatePostName(resources, name)
+    val urlField = validateUrl(resources, url)
+    val customThumbnailField = validateUrl(resources, customThumbnail, resources.getString(R.string.custom_thumbnail))
     val formValid = !nameField.hasError && !urlField.hasError && !customThumbnailField.hasError
 
     Scaffold(

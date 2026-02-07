@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -117,6 +118,7 @@ fun PostListing(
     disableVideoAutoplay: Boolean,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     // This stores vote data
     var instantScores by remember {
         mutableStateOf(
@@ -147,7 +149,7 @@ fun PostListing(
 
     val swipeAction: (action: SwipeToActionType) -> Unit = remember(postView) {
         {
-            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
                 when (it) {
                     SwipeToActionType.Upvote -> upvoteClick()
                     SwipeToActionType.Downvote -> downvoteClick()
@@ -168,7 +170,7 @@ fun PostListing(
     val swipeableContent: @Composable RowScope.() -> Unit = {
         Row {
             when (postViewMode) {
-                PostViewMode.Card ->
+                PostViewMode.Card -> {
                     PostListingCard(
                         postView = postView,
                         admins = admins,
@@ -212,8 +214,9 @@ fun PostListing(
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
                     )
+                }
 
-                PostViewMode.SmallCard ->
+                PostViewMode.SmallCard -> {
                     PostListingCard(
                         postView = postView,
                         admins = admins,
@@ -257,8 +260,9 @@ fun PostListing(
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
                     )
+                }
 
-                PostViewMode.List ->
+                PostViewMode.List -> {
                     PostListingList(
                         postView = postView,
                         instantScores = instantScores,
@@ -276,6 +280,7 @@ fun PostListing(
                         enableDownVotes = enableDownVotes,
                         voteDisplayMode = voteDisplayMode,
                     )
+                }
             }
         }
     }

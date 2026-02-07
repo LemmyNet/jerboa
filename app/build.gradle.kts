@@ -8,8 +8,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20"
-    kotlin("plugin.serialization") version "2.2.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10"
+    kotlin("plugin.serialization") version "2.3.10"
 
 }
 
@@ -121,7 +121,7 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.09.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.01.01")
 
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
@@ -151,14 +151,14 @@ dependencies {
     implementation("io.coil-kt:coil-video:2.7.0")
 
     // Media3 for video playback
-    implementation("androidx.media3:media3-exoplayer:1.8.0")
-    implementation("androidx.media3:media3-ui:1.8.0")
-    implementation("androidx.media3:media3-common:1.8.0")
-    implementation("androidx.media3:media3-exoplayer-hls:1.8.0")
-    implementation("androidx.media3:media3-exoplayer-dash:1.8.0")
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.8.0")
+    implementation("androidx.media3:media3-exoplayer:1.9.2")
+    implementation("androidx.media3:media3-ui:1.9.2")
+    implementation("androidx.media3:media3-common:1.9.2")
+    implementation("androidx.media3:media3-exoplayer-hls:1.9.2")
+    implementation("androidx.media3:media3-exoplayer-dash:1.9.2")
+    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.9.2")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.17.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.18.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -166,20 +166,20 @@ dependencies {
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.8.0")
+    ksp("androidx.room:room-compiler:2.8.4")
 
-    implementation("androidx.room:room-runtime:2.8.0")
-    annotationProcessor("androidx.room:room-compiler:2.8.0")
+    implementation("androidx.room:room-runtime:2.8.4")
+    annotationProcessor("androidx.room:room-compiler:2.8.4")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.8.0")
+    implementation("androidx.room:room-ktx:2.8.4")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.8.0")
+    testImplementation("androidx.room:room-testing:2.8.4")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.8.0")
+    androidTestImplementation("androidx.room:room-testing:2.8.4")
 
-    implementation("io.arrow-kt:arrow-core:2.1.2")
+    implementation("io.arrow-kt:arrow-core:2.2.1.1")
 
 
     implementation("androidx.compose.material3:material3")
@@ -193,15 +193,15 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    implementation("androidx.navigation:navigation-compose:2.9.4")
+    implementation("androidx.navigation:navigation-compose:2.9.7")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.20.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:6.0.0")
+    testImplementation("org.mockito:mockito-core:5.21.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
 
     implementation("androidx.browser:browser:1.9.0")
 
@@ -209,8 +209,8 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.3.0")
+    implementation("io.ktor:ktor-client-logging:3.4.0")
 }

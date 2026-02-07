@@ -39,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,9 +70,15 @@ fun BlocksScreen(
     LaunchedEffect(Unit) {
         Log.d("BlocksScreen", "Refreshing site")
         when (val res = siteViewModel.siteRes) {
-            is ApiState.Success -> siteViewModel.getSite(ApiState.Appending(res.data))
+            is ApiState.Success -> {
+                siteViewModel.getSite(ApiState.Appending(res.data))
+            }
+
             is ApiState.Loading, is ApiState.Appending -> {}
-            else -> siteViewModel.getSite()
+
+            else -> {
+                siteViewModel.getSite()
+            }
         }
     }
 
@@ -89,14 +96,19 @@ fun BlocksScreen(
                 JerboaLoadingBar(siteViewModel.siteRes)
 
                 when (val res = siteViewModel.siteRes) {
-                    is ApiState.Failure -> ApiErrorText(res.msg)
+                    is ApiState.Failure -> {
+                        ApiErrorText(res.msg)
+                    }
+
                     is ApiState.Holder -> {
                         res.data.my_user?.let {
                             BlockList(it)
                         } ?: ApiEmptyText()
                     }
 
-                    else -> Unit
+                    else -> {
+                        Unit
+                    }
                 }
             }
         },
@@ -114,9 +126,10 @@ enum class BlocksTab(
 @Composable
 fun BlockList(userInfo: MyUserInfo) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val viewModel: BlockViewModel = viewModel()
     val scope = rememberCoroutineScope()
-    val tabTitles = BlocksTab.entries.map { ctx.getString(it.label) }
+    val tabTitles = BlocksTab.entries.map { resources.getString(it.label) }
     val pagerState = rememberPagerState { tabTitles.size }
 
     LaunchedEffect(userInfo) {
@@ -180,7 +193,9 @@ fun BlockList(userInfo: MyUserInfo) {
                         }
                     }
 
-                    else -> Unit
+                    else -> {
+                        Unit
+                    }
                 }
             }
         }
@@ -239,6 +254,7 @@ fun ItemBlockView(
         ) {
             when (action) {
                 is ApiAction.Loading -> CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+
                 is ApiAction.Failed -> Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = stringResource(id = R.string.retry),

@@ -1,9 +1,9 @@
 variables:
-  - &android_image "cimg/android:2025.09"
+  - &android_image "cimg/android:2026.02"
 
 steps:
   prettier_markdown_check:
-    image: tmknom/prettier
+    image: jauderho/prettier:3.8.1-alpine
     commands:
       - prettier -c "*.md" "*.yml"
     when:
@@ -19,21 +19,21 @@ steps:
     when:
       - event: pull_request
 
-  build_project:
-    image: *android_image
-    commands:
-      - sudo chown -R circleci:circleci .
-      - ./gradlew assembleRelease
-    environment:
-      GRADLE_USER_HOME: ".gradle"
-    when:
-      - event: pull_request
-
   check_android_lint:
     image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew lint
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  build_project:
+    image: *android_image
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew assembleRelease
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:

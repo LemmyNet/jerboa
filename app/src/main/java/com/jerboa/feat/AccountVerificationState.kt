@@ -1,6 +1,7 @@
 package com.jerboa.feat
-
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.Toast
@@ -242,8 +243,14 @@ suspend fun Account.checkAccountVerification(
                     CheckState.from(!this.isAnon())
                 }
 
-                AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
-                AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
+                AccountVerificationState.HAS_INTERNET -> {
+                    checkInternet(ctx)
+                }
+
+                AccountVerificationState.INSTANCE_ALIVE -> {
+                    checkInstance(this.instance)
+                }
+
                 AccountVerificationState.ACCOUNT_DELETED -> {
                     api = API.createTempInstanceSafe(this.instance, this.jwt)
                     val p = checkIfAccountIsDeleted(this, api)
@@ -251,15 +258,24 @@ suspend fun Account.checkAccountVerification(
                     p.first
                 }
 
-                AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
-                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(api)
-                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED ->
+                AccountVerificationState.ACCOUNT_BANNED -> {
+                    checkIfAccountIsBanned(userRes!!.data)
+                }
+
+                AccountVerificationState.JWT_VERIFIED -> {
+                    checkIfJWTValid(api)
+                }
+
+                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> {
                     checkIfSiteRetrievalSucceeded(
                         siteViewModel,
                         this,
                     ).first
+                }
 
-                AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
+                AccountVerificationState.CHECKS_COMPLETE -> {
+                    CheckState.Passed
+                }
             }
 
         Log.d("verification", "Verified ${verifyState.name} with ${checkState::class.simpleName}")
@@ -287,38 +303,40 @@ suspend fun Account.checkAccountVerification(
 
 suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificationInfo(
     ctx: Context,
+    resources: Resources,
     snackbarHostState: SnackbarHostState,
     loginAsToast: Boolean = false,
     actionPerform: suspend () -> Unit,
 ) {
     when (this.first) {
-        AccountVerificationState.INSTANCE_ALIVE ->
+        AccountVerificationState.INSTANCE_ALIVE -> {
             when (val t = this.second) {
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_failed_instance, t.msg),
-                        ctx.getString(R.string.retry),
+                        resources.getString(R.string.verification_failed_instance, t.msg),
+                        resources.getString(R.string.retry),
                         actionPerform,
                     )
                 }
 
                 is CheckState.ConnectionFailedMsg -> {
                     snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_connection_failed_instance, t.msg),
-                        ctx.getString(R.string.retry),
+                        resources.getString(R.string.verification_connection_failed_instance, t.msg),
+                        resources.getString(R.string.retry),
                         actionPerform,
                     )
                 }
 
                 else -> {}
             }
+        }
 
         AccountVerificationState.ACCOUNT_BANNED -> {
             when (val t = this.second) {
                 is CheckState.FailedMsg -> {
                     snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_failed_user_banned, t.msg),
-                        ctx.getString(R.string.retry),
+                        resources.getString(R.string.verification_failed_user_banned, t.msg),
+                        resources.getString(R.string.retry),
                         actionPerform,
                     )
                 }
@@ -331,59 +349,62 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
     }
 
     when (this.first to this.second) {
-        AccountVerificationState.NOT_CHECKED to CheckState.Failed ->
+        AccountVerificationState.NOT_CHECKED to CheckState.Failed -> {
             if (loginAsToast) {
-                loginFirstToast(ctx)
+                loginFirstToast(ctx, resources)
             } else {
                 snackbarHostState.doSnackbarAction(
-                    ctx.getString(R.string.verification_no_account),
-                    ctx.getString(R.string.login_login),
+                    resources.getString(R.string.verification_no_account),
+                    resources.getString(R.string.login_login),
                     actionPerform,
                 )
             }
+        }
 
-        AccountVerificationState.HAS_INTERNET to CheckState.Failed ->
+        AccountVerificationState.HAS_INTERNET to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.no_network),
-                ctx.getString(R.string.retry),
+                resources.getString(R.string.no_network),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
+        }
 
-        AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed ->
+        AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_account_deleted),
-                ctx.getString(R.string.verification_delete_account),
+                resources.getString(R.string.verification_account_deleted),
+                resources.getString(R.string.verification_delete_account),
                 actionPerform,
             )
+        }
 
         AccountVerificationState.ACCOUNT_DELETED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_retrieve_profile),
-                ctx.getString(R.string.retry),
+                resources.getString(R.string.verification_failed_retrieve_profile),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_token_expired),
-                ctx.getString(R.string.verification_login_again),
+                resources.getString(R.string.verification_token_expired),
+                resources.getString(R.string.verification_login_again),
                 actionPerform,
             )
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.ConnectionFailed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_verify_token),
-                ctx.getString(R.string.retry),
+                resources.getString(R.string.verification_failed_verify_token),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
 
         AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_retrieve_site),
-                ctx.getString(R.string.retry),
+                resources.getString(R.string.verification_failed_retrieve_site),
+                resources.getString(R.string.retry),
                 actionPerform,
             )
         }
@@ -395,6 +416,7 @@ val lockAccount = mutableSetOf<Account>()
 suspend fun Account.isReadyAndIfNotDisplayInfo(
     appState: JerboaAppState,
     ctx: Context,
+    resources: Resources,
     snackbarHostState: SnackbarHostState,
     siteViewModel: SiteViewModel? = null,
     accountViewModel: AccountViewModel? = null,
@@ -403,7 +425,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
     val ready = isReady()
     if (!ready) {
         if (lockAccount.contains(this)) {
-            Toast.makeText(ctx, ctx.getString(R.string.verification_account_busy, this.name), Toast.LENGTH_SHORT).show()
+            Toast.makeText(ctx, resources.getString(R.string.verification_account_busy, this.name), Toast.LENGTH_SHORT).show()
             return false
         } else {
             lockAccount.add(this)
@@ -415,6 +437,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
 
                 it.showSnackbarForVerificationInfo(
                     ctx,
+                    resources,
                     snackbarHostState,
                     loginAsToast,
                 ) {
@@ -438,15 +461,17 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                             }
                         }
 
-                        else ->
+                        else -> {
                             this.isReadyAndIfNotDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 siteVM,
                                 accountVM,
                                 loginAsToast,
                             )
+                        }
                     }
                 }
                 return it.first == AccountVerificationState.CHECKS_COMPLETE
@@ -460,6 +485,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
 fun Account.doIfReadyElseDisplayInfo(
     appState: JerboaAppState,
     ctx: Context,
+    resources: Resources,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
     siteViewModel: SiteViewModel? = null,
@@ -471,6 +497,7 @@ fun Account.doIfReadyElseDisplayInfo(
         if (this@doIfReadyElseDisplayInfo.isReadyAndIfNotDisplayInfo(
                 appState,
                 ctx,
+                resources,
                 snackbarHostState,
                 siteViewModel,
                 accountViewModel,
@@ -494,9 +521,12 @@ suspend fun SnackbarHostState.doSnackbarAction(
     }
 }
 
-fun Account.isReadyAndIfNotShowSimplifiedInfoToast(ctx: Context): Boolean =
+fun Account.isReadyAndIfNotShowSimplifiedInfoToast(
+    ctx: Context,
+    resources: Resources,
+): Boolean =
     if (this.isAnon()) {
-        loginFirstToast(ctx)
+        loginFirstToast(ctx, resources)
         false
     } else if (!this.isReady()) {
         Toast.makeText(ctx, R.string.verification_account_not_read, Toast.LENGTH_SHORT).show()

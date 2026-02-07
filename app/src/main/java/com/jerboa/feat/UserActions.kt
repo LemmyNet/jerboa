@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -37,6 +38,7 @@ import java.io.InputStream
 fun storeMedia(
     scope: CoroutineScope,
     ctx: Context,
+    resources: Resources,
     url: String,
     mediaType: PostLinkType,
 ) {
@@ -48,7 +50,7 @@ fun storeMedia(
                 if (granted) {
                     actualStoreImage(scope, ctx, url, mediaType)
                 } else {
-                    Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 }
             }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     } else {
@@ -112,11 +114,12 @@ private suspend fun saveMedia(
 fun shareMedia(
     scope: CoroutineScope,
     ctx: Context,
+    resources: Resources,
     rawUrl: String,
     mediaType: PostLinkType,
 ) {
     if (mediaType == PostLinkType.Link) {
-        shareLink(rawUrl, ctx)
+        shareLink(rawUrl, ctx, resources)
         return
     }
 
@@ -148,7 +151,7 @@ fun shareMedia(
             addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
 
-        ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
+        ctx.startActivitySafe(Intent.createChooser(shareIntent, resources.getString(R.string.share)))
     } catch (e: IOException) {
         Log.d("shareMedia", "io failed", e)
         Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
@@ -164,6 +167,7 @@ fun shareMedia(
 fun shareLink(
     url: String,
     ctx: Context,
+    resources: Resources,
 ) {
     val intent =
         Intent().apply {
@@ -171,7 +175,7 @@ fun shareLink(
             putExtra(Intent.EXTRA_TEXT, url)
             type = "text/plain"
         }
-    val shareIntent = Intent.createChooser(intent, ctx.getString(R.string.share))
+    val shareIntent = Intent.createChooser(intent, resources.getString(R.string.share))
     ctx.startActivitySafe(shareIntent)
 }
 
@@ -212,6 +216,7 @@ fun copyTextToClipboard(
 fun copyImageToClipboard(
     scope: CoroutineScope,
     ctx: Context,
+    resources: Resources,
     rawUrl: String,
 ) {
     try {
@@ -235,7 +240,7 @@ fun copyImageToClipboard(
         // Android 13+ should show a system message already
         // see https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
         if (SDK_INT <= 32) {
-            Toast.makeText(ctx, ctx.getString(R.string.media_copied), Toast.LENGTH_SHORT).show()
+            Toast.makeText(ctx, resources.getString(R.string.media_copied), Toast.LENGTH_SHORT).show()
         }
     } catch (e: IOException) {
         Log.d("copyMedia", "io failed", e)

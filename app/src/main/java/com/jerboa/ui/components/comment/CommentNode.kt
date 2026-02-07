@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -249,6 +250,7 @@ fun LazyListScope.commentNodeItem(
         val border = Border(BORDER_WIDTH, borderColor)
 
         val ctx = LocalContext.current
+        val resources = LocalResources.current
 
         var instantScores by
             remember {
@@ -267,21 +269,24 @@ fun LazyListScope.commentNodeItem(
             enableDownVotes = enableDownVotes,
             rememberKey = commentView,
         ) {
-            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
                 when (it) {
                     SwipeToActionType.Upvote -> {
                         instantScores =
                             instantScores.update(VoteType.Upvote)
                         onUpvoteClick(commentView)
                     }
+
                     SwipeToActionType.Downvote -> {
                         instantScores =
                             instantScores.update(VoteType.Downvote)
                         onDownvoteClick(commentView)
                     }
+
                     SwipeToActionType.Reply -> {
                         onReplyClick(commentView)
                     }
+
                     SwipeToActionType.Save -> {
                         onSaveClick(commentView)
                     }

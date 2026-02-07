@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.core.os.LocaleListCompat
@@ -62,6 +63,7 @@ fun LookAndFeelScreen(
 ) {
     Log.d("jerboa", "Got to lookAndFeel screen")
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
 
@@ -203,7 +205,7 @@ fun LookAndFeelScreen(
                         },
                         values = ThemeMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -228,7 +230,7 @@ fun LookAndFeelScreen(
                         },
                         values = ThemeColor.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -253,7 +255,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostViewMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -278,7 +280,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostNavigationGestureMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -303,7 +305,7 @@ fun LookAndFeelScreen(
                         },
                         values = BackConfirmationMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -328,7 +330,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostActionBarMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = {
                             Text(text = stringResource(R.string.post_actionbar))
@@ -352,7 +354,7 @@ fun LookAndFeelScreen(
                         },
                         values = BlurNSFW.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = { Text(stringResource(id = R.string.blur_nsfw)) },
                         icon = {
@@ -375,7 +377,7 @@ fun LookAndFeelScreen(
                         },
                         values = SwipeToActionPreset.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = { Text(stringResource(id = R.string.swipe_to_action_presets)) },
                         icon = {

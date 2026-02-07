@@ -153,7 +153,9 @@ class SiteViewModel(
                 unreads.mentions + unreads.private_messages + unreads.replies
             }
 
-            else -> 0
+            else -> {
+                0
+            }
         }
 
     private fun getUnreadAppCountTotal(): Long? =
@@ -162,7 +164,9 @@ class SiteViewModel(
                 res.data.registration_applications
             }
 
-            else -> null
+            else -> {
+                null
+            }
         }
 
     private fun getUnreadReportCountTotal(): Long? =
@@ -175,7 +179,9 @@ class SiteViewModel(
                 )
             }
 
-            else -> null
+            else -> {
+                null
+            }
         }
 
     fun updateUnreadCounts(
@@ -201,24 +207,30 @@ class SiteViewModel(
 
     fun showAvatar(): Boolean =
         when (val res = siteRes) {
-            is ApiState.Success ->
+            is ApiState.Success -> {
                 res.data.my_user
                     ?.local_user_view
                     ?.local_user
                     ?.show_avatars
                     ?: true
+            }
 
-            else -> true
+            else -> {
+                true
+            }
         }
 
     fun moderatedCommunities(): List<CommunityId>? =
         when (val res = siteRes) {
-            is ApiState.Success ->
+            is ApiState.Success -> {
                 res.data.my_user
                     ?.moderates
                     ?.map { it.community.id }
+            }
 
-            else -> null
+            else -> {
+                null
+            }
         }
 
     fun enableDownvotes(): Boolean =
@@ -240,17 +252,20 @@ class SiteViewModel(
 
     private fun newVoteDisplayMode(): LocalUserVoteDisplayMode =
         when (val res = siteRes) {
-            is ApiState.Success ->
+            is ApiState.Success -> {
                 res.data.my_user
                     ?.local_user_view
                     ?.local_user_vote_display_mode ?: LocalUserVoteDisplayMode.default()
+            }
 
-            else -> LocalUserVoteDisplayMode.default()
+            else -> {
+                LocalUserVoteDisplayMode.default()
+            }
         }
 
     private fun legacyVoteDisplayMode(): LocalUserVoteDisplayMode =
         when (val res = siteRes) {
-            is ApiState.Success ->
+            is ApiState.Success -> {
                 // Legacy behaviour is hide all scores if show_scores is false
                 if (res.data.my_user
                         ?.local_user_view
@@ -261,8 +276,11 @@ class SiteViewModel(
                 } else {
                     LocalUserVoteDisplayMode.default(false)
                 }
+            }
 
-            else -> LocalUserVoteDisplayMode.default(true) // Legacy default
+            else -> {
+                LocalUserVoteDisplayMode.default(true)
+            } // Legacy default
         }
 
     fun getFollowList(): List<CommunityFollowerView> =

@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -70,6 +71,7 @@ fun CreatePostScreen(
     Log.d("jerboa", "got to create post screen")
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
@@ -100,9 +102,9 @@ fun CreatePostScreen(
     var altText by rememberSaveable { mutableStateOf("") }
     var customThumbnail by rememberSaveable { mutableStateOf("") }
 
-    val nameField = validatePostName(ctx, name)
-    val urlField = validateUrl(ctx, url)
-    val customThumbnailField = validateUrl(ctx, customThumbnail, ctx.getString(R.string.custom_thumbnail))
+    val nameField = validatePostName(resources, name)
+    val urlField = validateUrl(resources, url)
+    val customThumbnailField = validateUrl(resources, customThumbnail, resources.getString(R.string.custom_thumbnail))
     val formValid = !nameField.hasError && !urlField.hasError && !customThumbnailField.hasError && (selectedCommunity !== null)
 
     LaunchedEffect(initialUrl) {
@@ -132,11 +134,21 @@ fun CreatePostScreen(
             }
         } else {
             when (val res = createPostViewModel.siteMetadataRes) {
-                ApiState.Empty -> MetaDataRes(null, false)
-                ApiState.Loading -> MetaDataRes(null, true)
-                is ApiState.Success ->
+                ApiState.Empty -> {
+                    MetaDataRes(null, false)
+                }
+
+                ApiState.Loading -> {
+                    MetaDataRes(null, true)
+                }
+
+                is ApiState.Success -> {
                     MetaDataRes(res.data.metadata.title, false)
-                else -> MetaDataRes(null, false)
+                }
+
+                else -> {
+                    MetaDataRes(null, false)
+                }
             }
         }
     Surface(color = MaterialTheme.colorScheme.background) {

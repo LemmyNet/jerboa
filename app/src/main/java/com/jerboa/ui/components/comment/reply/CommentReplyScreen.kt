@@ -56,6 +56,7 @@ fun CommentReplyScreen(
             // When comment is created, still show loading so that ReplyItem is not entered composition
             // again for a brief period, thus requesting focus again and opening keyboard
             ApiState.Loading, is ApiState.Success -> true
+
             else -> false
         }
 
@@ -88,7 +89,7 @@ fun CommentReplyScreen(
                 LoadingBar(padding)
             } else {
                 when (replyItem) {
-                    is ReplyItem.CommentItem ->
+                    is ReplyItem.CommentItem -> {
                         CommentReply(
                             commentView = replyItem.item,
                             account = account,
@@ -102,8 +103,9 @@ fun CommentReplyScreen(
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                         )
+                    }
 
-                    is ReplyItem.PostItem ->
+                    is ReplyItem.PostItem -> {
                         PostReply(
                             postView = replyItem.item,
                             account = account,
@@ -117,8 +119,9 @@ fun CommentReplyScreen(
                                     .consumeWindowInsets(padding)
                                     .imePadding(),
                         )
+                    }
 
-                    is ReplyItem.CommentReplyItem ->
+                    is ReplyItem.CommentReplyItem -> {
                         CommentReplyReply(
                             commentReplyView = replyItem.item,
                             account = account,
@@ -132,8 +135,9 @@ fun CommentReplyScreen(
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                         )
+                    }
 
-                    is ReplyItem.MentionReplyItem ->
+                    is ReplyItem.MentionReplyItem -> {
                         MentionReply(
                             personMentionView = replyItem.item,
                             account = account,
@@ -147,6 +151,7 @@ fun CommentReplyScreen(
                                     .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                         )
+                    }
                 }
             }
         },

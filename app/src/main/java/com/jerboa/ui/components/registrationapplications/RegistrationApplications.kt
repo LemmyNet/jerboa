@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.registrationapplications
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -133,11 +135,12 @@ fun RegistrationApplicationsHeaderTitle(
     unreadCount: Long? = null,
 ) {
     var title = stringResource(R.string.registrations)
-    val ctx = LocalContext.current
+    val resources = LocalResources.current
+
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
-    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
+    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(resources, selectedUnreadOrAll))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -147,6 +150,7 @@ fun RegistrationApplications(
     registrationApplicationsViewModel: RegistrationApplicationsViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
@@ -158,6 +162,7 @@ fun RegistrationApplications(
         account.doIfReadyElseDisplayInfo(
             appState,
             ctx,
+            resources,
             snackbarHostState,
             scope,
             siteViewModel,
@@ -174,6 +179,7 @@ fun RegistrationApplications(
             account.doIfReadyElseDisplayInfo(
                 appState,
                 ctx,
+                resources,
                 snackbarHostState,
                 scope,
                 siteViewModel,
@@ -190,8 +196,14 @@ fun RegistrationApplications(
         JerboaLoadingBar(registrationApplicationsViewModel.applicationsRes)
 
         when (val appsRes = registrationApplicationsViewModel.applicationsRes) {
-            ApiState.Empty -> ApiEmptyText()
-            is ApiState.Failure -> ApiErrorText(appsRes.msg)
+            ApiState.Empty -> {
+                ApiEmptyText()
+            }
+
+            is ApiState.Failure -> {
+                ApiErrorText(appsRes.msg)
+            }
+
             is ApiState.Holder -> {
                 val apps = appsRes.data.registration_applications
                 LazyColumn(
@@ -213,6 +225,7 @@ fun RegistrationApplications(
                                 account.doIfReadyElseDisplayInfo(
                                     appState,
                                     ctx,
+                                    resources,
                                     snackbarHostState,
                                     scope,
                                     siteViewModel,

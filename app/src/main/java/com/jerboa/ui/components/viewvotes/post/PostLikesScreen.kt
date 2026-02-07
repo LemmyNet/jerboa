@@ -60,8 +60,14 @@ fun PostLikesScreen(
                 JerboaLoadingBar(postLikesViewModel.likesRes)
 
                 when (val likesRes = postLikesViewModel.likesRes) {
-                    ApiState.Empty -> ApiEmptyText()
-                    is ApiState.Failure -> ApiErrorText(likesRes.msg)
+                    ApiState.Empty -> {
+                        ApiEmptyText()
+                    }
+
+                    is ApiState.Failure -> {
+                        ApiErrorText(likesRes.msg)
+                    }
+
                     is ApiState.Holder -> {
                         val likes = likesRes.data.post_likes
                         ViewVotesBody(

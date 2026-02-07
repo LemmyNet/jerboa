@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -74,6 +75,7 @@ class PostViewModel(
 
     val unExpandedComments = mutableStateListOf<CommentId>()
     val commentsWithToggledActionBar = mutableStateListOf<CommentId>()
+    val parentListStateIndexes = mutableListOf<Int>()
 
     init {
         this.getData()
@@ -82,6 +84,28 @@ class PostViewModel(
     fun updateSortType(sortType: CommentSortType) {
         this.sortType = sortType
     }
+
+    fun toggleExpanded(commentId: CommentId) {
+        if (unExpandedComments.contains(commentId)) {
+            unExpandedComments.remove(commentId)
+        } else {
+            unExpandedComments.add(commentId)
+        }
+    }
+
+    fun isExpanded(commentId: CommentId): Boolean = !unExpandedComments.contains(commentId)
+
+    fun toggleExpanded(commentView: CommentView) = toggleExpanded(commentView.comment.id)
+
+    fun toggleActionBar(commentId: CommentId) {
+        if (commentsWithToggledActionBar.contains(commentId)) {
+            commentsWithToggledActionBar.remove(commentId)
+        } else {
+            commentsWithToggledActionBar.add(commentId)
+        }
+    }
+
+    fun toggleActionBar(commentView: CommentView) = toggleActionBar(commentView.comment.id)
 
     fun getData(state: ApiState<GetPostResponse> = ApiState.Loading) {
         val postForm =
@@ -274,6 +298,7 @@ class PostViewModel(
                     updatePostHidden(form.hide)
                     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 }
+
                 else -> {}
             }
         }
@@ -387,6 +412,7 @@ class PostViewModel(
                 val newRes = ApiState.Success(data.copy(post_view = newPostView))
                 postRes = newRes
             }
+
             else -> {}
         }
 
@@ -397,6 +423,7 @@ class PostViewModel(
                 val newRes = ApiState.Success(existing.data.copy(comments = comments))
                 commentsRes = newRes
             }
+
             else -> {}
         }
     }
@@ -415,6 +442,7 @@ class PostViewModel(
                 val newRes = ApiState.Success(data.copy(post_view = newPostView))
                 postRes = newRes
             }
+
             else -> {}
         }
 
@@ -425,6 +453,7 @@ class PostViewModel(
                 val newRes = ApiState.Success(existing.data.copy(comments = comments))
                 commentsRes = newRes
             }
+
             else -> {}
         }
     }

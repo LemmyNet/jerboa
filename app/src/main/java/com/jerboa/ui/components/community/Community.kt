@@ -128,6 +128,7 @@ fun CommunityTopSection(
                             )
                         }
                     }
+
                     SubscribedType.NotSubscribed -> {
                         Button(
                             onClick = { onClickFollowCommunity(communityView) },

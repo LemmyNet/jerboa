@@ -77,17 +77,19 @@ private data class VoteInfo(
 @Composable
 private fun buildVoteInfo(vote: Long): VoteInfo =
     when (vote) {
-        1L ->
+        1L -> {
             VoteInfo(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 MaterialTheme.colorScheme.secondary,
                 stringResource(R.string.upvote),
             )
+        }
 
-        else ->
+        else -> {
             VoteInfo(
                 ImageVector.vectorResource(id = R.drawable.down_filled),
                 MaterialTheme.colorScheme.error,
                 stringResource(R.string.downvote),
             )
+        }
     }

@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.UnreadOrAll
@@ -43,6 +44,7 @@ fun RegistrationApplicationsScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -78,6 +80,7 @@ fun RegistrationApplicationsScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -100,6 +103,7 @@ fun RegistrationApplicationsScreen(
                 registrationApplicationsViewModel = registrationApplicationsViewModel,
                 siteViewModel = siteViewModel,
                 ctx = ctx,
+                resources = resources,
                 account = account,
                 scope = scope,
                 snackbarHostState = snackbarHostState,

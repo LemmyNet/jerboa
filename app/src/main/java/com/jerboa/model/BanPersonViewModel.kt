@@ -1,6 +1,8 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ class BanPersonViewModel : ViewModel() {
         reason: String,
         expireDays: Long? = null,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onSuccess: (PersonView) -> Unit,
     ) {
@@ -61,18 +64,19 @@ class BanPersonViewModel : ViewModel() {
                     val message =
                         if (ban) {
                             if (expireDays !== null) {
-                                ctx.getString(R.string.person_banned_for_x_days, personNameShown, expireDays)
+                                resources.getString(R.string.person_banned_for_x_days, personNameShown, expireDays)
                             } else {
-                                ctx.getString(R.string.person_banned, personNameShown)
+                                resources.getString(R.string.person_banned, personNameShown)
                             }
                         } else {
-                            ctx.getString(R.string.person_unbanned, personNameShown)
+                            resources.getString(R.string.person_unbanned, personNameShown)
                         }
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
 
                     focusManager.clearFocus()
                     onSuccess(personView)
                 }
+
                 else -> {}
             }
         }
