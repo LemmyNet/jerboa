@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="comment_node_goto_comment">Ir ao Comentário</string>
-    <string name="view_source">Ver Fonte</string>
+    <string name="view_source">Ver fonte</string>
     <string name="comment_node_copy_permalink">Copiar Link do Comentário</string>
     <string name="comment_node_report_comment">Denunciar Comentário</string>
     <string name="comment_node_more_replies">mais %1$s respostas</string>
@@ -166,4 +166,8 @@
     <string name="sorttype_topall">Melhores de Todos os Tempos</string>
     <string name="sorttype_mostcomments">Mais Comentários</string>
     <string name="sorttype_newcomments">Novos Comentários</string>
+    <string name="unlock_post">Destrancar publicação</string>
+    <string name="lock_post">Trancar publicação</string>
+    <string name="remove_post">Apagar publicação</string>
+    <string name="share_post">Compartilhar publicação</string>
 </resources>
