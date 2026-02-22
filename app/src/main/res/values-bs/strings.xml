@@ -162,4 +162,25 @@
 \nMolimo vas da obavijestite svog administratora i prijavite se na drugu instancu ili se odjavite i koristite zadanu instancu.</string>
     <string name="dialogs_server_version_outdated_short">Verzija servera (%1$s) je preniska.</string>
     <string name="look_and_feel_post_navigation_gesture_mode_swipe_right">Prevucite prstom udesno za povratak</string>
+    <string name="look_and_feel_theme">Teme</string>
+    <string name="look_and_feel_theme_color">Boja teme</string>
+    <string name="look_and_feel_theme_black">Crna</string>
+    <string name="look_and_feel_theme_dark">Tamna</string>
+    <string name="look_and_feel_theme_light">Svijetla</string>
+    <string name="look_and_feel_theme_system">Sistemska</string>
+    <string name="look_and_feel_theme_system_black">Sistemska (Crna)</string>
+    <string name="look_and_feel_theme_color_dynamic">Dinamička</string>
+    <string name="look_and_feel_theme_color_beach">Plaža</string>
+    <string name="look_and_feel_theme_color_blue">Plava</string>
+    <string name="look_and_feel_theme_color_crimson">Grimizna</string>
+    <string name="look_and_feel_theme_color_green">Zelena</string>
+    <string name="look_and_feel_theme_color_grey">Siva</string>
+    <string name="look_and_feel_theme_color_pink">Ružičasta</string>
+    <string name="look_and_feel_theme_color_purple">Ljubičasta</string>
+    <string name="look_and_feel_theme_color_woodland">Šuma</string>
+    <string name="look_and_feel_theme_color_dracula">Drakula</string>
+    <string name="look_and_feel_use_custom_tabs">Koristite prilagođene kartice</string>
+    <string name="look_and_feel_use_private_tabs">Koristite privatne kartice ako su dostupne</string>
+    <string name="markRead">Označi kao pročitano</string>
+    <string name="markUnread">Označi kao nepročitano</string>
 </resources>
