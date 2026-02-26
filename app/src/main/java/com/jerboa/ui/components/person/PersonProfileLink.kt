@@ -86,12 +86,10 @@ fun PersonProfileLink(
             },
     ) {
         if (showAvatar) {
-            person.avatar?.also {
-                CircularIcon(
-                    icon = it,
-                    contentDescription = null,
-                )
-            }
+            CircularIcon(
+                icon = person.avatar,
+                contentDescription = null,
+            )
         }
         if (showTags) {
             if (isDistinguished) {
