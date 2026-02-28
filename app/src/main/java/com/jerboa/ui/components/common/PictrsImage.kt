@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -42,7 +43,7 @@ import com.jerboa.util.BlurTransformation
 @Composable
 fun CircularIcon(
     modifier: Modifier = Modifier,
-    icon: String,
+    icon: String?,
     contentDescription: String?,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
@@ -63,6 +64,7 @@ fun CircularIcon(
         model = imageRequest,
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
+        fallback = painterResource(R.drawable.ic_jerboa),
         modifier = modifier
             .getBlurredOrRounded(
                 rounded = true,
@@ -97,16 +99,18 @@ fun CircularIconPreview() {
     )
 }
 
-fun getImageRequest(
+private fun getImageRequest(
     context: Context,
-    path: String,
+    path: String?,
     size: Int,
     blur: Boolean,
 ): ImageRequest {
+    val requestPath = path?.ifBlank { null }
+
     val builder =
         ImageRequest
             .Builder(context)
-            .data(pictrsImageThumbnail(path, size))
+            .data(requestPath?.let { pictrsImageThumbnail(it, size) })
             .crossfade(true)
 
     if (blur && Build.VERSION.SDK_INT < 31) {
