@@ -201,7 +201,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
     testImplementation("org.mockito:mockito-core:5.23.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
 
     implementation("androidx.browser:browser:1.9.0")
 
