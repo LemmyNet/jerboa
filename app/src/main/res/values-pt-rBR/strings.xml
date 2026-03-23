@@ -170,4 +170,5 @@
     <string name="lock_post">Trancar publicação</string>
     <string name="remove_post">Apagar publicação</string>
     <string name="share_post">Compartilhar publicação</string>
+    <string name="loading">Carregando</string>
 </resources>
