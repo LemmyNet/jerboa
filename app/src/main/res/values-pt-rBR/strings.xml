@@ -179,4 +179,8 @@
     <string name="reports">Denúncias</string>
     <string name="deleted">Apagado</string>
     <string name="locked">Trancado</string>
+    <string name="view_votes">Visualizar votos</string>
+    <string name="deny_reason">Motivo da recusa</string>
+    <string name="feature_in_local">Destacar em local</string>
+    <string name="feature_in_community">Destacar na comunidade</string>
 </resources>
