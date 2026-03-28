@@ -203,7 +203,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.23.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
 
-    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.browser:browser:1.10.0")
 
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
