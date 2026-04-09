@@ -249,7 +249,7 @@ fun PostListing(
                         showCommunityName = showCommunityName,
                         fullBody = fullBody,
                         account = account,
-                        expandedImage = false,
+                        expandedImage = fullBody && lowBandwidthMode,
                         enableDownVotes = enableDownVotes,
                         showAvatar = showAvatar,
                         useCustomTabs = useCustomTabs,
