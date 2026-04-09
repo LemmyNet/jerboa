@@ -1290,6 +1290,14 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         ?: true
 
+fun ConnectivityManager?.isConnectionMetered(): Boolean =
+    this
+        ?.activeNetwork
+        ?.let(::getNetworkCapabilities)
+        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+        ?.not()
+        ?: false
+
 /**
  * When calling this, you must call ActivityResultLauncher.unregister()
  * on the returned ActivityResultLauncher when the launcher is no longer

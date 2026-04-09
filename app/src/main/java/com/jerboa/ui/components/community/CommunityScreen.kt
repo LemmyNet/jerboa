@@ -89,6 +89,7 @@ fun CommunityScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     Log.d("jerboa", "got to community screen")
 
@@ -455,6 +456,7 @@ fun CommunityScreen(
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                             swipeToActionPreset = swipeToActionPreset,
                             disableVideoAutoplay = disableVideoAutoplay,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 

@@ -99,6 +99,7 @@ fun LookAndFeelScreen(
     var markAsReadOnScrollState by remember { mutableStateOf(settings.markAsReadOnScroll) }
     var autoPlayGifsState by remember { mutableStateOf(settings.autoPlayGifs) }
     var disableVideoAutoplayState by remember { mutableStateOf(settings.disableVideoAutoplay == 1) }
+    var lowBandwidthModeState by remember { mutableStateOf(settings.lowBandwidthMode) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -132,6 +133,7 @@ fun LookAndFeelScreen(
                 postNavigationGestureMode = postNavigationGestureModeState.ordinal,
                 swipeToActionPreset = swipeToActionPresetState.ordinal,
                 disableVideoAutoplay = if (disableVideoAutoplayState) 1 else 0,
+                lowBandwidthMode = lowBandwidthModeState,
             ),
         )
     }
@@ -533,6 +535,16 @@ fun LookAndFeelScreen(
                         },
                         title = {
                             Text(stringResource(id = R.string.settings_disable_video_autoplay))
+                        },
+                    )
+                    SwitchPreference(
+                        value = lowBandwidthModeState,
+                        onValueChange = {
+                            lowBandwidthModeState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.settings_low_bandwidth_mode))
                         },
                     )
                 }

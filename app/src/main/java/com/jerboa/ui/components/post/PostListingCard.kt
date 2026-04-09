@@ -151,6 +151,7 @@ fun PostListingCard(
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     Column(
         modifier =
@@ -180,6 +181,7 @@ fun PostListingCard(
             showAvatar = showAvatar,
             showCommunityName = showCommunityName,
             disableVideoAutoplay = disableVideoAutoplay,
+            lowBandwidthMode = lowBandwidthMode,
         )
 
         Spacer(modifier = Modifier.padding(vertical = VERTICAL_SPACING))
@@ -826,6 +828,7 @@ fun PostTitleAttributionBody(
     showCommunityName: Boolean,
     showAvatar: Boolean,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
@@ -851,6 +854,7 @@ fun PostTitleAttributionBody(
             showIfRead = showIfRead,
             blurNSFW = blurNSFW,
             disableVideoAutoplay = disableVideoAutoplay,
+            lowBandwidthMode = lowBandwidthMode,
         )
 
         // The metadata card
@@ -1008,6 +1012,7 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
@@ -1018,7 +1023,7 @@ fun PostTitleBlock(
         (postUrl != null && VideoHostComposer.isVideo(postUrl))
 
     when {
-        videoPost && expandedImage -> {
+        videoPost && expandedImage && !lowBandwidthMode -> {
             PostTitleAndVideoLink(
                 postView = postView,
                 appState = appState,
@@ -1028,7 +1033,7 @@ fun PostTitleBlock(
             )
         }
 
-        imagePost && expandedImage -> {
+        imagePost && expandedImage && !lowBandwidthMode -> {
             PostTitleAndImageLink(
                 postView = postView,
                 appState = appState,
@@ -1046,6 +1051,7 @@ fun PostTitleBlock(
                 appState = appState,
                 showIfRead = showIfRead,
                 blurNSFW = blurNSFW,
+                lowBandwidthMode = lowBandwidthMode,
             )
         }
     }
@@ -1135,6 +1141,7 @@ fun PostTitleAndThumbnail(
     appState: JerboaAppState,
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean = false,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -1159,6 +1166,7 @@ fun PostTitleAndThumbnail(
             usePrivateTabs = usePrivateTabs,
             blurEnabled = blurNSFW.needBlur(postView),
             appState = appState,
+            lowBandwidthMode = lowBandwidthMode,
         )
     }
 }

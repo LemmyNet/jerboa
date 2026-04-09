@@ -71,6 +71,7 @@ fun PostListingList(
     showIfRead: Boolean,
     enableDownVotes: Boolean,
     voteDisplayMode: LocalUserVoteDisplayMode,
+    lowBandwidthMode: Boolean = false,
 ) {
     Column(
         modifier =
@@ -188,6 +189,7 @@ fun PostListingList(
                 usePrivateTabs = usePrivateTabs,
                 blurEnabled = blurNSFW.needBlur(postView),
                 appState = appState,
+                lowBandwidthMode = lowBandwidthMode,
             )
         }
     }

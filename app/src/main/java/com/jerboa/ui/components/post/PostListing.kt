@@ -116,6 +116,7 @@ fun PostListing(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -213,6 +214,7 @@ fun PostListing(
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
+                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 
@@ -259,6 +261,7 @@ fun PostListing(
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
+                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 
@@ -279,6 +282,7 @@ fun PostListing(
                         showIfRead = showIfRead,
                         enableDownVotes = enableDownVotes,
                         voteDisplayMode = voteDisplayMode,
+                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
             }
@@ -308,8 +312,48 @@ fun ThumbnailTile(
     usePrivateTabs: Boolean,
     blurEnabled: Boolean,
     appState: JerboaAppState,
+    lowBandwidthMode: Boolean = false,
 ) {
     if (post.url == null) {
+        return
+    }
+
+    if (lowBandwidthMode) {
+        val targetUrl = post.url ?: return
+        val postLinkType = PostLinkType.fromURL(targetUrl)
+        val postLinkPicMod = Modifier
+            .size(POST_LINK_PIC_SIZE)
+            .combinedClickable(
+                onClick = {
+                    if (postLinkType != PostLinkType.Link) {
+                        appState.openMediaViewer(targetUrl, postLinkType)
+                    } else {
+                        appState.openLink(
+                            targetUrl,
+                            useCustomTabs,
+                            usePrivateTabs,
+                        )
+                    }
+                },
+                onLongClick = {
+                    appState.showLinkPopup(targetUrl)
+                },
+            )
+        Card(
+            modifier = postLinkPicMod,
+            shape = MaterialTheme.shapes.large,
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Link,
+                    contentDescription = null,
+                    modifier = Modifier.size(LINK_ICON_SIZE),
+                )
+            }
+        }
         return
     }
 

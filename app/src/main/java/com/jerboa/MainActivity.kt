@@ -1,7 +1,9 @@
 package com.jerboa
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.Uri
+import androidx.core.content.getSystemService
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
@@ -106,6 +108,9 @@ class MainActivity : AppCompatActivity() {
             if (appSettings == null) {
                 triggerRebirth(ctx)
             }
+
+            val lowBandwidthMode = appSettings.lowBandwidthMode &&
+                ctx.getSystemService<ConnectivityManager>().isConnectionMetered()
 
             if (appSettings.autoPlayGifs) {
                 Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
@@ -259,6 +264,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -304,6 +310,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -347,6 +354,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -387,6 +395,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -535,6 +544,7 @@ class MainActivity : AppCompatActivity() {
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                                 disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
                     }
@@ -570,6 +580,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 

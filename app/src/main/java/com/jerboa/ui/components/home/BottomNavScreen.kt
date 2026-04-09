@@ -41,7 +41,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
+import android.net.ConnectivityManager
+import androidx.core.content.getSystemService
 import com.jerboa.JerboaAppState
+import com.jerboa.isConnectionMetered
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AnonAccount
@@ -162,6 +165,8 @@ fun BottomNavScreen(
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+    val lowBandwidthMode = appSettings.lowBandwidthMode &&
+        ctx.getSystemService<ConnectivityManager>().isConnectionMetered()
 
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember(account) { SnackbarHostState() }
@@ -265,6 +270,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -332,6 +338,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -355,6 +362,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }

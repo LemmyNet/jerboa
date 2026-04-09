@@ -126,6 +126,7 @@ fun PersonProfileScreen(
     onBack: (() -> Unit)?,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to person screen")
@@ -317,6 +318,7 @@ fun PersonProfileScreen(
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
                 )
             }
         },
@@ -355,6 +357,7 @@ fun UserTabs(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -677,6 +680,7 @@ fun UserTabs(
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
                                     disableVideoAutoplay = disableVideoAutoplay,
+                                    lowBandwidthMode = lowBandwidthMode,
                                 )
                             }
 

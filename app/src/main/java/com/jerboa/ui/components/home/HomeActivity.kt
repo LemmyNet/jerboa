@@ -97,6 +97,7 @@ fun HomeScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues,
 ) {
     Log.d("jerboa", "got to home screen")
@@ -181,6 +182,7 @@ fun HomeScreen(
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
                 )
             }
         },
@@ -232,6 +234,7 @@ fun MainPostListingsContent(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean = false,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -467,6 +470,7 @@ fun MainPostListingsContent(
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
             disableVideoAutoplay = disableVideoAutoplay,
+            lowBandwidthMode = lowBandwidthMode,
         )
     }
 }
