@@ -153,6 +153,7 @@ fun BottomNavScreen(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    lowBandwidthMode: Boolean,
 ) {
     val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
     val account by remember {
@@ -265,6 +266,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -332,6 +334,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -355,6 +358,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
