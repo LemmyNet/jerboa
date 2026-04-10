@@ -1065,7 +1065,7 @@ fun PostTitleBlock(
                 postView = postView,
                 appState = appState,
                 showIfRead = showIfRead,
-                isVideo = videoPost,
+                linkType = if (videoPost) PostLinkType.Video else PostLinkType.Image,
             )
         }
 
@@ -1164,10 +1164,9 @@ fun PostTitleAndMediaPlaceholder(
     postView: PostView,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    isVideo: Boolean,
+    linkType: PostLinkType,
 ) {
     val url = postView.post.url ?: return
-    val postLinkType = if (isVideo) PostLinkType.Video else PostLinkType.Image
 
     PostName(
         post = postView.post,
@@ -1182,7 +1181,7 @@ fun PostTitleAndMediaPlaceholder(
             .fillMaxWidth()
             .aspectRatio(16f / 9f)
             .combinedClickable(
-                onClick = { appState.openMediaViewer(url, postLinkType) },
+                onClick = { appState.openMediaViewer(url, linkType) },
                 onLongClick = { appState.showLinkPopup(url) },
             ),
     ) {
@@ -1191,13 +1190,12 @@ fun PostTitleAndMediaPlaceholder(
             modifier = Modifier.fillMaxSize(),
         ) {
             Icon(
-                imageVector = if (isVideo) {
-                    Icons.Outlined.PlayCircle
-                } else {
-                    Icons.Outlined.Image
+                imageVector = when (linkType) {
+                    PostLinkType.Video -> Icons.Outlined.PlayCircle
+                    else -> Icons.Outlined.Image
                 },
                 contentDescription = null,
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(LINK_ICON_SIZE),
                 tint = MaterialTheme.colorScheme.outline,
             )
         }
