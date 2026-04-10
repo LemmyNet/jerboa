@@ -213,6 +213,7 @@ fun PostListingListPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
+        lowBandwidthMode = false,
     )
 }
 
@@ -234,6 +235,7 @@ fun PostListingListWithThumbPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
+        lowBandwidthMode = false,
     )
 }
 

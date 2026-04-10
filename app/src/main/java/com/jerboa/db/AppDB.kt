@@ -73,7 +73,7 @@ val APP_SETTINGS_DEFAULT =
         autoPlayGifs = DEFAULT_AUTO_PLAY_GIFS.toBool(),
         swipeToActionPreset = DEFAULT_SWIPE_TO_ACTION_PRESET,
         disableVideoAutoplay = DEFAULT_DISABLE_AUTO_PLAY,
-        lowBandwidthMode = DEFAULT_LOW_BANDWIDTH_MODE.toBool(),
+        lowBandwidthMode = DEFAULT_LOW_BANDWIDTH_MODE,
     )
 
 @Database(

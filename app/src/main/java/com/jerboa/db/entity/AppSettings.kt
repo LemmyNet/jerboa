@@ -7,8 +7,8 @@ import com.jerboa.db.DEFAULT_AUTO_PLAY_GIFS
 import com.jerboa.db.DEFAULT_BACK_CONFIRMATION_MODE
 import com.jerboa.db.DEFAULT_BLUR_NSFW
 import com.jerboa.db.DEFAULT_DISABLE_AUTO_PLAY
-import com.jerboa.db.DEFAULT_LOW_BANDWIDTH_MODE
 import com.jerboa.db.DEFAULT_LAST_VERSION_CODE_VIEWED
+import com.jerboa.db.DEFAULT_LOW_BANDWIDTH_MODE
 import com.jerboa.db.DEFAULT_MARK_AS_READ_ON_SCROLL
 import com.jerboa.db.DEFAULT_NAVIGATE_PARENT_COMMENTS_WITH_VOLUME_BUTTONS
 import com.jerboa.db.DEFAULT_POST_ACTION_BAR_MODE
@@ -157,5 +157,5 @@ data class AppSettings(
         name = "low_bandwidth_mode",
         defaultValue = DEFAULT_LOW_BANDWIDTH_MODE.toString(),
     )
-    val lowBandwidthMode: Boolean,
+    val lowBandwidthMode: Int,
 )

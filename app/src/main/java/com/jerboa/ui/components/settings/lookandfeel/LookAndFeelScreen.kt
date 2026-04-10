@@ -41,6 +41,7 @@ import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
 import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.LowBandwidthMode
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.feat.SwipeToActionPreset
@@ -99,7 +100,7 @@ fun LookAndFeelScreen(
     var markAsReadOnScrollState by remember { mutableStateOf(settings.markAsReadOnScroll) }
     var autoPlayGifsState by remember { mutableStateOf(settings.autoPlayGifs) }
     var disableVideoAutoplayState by remember { mutableStateOf(settings.disableVideoAutoplay == 1) }
-    var lowBandwidthModeState by remember { mutableStateOf(settings.lowBandwidthMode) }
+    var lowBandwidthModeState by remember { mutableStateOf(LowBandwidthMode.entries[settings.lowBandwidthMode]) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -133,7 +134,7 @@ fun LookAndFeelScreen(
                 postNavigationGestureMode = postNavigationGestureModeState.ordinal,
                 swipeToActionPreset = swipeToActionPresetState.ordinal,
                 disableVideoAutoplay = if (disableVideoAutoplayState) 1 else 0,
-                lowBandwidthMode = lowBandwidthModeState,
+                lowBandwidthMode = lowBandwidthModeState.ordinal,
             ),
         )
     }
@@ -537,14 +538,22 @@ fun LookAndFeelScreen(
                             Text(stringResource(id = R.string.settings_disable_video_autoplay))
                         },
                     )
-                    SwitchPreference(
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
                         value = lowBandwidthModeState,
                         onValueChange = {
                             lowBandwidthModeState = it
                             updateAppSettings()
                         },
+                        values = LowBandwidthMode.entries,
+                        valueToText = {
+                            AnnotatedString(resources.getString(it.resId))
+                        },
                         title = {
                             Text(stringResource(id = R.string.settings_low_bandwidth_mode))
+                        },
+                        summary = {
+                            Text(stringResource(lowBandwidthModeState.resId))
                         },
                     )
                 }

@@ -3,7 +3,6 @@ package com.jerboa
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Uri
-import androidx.core.content.getSystemService
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
@@ -25,6 +24,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.getSystemService
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -36,6 +36,7 @@ import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
 import com.jerboa.feat.BackConfirmation.disposeConfirmation
 import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.LowBandwidthMode
 import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
@@ -110,8 +111,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             val connectivityManager = ctx.getSystemService<ConnectivityManager>()
-            val lowBandwidthMode = connectivityManager.isConnectionMetered() &&
-                (appSettings.lowBandwidthMode || connectivityManager.isDataSaverEnabled())
+            val lowBandwidthMode =
+                appSettings.lowBandwidthMode.toEnum<LowBandwidthMode>().isActive(connectivityManager)
 
             if (appSettings.autoPlayGifs) {
                 Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
