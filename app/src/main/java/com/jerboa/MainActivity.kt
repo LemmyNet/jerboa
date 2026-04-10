@@ -84,6 +84,7 @@ import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
 import com.jerboa.ui.components.viewvotes.post.PostLikesScreen
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
@@ -95,6 +96,8 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        FreeDroidWarn.showWarningOnUpgrade(this, getVersionCode())
+
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
