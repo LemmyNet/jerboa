@@ -41,11 +41,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
-import android.net.ConnectivityManager
-import androidx.core.content.getSystemService
 import com.jerboa.JerboaAppState
-import com.jerboa.isConnectionMetered
-import com.jerboa.isDataSaverEnabled
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AnonAccount
@@ -157,6 +153,7 @@ fun BottomNavScreen(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    lowBandwidthMode: Boolean,
 ) {
     val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
     val account by remember {
@@ -166,9 +163,6 @@ fun BottomNavScreen(
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
-    val connectivityManager = ctx.getSystemService<ConnectivityManager>()
-    val lowBandwidthMode = connectivityManager.isConnectionMetered() &&
-        (appSettings.lowBandwidthMode || connectivityManager.isDataSaverEnabled())
 
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember(account) { SnackbarHostState() }

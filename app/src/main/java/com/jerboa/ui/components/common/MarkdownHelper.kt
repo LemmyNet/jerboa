@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
@@ -28,6 +27,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 import com.jerboa.util.markwon.ForceHttpsPlugin
+import com.jerboa.util.markwon.LinkOnlyImagesPlugin
 import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
 import com.jerboa.util.markwon.MarkwonSpoilerPlugin
 import com.jerboa.util.markwon.ScriptRewriteSupportPlugin
@@ -44,29 +44,6 @@ import io.noties.markwon.image.coil.ClickableCoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
 import java.util.regex.Pattern
-
-/**
- * CompositionLocal for low bandwidth mode. Markdown rendering reads this to
- * decide whether to load inline images or skip them.
- */
-val LocalLowBandwidthMode = compositionLocalOf { false }
-
-/**
- * Matches markdown image syntax `![alt](url)` and HTML `<img src="url" ... />`
- * so we can rewrite them as plain links in low bandwidth mode.
- */
-private val markdownImageRegex = Regex("""!\[([^\]]*)]\(([^)\s]+)(?:\s+"[^"]*")?\)""")
-private val htmlImageRegex = Regex("""<img\s[^>]*?src=["']([^"']+)["'][^>]*?/?>""", RegexOption.IGNORE_CASE)
-
-internal fun stripInlineImages(markdown: String): String =
-    markdown
-        .replace(markdownImageRegex) { match ->
-            val alt = match.groupValues[1].ifEmpty { "image" }
-            "[$alt](${match.groupValues[2]})"
-        }.replace(htmlImageRegex) { match ->
-            val url = match.groupValues[1]
-            "[image]($url)"
-        }
 
 /**
  * pattern that matches all valid communities; intended to be loose
@@ -98,18 +75,31 @@ val lemmyUserPattern: Pattern =
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
-    private var lowBandwidthMarkwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
     fun init(
         appState: JerboaAppState,
         useCustomTabs: Boolean,
         usePrivateTabs: Boolean,
+        lowBandwidthMode: Boolean,
         onLongClick: BetterLinkMovementMethod.OnLinkLongClickListener,
     ) {
         val context = appState.navController.context
         val loader = context.imageLoader
-        // main markdown parser has coil + html on
+        val imagesPlugin = if (lowBandwidthMode) {
+            // Render `![alt](url)` as a plain clickable link — no network load.
+            LinkOnlyImagesPlugin()
+        } else {
+            ClickableCoilImagesPlugin.create(context, loader, appState)
+        }
+        val htmlPlugin = if (lowBandwidthMode) {
+            // HtmlPlugin's default `<img>` handler would still load images;
+            // swap it for a no-op so inline HTML images are dropped.
+            HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) }
+        } else {
+            HtmlPlugin.create()
+        }
+
         markwon =
             Markwon
                 .builder(context)
@@ -121,8 +111,8 @@ object MarkdownHelper {
                 .usePlugin(MarkwonSpoilerPlugin(true))
                 .usePlugin(StrikethroughPlugin.create())
                 .usePlugin(TablePlugin.create(context))
-                .usePlugin(ClickableCoilImagesPlugin.create(context, loader, appState))
-                .usePlugin(HtmlPlugin.create())
+                .usePlugin(imagesPlugin)
+                .usePlugin(htmlPlugin)
                 // use TableAwareLinkMovementMethod to handle clicks inside tables,
                 // wraps LinkMovementMethod internally
                 .usePlugin(
@@ -137,35 +127,6 @@ object MarkdownHelper {
                             builder.linkResolver { view, link ->
                                 // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
                                 // Now it doesn't anymore and we have to do it manually
-                                view.cancelPendingInputEvents()
-                                appState.openLink(link, useCustomTabs, usePrivateTabs)
-                            }
-                        }
-                    },
-                ).build()
-
-        // low bandwidth markdown parser: same as markwon but without inline image loading
-        lowBandwidthMarkwon =
-            Markwon
-                .builder(context)
-                .usePlugin(ForceHttpsPlugin())
-                .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-                .usePlugin(ScriptRewriteSupportPlugin())
-                .usePlugin(MarkwonLemmyLinkPlugin())
-                .usePlugin(MarkwonSpoilerPlugin(true))
-                .usePlugin(StrikethroughPlugin.create())
-                .usePlugin(TablePlugin.create(context))
-                .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
-                .usePlugin(
-                    MovementMethodPlugin.create(
-                        TableAwareMovementMethod(
-                            BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
-                        ),
-                    ),
-                ).usePlugin(
-                    object : AbstractMarkwonPlugin() {
-                        override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                            builder.linkResolver { view, link ->
                                 view.cancelPendingInputEvents()
                                 appState.openLink(link, useCustomTabs, usePrivateTabs)
                             }
@@ -199,7 +160,6 @@ object MarkdownHelper {
      */
     fun init(context: Context) {
         markwon = Markwon.builder(context).build()
-        lowBandwidthMarkwon = Markwon.builder(context).build()
         previewMarkwon = Markwon.builder(context).build()
     }
 
@@ -212,7 +172,6 @@ object MarkdownHelper {
         onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
-        val lowBandwidthMode = LocalLowBandwidthMode.current
         AndroidView(
             factory = { ctx ->
                 createTextView(
@@ -224,9 +183,8 @@ object MarkdownHelper {
                 )
             },
             update = { textView ->
-                val parser = if (lowBandwidthMode) lowBandwidthMarkwon!! else markwon!!
-                val source = if (lowBandwidthMode) stripInlineImages(markdown) else markdown
-                val md = parser.toMarkdown(source)
+                val parser = markwon!!
+                val md = parser.toMarkdown(markdown)
                 for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
                     img.drawable.initWithKnownDimensions(textView.width, textView.textSize)
                 }
