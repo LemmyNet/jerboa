@@ -52,6 +52,23 @@ import java.util.regex.Pattern
 val LocalLowBandwidthMode = compositionLocalOf { false }
 
 /**
+ * Matches markdown image syntax `![alt](url)` and HTML `<img src="url" ... />`
+ * so we can rewrite them as plain links in low bandwidth mode.
+ */
+private val markdownImageRegex = Regex("""!\[([^\]]*)]\(([^)\s]+)(?:\s+"[^"]*")?\)""")
+private val htmlImageRegex = Regex("""<img\s[^>]*?src=["']([^"']+)["'][^>]*?/?>""", RegexOption.IGNORE_CASE)
+
+internal fun stripInlineImages(markdown: String): String =
+    markdown
+        .replace(markdownImageRegex) { match ->
+            val alt = match.groupValues[1].ifEmpty { "image" }
+            "[$alt](${match.groupValues[2]})"
+        }.replace(htmlImageRegex) { match ->
+            val url = match.groupValues[1]
+            "[image]($url)"
+        }
+
+/**
  * pattern that matches all valid communities; intended to be loose
  */
 const val COMMUNITY_PATTERN_FRAGMENT: String = """[a-zA-Z0-9_]{3,}"""
@@ -208,7 +225,8 @@ object MarkdownHelper {
             },
             update = { textView ->
                 val parser = if (lowBandwidthMode) lowBandwidthMarkwon!! else markwon!!
-                val md = parser.toMarkdown(markdown)
+                val source = if (lowBandwidthMode) stripInlineImages(markdown) else markdown
+                val md = parser.toMarkdown(source)
                 for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
                     img.drawable.initWithKnownDimensions(textView.width, textView.textSize)
                 }
