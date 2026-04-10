@@ -71,7 +71,7 @@ fun PostListingList(
     showIfRead: Boolean,
     enableDownVotes: Boolean,
     voteDisplayMode: LocalUserVoteDisplayMode,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     Column(
         modifier =

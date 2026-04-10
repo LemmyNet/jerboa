@@ -234,7 +234,7 @@ fun MainPostListingsContent(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current

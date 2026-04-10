@@ -89,7 +89,7 @@ fun CommunityScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to community screen")
 

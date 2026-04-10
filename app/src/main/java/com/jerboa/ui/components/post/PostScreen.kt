@@ -135,7 +135,7 @@ fun PostScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to post screen")
 
@@ -310,7 +310,7 @@ fun MainPostScreenBody(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current

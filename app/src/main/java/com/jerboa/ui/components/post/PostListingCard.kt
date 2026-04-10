@@ -157,7 +157,7 @@ fun PostListingCard(
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     Column(
         modifier =
@@ -270,6 +270,7 @@ fun PreviewPostListingCard() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -315,6 +316,7 @@ fun PreviewLinkPostListing() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -360,6 +362,7 @@ fun PreviewImagePostListingCard() {
         viewSource = false,
         expandedImage = true,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -405,6 +408,7 @@ fun PreviewImagePostListingSmallCard() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -450,6 +454,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -834,7 +839,7 @@ fun PostTitleAttributionBody(
     showCommunityName: Boolean,
     showAvatar: Boolean,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
@@ -853,6 +858,7 @@ fun PostTitleAttributionBody(
         PostTitleBlock(
             postView = postView,
             expandedImage = expandedImage,
+            fullBody = fullBody,
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
@@ -951,6 +957,7 @@ fun PreviewStoryTitleAndMetadata() {
         showAvatar = true,
         showCommunityName = true,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -976,6 +983,7 @@ fun PreviewSourcePost() {
         showAvatar = true,
         showCommunityName = true,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -1018,7 +1026,7 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
@@ -1201,7 +1209,7 @@ fun PostTitleAndThumbnail(
     appState: JerboaAppState,
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),

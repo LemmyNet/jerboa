@@ -116,7 +116,7 @@ fun PostListing(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -312,7 +312,7 @@ fun ThumbnailTile(
     usePrivateTabs: Boolean,
     blurEnabled: Boolean,
     appState: JerboaAppState,
-    lowBandwidthMode: Boolean = false,
+    lowBandwidthMode: Boolean,
 ) {
     if (post.url == null) {
         return
