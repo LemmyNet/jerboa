@@ -109,8 +109,9 @@ class MainActivity : AppCompatActivity() {
                 triggerRebirth(ctx)
             }
 
-            val lowBandwidthMode = appSettings.lowBandwidthMode &&
-                ctx.getSystemService<ConnectivityManager>().isConnectionMetered()
+            val connectivityManager = ctx.getSystemService<ConnectivityManager>()
+            val lowBandwidthMode = connectivityManager.isConnectionMetered() &&
+                (appSettings.lowBandwidthMode || connectivityManager.isDataSaverEnabled())
 
             if (appSettings.autoPlayGifs) {
                 Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)

@@ -45,6 +45,7 @@ import android.net.ConnectivityManager
 import androidx.core.content.getSystemService
 import com.jerboa.JerboaAppState
 import com.jerboa.isConnectionMetered
+import com.jerboa.isDataSaverEnabled
 import com.jerboa.R
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AnonAccount
@@ -165,8 +166,9 @@ fun BottomNavScreen(
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
-    val lowBandwidthMode = appSettings.lowBandwidthMode &&
-        ctx.getSystemService<ConnectivityManager>().isConnectionMetered()
+    val connectivityManager = ctx.getSystemService<ConnectivityManager>()
+    val lowBandwidthMode = connectivityManager.isConnectionMetered() &&
+        (appSettings.lowBandwidthMode || connectivityManager.isDataSaverEnabled())
 
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember(account) { SnackbarHostState() }
