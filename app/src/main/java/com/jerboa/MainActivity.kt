@@ -19,6 +19,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -49,6 +50,7 @@ import com.jerboa.ui.components.ban.BanPersonScreen
 import com.jerboa.ui.components.comment.edit.CommentEditScreen
 import com.jerboa.ui.components.comment.reply.CommentReplyScreen
 import com.jerboa.ui.components.common.LinkDropDownMenu
+import com.jerboa.ui.components.common.LocalLowBandwidthMode
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.SwipeToNavigateBack
@@ -122,6 +124,9 @@ class MainActivity : AppCompatActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
+                CompositionLocalProvider(
+                    LocalLowBandwidthMode provides lowBandwidthMode,
+                ) {
                 val appState = rememberJerboaAppState()
 
                 DisposableEffect(Unit) {
@@ -864,6 +869,7 @@ class MainActivity : AppCompatActivity() {
                             appState::popBackStack,
                         )
                     }
+                }
                 }
             }
         }

@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
@@ -45,6 +46,12 @@ import io.noties.markwon.movement.MovementMethodPlugin
 import java.util.regex.Pattern
 
 /**
+ * CompositionLocal for low bandwidth mode. Markdown rendering reads this to
+ * decide whether to load inline images or skip them.
+ */
+val LocalLowBandwidthMode = compositionLocalOf { false }
+
+/**
  * pattern that matches all valid communities; intended to be loose
  */
 const val COMMUNITY_PATTERN_FRAGMENT: String = """[a-zA-Z0-9_]{3,}"""
@@ -74,6 +81,7 @@ val lemmyUserPattern: Pattern =
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
+    private var lowBandwidthMarkwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
     fun init(
@@ -119,6 +127,35 @@ object MarkdownHelper {
                     },
                 ).build()
 
+        // low bandwidth markdown parser: same as markwon but without inline image loading
+        lowBandwidthMarkwon =
+            Markwon
+                .builder(context)
+                .usePlugin(ForceHttpsPlugin())
+                .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+                .usePlugin(ScriptRewriteSupportPlugin())
+                .usePlugin(MarkwonLemmyLinkPlugin())
+                .usePlugin(MarkwonSpoilerPlugin(true))
+                .usePlugin(StrikethroughPlugin.create())
+                .usePlugin(TablePlugin.create(context))
+                .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
+                .usePlugin(
+                    MovementMethodPlugin.create(
+                        TableAwareMovementMethod(
+                            BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
+                        ),
+                    ),
+                ).usePlugin(
+                    object : AbstractMarkwonPlugin() {
+                        override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                            builder.linkResolver { view, link ->
+                                view.cancelPendingInputEvents()
+                                appState.openLink(link, useCustomTabs, usePrivateTabs)
+                            }
+                        }
+                    },
+                ).build()
+
         // no image parser has html off
         previewMarkwon =
             Markwon
@@ -145,6 +182,7 @@ object MarkdownHelper {
      */
     fun init(context: Context) {
         markwon = Markwon.builder(context).build()
+        lowBandwidthMarkwon = Markwon.builder(context).build()
         previewMarkwon = Markwon.builder(context).build()
     }
 
@@ -157,6 +195,7 @@ object MarkdownHelper {
         onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
+        val lowBandwidthMode = LocalLowBandwidthMode.current
         AndroidView(
             factory = { ctx ->
                 createTextView(
@@ -168,11 +207,12 @@ object MarkdownHelper {
                 )
             },
             update = { textView ->
-                val md = markwon!!.toMarkdown(markdown)
+                val parser = if (lowBandwidthMode) lowBandwidthMarkwon!! else markwon!!
+                val md = parser.toMarkdown(markdown)
                 for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
                     img.drawable.initWithKnownDimensions(textView.width, textView.textSize)
                 }
-                markwon!!.setParsedMarkdown(textView, md)
+                parser.setParsedMarkdown(textView, md)
             },
             modifier = modifier,
         )
