@@ -1019,6 +1019,7 @@ fun SavedButton(
 fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
+    fullBody: Boolean,
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -1056,7 +1057,10 @@ fun PostTitleBlock(
             )
         }
 
-        (videoPost || imagePost) && expandedImage && lowBandwidthMode -> {
+        // Show the full-width placeholder whenever the card would otherwise
+        // expand the media (Card mode) or when we're in the post detail view
+        // (SmallCard with fullBody), where the usual thumbnail is too small.
+        (videoPost || imagePost) && lowBandwidthMode && (expandedImage || fullBody) -> {
             PostTitleAndMediaPlaceholder(
                 postView = postView,
                 appState = appState,
