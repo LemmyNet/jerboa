@@ -44,6 +44,7 @@ const val DEFAULT_POST_ACTION_BAR_MODE = 0
 const val DEFAULT_AUTO_PLAY_GIFS = 0
 const val DEFAULT_SWIPE_TO_ACTION_PRESET = 0
 const val DEFAULT_DISABLE_AUTO_PLAY = 0
+const val DEFAULT_LOW_BANDWIDTH_MODE = 0
 
 val APP_SETTINGS_DEFAULT =
     AppSettings(
@@ -72,10 +73,11 @@ val APP_SETTINGS_DEFAULT =
         autoPlayGifs = DEFAULT_AUTO_PLAY_GIFS.toBool(),
         swipeToActionPreset = DEFAULT_SWIPE_TO_ACTION_PRESET,
         disableVideoAutoplay = DEFAULT_DISABLE_AUTO_PLAY,
+        lowBandwidthMode = DEFAULT_LOW_BANDWIDTH_MODE,
     )
 
 @Database(
-    version = 34,
+    version = 35,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
