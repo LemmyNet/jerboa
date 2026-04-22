@@ -8,8 +8,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10"
-    kotlin("plugin.serialization") version "2.3.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.20"
+    kotlin("plugin.serialization") version "2.3.20"
 
 }
 
@@ -121,7 +121,7 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.01.01")
+    val composeBom = platform("androidx.compose:compose-bom:2026.03.01")
 
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
@@ -131,6 +131,9 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
+
+    // Freedroidwarn
+    implementation("com.github.woheller69:FreeDroidWarn:V1.11")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
@@ -151,14 +154,14 @@ dependencies {
     implementation("io.coil-kt:coil-video:2.7.0")
 
     // Media3 for video playback
-    implementation("androidx.media3:media3-exoplayer:1.9.2")
-    implementation("androidx.media3:media3-ui:1.9.2")
-    implementation("androidx.media3:media3-common:1.9.2")
-    implementation("androidx.media3:media3-exoplayer-hls:1.9.2")
-    implementation("androidx.media3:media3-exoplayer-dash:1.9.2")
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.9.2")
+    implementation("androidx.media3:media3-exoplayer:1.10.0")
+    implementation("androidx.media3:media3-ui:1.10.0")
+    implementation("androidx.media3:media3-common:1.10.0")
+    implementation("androidx.media3:media3-exoplayer-hls:1.10.0")
+    implementation("androidx.media3:media3-exoplayer-dash:1.10.0")
+    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.10.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.18.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.19.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -179,7 +182,7 @@ dependencies {
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 
-    implementation("io.arrow-kt:arrow-core:2.2.1.1")
+    implementation("io.arrow-kt:arrow-core:2.2.2.1")
 
 
     implementation("androidx.compose.material3:material3")
@@ -200,17 +203,17 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.21.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
+    testImplementation("org.mockito:mockito-core:5.23.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
 
-    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.browser:browser:1.10.0")
 
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.4.0")
+    implementation("io.ktor:ktor-client-logging:3.4.2")
 }

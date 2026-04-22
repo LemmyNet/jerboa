@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,11 +24,14 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,6 +49,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostLinkType
 import com.jerboa.R
@@ -95,6 +101,7 @@ import com.jerboa.ui.components.videoviewer.VideoHostComposer
 import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -151,6 +158,7 @@ fun PostListingCard(
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     Column(
         modifier =
@@ -180,6 +188,7 @@ fun PostListingCard(
             showAvatar = showAvatar,
             showCommunityName = showCommunityName,
             disableVideoAutoplay = disableVideoAutoplay,
+            lowBandwidthMode = lowBandwidthMode,
         )
 
         Spacer(modifier = Modifier.padding(vertical = VERTICAL_SPACING))
@@ -262,6 +271,7 @@ fun PreviewPostListingCard() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -307,6 +317,7 @@ fun PreviewLinkPostListing() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -352,6 +363,7 @@ fun PreviewImagePostListingCard() {
         viewSource = false,
         expandedImage = true,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -397,6 +409,7 @@ fun PreviewImagePostListingSmallCard() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -442,6 +455,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         viewSource = false,
         expandedImage = false,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -826,6 +840,7 @@ fun PostTitleAttributionBody(
     showCommunityName: Boolean,
     showAvatar: Boolean,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
@@ -844,6 +859,7 @@ fun PostTitleAttributionBody(
         PostTitleBlock(
             postView = postView,
             expandedImage = expandedImage,
+            fullBody = fullBody,
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
@@ -851,6 +867,7 @@ fun PostTitleAttributionBody(
             showIfRead = showIfRead,
             blurNSFW = blurNSFW,
             disableVideoAutoplay = disableVideoAutoplay,
+            lowBandwidthMode = lowBandwidthMode,
         )
 
         // The metadata card
@@ -941,6 +958,7 @@ fun PreviewStoryTitleAndMetadata() {
         showAvatar = true,
         showCommunityName = true,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -966,6 +984,7 @@ fun PreviewSourcePost() {
         showAvatar = true,
         showCommunityName = true,
         disableVideoAutoplay = false,
+        lowBandwidthMode = false,
     )
 }
 
@@ -1001,6 +1020,7 @@ fun SavedButton(
 fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
+    fullBody: Boolean,
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -1008,6 +1028,7 @@ fun PostTitleBlock(
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
@@ -1018,7 +1039,7 @@ fun PostTitleBlock(
         (postUrl != null && VideoHostComposer.isVideo(postUrl))
 
     when {
-        videoPost && expandedImage -> {
+        videoPost && expandedImage && !lowBandwidthMode -> {
             PostTitleAndVideoLink(
                 postView = postView,
                 appState = appState,
@@ -1028,12 +1049,24 @@ fun PostTitleBlock(
             )
         }
 
-        imagePost && expandedImage -> {
+        imagePost && expandedImage && !lowBandwidthMode -> {
             PostTitleAndImageLink(
                 postView = postView,
                 appState = appState,
                 showIfRead = showIfRead,
                 blurNSFW = blurNSFW,
+            )
+        }
+
+        // Show the full-width placeholder whenever the card would otherwise
+        // expand the media (Card mode) or when we're in the post detail view
+        // (SmallCard with fullBody), where the usual thumbnail is too small.
+        (videoPost || imagePost) && lowBandwidthMode && (expandedImage || fullBody) -> {
+            PostTitleAndMediaPlaceholder(
+                postView = postView,
+                appState = appState,
+                showIfRead = showIfRead,
+                linkType = if (videoPost) PostLinkType.Video else PostLinkType.Image,
             )
         }
 
@@ -1046,6 +1079,7 @@ fun PostTitleBlock(
                 appState = appState,
                 showIfRead = showIfRead,
                 blurNSFW = blurNSFW,
+                lowBandwidthMode = lowBandwidthMode,
             )
         }
     }
@@ -1127,6 +1161,49 @@ fun PostTitleAndVideoLink(
 }
 
 @Composable
+fun PostTitleAndMediaPlaceholder(
+    postView: PostView,
+    appState: JerboaAppState,
+    showIfRead: Boolean,
+    linkType: PostLinkType,
+) {
+    val url = postView.post.url ?: return
+
+    PostName(
+        post = postView.post,
+        read = postView.read,
+        showIfRead = showIfRead,
+        modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+    )
+
+    OutlinedCard(
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(16f / 9f)
+            .combinedClickable(
+                onClick = { appState.openMediaViewer(url, linkType) },
+                onLongClick = { appState.showLinkPopup(url) },
+            ),
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Icon(
+                imageVector = when (linkType) {
+                    PostLinkType.Video -> Icons.Outlined.PlayCircle
+                    else -> Icons.Outlined.Image
+                },
+                contentDescription = null,
+                modifier = Modifier.size(LINK_ICON_SIZE),
+                tint = MaterialTheme.colorScheme.outline,
+            )
+        }
+    }
+}
+
+@Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
     account: Account,
@@ -1135,6 +1212,7 @@ fun PostTitleAndThumbnail(
     appState: JerboaAppState,
     showIfRead: Boolean,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -1159,6 +1237,7 @@ fun PostTitleAndThumbnail(
             usePrivateTabs = usePrivateTabs,
             blurEnabled = blurNSFW.needBlur(postView),
             appState = appState,
+            lowBandwidthMode = lowBandwidthMode,
         )
     }
 }

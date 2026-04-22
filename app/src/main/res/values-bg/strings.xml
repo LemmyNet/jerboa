@@ -425,7 +425,7 @@
     <string name="unfeature_in_local">Отпредставяне от местни</string>
     <string name="swipe_to_action_presets">Предварителна настройка за жест на плъзгане</string>
     <string name="swipe_action_preset_only_votes">Само гласове</string>
-    <string name="view_votes">Преглед на гласуванията</string>
+    <string name="view_votes">Преглед на гласувалите</string>
     <string name="post_votes">Гласувания за публикации</string>
     <string name="comment_votes">Гласувания за коментари</string>
     <string name="moderation">Модериране</string>

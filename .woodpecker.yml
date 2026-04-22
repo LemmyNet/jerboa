@@ -1,9 +1,9 @@
 variables:
-  - &android_image "cimg/android:2026.02"
+  - &android_image "cimg/android:2026.03"
 
 steps:
   prettier_markdown_check:
-    image: jauderho/prettier:3.8.1-alpine
+    image: jauderho/prettier:3.8.3-alpine
     commands:
       - prettier -c "*.md" "*.yml"
     when:

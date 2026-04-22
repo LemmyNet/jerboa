@@ -26,6 +26,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 fun SiteSidebarScreen(
     appState: JerboaAppState,
     siteViewModel: SiteViewModel,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to site sidebar screen")
 
@@ -85,7 +86,7 @@ fun SiteSidebarScreen(
                     is ApiState.Success -> {
                         SiteSidebar(
                             siteRes = siteRes.data,
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             onPersonClick = appState::toProfile,
                         )
                     }

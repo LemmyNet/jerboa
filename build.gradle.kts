@@ -4,9 +4,9 @@ plugins {
     id("com.android.application") version "8.13.2" apply false
     id("com.android.library") version "8.13.2" apply false
     id("com.android.test") version "8.13.2" apply false
-    id("org.jetbrains.kotlin.android") version "2.3.10" apply false
-    id("org.jmailen.kotlinter") version "5.4.0" apply false
-    id("com.google.devtools.ksp") version "2.3.5" apply false
+    id("org.jetbrains.kotlin.android") version "2.3.20" apply false
+    id("org.jmailen.kotlinter") version "5.4.2" apply false
+    id("com.google.devtools.ksp") version "2.3.6" apply false
     id("androidx.baselineprofile") version "1.4.1" apply false
 }
 
