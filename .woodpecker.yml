@@ -43,7 +43,7 @@ steps:
     image: *android_image
     commands:
       - sudo chown -R circleci:circleci .
-      - ./gradlew testDebug
+      - ./gradlew testFdroidDebugUnitTest
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:

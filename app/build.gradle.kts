@@ -10,12 +10,10 @@ plugins {
     id("androidx.baselineprofile")
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.20"
     kotlin("plugin.serialization") version "2.3.20"
-
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
-//apply(from = "update_instances.gradle.kts")
-
+// apply(from = "update_instances.gradle.kts")
 
 kotlin {
     compilerOptions {
@@ -41,6 +39,18 @@ android {
         }
     }
 
+    flavorDimensions += "version"
+    productFlavors {
+        create("fdroid") {
+            dimension = "version"
+            versionNameSuffix = "-fdroid"
+        }
+        create("gplay") {
+            dimension = "version"
+            versionNameSuffix = "-gplay"
+        }
+    }
+
     lint {
         disable += "MissingTranslation"
         disable += "KtxExtensionAvailable"
@@ -59,7 +69,6 @@ android {
         // Adds exported schema location as test app assets.
         getByName("androidTest").assets.srcDir("$projectDir/schemas")
     }
-
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
@@ -102,6 +111,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     // Match build tools with CI image
     buildToolsVersion = "36.0.0"
@@ -183,7 +193,6 @@ dependencies {
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 
     implementation("io.arrow-kt:arrow-core:2.2.2.1")
-
 
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")

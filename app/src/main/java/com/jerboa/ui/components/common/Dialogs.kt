@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.BuildConfig
 import com.jerboa.R
 
 val CHANGELOG_DONATION_MARKDOWN =
@@ -67,6 +68,13 @@ fun ShowChangelog(
 ) {
     val scrollState = rememberScrollState()
 
+    // Only include donation text in f-droid
+    val markdown = if (BuildConfig.FLAVOR == "gplay") {
+        changelogMarkdown
+    } else {
+        CHANGELOG_DONATION_MARKDOWN + changelogMarkdown
+    }
+
     AlertDialog(
         text = {
             Column(
@@ -76,7 +84,7 @@ fun ShowChangelog(
                         .verticalScroll(scrollState),
             ) {
                 MyMarkdownText(
-                    markdown = CHANGELOG_DONATION_MARKDOWN + changelogMarkdown,
+                    markdown = markdown,
                     onClick = {},
                 )
             }
