@@ -322,7 +322,7 @@ class MainActivity : AppCompatActivity() {
                         CommunitySidebarScreen(
                             appState = appState,
                             onClickBack = appState::popBackStack,
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
 
@@ -420,7 +420,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
 
@@ -474,6 +474,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            lowBandwidthMode = lowBandwidthMode,
                             drawerState = drawerState,
                         )
                     }
@@ -486,6 +487,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -497,6 +499,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -509,6 +512,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -595,6 +599,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             appState = appState,
                             siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -602,6 +607,7 @@ class MainActivity : AppCompatActivity() {
                         SiteSidebarScreen(
                             appState = appState,
                             siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -631,6 +637,7 @@ class MainActivity : AppCompatActivity() {
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                             onBack = appState::popBackStack,
                             onProfile = appState::toProfile,
                         )

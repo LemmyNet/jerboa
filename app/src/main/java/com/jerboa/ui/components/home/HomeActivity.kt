@@ -445,7 +445,7 @@ fun MainPostListingsContent(
             postViewMode = getPostViewMode(appSettingsViewModel),
             showVotingArrowsInListView = showVotingArrowsInListView,
             enableDownVotes = siteViewModel.enableDownvotes(),
-            showAvatar = siteViewModel.showAvatar(),
+            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,

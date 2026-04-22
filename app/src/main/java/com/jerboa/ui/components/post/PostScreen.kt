@@ -511,7 +511,7 @@ fun MainPostScreenBody(
                         account = account,
                         postViewMode = PostViewMode.SmallCard,
                         enableDownVotes = siteViewModel.enableDownvotes(),
-                        showAvatar = siteViewModel.showAvatar(),
+                        showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         showVotingArrowsInListView = showVotingArrowsInListView,
                         useCustomTabs = useCustomTabs,
                         usePrivateTabs = usePrivateTabs,
@@ -745,7 +745,7 @@ fun MainPostScreenBody(
                             onPostClick = {},
                             account = account,
                             enableDownVotes = siteViewModel.enableDownvotes(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             isCollapsedByParent = false,
                             showCollapsedCommentContent = showCollapsedCommentContent,
                             showActionBar = { commentId ->
