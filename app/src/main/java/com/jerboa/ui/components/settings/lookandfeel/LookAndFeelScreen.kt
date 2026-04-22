@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.DataSaverOn
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
@@ -393,6 +394,30 @@ fun LookAndFeelScreen(
                             Text(stringResource(swipeToActionPresetState.resId))
                         },
                     )
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = lowBandwidthModeState,
+                        onValueChange = {
+                            lowBandwidthModeState = it
+                            updateAppSettings()
+                        },
+                        values = LowBandwidthMode.entries,
+                        valueToText = {
+                            AnnotatedString(resources.getString(it.resId))
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.settings_low_bandwidth_mode))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.DataSaverOn,
+                                contentDescription = null,
+                            )
+                        },
+                        summary = {
+                            Text(stringResource(lowBandwidthModeState.resId))
+                        },
+                    )
                     SwitchPreference(
                         value = showBottomNavState,
                         onValueChange = {
@@ -536,24 +561,6 @@ fun LookAndFeelScreen(
                         },
                         title = {
                             Text(stringResource(id = R.string.settings_disable_video_autoplay))
-                        },
-                    )
-                    ListPreference(
-                        type = ListPreferenceType.DROPDOWN_MENU,
-                        value = lowBandwidthModeState,
-                        onValueChange = {
-                            lowBandwidthModeState = it
-                            updateAppSettings()
-                        },
-                        values = LowBandwidthMode.entries,
-                        valueToText = {
-                            AnnotatedString(resources.getString(it.resId))
-                        },
-                        title = {
-                            Text(stringResource(id = R.string.settings_low_bandwidth_mode))
-                        },
-                        summary = {
-                            Text(stringResource(lowBandwidthModeState.resId))
                         },
                     )
                 }
