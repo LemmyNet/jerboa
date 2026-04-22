@@ -37,6 +37,7 @@ fun RegistrationApplicationsScreen(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to registration applications screen")
@@ -106,6 +107,7 @@ fun RegistrationApplicationsScreen(
                 resources = resources,
                 account = account,
                 scope = scope,
+                lowBandwidthMode = lowBandwidthMode,
                 snackbarHostState = snackbarHostState,
             )
         },

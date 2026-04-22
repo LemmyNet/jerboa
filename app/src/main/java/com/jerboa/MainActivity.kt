@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.getSystemService
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -34,6 +36,7 @@ import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
 import com.jerboa.feat.BackConfirmation.disposeConfirmation
 import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.LowBandwidthMode
 import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
@@ -110,6 +113,10 @@ class MainActivity : AppCompatActivity() {
                 triggerRebirth(ctx)
             }
 
+            val connectivityManager = ctx.getSystemService<ConnectivityManager>()
+            val lowBandwidthMode =
+                appSettings.lowBandwidthMode.toEnum<LowBandwidthMode>().isActive(connectivityManager)
+
             if (appSettings.autoPlayGifs) {
                 Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
             } else {
@@ -155,6 +162,7 @@ class MainActivity : AppCompatActivity() {
                     appState,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
+                    lowBandwidthMode,
                     object : BetterLinkMovementMethod.OnLinkLongClickListener {
                         override fun onLongClick(
                             textView: TextView,
@@ -233,6 +241,7 @@ class MainActivity : AppCompatActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
                             drawerState = drawerState,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -262,6 +271,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -307,6 +317,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -314,7 +325,7 @@ class MainActivity : AppCompatActivity() {
                         CommunitySidebarScreen(
                             appState = appState,
                             onClickBack = appState::popBackStack,
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
 
@@ -350,6 +361,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -390,6 +402,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -410,7 +423,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
 
@@ -464,6 +477,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            lowBandwidthMode = lowBandwidthMode,
                             drawerState = drawerState,
                         )
                     }
@@ -476,6 +490,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -487,6 +502,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -499,6 +515,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -538,6 +555,7 @@ class MainActivity : AppCompatActivity() {
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                                 disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
                     }
@@ -573,6 +591,7 @@ class MainActivity : AppCompatActivity() {
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -583,6 +602,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             appState = appState,
                             siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -590,6 +610,7 @@ class MainActivity : AppCompatActivity() {
                         SiteSidebarScreen(
                             appState = appState,
                             siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
@@ -619,6 +640,7 @@ class MainActivity : AppCompatActivity() {
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                             onBack = appState::popBackStack,
                             onProfile = appState::toProfile,
                         )

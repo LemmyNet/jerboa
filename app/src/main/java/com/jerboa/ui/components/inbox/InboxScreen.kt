@@ -80,6 +80,7 @@ fun InboxScreen(
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to inbox screen")
@@ -182,6 +183,7 @@ fun InboxScreen(
                     account = account,
                     scope = scope,
                     blurNSFW = blurNSFW,
+                    lowBandwidthMode = lowBandwidthMode,
                     snackbarHostState = snackbarHostState,
                 )
             }
@@ -209,6 +211,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
 ) {
     val pagerState = rememberPagerState { InboxTab.entries.size }
 
@@ -419,7 +422,7 @@ fun InboxTabs(
                                                 goToComment(commentReplyView)
                                             },
                                             account = account,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             blurNSFW = blurNSFW,
                                             enableDownvotes = siteViewModel.enableDownvotes(),
                                             voteDisplayMode = siteViewModel.voteDisplayMode(),
@@ -609,7 +612,7 @@ fun InboxTabs(
                                             },
                                             onPostClick = appState::toPost,
                                             account = account,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             blurNSFW = blurNSFW,
                                             voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             enableDownvotes = siteViewModel.enableDownvotes(),
@@ -696,7 +699,7 @@ fun InboxTabs(
                                             },
                                             onPersonClick = appState::toProfile,
                                             account = account,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                         )
                                     }
                                 }
