@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.profileinstaller.ProfileVerifier
 import androidx.profileinstaller.ProfileVerifier.CompilationStatus
+import com.jerboa.BuildConfig
 import com.jerboa.DONATE_LINK
 import com.jerboa.R
 import com.jerboa.api.ApiState
@@ -162,18 +163,21 @@ fun AboutScreen(
                             openLink(JERBOA_MATRIX_CHAT)
                         },
                     )
-                    Preference(
-                        title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.AttachMoney,
-                                contentDescription = null,
-                            )
-                        },
-                        onClick = {
-                            openLink(DONATE_LINK)
-                        },
-                    )
+                    // Only include donation text in f-droid
+                    if (BuildConfig.FLAVOR == "fdroid") {
+                        Preference(
+                            title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.AttachMoney,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                openLink(DONATE_LINK)
+                            },
+                        )
+                    }
                     PreferenceCategory(
                         title = { Text(stringResource(R.string.about_social)) },
                     )
