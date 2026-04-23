@@ -1,3 +1,18 @@
+## What's Changed in 0.0.86
+
+- Consolidate gplay and fdroid versions using flavors by @dessalines in [#2116](https://github.com/LemmyNet/jerboa/pull/2116)
+- add low-bandwidth mode by @KiaraGrouwstra in [#2111](https://github.com/LemmyNet/jerboa/pull/2111)
+- Adding freedroidwarn by @dessalines in [#2112](https://github.com/LemmyNet/jerboa/pull/2112)
+
+## New Contributors
+
+- @KiaraGrouwstra made their first contribution in [#2111](https://github.com/LemmyNet/jerboa/pull/2111)
+- @em-s-h made their first contribution
+- @ccd2s made their first contribution
+- @neercsys made their first contribution
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.85...0.0.86
+
 ## What's Changed in 0.0.85
 
 - Fixing nonfinalresIds by @dessalines in [#2077](https://github.com/LemmyNet/jerboa/pull/2077)
