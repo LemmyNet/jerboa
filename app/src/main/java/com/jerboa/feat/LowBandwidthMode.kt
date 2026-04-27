@@ -3,7 +3,6 @@ package com.jerboa.feat
 import android.net.ConnectivityManager
 import androidx.annotation.StringRes
 import com.jerboa.R
-import com.jerboa.isConnectionMetered
 import com.jerboa.isDataSaverEnabled
 
 enum class LowBandwidthMode(
@@ -16,7 +15,7 @@ enum class LowBandwidthMode(
 
     fun isActive(connectivityManager: ConnectivityManager?): Boolean =
         when (this) {
-            Auto -> connectivityManager.isConnectionMetered() || connectivityManager.isDataSaverEnabled()
+            Auto -> connectivityManager.isDataSaverEnabled()
             Always -> true
             Never -> false
         }
