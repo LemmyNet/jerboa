@@ -370,7 +370,7 @@
     <string name="settings_autoplaygifs">Autoplay GIFs</string>
     <string name="settings_disable_video_autoplay">Disable video autoplay</string>
     <string name="settings_low_bandwidth_mode">Low bandwidth mode</string>
-    <string name="low_bandwidth_mode_auto">Auto (metered or Data Saver)</string>
+    <string name="low_bandwidth_mode_auto">Auto (Data Saver)</string>
     <string name="low_bandwidth_mode_always">Always on</string>
     <string name="low_bandwidth_mode_never">Off</string>
     <string name="community_unblock_community">Unblock community</string>
