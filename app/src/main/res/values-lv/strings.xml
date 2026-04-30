@@ -96,4 +96,9 @@
     <string name="look_and_feel_theme_color">Motīva krāsa</string>
     <string name="look_and_feel_theme_color_grey">Pelēks</string>
     <string name="look_and_feel_use_custom_tabs">Izmantot pielāgotas cilnes</string>
+    <string name="delete">Dzēst</string>
+    <string name="restore">Atjaunot</string>
+    <string name="loading">Ielādē</string>
+    <string name="save">Saglabāt</string>
+    <string name="reason">Iemesls</string>
 </resources>
