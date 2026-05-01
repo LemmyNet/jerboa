@@ -101,4 +101,6 @@
     <string name="loading">Ielādē</string>
     <string name="save">Saglabāt</string>
     <string name="reason">Iemesls</string>
+    <string name="remove_post">Noņemt ierakstu</string>
+    <string name="creator">Autors</string>
 </resources>
