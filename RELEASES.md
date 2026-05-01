@@ -1,5 +1,12 @@
+## What's Changed in 0.0.87
+
+- restrict low bandwidth auto mode to Data Saver by @KiaraGrouwstra in [#2123](https://github.com/LemmyNet/jerboa/pull/2123)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.86...0.0.87
+
 ## What's Changed in 0.0.86
 
+- Updating build script. by @dessalines
 - Consolidate gplay and fdroid versions using flavors by @dessalines in [#2116](https://github.com/LemmyNet/jerboa/pull/2116)
 - add low-bandwidth mode by @KiaraGrouwstra in [#2111](https://github.com/LemmyNet/jerboa/pull/2111)
 - Adding freedroidwarn by @dessalines in [#2112](https://github.com/LemmyNet/jerboa/pull/2112)
