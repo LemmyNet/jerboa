@@ -234,7 +234,7 @@
     <string name="look_and_feel_show_voting_arrows_list_view">Montrer les flèches de vote dans la vue en liste</string>
     <string name="upvote">Plusser</string>
     <string name="downvote">Moinser</string>
-    <string name="upvoted">Plussé</string>
+    <string name="upvoted">Upvoté</string>
     <string name="downvoted">Moinsé</string>
     <string name="create_report_view_model_report_fail">Impossible de créer le signalement : %1$s</string>
     <string name="look_and_feel_secure_window">Empêcher les captures d’écran</string>
@@ -257,4 +257,14 @@
     <string name="inbox_screen_messages">Messages</string>
     <string name="bookmarks_screen_saved">Enregistrés</string>
     <string name="dialogs_server_version_outdated_short">La version du serveur (%1$s) est trop basse.</string>
+    <string name="lock_post">Verouiller la publication</string>
+    <string name="unlock_post">Déverouiller la publication</string>
+    <string name="share_post">Partager la publication</string>
+    <string name="remove_comment">Supprimer le commentaire</string>
+    <string name="feature_in_local">Promouvoir en local</string>
+    <string name="show_upvotes">Afficher les votes pour</string>
+    <string name="view_votes">Voir les votes</string>
+    <string name="deny_reason">Raison du refus</string>
+    <string name="hide_post">Cacher la publication</string>
+    <string name="show_downvotes">Afficher les votes contre</string>
 </resources>
