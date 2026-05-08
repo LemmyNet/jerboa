@@ -267,4 +267,6 @@
     <string name="deny_reason">Raison du refus</string>
     <string name="hide_post">Cacher la publication</string>
     <string name="show_downvotes">Afficher les votes contre</string>
+    <string name="remove_content">Supprimer le contenu</string>
+    <string name="show_upvote_percentage">Afficher le % de votes pour</string>
 </resources>
