@@ -143,7 +143,7 @@ dependencies {
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     // Freedroidwarn
-    implementation("com.github.woheller69:FreeDroidWarn:V1.12")
+    implementation("com.github.woheller69:FreeDroidWarn:V1.13")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
