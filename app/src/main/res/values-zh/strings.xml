@@ -410,9 +410,9 @@
     <string name="remove_content">移除内容</string>
     <string name="permaban">永久封禁</string>
     <string name="days_until_expiration">到期前的天数</string>
-    <string name="feature_in_community">在社群中添加精选</string>
+    <string name="feature_in_community">在社区中精选</string>
     <string name="unfeature_in_community">取消设为社区特色</string>
-    <string name="feature_in_local">设为本站特色</string>
+    <string name="feature_in_local">在本地精选</string>
     <string name="unfeature_in_local">取消设为本站特色</string>
     <string name="swipe_to_action_presets">滑动手势预设</string>
     <string name="swipe_action_preset_only_votes">只投票</string>
