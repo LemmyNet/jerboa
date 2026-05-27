@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.db.AppDB
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.components.common.apiErrorToast
 import com.roomdbexportimport.RoomDBExportImport
 import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
@@ -53,7 +54,7 @@ fun BackupAndRestoreScreen(onBack: () -> Unit) {
                     .onSuccess {
                         Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
                     }.onFailure { e ->
-                        Toast.makeText(ctx, e.message, Toast.LENGTH_SHORT).show()
+                        apiErrorToast(ctx = ctx, e)
                     }
             }
         }
@@ -68,7 +69,7 @@ fun BackupAndRestoreScreen(onBack: () -> Unit) {
                     .onSuccess {
                         Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
                     }.onFailure { e ->
-                        Toast.makeText(ctx, e.message, Toast.LENGTH_SHORT).show()
+                        apiErrorToast(ctx = ctx, e)
                     }
             }
         }
