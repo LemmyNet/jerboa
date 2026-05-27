@@ -129,7 +129,7 @@ baselineProfile {
 
 dependencies {
     // Exporting / importing DB helper
-    implementation("com.github.dessalines:room-db-export-import:0.1.0")
+    implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
     val composeBom = platform("androidx.compose:compose-bom:2026.05.01")
 

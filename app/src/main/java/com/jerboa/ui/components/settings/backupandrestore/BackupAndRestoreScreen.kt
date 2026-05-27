@@ -48,8 +48,13 @@ fun BackupAndRestoreScreen(onBack: () -> Unit) {
             ActivityResultContracts.CreateDocument("application/zip"),
         ) {
             it?.also {
-                dbHelper.export(ctx, it)
-                Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
+                dbHelper
+                    .export(ctx, it)
+                    .onSuccess {
+                        Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
+                    }.onFailure { e ->
+                        Toast.makeText(ctx, e.message, Toast.LENGTH_SHORT).show()
+                    }
             }
         }
 
@@ -58,8 +63,13 @@ fun BackupAndRestoreScreen(onBack: () -> Unit) {
             ActivityResultContracts.OpenDocument(),
         ) {
             it?.also {
-                dbHelper.import(ctx, it, true)
-                Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
+                dbHelper
+                    .import(ctx, it, true)
+                    .onSuccess {
+                        Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
+                    }.onFailure { e ->
+                        Toast.makeText(ctx, e.message, Toast.LENGTH_SHORT).show()
+                    }
             }
         }
 
