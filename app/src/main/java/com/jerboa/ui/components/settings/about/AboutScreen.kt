@@ -37,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.profileinstaller.ProfileVerifier
 import androidx.profileinstaller.ProfileVerifier.CompilationStatus
+import com.jerboa.BuildConfig
+import com.jerboa.DONATE_LINK
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.ui.components.common.SimpleTopAppBar
@@ -48,7 +50,6 @@ import me.zhanghai.compose.preference.ProvidePreferenceTheme
 
 const val GITHUB_URL = "https://github.com/LemmyNet/jerboa"
 const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
-const val DONATE_LINK = "https://join-lemmy.org/donate"
 const val JERBOA_LEMMY_ML_LINK = "https://lemmy.ml/c/jerboa"
 const val MASTODON_LINK = "https://mastodon.social/@LemmyDev"
 const val TORRENT_HELP_LINK = "https://join-lemmy.org/docs/users/02-media.html#torrents"
@@ -162,18 +163,21 @@ fun AboutScreen(
                             openLink(JERBOA_MATRIX_CHAT)
                         },
                     )
-                    Preference(
-                        title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.AttachMoney,
-                                contentDescription = null,
-                            )
-                        },
-                        onClick = {
-                            openLink(DONATE_LINK)
-                        },
-                    )
+                    // Only include donation text in f-droid
+                    if (BuildConfig.FLAVOR == "fdroid") {
+                        Preference(
+                            title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.AttachMoney,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                openLink(DONATE_LINK)
+                            },
+                        )
+                    }
                     PreferenceCategory(
                         title = { Text(stringResource(R.string.about_social)) },
                     )
@@ -242,7 +246,10 @@ fun AboutScreen(
                         summary = {
                             Text(
                                 text = when (val state = profileState) {
-                                    is ApiState.Loading -> stringResource(R.string.loading)
+                                    is ApiState.Loading -> {
+                                        stringResource(R.string.loading)
+                                    }
+
                                     is ApiState.Success -> {
                                         val installed = stringResource(
                                             if (state.data.isCompiledWithProfile) {
@@ -257,8 +264,13 @@ fun AboutScreen(
                                         "$installed\n$installCode"
                                     }
 
-                                    is ApiState.Failure -> stringResource(R.string.unable_to_retrieve)
-                                    else -> ""
+                                    is ApiState.Failure -> {
+                                        stringResource(R.string.unable_to_retrieve)
+                                    }
+
+                                    else -> {
+                                        ""
+                                    }
                                 },
                             )
                         },
@@ -283,15 +295,39 @@ fun AboutPreview() {
 
 fun getInstallCode(compilationStatus: CompilationStatus): String =
     when (compilationStatus.profileInstallResultCode) {
-        CompilationStatus.RESULT_CODE_NO_PROFILE -> "NO_PROFILE"
-        CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE -> "COMPILED_WITH_PROFILE"
-        CompilationStatus.RESULT_CODE_PROFILE_ENQUEUED_FOR_COMPILATION -> "PROFILE_ENQUEUED_FOR_COMPILATION"
-        CompilationStatus.RESULT_CODE_ERROR_UNSUPPORTED_API_VERSION -> "ERROR_UNSUPPORTED_API_VERSION"
-        CompilationStatus.RESULT_CODE_ERROR_PACKAGE_NAME_DOES_NOT_EXIST -> "ERROR_PACKAGE_NAME_DOES_NOT_EXIST"
-        CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE_NON_MATCHING -> "COMPILED_WITH_PROFILE_NON_MATCHING"
-        CompilationStatus.RESULT_CODE_ERROR_CACHE_FILE_EXISTS_BUT_CANNOT_BE_READ -> "ERROR_CACHE_FILE_EXISTS_BUT_CANNOT_BE_READ"
-        CompilationStatus.RESULT_CODE_ERROR_CANT_WRITE_PROFILE_VERIFICATION_RESULT_CACHE_FILE ->
-            "ERROR_CANT_WRITE_PROFILE_VERIFICATION_RESULT_CACHE_FILE"
+        CompilationStatus.RESULT_CODE_NO_PROFILE_INSTALLED -> {
+            "NO_PROFILE_INSTALLED"
+        }
 
-        else -> "UNKNOWN[${compilationStatus.profileInstallResultCode}]"
+        CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE -> {
+            "COMPILED_WITH_PROFILE"
+        }
+
+        CompilationStatus.RESULT_CODE_PROFILE_ENQUEUED_FOR_COMPILATION -> {
+            "PROFILE_ENQUEUED_FOR_COMPILATION"
+        }
+
+        CompilationStatus.RESULT_CODE_ERROR_UNSUPPORTED_API_VERSION -> {
+            "ERROR_UNSUPPORTED_API_VERSION"
+        }
+
+        CompilationStatus.RESULT_CODE_ERROR_PACKAGE_NAME_DOES_NOT_EXIST -> {
+            "ERROR_PACKAGE_NAME_DOES_NOT_EXIST"
+        }
+
+        CompilationStatus.RESULT_CODE_COMPILED_WITH_PROFILE_NON_MATCHING -> {
+            "COMPILED_WITH_PROFILE_NON_MATCHING"
+        }
+
+        CompilationStatus.RESULT_CODE_ERROR_CACHE_FILE_EXISTS_BUT_CANNOT_BE_READ -> {
+            "ERROR_CACHE_FILE_EXISTS_BUT_CANNOT_BE_READ"
+        }
+
+        CompilationStatus.RESULT_CODE_ERROR_CANT_WRITE_PROFILE_VERIFICATION_RESULT_CACHE_FILE -> {
+            "ERROR_CANT_WRITE_PROFILE_VERIFICATION_RESULT_CACHE_FILE"
+        }
+
+        else -> {
+            "UNKNOWN[${compilationStatus.profileInstallResultCode}]"
+        }
     }

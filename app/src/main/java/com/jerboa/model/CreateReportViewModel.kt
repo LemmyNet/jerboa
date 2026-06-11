@@ -1,6 +1,8 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ class CreateReportViewModel : ViewModel() {
         commentId: CommentId,
         reason: String,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onBack: () -> Unit,
     ) {
@@ -45,8 +48,14 @@ class CreateReportViewModel : ViewModel() {
 
             val message =
                 when (val res = commentReportRes) {
-                    is ApiState.Failure -> ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
-                    is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
+                    is ApiState.Failure -> {
+                        resources.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                    }
+
+                    is ApiState.Success -> {
+                        resources.getString(R.string.create_report_view_model_report_created)
+                    }
+
                     else -> {
                         null
                     }
@@ -62,6 +71,7 @@ class CreateReportViewModel : ViewModel() {
         postId: PostId,
         reason: String,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onBack: () -> Unit,
     ) {
@@ -77,8 +87,14 @@ class CreateReportViewModel : ViewModel() {
 
             val message =
                 when (val res = postReportRes) {
-                    is ApiState.Failure -> ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
-                    is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
+                    is ApiState.Failure -> {
+                        resources.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                    }
+
+                    is ApiState.Success -> {
+                        resources.getString(R.string.create_report_view_model_report_created)
+                    }
+
                     else -> {
                         null
                     }

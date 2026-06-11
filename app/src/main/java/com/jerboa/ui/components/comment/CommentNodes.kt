@@ -164,7 +164,7 @@ fun LazyListScope.commentNodeItems(
 ) {
     nodes.forEach { node ->
         when (node) {
-            is CommentNode ->
+            is CommentNode -> {
                 commentNodeItem(
                     node = node,
                     admins = admins,
@@ -208,8 +208,9 @@ fun LazyListScope.commentNodeItems(
                     voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
                 )
+            }
 
-            is MissingCommentNode ->
+            is MissingCommentNode -> {
                 missingCommentNodeItem(
                     node = node,
                     admins = admins,
@@ -253,6 +254,7 @@ fun LazyListScope.commentNodeItems(
                     voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
                 )
+            }
         }
     }
 }

@@ -33,6 +33,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
+import com.jerboa.toBool
 import com.jerboa.toEnum
 import com.jerboa.ui.components.post.PostPane
 import it.vercruysse.lemmyapi.datatypes.PostId
@@ -55,6 +56,7 @@ fun HomeAndPostDetailScreen(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues,
 ) {
     val scope = rememberCoroutineScope()
@@ -63,10 +65,10 @@ fun HomeAndPostDetailScreen(
 
     val navigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     val isListAndDetailVisible =
-        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded &&
-            navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Companion.Expanded
+        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
+            navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
     val isDetailVisible =
-        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded
+        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
 
     BackHandler(enabled = navigator.canNavigateBack()) {
         scope.launch {
@@ -114,6 +116,8 @@ fun HomeAndPostDetailScreen(
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                 }
                             },
+                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             selectionState = selectionState,
                         )
                     }
@@ -137,6 +141,8 @@ fun HomeAndPostDetailScreen(
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                                 onClickBack = {
                                     scope.launch {
                                         selectedPostId = null

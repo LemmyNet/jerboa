@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.getSystemService
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -37,6 +39,7 @@ import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
 import com.jerboa.feat.BackConfirmation.disposeConfirmation
 import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.LowBandwidthMode
 import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
@@ -52,12 +55,12 @@ import com.jerboa.ui.components.comment.reply.CommentReplyScreen
 import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityScreen
 import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
 import com.jerboa.ui.components.home.HomeNavScreen
+import com.jerboa.ui.components.home.ShowAppStartupDialogs
 import com.jerboa.ui.components.home.legal.SiteLegalScreen
 import com.jerboa.ui.components.home.sidebar.SiteSidebarScreen
 import com.jerboa.ui.components.imageviewer.ImageViewerScreen
@@ -82,10 +85,12 @@ import com.jerboa.ui.components.settings.backupandrestore.BackupAndRestoreScreen
 import com.jerboa.ui.components.settings.block.BlocksScreen
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsScreen
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelScreen
+import com.jerboa.ui.components.videoviewer.VideoViewerScreen
 import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
 import com.jerboa.ui.components.viewvotes.post.PostLikesScreen
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
@@ -97,6 +102,8 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        FreeDroidWarn.showWarningOnUpgrade(this, getVersionCode())
+
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
@@ -109,6 +116,10 @@ class MainActivity : AppCompatActivity() {
                 triggerRebirth(ctx)
             }
 
+            val connectivityManager = ctx.getSystemService<ConnectivityManager>()
+            val lowBandwidthMode =
+                appSettings.lowBandwidthMode.toEnum<LowBandwidthMode>().isActive(connectivityManager)
+
             if (appSettings.autoPlayGifs) {
                 Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
             } else {
@@ -120,6 +131,11 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val appState = rememberJerboaAppState()
+                    DisposableEffect(Unit) {
+                        onDispose {
+                            appState.release()
+                        }
+                    }
 
                     val showConfirmationDialog = remember { mutableStateOf(false) }
 
@@ -132,9 +148,11 @@ class MainActivity : AppCompatActivity() {
                             BackConfirmationMode.Toast -> {
                                 this@MainActivity.addConfirmationToast(appState.navController, ctx)
                             }
+
                             BackConfirmationMode.Dialog -> {
                                 this@MainActivity.addConfirmationDialog(appState.navController) { showConfirmationDialog.value = true }
                             }
+
                             BackConfirmationMode.None -> {}
                         }
 
@@ -147,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                         appState,
                         appSettings.useCustomTabs,
                         appSettings.usePrivateTabs,
+                        lowBandwidthMode,
                         object : BetterLinkMovementMethod.OnLinkLongClickListener {
                             override fun onLongClick(
                                 textView: TextView,
@@ -166,7 +185,10 @@ class MainActivity : AppCompatActivity() {
                         appSettings.usePrivateTabs,
                     )
 
-                    ShowChangelog(appSettingsViewModel = appSettingsViewModel)
+                    ShowAppStartupDialogs(
+                        appSettingsViewModel = appSettingsViewModel,
+                        siteViewModel = siteViewModel,
+                    )
 
                     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -180,7 +202,7 @@ class MainActivity : AppCompatActivity() {
                         exitTransition =
                             {
                                 // No animation for image viewer
-                                if (this.targetState.destination.route == Route.VIEW) {
+                                if (this.targetState.destination.route == Route.IMAGE_VIEW) {
                                     ExitTransition.None
                                 } else {
                                     slideOutHorizontally { -it }
@@ -188,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                             },
                         popEnterTransition = {
                             // No animation for image viewer
-                            if (this.initialState.destination.route == Route.VIEW) {
+                            if (this.initialState.destination.route == Route.IMAGE_VIEW) {
                                 EnterTransition.None
                             } else {
                                 slideInHorizontally { -it }
@@ -222,6 +244,7 @@ class MainActivity : AppCompatActivity() {
                                 appSettingsViewModel = appSettingsViewModel,
                                 appSettings = appSettings,
                                 drawerState = drawerState,
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -250,6 +273,8 @@ class MainActivity : AppCompatActivity() {
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -294,6 +319,8 @@ class MainActivity : AppCompatActivity() {
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -301,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                             CommunitySidebarScreen(
                                 appState = appState,
                                 onClickBack = appState::popBackStack,
-                                showAvatar = siteViewModel.showAvatar(),
+                                showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             )
                         }
 
@@ -336,6 +363,8 @@ class MainActivity : AppCompatActivity() {
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -375,6 +404,8 @@ class MainActivity : AppCompatActivity() {
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -395,7 +426,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW.toEnum(),
                                 drawerState = drawerState,
                                 followList = siteViewModel.getFollowList(),
-                                showAvatar = siteViewModel.showAvatar(),
+                                showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             )
                         }
 
@@ -417,7 +448,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 } else {
                                     @Suppress("DEPRECATION")
-                                    activity?.intent?.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                                    activity?.intent?.getParcelableExtra(Intent.EXTRA_STREAM)
                                 }
                             // url and body will be empty everytime except when there is EXTRA TEXT in the intent
                             var url = ""
@@ -449,6 +480,7 @@ class MainActivity : AppCompatActivity() {
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,
                                 blurNSFW = appSettings.blurNSFW.toEnum(),
+                                lowBandwidthMode = lowBandwidthMode,
                                 drawerState = drawerState,
                             )
                         }
@@ -461,6 +493,7 @@ class MainActivity : AppCompatActivity() {
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,
                                 drawerState = drawerState,
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -472,6 +505,7 @@ class MainActivity : AppCompatActivity() {
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,
                                 drawerState = drawerState,
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -484,6 +518,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 drawerState = drawerState,
                                 blurNSFW = appSettings.blurNSFW.toEnum(),
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -522,6 +557,8 @@ class MainActivity : AppCompatActivity() {
                                     showPostLinkPreview = appSettings.showPostLinkPreviews,
                                     postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                     swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                    disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                    lowBandwidthMode = lowBandwidthMode,
                                     onClickBack = appState::popBackStack,
                                 )
                             }
@@ -557,6 +594,8 @@ class MainActivity : AppCompatActivity() {
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                 swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                lowBandwidthMode = lowBandwidthMode,
                                 onClickBack = appState::popBackStack,
                             )
                         }
@@ -568,6 +607,7 @@ class MainActivity : AppCompatActivity() {
                                 accountViewModel = accountViewModel,
                                 appState = appState,
                                 siteViewModel = siteViewModel,
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -575,6 +615,7 @@ class MainActivity : AppCompatActivity() {
                             SiteSidebarScreen(
                                 appState = appState,
                                 siteViewModel = siteViewModel,
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -604,6 +645,7 @@ class MainActivity : AppCompatActivity() {
                                 appState = appState,
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,
+                                lowBandwidthMode = lowBandwidthMode,
                                 onBack = appState::popBackStack,
                                 onProfile = appState::toProfile,
                             )
@@ -786,11 +828,11 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         composable(
-                            route = Route.VIEW,
+                            route = Route.IMAGE_VIEW,
                             arguments =
                                 listOf(
-                                    navArgument(Route.ViewArgs.URL) {
-                                        type = Route.ViewArgs.URL_TYPE
+                                    navArgument(Route.ImageViewArgs.URL) {
+                                        type = Route.ImageViewArgs.URL_TYPE
                                     },
                                 ),
                             enterTransition = { EnterTransition.None },
@@ -798,9 +840,25 @@ class MainActivity : AppCompatActivity() {
                             popEnterTransition = { EnterTransition.None },
                             popExitTransition = { ExitTransition.None },
                         ) {
-                            val args = Route.ViewArgs(it)
-
+                            val args = Route.ImageViewArgs(it)
                             ImageViewerScreen(url = args.url, appState = appState)
+                        }
+
+                        composable(
+                            route = Route.VIDEO_VIEW,
+                            arguments =
+                                listOf(
+                                    navArgument(Route.VideoViewArgs.URL) {
+                                        type = Route.VideoViewArgs.URL_TYPE
+                                    },
+                                ),
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None },
+                        ) {
+                            val args = Route.VideoViewArgs(it)
+                            VideoViewerScreen(url = args.url, appState = appState)
                         }
 
                         composable(

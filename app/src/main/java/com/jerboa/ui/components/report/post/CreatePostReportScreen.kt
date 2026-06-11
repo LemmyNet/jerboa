@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,6 +35,7 @@ fun CreatePostReportScreen(
     Log.d("jerboa", "got to create post report screen")
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val createReportViewModel: CreateReportViewModel = viewModel()
@@ -59,6 +61,7 @@ fun CreatePostReportScreen(
                             postId = postId,
                             reason = reason.text,
                             ctx = ctx,
+                            resources = resources,
                             focusManager = focusManager,
                             onBack = onBack,
                         )

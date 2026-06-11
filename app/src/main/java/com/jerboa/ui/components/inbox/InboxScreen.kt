@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.inbox
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
@@ -78,6 +80,7 @@ fun InboxScreen(
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to inbox screen")
@@ -85,6 +88,7 @@ fun InboxScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -119,6 +123,7 @@ fun InboxScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -142,6 +147,7 @@ fun InboxScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -173,9 +179,11 @@ fun InboxScreen(
                     inboxViewModel = inboxViewModel,
                     siteViewModel = siteViewModel,
                     ctx = ctx,
+                    resources = resources,
                     account = account,
                     scope = scope,
                     blurNSFW = blurNSFW,
+                    lowBandwidthMode = lowBandwidthMode,
                     snackbarHostState = snackbarHostState,
                 )
             }
@@ -184,7 +192,7 @@ fun InboxScreen(
 }
 
 enum class InboxTab(
-    @StringRes val textId: Int,
+    @param:StringRes val textId: Int,
 ) {
     Replies(R.string.inbox_screen_replies),
     Mentions(R.string.inbox_screen_mentions),
@@ -198,10 +206,12 @@ fun InboxTabs(
     inboxViewModel: InboxViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
 ) {
     val pagerState = rememberPagerState { InboxTab.entries.size }
 
@@ -249,6 +259,7 @@ fun InboxTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -271,6 +282,7 @@ fun InboxTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -287,8 +299,14 @@ fun InboxTabs(
                         JerboaLoadingBar(inboxViewModel.repliesRes)
 
                         when (val repliesRes = inboxViewModel.repliesRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(repliesRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(repliesRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
@@ -309,6 +327,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -325,6 +344,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -346,6 +366,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -380,6 +401,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -400,7 +422,7 @@ fun InboxTabs(
                                                 goToComment(commentReplyView)
                                             },
                                             account = account,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             blurNSFW = blurNSFW,
                                             enableDownvotes = siteViewModel.enableDownvotes(),
                                             voteDisplayMode = siteViewModel.voteDisplayMode(),
@@ -427,6 +449,7 @@ fun InboxTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -443,8 +466,14 @@ fun InboxTabs(
                         JerboaLoadingBar(inboxViewModel.mentionsRes)
 
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(mentionsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
@@ -468,6 +497,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -484,6 +514,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -505,6 +536,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -521,6 +553,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -563,6 +596,7 @@ fun InboxTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -578,7 +612,7 @@ fun InboxTabs(
                                             },
                                             onPostClick = appState::toPost,
                                             account = account,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             blurNSFW = blurNSFW,
                                             voteDisplayMode = siteViewModel.voteDisplayMode(),
                                             enableDownvotes = siteViewModel.enableDownvotes(),
@@ -605,6 +639,7 @@ fun InboxTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -621,8 +656,14 @@ fun InboxTabs(
                         JerboaLoadingBar(inboxViewModel.messagesRes)
 
                         when (val messagesRes = inboxViewModel.messagesRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(messagesRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(messagesRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(
@@ -658,7 +699,7 @@ fun InboxTabs(
                                             },
                                             onPersonClick = appState::toProfile,
                                             account = account,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                         )
                                     }
                                 }

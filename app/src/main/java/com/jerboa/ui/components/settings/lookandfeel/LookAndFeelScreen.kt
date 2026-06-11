@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.DataSaverOn
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.core.os.LocaleListCompat
@@ -40,6 +42,7 @@ import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
 import com.jerboa.feat.BlurNSFW
+import com.jerboa.feat.LowBandwidthMode
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.feat.SwipeToActionPreset
@@ -62,6 +65,7 @@ fun LookAndFeelScreen(
 ) {
     Log.d("jerboa", "Got to lookAndFeel screen")
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
 
@@ -96,6 +100,8 @@ fun LookAndFeelScreen(
     var showPostLinkPreviewModeState by remember { mutableStateOf(settings.showPostLinkPreviews) }
     var markAsReadOnScrollState by remember { mutableStateOf(settings.markAsReadOnScroll) }
     var autoPlayGifsState by remember { mutableStateOf(settings.autoPlayGifs) }
+    var disableVideoAutoplayState by remember { mutableStateOf(settings.disableVideoAutoplay == 1) }
+    var lowBandwidthModeState by remember { mutableStateOf(LowBandwidthMode.entries[settings.lowBandwidthMode]) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -128,6 +134,8 @@ fun LookAndFeelScreen(
                 autoPlayGifs = autoPlayGifsState,
                 postNavigationGestureMode = postNavigationGestureModeState.ordinal,
                 swipeToActionPreset = swipeToActionPresetState.ordinal,
+                disableVideoAutoplay = if (disableVideoAutoplayState) 1 else 0,
+                lowBandwidthMode = lowBandwidthModeState.ordinal,
             ),
         )
     }
@@ -201,7 +209,7 @@ fun LookAndFeelScreen(
                         },
                         values = ThemeMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -226,7 +234,7 @@ fun LookAndFeelScreen(
                         },
                         values = ThemeColor.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -251,7 +259,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostViewMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -276,7 +284,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostNavigationGestureMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -301,7 +309,7 @@ fun LookAndFeelScreen(
                         },
                         values = BackConfirmationMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         icon = {
                             Icon(
@@ -326,7 +334,7 @@ fun LookAndFeelScreen(
                         },
                         values = PostActionBarMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = {
                             Text(text = stringResource(R.string.post_actionbar))
@@ -350,7 +358,7 @@ fun LookAndFeelScreen(
                         },
                         values = BlurNSFW.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = { Text(stringResource(id = R.string.blur_nsfw)) },
                         icon = {
@@ -373,7 +381,7 @@ fun LookAndFeelScreen(
                         },
                         values = SwipeToActionPreset.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = { Text(stringResource(id = R.string.swipe_to_action_presets)) },
                         icon = {
@@ -384,6 +392,30 @@ fun LookAndFeelScreen(
                         },
                         summary = {
                             Text(stringResource(swipeToActionPresetState.resId))
+                        },
+                    )
+                    ListPreference(
+                        type = ListPreferenceType.DROPDOWN_MENU,
+                        value = lowBandwidthModeState,
+                        onValueChange = {
+                            lowBandwidthModeState = it
+                            updateAppSettings()
+                        },
+                        values = LowBandwidthMode.entries,
+                        valueToText = {
+                            AnnotatedString(resources.getString(it.resId))
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.settings_low_bandwidth_mode))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.DataSaverOn,
+                                contentDescription = null,
+                            )
+                        },
+                        summary = {
+                            Text(stringResource(lowBandwidthModeState.resId))
                         },
                     )
                     SwitchPreference(
@@ -519,6 +551,16 @@ fun LookAndFeelScreen(
                         },
                         title = {
                             Text(stringResource(id = R.string.settings_autoplaygifs))
+                        },
+                    )
+                    SwitchPreference(
+                        value = disableVideoAutoplayState,
+                        onValueChange = {
+                            disableVideoAutoplayState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(stringResource(id = R.string.settings_disable_video_autoplay))
                         },
                     )
                 }

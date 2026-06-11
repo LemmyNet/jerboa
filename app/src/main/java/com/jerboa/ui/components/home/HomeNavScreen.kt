@@ -34,6 +34,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,6 +53,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
+import com.jerboa.toBool
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
@@ -152,12 +154,14 @@ fun HomeNavScreen(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    lowBandwidthMode: Boolean,
 ) {
     val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
     val account by remember {
         derivedStateOf { acc ?: AnonAccount }
     }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 
@@ -187,6 +191,7 @@ fun HomeNavScreen(
             account.doIfReadyElseDisplayInfo(
                 appState,
                 ctx,
+                resources,
                 snackbarHostState,
                 scope,
                 siteViewModel,
@@ -250,12 +255,13 @@ fun HomeNavScreen(
                             composable(route = NavTab.Home.name) {
                                 HomeAndPostDetailScreen(
                                     appState = appState,
+                                    appSettings = appSettings,
                                     homeViewModel = homeViewModel,
                                     accountViewModel = accountViewModel,
                                     siteViewModel = siteViewModel,
                                     appSettingsViewModel = appSettingsViewModel,
-                                    appSettings = appSettings,
                                     drawerState = drawerState,
+                                    lowBandwidthMode = lowBandwidthMode,
                                     padding = padding,
                                 )
                             }
@@ -267,7 +273,7 @@ fun HomeNavScreen(
                                     followList = siteViewModel.getFollowList(),
                                     blurNSFW = appSettings.blurNSFW.toEnum(),
                                     drawerState = drawerState,
-                                    showAvatar = siteViewModel.showAvatar(),
+                                    showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                     padding = padding,
                                 )
                             }
@@ -278,6 +284,7 @@ fun HomeNavScreen(
                                     accountViewModel = accountViewModel,
                                     siteViewModel = siteViewModel,
                                     blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    lowBandwidthMode = lowBandwidthMode,
                                     drawerState = drawerState,
                                     padding = padding,
                                 )
@@ -289,6 +296,7 @@ fun HomeNavScreen(
                                     accountViewModel = accountViewModel,
                                     siteViewModel = siteViewModel,
                                     drawerState = drawerState,
+                                    lowBandwidthMode = lowBandwidthMode,
                                     padding = padding,
                                 )
                             }
@@ -300,6 +308,7 @@ fun HomeNavScreen(
                                     siteViewModel = siteViewModel,
                                     drawerState = drawerState,
                                     blurNSFW = appSettings.blurNSFW.toEnum(),
+                                    lowBandwidthMode = lowBandwidthMode,
                                     padding = padding,
                                 )
                             }
@@ -322,6 +331,8 @@ fun HomeNavScreen(
                                     markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                     postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                     swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                    disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                    lowBandwidthMode = lowBandwidthMode,
                                     padding = padding,
                                 )
                             }
@@ -344,6 +355,8 @@ fun HomeNavScreen(
                                     markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                     postActionBarMode = appSettings.postActionBarMode.toEnum(),
                                     swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
+                                    disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                                    lowBandwidthMode = lowBandwidthMode,
                                     padding = padding,
                                 )
                             }

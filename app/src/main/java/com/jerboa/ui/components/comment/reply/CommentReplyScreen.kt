@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.comment.reply
 
 import android.util.Log
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -13,7 +14,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +39,7 @@ fun CommentReplyScreen(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appState: JerboaAppState,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply screen")
     val ctx = LocalContext.current
@@ -48,16 +49,15 @@ fun CommentReplyScreen(
     val replyItem = appState.getPrevReturn<ReplyItem>(CommentReplyReturn.COMMENT_SEND)
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(
-            TextFieldValue
-                (""),
-        )
+        mutableStateOf(TextFieldValue(""))
     }
 
-    val focusManager = LocalFocusManager.current
     val loading =
         when (commentReplyViewModel.createCommentRes) {
-            ApiState.Loading -> true
+            // When comment is created, still show loading so that ReplyItem is not entered composition
+            // again for a brief period, thus requesting focus again and opening keyboard
+            ApiState.Loading, is ApiState.Success -> true
+
             else -> false
         }
 
@@ -73,7 +73,6 @@ fun CommentReplyScreen(
                             replyItem,
                             ctx = ctx,
                             content = reply.text,
-                            focusManager = focusManager,
                         ) { cv ->
                             appState.apply {
                                 addReturn(CommentReplyReturn.COMMENT_VIEW, cv)
@@ -91,7 +90,7 @@ fun CommentReplyScreen(
                 LoadingBar(padding)
             } else {
                 when (replyItem) {
-                    is ReplyItem.CommentItem ->
+                    is ReplyItem.CommentItem -> {
                         CommentReply(
                             commentView = replyItem.item,
                             account = account,
@@ -101,25 +100,29 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
+                    }
 
-                    is ReplyItem.PostItem ->
+                    is ReplyItem.PostItem -> {
                         PostReply(
                             postView = replyItem.item,
                             account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
                         )
+                    }
 
-                    is ReplyItem.CommentReplyItem ->
+                    is ReplyItem.CommentReplyItem -> {
                         CommentReplyReply(
                             commentReplyView = replyItem.item,
                             account = account,
@@ -129,11 +132,13 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
+                    }
 
-                    is ReplyItem.MentionReplyItem ->
+                    is ReplyItem.MentionReplyItem -> {
                         MentionReply(
                             personMentionView = replyItem.item,
                             account = account,
@@ -143,9 +148,11 @@ fun CommentReplyScreen(
                             modifier =
                                 Modifier
                                     .padding(padding)
+                                    .consumeWindowInsets(padding)
                                     .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
+                    }
                 }
             }
         },

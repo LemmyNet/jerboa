@@ -3,7 +3,7 @@ package com.jerboa.ui.components.comment.edit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,13 +30,13 @@ fun CommentEdit(
             Modifier
                 .verticalScroll(scrollState)
                 .padding(padding)
+                .consumeWindowInsets(padding)
                 .imePadding(),
     ) {
         MarkdownTextField(
             text = content,
             onTextChange = onContentChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.comment_edit_type_your_comment),
         )
     }

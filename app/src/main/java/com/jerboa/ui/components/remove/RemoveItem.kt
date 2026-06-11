@@ -2,7 +2,7 @@ package com.jerboa.ui.components.remove
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -29,13 +29,13 @@ fun RemoveItemBody(
             Modifier
                 .verticalScroll(scrollState)
                 .padding(padding)
+                .consumeWindowInsets(padding)
                 .imePadding(),
     ) {
         MarkdownTextField(
             text = reason,
             onTextChange = onReasonChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.type_your_reason),
         )
     }

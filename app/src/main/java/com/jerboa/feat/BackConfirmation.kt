@@ -17,7 +17,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 enum class BackConfirmationMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     None(R.string.no_back_confirmation),
     Toast(R.string.press_again_confirmation),

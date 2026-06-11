@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ class CommentRemoveViewModel : ViewModel() {
         removed: Boolean,
         reason: String,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onSuccess: (CommentView) -> Unit,
     ) {
@@ -52,9 +54,9 @@ class CommentRemoveViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.comment_removed)
+                            resources.getString(R.string.comment_removed)
                         } else {
-                            ctx.getString(R.string.comment_restored)
+                            resources.getString(R.string.comment_restored)
                         }
                     val commentView = res.data.comment_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
@@ -62,6 +64,7 @@ class CommentRemoveViewModel : ViewModel() {
                     focusManager.clearFocus()
                     onSuccess(commentView)
                 }
+
                 else -> {}
             }
         }

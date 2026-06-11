@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
@@ -96,11 +97,11 @@ fun ReportsHeaderTitle(
     unreadCount: Long? = null,
 ) {
     var title = stringResource(R.string.reports)
-    val ctx = LocalContext.current
+    val resources = LocalResources.current
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
-    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll))
+    DualHeaderTitle(topText = title, bottomText = getLocalizedUnreadOrAllName(resources, selectedUnreadOrAll))
 }
 
 @Composable

@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,13 +51,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
+import me.saket.telephoto.zoomable.OverzoomEffect
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -70,6 +72,7 @@ fun ImageViewerScreen(
     appState: JerboaAppState,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
@@ -120,7 +123,7 @@ fun ImageViewerScreen(
             ).build()
     }
 
-    val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
+    val zoomableState = rememberZoomableState(ZoomSpec(maxZoomFactor = 20F, overzoomEffect = OverzoomEffect.NoLimits))
     val zoomableImageState = rememberZoomableImageState(zoomableState)
 
     Scaffold(
@@ -206,6 +209,7 @@ fun ViewerHeader(
     )
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     TopAppBar(
         colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)),
@@ -225,7 +229,7 @@ fun ViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, url, PostType.Image)
+                    shareMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Image)
                 },
             ) {
                 Icon(
@@ -238,7 +242,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, url, PostType.fromURL(url))
+                    storeMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.fromURL(url))
                 },
             ) {
                 Icon(

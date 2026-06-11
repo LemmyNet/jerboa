@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reports">Denúncies</string>
+    <string name="account_settings_show_notifications_for_new_posts">Mostra notificacions de noves publicacions</string>
+    <string name="view_source">Veure origen</string>
+    <string name="title">Títol</string>
+    <string name="AppBars_comments">%1$s comentaris</string>
+    <string name="AppBars_created">Creat</string>
+    <string name="AppBars_posts">%1$s publicacions</string>
+    <string name="AppBars_users_6_months">%1$s usuari(e)s / 6 mesos</string>
+    <string name="AppBars_users_day">%1$s usuari(e)s / dia</string>
+    <string name="AppBars_users_month">%1$s usuari(e)s / mes</string>
+    <string name="AppBars_users_week">%1$s usuari(e)s / setmana</string>
+    <string name="about_social">Socials</string>
+    <string name="account_settings_screen_account_settings">Configuració del compte</string>
+    <string name="account_settings_all">Totes</string>
+    <string name="account_settings_avatar">Avatar</string>
+    <string name="account_settings_banner">Bàner</string>
+    <string name="account_settings_bio">Biografia</string>
+    <string name="account_settings_bot_account">Compte de bot</string>
+    <string name="account_settings_default_listing_type">Tipus de llistat predeterminat</string>
+    <string name="account_settings_default_sort_type">Tipus d\'ordenació per defecte</string>
+    <string name="account_settings_display_name">Nom per mostrar</string>
+    <string name="account_settings_email">Adreça electrònica</string>
+    <string name="account_settings_matrix_user">Compte de Matrix</string>
+    <string name="account_settings_remove_current_avatar">Elimina l\'avatar actual</string>
+    <string name="account_settings_save_settings">Desa la configuració</string>
+    <string name="account_settings_send_notifications_to_email">Envia notificacions al correu</string>
+    <string name="account_settings_show_avatars">Mostra els avatars</string>
+    <string name="account_settings_show_bot_accounts">Mostra els comptes de bot</string>
+    <string name="locked">Blocat</string>
+    <string name="save">Desa</string>
+    <string name="lock_post">Bloqueja publicació</string>
+</resources>

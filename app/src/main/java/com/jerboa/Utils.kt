@@ -1,22 +1,19 @@
 package com.jerboa
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.media.MediaScannerConnection
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.webkit.MimeTypeMap.getFileExtensionFromUrl
@@ -25,7 +22,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
@@ -57,6 +53,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
+import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +62,6 @@ import okhttp3.Request
 import org.ocpsoft.prettytime.PrettyTime
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.MalformedURLException
@@ -84,8 +80,11 @@ fun toastException(
     Toast.makeText(ctx, error.message ?: "UNKNOWN EXCEPTION", Toast.LENGTH_SHORT).show()
 }
 
-fun loginFirstToast(ctx: Context) {
-    Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
+fun loginFirstToast(
+    ctx: Context,
+    resources: Resources,
+) {
+    Toast.makeText(ctx, resources.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
 data class MissingCommentView(
@@ -430,8 +429,6 @@ fun pictrsImageThumbnail(
 
 fun isImage(url: String): Boolean = imageRegex.matches(url)
 
-fun getPostType(url: String): PostType = if (isImage(url)) PostType.Image else PostType.Link
-
 val imageRegex =
     Regex(
         pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
@@ -622,39 +619,39 @@ data class InputField(
 )
 
 fun validatePostName(
-    ctx: Context,
+    resources: Resources,
     name: String,
 ): InputField =
     if (name.isEmpty()) {
         InputField(
-            label = ctx.getString(R.string.title_required),
+            label = resources.getString(R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = ctx.getString(R.string.title_min_3_chars),
+            label = resources.getString(R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = ctx.getString(R.string.title_less_than_200_chars),
+            label = resources.getString(R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = ctx.getString(R.string.title),
+            label = resources.getString(R.string.title),
             hasError = false,
         )
     }
 
 fun validateUrl(
-    ctx: Context,
+    resources: Resources,
     url: String,
-    label: String = ctx.getString(R.string.url),
+    label: String = resources.getString(R.string.url),
 ): InputField =
     if (url.isNotEmpty() && !ALLOWED_SCHEMES.any { url.startsWith(it) }) {
         InputField(
-            label = ctx.getString(R.string.url_invalid),
+            label = resources.getString(R.string.url_invalid),
             hasError = true,
         )
     } else {
@@ -725,7 +722,7 @@ fun Context.findActivity(): Activity? =
     }
 
 enum class ThemeMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     System(R.string.look_and_feel_theme_system),
     SystemBlack(R.string.look_and_feel_theme_system_black),
@@ -735,7 +732,7 @@ enum class ThemeMode(
 }
 
 enum class ThemeColor(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     Dynamic(R.string.look_and_feel_theme_color_dynamic),
     Beach(R.string.look_and_feel_theme_color_beach),
@@ -750,7 +747,7 @@ enum class ThemeColor(
 }
 
 enum class PostViewMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
@@ -772,7 +769,7 @@ enum class PostViewMode(
 /**
  * For a given post, what sort of content Jerboa treats it as.
  */
-enum class PostType {
+enum class PostLinkType {
     /**
      * A Link to an external website. Opens the browser.
      */
@@ -786,18 +783,17 @@ enum class PostType {
     /**
      * A Video. Should open the built-in video viewer.
      * Also matches audio only
-     * (Not currently available).
      */
     Video,
 
     ;
 
     companion object {
-        fun fromURL(url: String): PostType =
-            if (isImage(url)) {
-                Image
-            } else if (isVideo(url)) {
+        fun fromURL(url: String): PostLinkType =
+            if (DirectFileVideoHost.isDirectUrl(url)) {
                 Video
+            } else if (isImage(url)) {
+                Image
             } else {
                 Link
             }
@@ -854,76 +850,6 @@ private fun nsfwCheck(
     post: Post,
     community: Community,
 ): Boolean = post.nsfw || community.nsfw
-
-@RequiresApi(Build.VERSION_CODES.Q)
-@Throws(IOException::class)
-fun saveMediaQ(
-    ctx: Context,
-    inputStream: InputStream,
-    mimeType: String?,
-    displayName: String,
-    mediaType: PostType,
-): Uri {
-    val values =
-        ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
-            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
-        }
-
-    val resolver = ctx.contentResolver
-    var uri: Uri? = null
-
-    try {
-        val insert =
-            when (mediaType) {
-                PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
-            }
-
-        uri = resolver.insert(insert, values)
-            ?: throw IOException("Failed to create new MediaStore record.")
-
-        resolver.openOutputStream(uri)?.use {
-            inputStream.copyTo(it)
-        } ?: throw IOException("Failed to open output stream.")
-
-        return uri
-    } catch (e: IOException) {
-        uri?.let { orphanUri ->
-            // Don't leave an orphan entry in the MediaStore
-            resolver.delete(orphanUri, null, null)
-        }
-
-        throw e
-    }
-}
-
-// saveMedia that works for Android 9 and below
-fun saveMediaP(
-    context: Context,
-    inputStream: InputStream,
-    mimeType: String?,
-    displayName: String,
-    // Link is here more like other media (think of PDF, doc, txt)
-    mediaType: PostType,
-) {
-    val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
-    val mediaDir = File(dir, "Jerboa")
-    val dest = File(mediaDir, displayName)
-
-    mediaDir.mkdirs() // make if not exist
-
-    inputStream.use { input ->
-        dest.outputStream().use {
-            input.copyTo(it)
-        }
-    }
-    // Makes it show up in gallery
-    val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
-    MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
-}
 
 /**
  * Converts a scalable pixel (sp) to an actual pixel (px)
@@ -1234,31 +1160,6 @@ fun scrollToPreviousParentComment(
     }
 }
 
-/**
- * Copy a given text to the clipboard, using the Kotlin context
- *
- * @param context The app context
- * @param textToCopy Text to copy to the clipboard
- * @param clipLabel Label
- *
- * @return true if successful, false otherwise
- */
-fun copyToClipboard(
-    context: Context,
-    textToCopy: CharSequence,
-    clipLabel: CharSequence,
-): Boolean {
-    val activity = context.findActivity()
-    activity?.let {
-        val clipboard: ClipboardManager =
-            it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(clipLabel, textToCopy)
-        clipboard.setPrimaryClip(clip)
-        return true
-    }
-    return false
-}
-
 fun getLocaleListFromXml(ctx: Context): LocaleListCompat {
     val tagsList = mutableListOf<CharSequence>()
     try {
@@ -1343,24 +1244,40 @@ inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
 }
 
 fun matchLoginErrorMsgToStringRes(
-    ctx: Context,
+    resources: Resources,
     e: Throwable,
 ): String {
     return when (e.message) {
-        "incorrect_login" -> ctx.getString(R.string.login_view_model_incorrect_login)
-        "email_not_verified" -> ctx.getString(R.string.login_view_model_email_not_verified)
-        "registration_denied" -> ctx.getString(R.string.login_view_model_registration_denied)
-        "registration_application_pending", "registration_application_is_pending" ->
-            ctx.getString(R.string.login_view_model_registration_pending)
+        "incorrect_login" -> {
+            resources.getString(R.string.login_view_model_incorrect_login)
+        }
 
-        "missing_totp_token" -> ctx.getString(R.string.login_view_model_missing_totp)
-        "incorrect_totp_token" -> ctx.getString(R.string.login_view_model_incorrect_totp)
+        "email_not_verified" -> {
+            resources.getString(R.string.login_view_model_email_not_verified)
+        }
+
+        "registration_denied" -> {
+            resources.getString(R.string.login_view_model_registration_denied)
+        }
+
+        "registration_application_pending", "registration_application_is_pending" -> {
+            resources.getString(R.string.login_view_model_registration_pending)
+        }
+
+        "missing_totp_token" -> {
+            resources.getString(R.string.login_view_model_missing_totp)
+        }
+
+        "incorrect_totp_token" -> {
+            resources.getString(R.string.login_view_model_incorrect_totp)
+        }
+
         else -> {
             return if (e.message?.contains("timeout") == true) {
-                ctx.getString(R.string.login_view_model_timeout)
+                resources.getString(R.string.login_view_model_timeout)
             } else {
                 Log.d("login", "failed", e)
-                ctx.getString(R.string.login_view_model_login_failed)
+                resources.getString(R.string.login_view_model_login_failed)
             }
         }
     }
@@ -1371,6 +1288,9 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
         ?.activeNetwork
         ?.let(::getNetworkCapabilities)
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) != false
+
+fun ConnectivityManager?.isDataSaverEnabled(): Boolean =
+    this?.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
 
 /**
  * When calling this, you must call ActivityResultLauncher.unregister()
@@ -1412,13 +1332,6 @@ fun Context.getInputStream(url: String): InputStream {
             ?.byteStream() ?: throw IOException("Failed to get input stream")
     }
 }
-
-val videoRgx =
-    Regex(
-        pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov|webm))",
-    )
-
-fun isVideo(url: String): Boolean = url.matches(videoRgx)
 
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
 

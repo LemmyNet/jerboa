@@ -60,8 +60,14 @@ fun CommentLikesScreen(
                 JerboaLoadingBar(commentLikesViewModel.likesRes)
 
                 when (val likesRes = commentLikesViewModel.likesRes) {
-                    ApiState.Empty -> ApiEmptyText()
-                    is ApiState.Failure -> ApiErrorText(likesRes.msg)
+                    ApiState.Empty -> {
+                        ApiEmptyText()
+                    }
+
+                    is ApiState.Failure -> {
+                        ApiErrorText(likesRes.msg)
+                    }
+
                     is ApiState.Holder -> {
                         val likes = likesRes.data.comment_likes
                         ViewVotesBody(
@@ -70,6 +76,7 @@ fun CommentLikesScreen(
                             onPersonClick = appState::toProfile,
                         )
                     }
+
                     else -> {}
                 }
             }

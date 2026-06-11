@@ -229,7 +229,9 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
                 touchStartedOverAClickableSpan
             }
 
-            else -> false
+            else -> {
+                false
+            }
         }
     }
 

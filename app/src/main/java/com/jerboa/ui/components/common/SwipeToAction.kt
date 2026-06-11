@@ -68,7 +68,9 @@ fun SwipeToAction(
                 rightActionsRanges.findLast { swipeState.progress in it.first }
             }
 
-            else -> null
+            else -> {
+                null
+            }
         }
 
     val swipeAction =

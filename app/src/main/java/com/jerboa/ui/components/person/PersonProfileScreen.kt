@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.person
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
@@ -124,6 +126,8 @@ fun PersonProfileScreen(
     postActionBarMode: PostActionBarMode,
     onBack: (() -> Unit)?,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to person screen")
@@ -131,6 +135,7 @@ fun PersonProfileScreen(
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -182,11 +187,14 @@ fun PersonProfileScreen(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
-                is ApiState.Failure -> apiErrorToast(ctx, profileRes.msg)
+                is ApiState.Failure -> {
+                    apiErrorToast(ctx, profileRes.msg)
+                }
+
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
-                        personName = ctx.getString(R.string.loading),
+                        personName = resources.getString(R.string.loading),
                         myProfile = false,
                         banned = false,
                         canBan = false,
@@ -217,7 +225,7 @@ fun PersonProfileScreen(
                         scrollBehavior = scrollBehavior,
                         personName =
                             if (savedMode) {
-                                ctx.getString(R.string.bookmarks_screen_saved)
+                                resources.getString(R.string.bookmarks_screen_saved)
                             } else {
                                 person.name
                             },
@@ -242,6 +250,7 @@ fun PersonProfileScreen(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -292,13 +301,14 @@ fun PersonProfileScreen(
                     personProfileViewModel = personProfileViewModel,
                     siteViewModel = siteViewModel,
                     ctx = ctx,
+                    resources = resources,
                     account = account,
                     scope = scope,
                     postListState = postListState,
                     appSettingsViewModel = appSettingsViewModel,
                     showVotingArrowsInListView = showVotingArrowsInListView,
                     enableDownVotes = siteViewModel.enableDownvotes(),
-                    showAvatar = siteViewModel.showAvatar(),
+                    showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                     useCustomTabs = useCustomTabs,
                     usePrivateTabs = usePrivateTabs,
                     blurNSFW = blurNSFW,
@@ -308,6 +318,8 @@ fun PersonProfileScreen(
                     voteDisplayMode = siteViewModel.voteDisplayMode(),
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
                 )
             }
         },
@@ -328,6 +340,7 @@ fun UserTabs(
     personProfileViewModel: PersonProfileViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     postListState: LazyListState,
@@ -344,15 +357,17 @@ fun UserTabs(
     voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     val tabTitles =
         if (savedMode) {
             listOf(
-                getLocalizedStringForUserTab(ctx, UserTab.Posts),
-                getLocalizedStringForUserTab(ctx, UserTab.Comments),
+                getLocalizedStringForUserTab(resources, UserTab.Posts),
+                getLocalizedStringForUserTab(resources, UserTab.Comments),
             )
         } else {
-            UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
+            UserTab.entries.map { getLocalizedStringForUserTab(resources, it) }
         }
     val pagerState = rememberPagerState { tabTitles.size }
 
@@ -389,9 +404,18 @@ fun UserTabs(
             when (tabI) {
                 UserTab.About.ordinal -> {
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
-                        ApiState.Empty -> ApiEmptyText()
-                        is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> LoadingBar()
+                        ApiState.Empty -> {
+                            ApiEmptyText()
+                        }
+
+                        is ApiState.Failure -> {
+                            ApiErrorText(profileRes.msg)
+                        }
+
+                        ApiState.Loading -> {
+                            LoadingBar()
+                        }
+
                         is ApiState.Success -> {
                             val listState = rememberLazyListState()
 
@@ -450,8 +474,14 @@ fun UserTabs(
                         JerboaLoadingBar(personProfileViewModel.personDetailsRes)
 
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(profileRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 PostListings(
                                     posts = profileRes.data.posts.toList(),
@@ -462,6 +492,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -482,6 +513,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -504,6 +536,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -530,6 +563,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -546,6 +580,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -575,6 +610,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -591,6 +627,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -643,6 +680,8 @@ fun UserTabs(
                                     postActionBarMode = postActionBarMode,
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
+                                    disableVideoAutoplay = disableVideoAutoplay,
+                                    lowBandwidthMode = lowBandwidthMode,
                                     selectionState = SelectionVisibilityState.NoSelection,
                                 )
                             }
@@ -659,8 +698,14 @@ fun UserTabs(
                     ) {
                         JerboaLoadingBar(personProfileViewModel.personDetailsRes)
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(profileRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val nodes = commentsToFlatNodes(profileRes.data.comments)
 
@@ -718,6 +763,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -734,6 +780,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -755,6 +802,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -786,6 +834,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -802,6 +851,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
@@ -834,6 +884,7 @@ fun UserTabs(
                                         account.doIfReadyElseDisplayInfo(
                                             appState,
                                             ctx,
+                                            resources,
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,

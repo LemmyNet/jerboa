@@ -2,7 +2,6 @@
 package com.jerboa.ui.components.privatemessage
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -77,7 +76,6 @@ fun PrivateMessageReply(
             text = reply,
             onTextChange = onReplyChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.private_message_reply_type_your_message_placeholder),
         )
     }

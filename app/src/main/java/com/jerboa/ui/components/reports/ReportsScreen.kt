@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.reports
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
@@ -63,6 +65,7 @@ fun ReportsScreen(
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to reports screen")
@@ -70,6 +73,7 @@ fun ReportsScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -105,6 +109,7 @@ fun ReportsScreen(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -133,9 +138,11 @@ fun ReportsScreen(
                 reportsViewModel = reportsViewModel,
                 siteViewModel = siteViewModel,
                 ctx = ctx,
+                resources = resources,
                 account = account,
                 scope = scope,
                 blurNSFW = blurNSFW,
+                lowBandwidthMode = lowBandwidthMode,
                 snackbarHostState = snackbarHostState,
             )
         },
@@ -143,7 +150,7 @@ fun ReportsScreen(
 }
 
 enum class ReportsTab(
-    @StringRes val textId: Int,
+    @param:StringRes val textId: Int,
     val adminOnly: Boolean = false,
 ) {
     Posts(R.string.person_profile_screen_posts),
@@ -158,11 +165,13 @@ fun ReportsTabs(
     reportsViewModel: ReportsViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
+    resources: Resources,
     account: Account,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
 ) {
     val tabs = remember(account.isAdmin) {
         ReportsTab.entries
@@ -202,6 +211,7 @@ fun ReportsTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -216,6 +226,7 @@ fun ReportsTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -232,8 +243,14 @@ fun ReportsTabs(
                         JerboaLoadingBar(reportsViewModel.postReportsRes)
 
                         when (val reportsRes = reportsViewModel.postReportsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(reportsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(reportsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val reports = reportsRes.data.post_reports
                                 LazyColumn(
@@ -250,7 +267,7 @@ fun ReportsTabs(
                                         PostReportItem(
                                             postReportView = reportView,
                                             blurNSFW = blurNSFW,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             onCommunityClick = { community ->
                                                 appState.toCommunity(id = community.id)
                                             },
@@ -262,6 +279,7 @@ fun ReportsTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -288,6 +306,7 @@ fun ReportsTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -302,6 +321,7 @@ fun ReportsTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -318,8 +338,14 @@ fun ReportsTabs(
                         JerboaLoadingBar(reportsViewModel.commentReportsRes)
 
                         when (val reportsRes = reportsViewModel.commentReportsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(reportsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(reportsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val reports = reportsRes.data.comment_reports
                                 LazyColumn(
@@ -336,13 +362,14 @@ fun ReportsTabs(
                                     ) { reportView ->
                                         CommentReportItem(
                                             commentReportView = reportView,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             onPersonClick = appState::toProfile,
                                             onCommentClick = appState::toComment,
                                             onResolveClick = { form ->
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -369,6 +396,7 @@ fun ReportsTabs(
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
+                            resources,
                             snackbarHostState,
                             scope,
                             siteViewModel,
@@ -383,6 +411,7 @@ fun ReportsTabs(
                             account.doIfReadyElseDisplayInfo(
                                 appState,
                                 ctx,
+                                resources,
                                 snackbarHostState,
                                 scope,
                                 siteViewModel,
@@ -399,8 +428,14 @@ fun ReportsTabs(
                         JerboaLoadingBar(reportsViewModel.messageReportsRes)
 
                         when (val reportsRes = reportsViewModel.messageReportsRes) {
-                            ApiState.Empty -> ApiEmptyText()
-                            is ApiState.Failure -> ApiErrorText(reportsRes.msg)
+                            ApiState.Empty -> {
+                                ApiEmptyText()
+                            }
+
+                            is ApiState.Failure -> {
+                                ApiErrorText(reportsRes.msg)
+                            }
+
                             is ApiState.Holder -> {
                                 val reports = reportsRes.data.private_message_reports
                                 LazyColumn(
@@ -422,6 +457,7 @@ fun ReportsTabs(
                                                 account.doIfReadyElseDisplayInfo(
                                                     appState,
                                                     ctx,
+                                                    resources,
                                                     snackbarHostState,
                                                     scope,
                                                     siteViewModel,
@@ -432,7 +468,7 @@ fun ReportsTabs(
                                                 }
                                             },
                                             onPersonClick = appState::toProfile,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                         )
                                     }
                                 }

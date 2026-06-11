@@ -5,7 +5,7 @@ import com.jerboa.R
 import it.vercruysse.lemmyapi.datatypes.PostView
 
 enum class BlurNSFW(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     Nothing(R.string.app_settings_nothing),
     NSFW(R.string.app_settings_blur_nsfw),

@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post.composables
 
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.CancelPresentation
@@ -25,20 +24,19 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.AnnotatedString
-import com.jerboa.PostType
+import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.feat.blockCommunity
 import com.jerboa.feat.blockPerson
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.feat.getInstanceFromCommunityUrl
 import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
@@ -88,8 +86,8 @@ fun PostOptionsDropdown(
     scope: CoroutineScope,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val api = getInstanceOrNull()
-    val localClipboardManager = LocalClipboardManager.current
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
 
     CascadeCenteredDropdownMenu(
@@ -124,17 +122,11 @@ fun PostOptionsDropdown(
         ) {
             postView.post.url?.also {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_copy_link),
+                    text = stringResource(R.string.copy_link),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         onDismissRequest()
-                        localClipboardManager.setText(AnnotatedString(it))
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_link_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                        copyTextToClipboard(ctx, it, "Link", R.string.link_copied)
                     },
                 )
             }
@@ -145,13 +137,7 @@ fun PostOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     val permalink = postView.post.ap_id
-                    localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast
-                        .makeText(
-                            ctx,
-                            ctx.getString(R.string.post_listing_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                    copyTextToClipboard(ctx, permalink, "Permalink", R.string.permalink_copied)
                 },
             )
 
@@ -161,26 +147,12 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Link,
                     onClick = {
                         onDismissRequest()
-                        if (copyToClipboard(
-                                ctx,
-                                postView.post.thumbnail_url ?: "",
-                                "thumbnail link",
-                            )
-                        ) {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_thumbnail_link_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        } else {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        }
+                        copyTextToClipboard(
+                            ctx,
+                            it,
+                            "thumbnail link",
+                            R.string.post_listing_thumbnail_link_copied,
+                        )
                     },
                 )
             }
@@ -191,26 +163,12 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         onDismissRequest()
-                        if (copyToClipboard(
-                                ctx,
-                                it,
-                                "post title",
-                            )
-                        ) {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_title_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        } else {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        }
+                        copyTextToClipboard(
+                            ctx,
+                            it,
+                            "post title",
+                            R.string.post_listing_title_copied,
+                        )
                     },
                 )
             }
@@ -221,21 +179,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         onDismissRequest()
-                        if (copyToClipboard(ctx, postView.post.name, "post name")) {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_name_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        } else {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        }
+                        copyTextToClipboard(ctx, postView.post.name, "post name", R.string.post_listing_name_copied)
                     },
                 )
             }
@@ -246,21 +190,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         onDismissRequest()
-                        if (copyToClipboard(ctx, postView.post.body ?: "", "post text")) {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_text_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        } else {
-                            Toast
-                                .makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                        }
+                        copyTextToClipboard(ctx, it, "post text", R.string.post_listing_text_copied)
                     },
                 )
             }
@@ -272,55 +202,58 @@ fun PostOptionsDropdown(
         ) {
             postView.post.url?.also { url ->
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_share_link),
+                    text = stringResource(R.string.share_link),
                     icon = Icons.Outlined.Share,
                     onClick = {
                         onDismissRequest()
-                        shareLink(url, ctx)
+                        shareLink(url, ctx, resources)
                     },
                 )
 
-                when (val mediaType = PostType.fromURL(url)) {
-                    PostType.Image ->
+                when (val mediaType = PostLinkType.fromURL(url)) {
+                    PostLinkType.Image -> {
                         PopupMenuItem(
                             text = stringResource(R.string.share_image),
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(scope, ctx, url, mediaType)
+                                shareMedia(scope, ctx, resources, url, mediaType)
                             },
                         )
+                    }
 
-                    PostType.Video ->
+                    PostLinkType.Video -> {
                         PopupMenuItem(
                             text = stringResource(R.string.share_video),
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(scope, ctx, url, mediaType)
+                                shareMedia(scope, ctx, resources, url, mediaType)
                             },
                         )
+                    }
 
-                    PostType.Link ->
+                    PostLinkType.Link -> {
                         if (isMedia(url)) {
                             PopupMenuItem(
                                 text = stringResource(R.string.share_media),
                                 icon = Icons.Outlined.Share,
                                 onClick = {
                                     onDismissRequest()
-                                    shareMedia(scope, ctx, url, PostType.Link)
+                                    shareMedia(scope, ctx, resources, url, PostLinkType.Link)
                                 },
                             )
                         }
+                    }
                 }
             }
 
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_share_post),
+                text = stringResource(R.string.share_post),
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()
-                    shareLink(postView.post.ap_id, ctx)
+                    shareLink(postView.post.ap_id, ctx, resources)
                 },
             )
         }
@@ -354,9 +287,9 @@ fun PostOptionsDropdown(
                 PopupMenuItem(
                     text =
                         if (viewSource) {
-                            stringResource(R.string.post_listing_view_original)
+                            stringResource(R.string.view_original)
                         } else {
-                            stringResource(R.string.post_listing_view_source)
+                            stringResource(R.string.view_source)
                         },
                     icon = Icons.Outlined.Description,
                     onClick = {
@@ -371,7 +304,7 @@ fun PostOptionsDropdown(
 
         if (isCreator) {
             PopupMenuItem(
-                text = stringResource(R.string.post_listing_edit),
+                text = stringResource(R.string.edit),
                 icon = Icons.Outlined.Edit,
                 onClick = {
                     onDismissRequest()
@@ -381,7 +314,7 @@ fun PostOptionsDropdown(
 
             if (postView.post.deleted) {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_restore),
+                    text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
@@ -390,7 +323,7 @@ fun PostOptionsDropdown(
                 )
             } else {
                 PopupMenuItem(
-                    text = stringResource(R.string.post_listing_delete),
+                    text = stringResource(R.string.delete),
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()

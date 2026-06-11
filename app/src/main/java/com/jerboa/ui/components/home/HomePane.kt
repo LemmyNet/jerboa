@@ -30,6 +30,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
@@ -97,6 +98,8 @@ fun HomePane(
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues,
     onPostClick: (PostView) -> Unit,
     selectionState: SelectionVisibilityState<PostId>,
@@ -111,6 +114,7 @@ fun HomePane(
     // val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel)
     // Forget snackbars of previous accounts
     val snackbarHostState = remember(account) { SnackbarHostState() }
@@ -126,6 +130,7 @@ fun HomePane(
             account.doIfReadyElseDisplayInfo(
                 appState,
                 ctx,
+                resources,
                 snackbarHostState,
                 scope,
                 siteViewModel,
@@ -180,6 +185,8 @@ fun HomePane(
                     snackbarHostState = snackbarHostState,
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
                     onPostClick = onPostClick,
                     selectionState = selectionState,
                 )
@@ -192,6 +199,7 @@ fun HomePane(
                     account.doIfReadyElseDisplayInfo(
                         appState,
                         ctx,
+                        resources,
                         snackbarHostState,
                         scope,
                         siteViewModel,
@@ -231,16 +239,25 @@ fun MainPostListingsContent(
     markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
+    disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
     onPostClick: (PostView) -> Unit,
     selectionState: SelectionVisibilityState<PostId>,
 ) {
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val scope = rememberCoroutineScope()
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading -> LoadingBar()
-        is ApiState.Failure -> ApiErrorText(siteRes.msg)
+        ApiState.Loading -> {
+            LoadingBar()
+        }
+
+        is ApiState.Failure -> {
+            ApiErrorText(siteRes.msg)
+        }
+
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
@@ -262,8 +279,13 @@ fun MainPostListingsContent(
                 listOf()
             }
 
-            is ApiState.Holder -> postsRes.data
-            else -> listOf()
+            is ApiState.Holder -> {
+                postsRes.data
+            }
+
+            else -> {
+                listOf()
+            }
         }
 
         PostListings(
@@ -276,6 +298,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -292,6 +315,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -309,6 +333,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -335,6 +360,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -351,6 +377,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -380,6 +407,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -396,6 +424,7 @@ fun MainPostListingsContent(
                 account.doIfReadyElseDisplayInfo(
                     appState,
                     ctx,
+                    resources,
                     snackbarHostState,
                     scope,
                     siteViewModel,
@@ -422,7 +451,7 @@ fun MainPostListingsContent(
             postViewMode = getPostViewMode(appSettingsViewModel),
             showVotingArrowsInListView = showVotingArrowsInListView,
             enableDownVotes = siteViewModel.enableDownvotes(),
-            showAvatar = siteViewModel.showAvatar(),
+            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
@@ -446,6 +475,8 @@ fun MainPostListingsContent(
             postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
+            disableVideoAutoplay = disableVideoAutoplay,
+            lowBandwidthMode = lowBandwidthMode,
             selectionState = selectionState,
         )
     }

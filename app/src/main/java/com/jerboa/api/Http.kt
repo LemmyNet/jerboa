@@ -2,6 +2,7 @@ package com.jerboa.api
 
 import android.content.Context
 import android.net.TrafficStats
+import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.toastException
@@ -49,7 +50,12 @@ object API {
             .writeTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .addNetworkInterceptor { chain ->
-                TrafficStats.setThreadStatsTag(Thread.currentThread().id.toInt())
+                if (SDK_INT >= 36) {
+                    TrafficStats.setThreadStatsTag(Thread.currentThread().threadId().toInt())
+                } else {
+                    TrafficStats.setThreadStatsTag(Thread.currentThread().id.toInt())
+                }
+
                 chain
                     .request()
                     .newBuilder()

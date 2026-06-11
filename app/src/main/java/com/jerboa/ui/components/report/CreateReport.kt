@@ -2,7 +2,7 @@ package com.jerboa.ui.components.report
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -29,13 +29,13 @@ fun CreateReportBody(
             Modifier
                 .verticalScroll(scrollState)
                 .padding(padding)
+                .consumeWindowInsets(padding)
                 .imePadding(),
     ) {
         MarkdownTextField(
             text = reason,
             onTextChange = onReasonChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.create_report_type_your_reason),
         )
     }

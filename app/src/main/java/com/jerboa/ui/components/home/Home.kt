@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -66,7 +67,7 @@ fun HomeHeader(
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val ctx = LocalContext.current
+    val resources = LocalResources.current
     var showSortOptions by rememberSaveable { mutableStateOf(false) }
     var showListingTypeOptions by rememberSaveable { mutableStateOf(false) }
     var showMoreOptions by rememberSaveable { mutableStateOf(false) }
@@ -76,7 +77,7 @@ fun HomeHeader(
         title = {
             DualHeaderTitle(
                 selectedSortType = selectedSortType,
-                topText = getLocalizedListingTypeName(ctx, selectedListingType),
+                topText = getLocalizedListingTypeName(resources, selectedListingType),
             )
         },
         navigationIcon = {

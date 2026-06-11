@@ -47,14 +47,17 @@ enum class SwipeToActionType {
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
                 background = MaterialTheme.colorScheme.secondaryContainer,
             )
+
             Downvote -> ActionColor(
                 tint = MaterialTheme.colorScheme.onErrorContainer,
                 background = MaterialTheme.colorScheme.errorContainer,
             )
+
             Reply -> ActionColor(
                 tint = MaterialTheme.colorScheme.onTertiaryContainer,
                 background = MaterialTheme.colorScheme.tertiaryContainer,
             )
+
             Save -> ActionColor(
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 background = MaterialTheme.colorScheme.primaryContainer,
@@ -70,7 +73,7 @@ data class ActionColor(
 enum class SwipeToActionPreset(
     val leftActions: List<SwipeToActionType>,
     val rightActions: List<SwipeToActionType>,
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     Disabled(emptyList(), emptyList(), R.string.swipe_action_preset_disabled),
     TwoSides(

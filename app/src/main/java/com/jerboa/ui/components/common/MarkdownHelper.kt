@@ -12,15 +12,12 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.FontRes
-import androidx.annotation.IdRes
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.viewinterop.AndroidView
@@ -30,6 +27,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 import com.jerboa.util.markwon.ForceHttpsPlugin
+import com.jerboa.util.markwon.LinkOnlyImagesPlugin
 import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
 import com.jerboa.util.markwon.MarkwonSpoilerPlugin
 import com.jerboa.util.markwon.ScriptRewriteSupportPlugin
@@ -83,11 +81,25 @@ object MarkdownHelper {
         appState: JerboaAppState,
         useCustomTabs: Boolean,
         usePrivateTabs: Boolean,
+        lowBandwidthMode: Boolean,
         onLongClick: BetterLinkMovementMethod.OnLinkLongClickListener,
     ) {
         val context = appState.navController.context
         val loader = context.imageLoader
-        // main markdown parser has coil + html on
+        val imagesPlugin = if (lowBandwidthMode) {
+            // Render `![alt](url)` as a plain clickable link — no network load.
+            LinkOnlyImagesPlugin()
+        } else {
+            ClickableCoilImagesPlugin.create(context, loader, appState)
+        }
+        val htmlPlugin = if (lowBandwidthMode) {
+            // HtmlPlugin's default `<img>` handler would still load images;
+            // swap it for a no-op so inline HTML images are dropped.
+            HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) }
+        } else {
+            HtmlPlugin.create()
+        }
+
         markwon =
             Markwon
                 .builder(context)
@@ -99,8 +111,8 @@ object MarkdownHelper {
                 .usePlugin(MarkwonSpoilerPlugin(true))
                 .usePlugin(StrikethroughPlugin.create())
                 .usePlugin(TablePlugin.create(context))
-                .usePlugin(ClickableCoilImagesPlugin.create(context, loader, appState))
-                .usePlugin(HtmlPlugin.create())
+                .usePlugin(imagesPlugin)
+                .usePlugin(htmlPlugin)
                 // use TableAwareLinkMovementMethod to handle clicks inside tables,
                 // wraps LinkMovementMethod internally
                 .usePlugin(
@@ -160,31 +172,26 @@ object MarkdownHelper {
         onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
-        BoxWithConstraints {
-            val canvasWidthMaybe = with(LocalDensity.current) { maxWidth.toPx() }.toInt()
-            val textSizeMaybe = with(LocalDensity.current) { style.fontSize.toPx() }
-
-            AndroidView(
-                factory = { ctx ->
-                    createTextView(
-                        context = ctx,
-                        color = color,
-                        style = style,
-                        viewId = null,
-                        onClick = onClick,
-                        onLongClick = onLongClick,
-                    )
-                },
-                update = { textView ->
-                    val md = markwon!!.toMarkdown(markdown)
-                    for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
-                        img.drawable.initWithKnownDimensions(canvasWidthMaybe, textSizeMaybe)
-                    }
-                    markwon!!.setParsedMarkdown(textView, md)
-                },
-                modifier = modifier,
-            )
-        }
+        AndroidView(
+            factory = { ctx ->
+                createTextView(
+                    context = ctx,
+                    color = color,
+                    style = style,
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                )
+            },
+            update = { textView ->
+                val parser = markwon!!
+                val md = parser.toMarkdown(markdown)
+                for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
+                    img.drawable.initWithKnownDimensions(textView.width, textView.textSize)
+                }
+                parser.setParsedMarkdown(textView, md)
+            },
+            modifier = modifier,
+        )
     }
 
     private fun createTextView(
@@ -193,7 +200,6 @@ object MarkdownHelper {
         textAlign: TextAlign? = null,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
-        @IdRes viewId: Int? = null,
         onClick: (() -> Unit)? = null,
         onLongClick: ((View) -> Boolean)? = null,
     ): TextView {
@@ -216,7 +222,6 @@ object MarkdownHelper {
             }
             width = maxWidth
 
-            viewId?.let { id = viewId }
             textAlign?.let { align ->
                 textAlignment =
                     when (align) {

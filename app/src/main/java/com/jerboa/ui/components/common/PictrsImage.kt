@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
@@ -62,7 +61,6 @@ fun CircularIcon(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier = modifier
@@ -111,7 +109,7 @@ fun getImageRequest(
             .data(pictrsImageThumbnail(path, size))
             .crossfade(true)
 
-    if (blur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+    if (blur && Build.VERSION.SDK_INT < 31) {
         builder.transformations(
             listOf(
                 BlurTransformation(
@@ -146,7 +144,6 @@ fun PictrsThumbnailImage(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier =
@@ -185,18 +182,14 @@ fun PictrsUrlImage(
 
     AsyncImage(
         model = imageRequest,
-        // TODO There's a bug in coil when using a placeholder,
-        // and ContentScale.FillWidth
-        // See https://github.com/coil-kt/coil/issues/1505
-        //        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
-        modifier =
-            modifier
-                .getBlurredOrRounded(
-                    rounded = false,
-                    blur = blur,
-                ).fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .getBlurredOrRounded(
+                rounded = false,
+                blur = blur,
+            ),
     )
 }
 
@@ -220,7 +213,6 @@ fun PictrsBannerImage(
 
     AsyncImage(
         model = imageRequest,
-        placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier =

@@ -228,6 +228,7 @@ class PersonProfileViewModel(
                     updatePostHidden(form)
                     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 }
+
                 else -> {}
             }
         }

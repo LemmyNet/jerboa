@@ -1,6 +1,8 @@
 package com.jerboa.model
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -32,6 +34,7 @@ class LoginViewModel : ViewModel() {
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
         ctx: Context,
+        resources: Resources,
     ) {
         viewModelScope.launch {
             loading = true
@@ -51,14 +54,20 @@ class LoginViewModel : ViewModel() {
 
                 val msg =
                     when (e) {
-                        is UnknownHostException ->
-                            ctx.getString(
+                        is UnknownHostException -> {
+                            resources.getString(
                                 R.string.login_view_model_is_not_a_lemmy_instance,
                                 instance,
                             )
+                        }
 
-                        is NotSupportedException -> ctx.getString(R.string.server_version_not_supported, instance)
-                        else -> matchLoginErrorMsgToStringRes(ctx, e)
+                        is NotSupportedException -> {
+                            resources.getString(R.string.server_version_not_supported, instance)
+                        }
+
+                        else -> {
+                            matchLoginErrorMsgToStringRes(resources, e)
+                        }
                     }
 
                 Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
@@ -88,7 +97,7 @@ class LoginViewModel : ViewModel() {
                                     it.instance.equals(instance, true)
                             } == true
                         ) {
-                            throw Exception(ctx.getString(R.string.login_already_logged_in))
+                            throw Exception(resources.getString(R.string.login_already_logged_in))
                         }
 
                         val account =

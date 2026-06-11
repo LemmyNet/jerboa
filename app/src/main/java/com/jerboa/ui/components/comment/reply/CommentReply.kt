@@ -2,7 +2,6 @@
 package com.jerboa.ui.components.comment.reply
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -148,7 +147,6 @@ fun CommentReply(
             text = reply,
             onTextChange = onReplyChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -178,7 +176,6 @@ fun CommentReplyReply(
             text = reply,
             onTextChange = onReplyChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -208,7 +205,6 @@ fun MentionReply(
             text = reply,
             onTextChange = onReplyChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -238,7 +234,6 @@ fun PostReply(
             text = reply,
             onTextChange = onReplyChange,
             account = account,
-            modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.comment_reply_type_your_comment),
         )
     }

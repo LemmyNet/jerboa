@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
@@ -52,27 +51,34 @@ class CommentReplyViewModel : ViewModel() {
         reply: ReplyItem,
         ctx: Context,
         content: String,
-        focusManager: FocusManager,
         onSuccess: (CommentView) -> Unit,
     ) {
         val (postId, commentParentId) =
             when (reply) {
-                is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
-                is ReplyItem.CommentItem ->
+                is ReplyItem.PostItem -> {
+                    Pair(reply.item.post.id, null)
+                }
+
+                is ReplyItem.CommentItem -> {
                     Pair(
                         reply.item.post.id,
                         reply.item.comment.id,
                     )
-                is ReplyItem.CommentReplyItem ->
+                }
+
+                is ReplyItem.CommentReplyItem -> {
                     Pair(
                         reply.item.post.id,
                         reply.item.comment.id,
                     )
-                is ReplyItem.MentionReplyItem ->
+                }
+
+                is ReplyItem.MentionReplyItem -> {
                     Pair(
                         reply.item.post.id,
                         reply.item.comment.id,
                     )
+                }
             }
 
         viewModelScope.launch {
@@ -90,13 +96,14 @@ class CommentReplyViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val commentView = res.data.comment_view
 
-                    focusManager.clearFocus()
                     onSuccess(commentView)
                 }
+
                 is ApiState.Failure -> {
                     Log.d("createComment", "failed", res.msg)
                     apiErrorToast(msg = res.msg, ctx = ctx)
                 }
+
                 else -> {}
             }
         }

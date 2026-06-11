@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,6 +39,7 @@ fun BanPersonScreen(
     Log.d("jerboa", "got to ban person screen")
 
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val banPersonViewModel: BanPersonViewModel = viewModel()
@@ -82,6 +84,7 @@ fun BanPersonScreen(
                             expireDays = if (!isBan or permaBan) null else expireDays,
                             reason = reason.text,
                             ctx = ctx,
+                            resources = resources,
                             focusManager = focusManager,
                         ) { personView ->
                             appState.apply {

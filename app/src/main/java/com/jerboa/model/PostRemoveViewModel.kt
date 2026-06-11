@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ class PostRemoveViewModel : ViewModel() {
         removed: Boolean,
         reason: String,
         ctx: Context,
+        resources: Resources,
         focusManager: FocusManager,
         onSuccess: (PostView) -> Unit,
     ) {
@@ -52,9 +54,9 @@ class PostRemoveViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val message =
                         if (removed) {
-                            ctx.getString(R.string.post_removed)
+                            resources.getString(R.string.post_removed)
                         } else {
-                            ctx.getString(R.string.post_restored)
+                            resources.getString(R.string.post_restored)
                         }
                     val postView = res.data.post_view
                     Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
@@ -62,6 +64,7 @@ class PostRemoveViewModel : ViewModel() {
                     focusManager.clearFocus()
                     onSuccess(postView)
                 }
+
                 else -> {}
             }
         }

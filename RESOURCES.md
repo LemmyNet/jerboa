@@ -1,4 +1,4 @@
-# Compose resources
+# Resources
 
 - [Architecture](https://developer.android.com/develop/ui/compose/architecture#udf)
 - [Compose coding design](https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/docs/compose-api-guidelines.md#prefer-stateless-and-controlled-composable-functions)
@@ -9,3 +9,4 @@
 - [Material Design 3 docs](https://m3.material.io/)
 - [Jetpack Compose app Reply from compose-samples](https://github.com/android/compose-samples/tree/main/Reply)
 - [Design for android](https://developer.android.com/design/ui)
+- [Android Lint](https://developer.android.com/studio/write/lint)

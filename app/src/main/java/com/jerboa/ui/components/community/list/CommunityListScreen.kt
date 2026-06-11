@@ -108,8 +108,14 @@ fun CommunityListScreen(
             },
             content = { padding ->
                 when (val communitiesRes = communityListViewModel.searchRes) {
-                    ApiState.Empty -> ApiEmptyText()
-                    is ApiState.Failure -> ApiErrorText(communitiesRes.msg)
+                    ApiState.Empty -> {
+                        ApiEmptyText()
+                    }
+
+                    is ApiState.Failure -> {
+                        ApiErrorText(communitiesRes.msg)
+                    }
+
                     ApiState.Loading -> {
                         LoadingBar(padding)
                     }

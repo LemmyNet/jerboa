@@ -61,7 +61,8 @@ object Route {
 
     const val BLOCK_VIEW = "blockView"
 
-    val VIEW = ViewArgs.route
+    val IMAGE_VIEW = ImageViewArgs.route
+    val VIDEO_VIEW = VideoViewArgs.route
 
     class CommunityFromIdArgs(
         val id: CommunityId,
@@ -268,7 +269,7 @@ object Route {
         }
     }
 
-    class ViewArgs(
+    class ImageViewArgs(
         val url: String,
     ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
@@ -278,7 +279,23 @@ object Route {
             const val URL = "url"
             val URL_TYPE = NavType.StringType
 
-            fun makeRoute(url: String) = "view/$url"
+            fun makeRoute(url: String) = "image/view/$url"
+
+            internal val route by lazy { makeRoute(url = "{$URL}") }
+        }
+    }
+
+    class VideoViewArgs(
+        val url: String,
+    ) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(url = navBackStackEntry.arguments?.getString(URL)!!)
+
+        companion object {
+            const val URL = "url"
+            val URL_TYPE = NavType.StringType
+
+            fun makeRoute(url: String) = "video/view/$url"
 
             internal val route by lazy { makeRoute(url = "{$URL}") }
         }

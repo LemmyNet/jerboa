@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.comment
 
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.Shield
@@ -19,16 +18,14 @@ import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.AnnotatedString
 import com.jerboa.R
 import com.jerboa.api.API
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getContent
+import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
@@ -60,7 +57,6 @@ fun CommentOptionsDropdown(
     amAdmin: Boolean,
     viewSource: Boolean,
 ) {
-    val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
 
     CascadeCenteredDropdownMenu(
@@ -95,13 +91,7 @@ fun CommentOptionsDropdown(
                 onClick = {
                     onDismissRequest()
                     val permalink = commentView.comment.ap_id
-                    localClipboardManager.setText(AnnotatedString(permalink))
-                    Toast
-                        .makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_node_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                    copyTextToClipboard(ctx, permalink, "Permalink", R.string.permalink_copied)
                 },
             )
             val content = commentView.comment.getContent()
@@ -110,21 +100,7 @@ fun CommentOptionsDropdown(
                 icon = Icons.Outlined.ContentCopy,
                 onClick = {
                     onDismissRequest()
-                    if (copyToClipboard(ctx, content, "comment")) {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.comment_node_comment_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    } else {
-                        Toast
-                            .makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    }
+                    copyTextToClipboard(ctx, content, "comment", R.string.comment_node_comment_copied)
                 },
             )
         }
@@ -134,7 +110,7 @@ fun CommentOptionsDropdown(
                 if (viewSource) {
                     stringResource(R.string.comment_node_view_original)
                 } else {
-                    stringResource(R.string.comment_node_view_source)
+                    stringResource(R.string.view_source)
                 },
             icon = Icons.Outlined.Description,
             onClick = {
@@ -147,7 +123,7 @@ fun CommentOptionsDropdown(
 
         if (isCreator) {
             PopupMenuItem(
-                text = stringResource(R.string.comment_node_edit),
+                text = stringResource(R.string.edit),
                 icon = Icons.Outlined.Edit,
                 onClick = {
                     onDismissRequest()
@@ -157,7 +133,7 @@ fun CommentOptionsDropdown(
 
             if (commentView.comment.deleted) {
                 PopupMenuItem(
-                    text = stringResource(R.string.comment_node_restore),
+                    text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
@@ -166,7 +142,7 @@ fun CommentOptionsDropdown(
                 )
             } else {
                 PopupMenuItem(
-                    text = stringResource(R.string.comment_node_delete),
+                    text = stringResource(R.string.delete),
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()

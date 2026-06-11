@@ -3,7 +3,6 @@ package com.jerboa.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
@@ -22,7 +21,6 @@ class PrivateMessageReplyViewModel : ViewModel() {
         recipientId: PersonId,
         content: String,
         onGoBack: () -> Unit,
-        focusManager: FocusManager,
     ) {
         viewModelScope.launch {
             val form =
@@ -33,7 +31,6 @@ class PrivateMessageReplyViewModel : ViewModel() {
             createMessageRes = ApiState.Loading
             createMessageRes = API.getInstance().createPrivateMessage(form).toApiState()
 
-            focusManager.clearFocus()
             onGoBack()
         }
     }

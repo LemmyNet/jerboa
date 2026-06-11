@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -122,6 +124,7 @@ fun SettingsForm(
 
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
+    val resources = LocalResources.current
     val api = API.getInstanceOrNull()
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
     var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -184,9 +187,10 @@ fun SettingsForm(
     Column(
         modifier =
             Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
-                .imePadding()
-                .verticalScroll(rememberScrollState()),
+                .consumeWindowInsets(padding)
+                .imePadding(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         SettingsTextField(
@@ -204,9 +208,6 @@ fun SettingsForm(
                 account = account,
                 outlined = true,
                 focusImmediate = false,
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
             )
         }
 
@@ -266,11 +267,11 @@ fun SettingsForm(
                 state = defaultListingTypeState,
                 values = supportedListingTypes,
                 valueToText = {
-                    AnnotatedString(getLocalizedListingTypeName(ctx, it))
+                    AnnotatedString(getLocalizedListingTypeName(resources, it))
                 },
                 title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
                 summary = {
-                    Text(getLocalizedListingTypeName(ctx, defaultListingTypeState.value))
+                    Text(getLocalizedListingTypeName(resources, defaultListingTypeState.value))
                 },
             )
 
@@ -279,11 +280,11 @@ fun SettingsForm(
                 state = defaultSortTypeState,
                 values = supportedSortTypes,
                 valueToText = {
-                    AnnotatedString(ctx.getString(it.data.longForm))
+                    AnnotatedString(resources.getString(it.data.longForm))
                 },
                 title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
                 summary = {
-                    Text(ctx.getString(defaultSortTypeState.value.data.longForm))
+                    Text(resources.getString(defaultSortTypeState.value.data.longForm))
                 },
             )
 

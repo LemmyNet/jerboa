@@ -1,17 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="comment_node_goto_comment">Aller au commentaire</string>
-    <string name="comment_node_view_source">Afficher la source</string>
+    <string name="view_source">Afficher la source</string>
     <string name="comment_node_copy_permalink">Copier le lien permanent</string>
     <string name="comment_node_report_comment">Signaler le commentaire</string>
-    <string name="comment_node_edit">Modifier</string>
-    <string name="comment_node_restore">Restaurer</string>
-    <string name="comment_node_delete">Supprimer</string>
     <string name="comment_node_more_replies">%1$s autres réponses</string>
     <string name="comment_node_view_post">Afficher la publication</string>
     <string name="comment_node_view_context">Afficher le contexte</string>
     <string name="comment_body_removed">*Supprimé*</string>
     <string name="comment_body_deleted">*Effacé*</string>
-    <string name="comment_edit_edit">Modifier</string>
     <string name="comment_edit_type_your_comment">Saisissez votre commentaire</string>
     <string name="comment_reply_reply">Répondre</string>
     <string name="comment_reply_type_your_comment">Saisissez votre commentaire</string>
@@ -81,12 +78,12 @@
     <string name="post_listing_new">(%1$s nouveau(x))</string>
     <string name="post_listing_comments_count">%1$s commentaires</string>
     <string name="post_listing_go_to">Aller à %1$s</string>
-    <string name="post_listing_copy_link">Copier le lien</string>
+    <string name="copy_link">Copier le lien</string>
     <string name="post_listing_copy_permalink">Copier le permalien</string>
     <string name="post_listing_report_post">Signaler la publication</string>
-    <string name="post_listing_edit">Modifier</string>
-    <string name="post_listing_restore">Restaurer</string>
-    <string name="post_listing_delete">Supprimer</string>
+    <string name="edit">Modifier</string>
+    <string name="restore">Restaurer</string>
+    <string name="delete">Supprimer</string>
     <string name="private_message_to">"à "</string>
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Répondre</string>
@@ -114,7 +111,6 @@
     <string name="account_settings_avatar">Avatar</string>
     <string name="account_settings_banner">Bannière</string>
     <string name="account_settings_all">Toutes les communautés</string>
-    <string name="account_settings_local">Communautés locales</string>
     <string name="account_settings_subscribed">Communautés abonnées</string>
     <string name="account_settings_default_listing_type">Type de liste par défaut</string>
     <string name="account_settings_default_sort_type">Tri par défaut</string>
@@ -154,9 +150,8 @@
     <string name="about_social">Social</string>
     <string name="comment_node_in">"dans "</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Afficher le contenu des commentaires minimisés</string>
-    <string name="comment_node_permalink_copied">Permalien copié</string>
-    <string name="post_listing_link_copied">Lien copié</string>
-    <string name="post_listing_permalink_copied">Permalien copié</string>
+    <string name="link_copied">Lien copié</string>
+    <string name="permalink_copied">Permalien copié</string>
     <string name="comment_next_parent">Commentaire parent suivant</string>
     <string name="comment_previous_parent">Commentaire parent précédent</string>
     <string name="person_profile_screen_about">À propos</string>
@@ -223,8 +218,8 @@
     <string name="postListing_goToCommunity">Aller à la communauté</string>
     <string name="postListing_featuredLocal">En vedette localement</string>
     <string name="postListing_featuredCommunity">En vedette dans la communauté</string>
-    <string name="postListing_locked">Verrouillé</string>
-    <string name="postListing_deleted">Supprimé</string>
+    <string name="locked">Verrouillé</string>
+    <string name="deleted">Supprimé</string>
     <string name="postListing_reply">Répondre à la publication</string>
     <string name="privateMessage_reply">Répondre au message</string>
     <string name="topAppBar_back">Précédent</string>
@@ -239,7 +234,7 @@
     <string name="look_and_feel_show_voting_arrows_list_view">Montrer les flèches de vote dans la vue en liste</string>
     <string name="upvote">Plusser</string>
     <string name="downvote">Moinser</string>
-    <string name="upvoted">Plussé</string>
+    <string name="upvoted">Upvoté</string>
     <string name="downvoted">Moinsé</string>
     <string name="create_report_view_model_report_fail">Impossible de créer le signalement : %1$s</string>
     <string name="look_and_feel_secure_window">Empêcher les captures d’écran</string>
@@ -262,4 +257,16 @@
     <string name="inbox_screen_messages">Messages</string>
     <string name="bookmarks_screen_saved">Enregistrés</string>
     <string name="dialogs_server_version_outdated_short">La version du serveur (%1$s) est trop basse.</string>
+    <string name="lock_post">Verouiller la publication</string>
+    <string name="unlock_post">Déverouiller la publication</string>
+    <string name="share_post">Partager la publication</string>
+    <string name="remove_comment">Supprimer le commentaire</string>
+    <string name="feature_in_local">Promouvoir en local</string>
+    <string name="show_upvotes">Afficher les votes pour</string>
+    <string name="view_votes">Voir les votes</string>
+    <string name="deny_reason">Raison du refus</string>
+    <string name="hide_post">Cacher la publication</string>
+    <string name="show_downvotes">Afficher les votes contre</string>
+    <string name="remove_content">Supprimer le contenu</string>
+    <string name="show_upvote_percentage">Afficher le % de votes pour</string>
 </resources>

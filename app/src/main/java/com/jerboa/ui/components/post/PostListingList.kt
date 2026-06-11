@@ -71,6 +71,7 @@ fun PostListingList(
     showIfRead: Boolean,
     enableDownVotes: Boolean,
     voteDisplayMode: LocalUserVoteDisplayMode,
+    lowBandwidthMode: Boolean,
 ) {
     Column(
         modifier =
@@ -183,10 +184,12 @@ fun PostListingList(
             }
             ThumbnailTile(
                 post = postView.post,
+                imageDetails = postView.image_details,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurEnabled = blurNSFW.needBlur(postView),
                 appState = appState,
+                lowBandwidthMode = lowBandwidthMode,
             )
         }
     }
@@ -210,6 +213,7 @@ fun PostListingListPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
+        lowBandwidthMode = false,
     )
 }
 
@@ -231,6 +235,7 @@ fun PostListingListWithThumbPreview() {
         showIfRead = true,
         enableDownVotes = false,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
+        lowBandwidthMode = false,
     )
 }
 

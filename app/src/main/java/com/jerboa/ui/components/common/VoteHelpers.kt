@@ -176,47 +176,53 @@ private fun iconAndColor(
 @Composable
 fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
     when (myVote) {
-        1 ->
+        1 -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 scoreColor(myVote = myVote),
             )
+        }
 
-        else ->
+        else -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_outline),
                 MaterialTheme.colorScheme.outline,
             )
+        }
     }
 
 @Composable
 fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
     when (myVote) {
-        -1 ->
+        -1 -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_filled),
                 scoreColor(myVote = myVote),
             )
+        }
 
-        else ->
+        else -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_outline),
                 MaterialTheme.colorScheme.outline,
             )
+        }
     }
 
 @Composable
 fun scoreIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
     when (myVote) {
-        1 ->
+        1 -> {
             Pair(
                 Icons.Outlined.Favorite,
                 scoreColor(myVote = myVote),
             )
+        }
 
-        else ->
+        else -> {
             Pair(
                 Icons.Outlined.FavoriteBorder,
                 scoreColor(myVote = myVote),
             )
+        }
     }

@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.jerboa.R
 
 enum class PostNavigationGestureMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     /**
      * Disable all navigation gestures within posts.

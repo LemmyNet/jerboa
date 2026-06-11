@@ -4,6 +4,7 @@
 [![status-badge](https://woodpecker.join-lemmy.org/api/badges/LemmyNet/jerboa/status.svg)](https://woodpecker.join-lemmy.org/LemmyNet/jerboa)
 [![GitHub issues](https://img.shields.io/github/issues-raw/LemmyNet/jerboa.svg)](https://github.com/LemmyNet/jerboa/issues)
 [![License](https://img.shields.io/github/license/LemmyNet/jerboa.svg)](LICENSE)
+[![Translation status](https://weblate.join-lemmy.org/widget/lemmy/jerboa/svg-badge.svg)](https://weblate.join-lemmy.org/projects/lemmy/jerboa/)
 ![GitHub stars](https://img.shields.io/github/stars/LemmyNet/jerboa?style=social)
 
 </div>
@@ -39,9 +40,9 @@
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | ![img_1](./fastlane/metadata/android/en-US/images/phoneScreenshots/01.png) | ![img_2](fastlane/metadata/android/en-US/images/phoneScreenshots/02.png) |
 
-Jerboa is a native-android client for Lemmy, built using the native Android Toolkit, Jetpack Compose.
+Jerboa is an Android client for Lemmy, built using the native Android toolkit and Jetpack Compose.
 
-**Warning**: You can submit issues, but between Lemmy and lemmy-ui, I probably won't have too much time to work on them. Learn jetpack compose like I did if you want to help make this app better.
+**Note**: You can submit issues, but between Lemmy and lemmy-ui, the developers probably won't have too much time to work on them. You can learn Jetpack Compose and contribute if you want to help make this app better.
 
 ### Built With
 
@@ -51,7 +52,7 @@ Jerboa is a native-android client for Lemmy, built using the native Android Tool
 
 ## Features
 
-- Open source, [AGPL License](/LICENSE).
+- Open-source, [AGPL License](/LICENSE).
 
 ## Installation / Releases
 
@@ -67,9 +68,9 @@ Jerboa is made by Lemmy's developers, and is free, open-source software, meaning
 Jerboa and Lemmy are made possible by a generous grant from the [NLnet foundation](https://nlnet.nl/).
 
 - [Support on Liberapay](https://liberapay.com/Lemmy).
+- [Support on Ko-fi](https://ko-fi.com/lemmynet).
 - [Support on OpenCollective](https://opencollective.com/lemmy).
 - [Support on Patreon](https://www.patreon.com/dessalines).
-- [List of Sponsors](https://join-lemmy.org/donate).
 
 ### Crypto
 
