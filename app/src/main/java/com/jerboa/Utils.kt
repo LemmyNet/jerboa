@@ -1287,7 +1287,8 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
     this
         ?.activeNetwork
         ?.let(::getNetworkCapabilities)
-        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) != false
+        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        ?: true
 
 fun ConnectivityManager?.isDataSaverEnabled(): Boolean =
     this?.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
