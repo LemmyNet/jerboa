@@ -140,6 +140,13 @@ dependencies {
     androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
+    // Adaptive layouts
+    // TODO still need the alphas for pane features
+    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-beta02")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-beta02")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-beta02")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     // Freedroidwarn
