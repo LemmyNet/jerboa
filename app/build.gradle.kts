@@ -141,10 +141,9 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     // Adaptive layouts
-    // TODO still need the alphas for pane features
-    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-beta02")
-    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-beta02")
-    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-beta02")
+    implementation("androidx.compose.material3.adaptive:adaptive:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.2.0")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
@@ -195,7 +194,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.8.4")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 
