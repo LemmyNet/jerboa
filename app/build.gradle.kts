@@ -140,6 +140,12 @@ dependencies {
     androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
+    // Adaptive layouts
+    implementation("androidx.compose.material3.adaptive:adaptive:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.2.0")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     // Freedroidwarn
@@ -188,7 +194,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.8.4")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 

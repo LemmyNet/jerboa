@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.isAnon
@@ -457,6 +458,7 @@ fun CommunityScreen(
                             swipeToActionPreset = swipeToActionPreset,
                             disableVideoAutoplay = disableVideoAutoplay,
                             lowBandwidthMode = lowBandwidthMode,
+                            selectionState = SelectionVisibilityState.NoSelection,
                         )
                     }
 

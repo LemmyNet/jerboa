@@ -1413,3 +1413,11 @@ fun Context.getVersionCode(): Int =
     }
 
 fun Int.toBool() = this > 0
+
+sealed interface SelectionVisibilityState<out Item> {
+    object NoSelection : SelectionVisibilityState<Nothing>
+
+    data class ShowSelection<Item>(
+        val selectedItem: Item,
+    ) : SelectionVisibilityState<Item>
+}
