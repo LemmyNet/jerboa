@@ -126,7 +126,7 @@ fun ImageViewerScreen(
                 onError = { _, _ -> imageState = ImageState.FAILED },
                 onCancel = {
                     Log.d("ImageViewerScreen", "Image loading cancelled for $url")
-                }
+                },
             ).build()
     }
 
