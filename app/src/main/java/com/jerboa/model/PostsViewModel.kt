@@ -20,7 +20,6 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feed.PaginationController
 import com.jerboa.feed.PostController
-import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.toEnumSafe
 import it.vercruysse.lemmyapi.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.datatypes.DeletePost

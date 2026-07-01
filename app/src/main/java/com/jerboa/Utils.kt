@@ -454,7 +454,7 @@ fun personNameShown(
         if (person.local) {
             name
         } else {
-            "$name@${hostName(person.actor_id)}"
+            "$name@${hostName(person.ap_id)}"
         }
     }
 }
@@ -466,7 +466,7 @@ fun communityNameShown(community: Community): String =
     if (community.local) {
         community.title
     } else {
-        "${community.title}@${hostName(community.actor_id)}"
+        "${community.title}@${hostName(community.ap_id)}"
     }
 
 fun hostName(url: String): String? =
@@ -1413,3 +1413,11 @@ fun Context.getVersionCode(): Int =
     }
 
 fun Int.toBool() = this > 0
+
+sealed interface SelectionVisibilityState<out Item> {
+    object NoSelection : SelectionVisibilityState<Nothing>
+
+    data class ShowSelection<Item>(
+        val selectedItem: Item,
+    ) : SelectionVisibilityState<Item>
+}

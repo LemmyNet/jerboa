@@ -50,7 +50,7 @@ import it.vercruysse.lemmyapi.dto.ListingType
 import kotlinx.coroutines.launch
 
 class PostViewModel(
-    val id: Either<PostId, CommentId>,
+    var id: Either<PostId, CommentId>,
 ) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -78,6 +78,11 @@ class PostViewModel(
     val parentListStateIndexes = mutableListOf<Int>()
 
     init {
+        this.getData()
+    }
+
+    fun reInitializeWithNewId(id: Either<PostId, CommentId>) {
+        this.id = id
         this.getData()
     }
 
