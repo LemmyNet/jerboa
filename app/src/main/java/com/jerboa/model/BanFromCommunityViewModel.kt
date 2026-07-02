@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.util.Log
@@ -21,20 +20,20 @@ import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.datatypes.BanFromCommunity
-import it.vercruysse.lemmyapi.datatypes.BanFromCommunityResponse
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import kotlinx.coroutines.launch
 
 class BanFromCommunityViewModel : ViewModel() {
-    var banFromCommunityRes: ApiState<BanFromCommunityResponse> by mutableStateOf(ApiState.Empty)
+    var banFromCommunityRes: ApiState<PersonResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun banOrUnbanFromCommunity(
         personId: PersonId,
         community: Community,
         ban: Boolean,
-        removeData: Boolean? = null,
+        removeOrRestoreData: Boolean? = null,
         reason: String,
         expireDays: Long? = null,
         ctx: Context,
@@ -48,9 +47,9 @@ class BanFromCommunityViewModel : ViewModel() {
                     person_id = personId,
                     community_id = community.id,
                     ban = ban,
-                    remove_data = removeData,
+                    remove_or_restore_data = removeOrRestoreData,
                     reason = reason,
-                    expires = futureDaysToUnixTime(expireDays),
+                    expires_at = futureDaysToUnixTime(expireDays),
                 )
 
             banFromCommunityRes = ApiState.Loading
@@ -87,7 +86,7 @@ class BanFromCommunityViewModel : ViewModel() {
                         BanFromCommunityData(
                             person = res.data.person_view.person,
                             community = community,
-                            banned = res.data.banned,
+                            banned = ban,
                         ),
                     )
                 }

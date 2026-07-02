@@ -144,8 +144,8 @@ suspend fun checkIfAccountIsDeleted(
 }
 
 fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState =
-    if (userRes.person_view.person.banned) {
-        CheckState.FailedMsg(userRes.person_view.person.ban_expires ?: "TIME_NOT_SPECIFIED")
+    if (userRes.person_view.banned) {
+        CheckState.FailedMsg(userRes.person_view.ban_expires_at ?: "TIME_NOT_SPECIFIED")
     } else {
         CheckState.Passed
     }

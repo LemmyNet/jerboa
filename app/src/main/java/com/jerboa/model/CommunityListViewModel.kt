@@ -11,13 +11,11 @@ import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import it.vercruysse.lemmyapi.datatypes.CommunityAggregates
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.CommunityView
 import it.vercruysse.lemmyapi.datatypes.Search
 import it.vercruysse.lemmyapi.datatypes.SearchResponse
-import it.vercruysse.lemmyapi.dto.SearchType
-import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.enums.SearchType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

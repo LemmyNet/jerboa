@@ -461,7 +461,9 @@
     <string name="creator">Creator</string>
     <string name="message">Message</string>
     <string name="report_person">Report %1$s</string>
-    <string name="block_person">Block %1$s</string>
+    <string name="block_x">Block %1$s</string>
+    <string name="block_x_users">Block %1$s users</string>
+    <string name="block_x_communities">Block %1$s communities</string>
     <string name="undistinguish_comment">Undistinguish comment</string>
     <string name="distinguish_comment">Distinguish comment</string>
     <string name="site_info_name">%1$s info</string>

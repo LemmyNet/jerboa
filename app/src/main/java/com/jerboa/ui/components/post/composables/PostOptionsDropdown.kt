@@ -47,14 +47,15 @@ import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.BlockInstance
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstanceCommunitiesParams
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstancePersonsParams
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
-import it.vercruysse.lemmyapi.dto.PostFeatureType
+import it.vercruysse.lemmyapi.enums.PostFeatureType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -260,7 +261,7 @@ fun PostOptionsDropdown(
 
         // Hide / unhide post
         if (api != null && api.FF.hidePost()) {
-            if (postView.hidden) {
+            if (postView.post_actions?.hidden_at != null) {
                 PopupMenuItem(
                     text = stringResource(R.string.unhide_post),
                     icon = Icons.Outlined.Visibility,
@@ -370,16 +371,35 @@ fun PostOptionsDropdown(
                 )
 
                 if (api != null && api.FF.instanceBlock()) {
-                    val instance = getInstanceFromCommunityUrl(postView.community.actor_id)
+                    val instance = getInstanceFromCommunityUrl(postView.community.ap_id)
                     PopupMenuItem(
-                        text = stringResource(R.string.block_person, instance),
+                        text = stringResource(R.string.block_x_users, instance),
                         icon = Icons.Outlined.Block,
                         onClick = {
                             onDismissRequest()
                             scope.launch(Dispatchers.IO) {
                                 val resp =
-                                    api.blockInstance(
-                                        BlockInstance(
+                                    api.userBlockInstancePersons(
+                                        UserBlockInstancePersonsParams(
+                                            postView.community.instance_id,
+                                            true,
+                                        ),
+                                    )
+                                withContext(Dispatchers.Main) {
+                                    showBlockInstanceToast(resp, instance, ctx)
+                                }
+                            }
+                        },
+                    )
+                    PopupMenuItem(
+                        text = stringResource(R.string.block_x_communities, instance),
+                        icon = Icons.Outlined.Block,
+                        onClick = {
+                            onDismissRequest()
+                            scope.launch(Dispatchers.IO) {
+                                val resp =
+                                    api.userBlockInstanceCommunities(
+                                        UserBlockInstanceCommunitiesParams(
                                             postView.community.instance_id,
                                             true,
                                         ),

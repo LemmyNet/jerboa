@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -68,8 +67,10 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.indexOfFirst
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.time.Clock
 
 // / This should be done in a UI wrapper
 fun toastException(
@@ -146,7 +147,7 @@ fun buildCommentsTree(
 
     val depthOffset =
         if (isCommentView && firstComment != null) {
-            getCommentIdDepthFromPath(firstComment.path, rootCommentId!!)
+            getCommentIdDepthFromPath(firstComment.path, rootCommentId)
         } else {
             0
         }
@@ -384,6 +385,8 @@ fun formatDuration(
     }
 }
 
+fun nowBoolean(bool: Boolean): String? = if (bool) Clock.System.now().toString() else null
+
 fun prettyTimeShortener(timeString: String): String =
     if (prettyTime.locale.language == "en") {
         if (timeString.isEmpty()) {
@@ -472,7 +475,7 @@ fun communityNameShown(community: Community): String =
 fun hostName(url: String): String? =
     try {
         URL(url).host
-    } catch (e: MalformedURLException) {
+    } catch (_: MalformedURLException) {
         null
     }
 
@@ -950,46 +953,6 @@ fun findAndUpdatePrivateMessageReport(
     }
 }
 
-fun findAndUpdatePersonMention(
-    mentions: List<PersonMentionView>,
-    updatedCommentView: CommentView,
-): List<PersonMentionView> {
-    val foundIndex =
-        mentions.indexOfFirst {
-            it.person_mention.comment_id == updatedCommentView.comment.id
-        }
-    return if (foundIndex != -1) {
-        val mutable = mentions.toMutableList()
-        mutable[foundIndex] =
-            mentions[foundIndex].copy(
-                my_vote = updatedCommentView.my_vote,
-                counts = updatedCommentView.counts,
-                saved = updatedCommentView.saved,
-                comment = updatedCommentView.comment,
-            )
-        mutable.toList()
-    } else {
-        mentions
-    }
-}
-
-fun findAndUpdateMention(
-    mentions: List<PersonMentionView>,
-    updated: PersonMentionView,
-): List<PersonMentionView> {
-    val foundIndex =
-        mentions.indexOfFirst {
-            it.person_mention.id == updated.person_mention.id
-        }
-    return if (foundIndex != -1) {
-        val mutable = mentions.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        mentions
-    }
-}
-
 fun findAndUpdateComment(
     comments: List<CommentView>,
     updated: CommentView,
@@ -1028,8 +991,9 @@ fun findAndUpdatePostHidden(
 ): List<PostView> {
     val newPosts = posts.toMutableList()
     newPosts.replaceAll {
-        if (form.post_ids.contains(it.post.id)) {
-            it.copy(hidden = form.hide)
+        if (form.post_id == it.post.id) {
+            val newPostActions = it.post_actions?.copy(hidden_at = nowBoolean(form.hide))
+            it.copy(post_actions = newPostActions)
         } else {
             it
         }
@@ -1080,29 +1044,6 @@ fun findAndUpdateCommentCreatorBannedFromCommunity(
         }
     }
     return newComments
-}
-
-fun findAndUpdateCommentReply(
-    replies: List<CommentReplyView>,
-    updatedCommentView: CommentView,
-): List<CommentReplyView> {
-    val foundIndex =
-        replies.indexOfFirst {
-            it.comment_reply.comment_id == updatedCommentView.comment.id
-        }
-    return if (foundIndex != -1) {
-        val mutable = replies.toMutableList()
-        mutable[foundIndex] =
-            replies[foundIndex].copy(
-                my_vote = updatedCommentView.my_vote,
-                counts = updatedCommentView.counts,
-                saved = updatedCommentView.saved,
-                comment = updatedCommentView.comment,
-            )
-        mutable.toList()
-    } else {
-        replies
-    }
 }
 
 fun calculateCommentOffset(
@@ -1273,7 +1214,7 @@ fun matchLoginErrorMsgToStringRes(
         }
 
         else -> {
-            return if (e.message?.contains("timeout") == true) {
+            if (e.message?.contains("timeout") == true) {
                 resources.getString(R.string.login_view_model_timeout)
             } else {
                 Log.d("login", "failed", e)
@@ -1319,10 +1260,8 @@ fun <I, O> ComponentActivity.registerActivityResultLauncher(
 fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
-    return if (snapshot != null) {
-        snapshot.data.toFile().inputStream()
-    } else {
-        API.httpClient
+    return snapshot?.data?.toFile()?.inputStream()
+        ?: API.httpClient
             .newCall(
                 Request
                     .Builder()
@@ -1330,8 +1269,7 @@ fun Context.getInputStream(url: String): InputStream {
                     .build(),
             ).execute()
             .body
-            ?.byteStream() ?: throw IOException("Failed to get input stream")
-    }
+            .byteStream()
 }
 
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
@@ -1374,11 +1312,6 @@ fun <T> getDeduplicateMerge(
     newItems: List<T>,
     getId: (T) -> PostId,
 ): List<T> = appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
-
-fun mergePosts(
-    old: List<PostView>,
-    new: List<PostView>,
-): List<PostView> = appendData(old, getDeduplicatedList(old, new) { it.post.id })
 
 /**
  * This function rewrites HTTP URLs to HTTPS

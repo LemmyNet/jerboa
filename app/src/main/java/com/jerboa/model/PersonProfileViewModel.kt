@@ -28,7 +28,7 @@ import com.jerboa.findAndUpdatePostCreatorBannedFromCommunity
 import com.jerboa.findAndUpdatePostHidden
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.*
-import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.enums.*
 import kotlinx.coroutines.launch
 
 class PersonProfileViewModel(
@@ -44,8 +44,8 @@ class PersonProfileViewModel(
     private var hidePostRes: ApiState<(Unit)> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
-    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<CommunityResponse> by mutableStateOf(ApiState.Empty)
+    private var blockPersonRes: ApiState<PersonResponse> by mutableStateOf(ApiState.Empty)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)

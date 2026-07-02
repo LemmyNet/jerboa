@@ -11,48 +11,83 @@ import com.jerboa.feat.showBlockInstanceToast
 import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.feed.ApiActionController
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.BlockInstance
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.Instance
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstanceCommunitiesParams
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstancePersonsParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BlockViewModel : ViewModel() {
-    private val instanceBlockController = ApiActionController<Instance> { it.id }
+    private val instancePersonsBlockController = ApiActionController<Instance> { it.id }
+    private val instanceCommunitiesBlockController = ApiActionController<Instance> { it.id }
     private val communityBlockController = ApiActionController<Community> { it.id }
     private val personBlockController = ApiActionController<Person> { it.id }
 
-    val instanceBlocks = derivedStateOf { instanceBlockController.feed }
+    val instancePersonsBlocks = derivedStateOf { instancePersonsBlockController.feed }
+    val instanceCommunitiesBlocks = derivedStateOf { instanceCommunitiesBlockController.feed }
     val communityBlocks = derivedStateOf { communityBlockController.feed }
     val personBlocks = derivedStateOf { personBlockController.feed }
 
     fun initData(userInfo: MyUserInfo) {
         Log.d("BlockViewModel", "initData")
-        instanceBlockController.init(userInfo.instance_blocks.map { it.instance })
-        communityBlockController.init(userInfo.community_blocks.map { it.community })
-        personBlockController.init(userInfo.person_blocks.map { it.target })
+        instancePersonsBlockController.init(userInfo.instance_persons_blocks.map { it })
+        instanceCommunitiesBlockController.init(userInfo.instance_communities_blocks.map { it })
+        communityBlockController.init(userInfo.community_blocks.map { it })
+        personBlockController.init(userInfo.person_blocks.map { it })
     }
 
-    fun unBlockInstance(
+    fun unBlockInstancePersons(
         instance: Instance,
         ctx: Context,
     ) {
-        instanceBlockController.setLoading(instance)
+        instancePersonsBlockController.setLoading(instance)
 
         viewModelScope.launch {
             API
                 .getInstance()
-                .blockInstance(BlockInstance(instance.id, false))
+                .userBlockInstancePersons(UserBlockInstancePersonsParams(instance.id, false))
                 .onSuccess {
-                    instanceBlockController.removeItem(instance)
+                    instancePersonsBlockController.removeItem(instance)
                 }.onFailure {
-                    instanceBlockController.setFailed(instance, it)
+                    instancePersonsBlockController.setFailed(instance, it)
                     withContext(Dispatchers.Main) {
-                        showBlockInstanceToast(Result.failure(it), instance.domain, ctx)
+                        showBlockInstanceToast(
+                            blockInstanceResp = Result.failure(it),
+                            instance = instance.domain,
+                            blocked = false,
+                            ctx = ctx
+                        )
+                    }
+                }
+        }
+    }
+
+    fun unBlockInstanceCommunities(
+        instance: Instance,
+        ctx: Context,
+    ) {
+        instanceCommunitiesBlockController.setLoading(instance)
+
+        viewModelScope.launch {
+            API
+                .getInstance()
+                .userBlockInstanceCommunities(UserBlockInstanceCommunitiesParams(instance.id, false))
+                .onSuccess {
+                    instanceCommunitiesBlockController.removeItem(instance)
+                }.onFailure {
+                    instanceCommunitiesBlockController.setFailed(instance, it)
+                    withContext(Dispatchers.Main) {
+                        showBlockInstanceToast(
+                            blockInstanceResp = Result.failure(it),
+                            instance = instance.domain,
+                            blocked = false,
+                            ctx = ctx
+                        )
                     }
                 }
         }

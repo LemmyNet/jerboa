@@ -1,6 +1,7 @@
 package com.jerboa.feed
 
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.nowBoolean
 import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -27,16 +28,16 @@ open class PostController : UniqueFeedController<PostView>() {
                     postView.creator.id == banData.person.id && postView.community.id == banData.community.id
                 }
             },
-        ) { it.copy(banned_from_community = banData.banned, creator_banned_from_community = banData.banned, creator = banData.person) }
+        ) { it.copy(community_actions = it.community_actions?.copy(received_ban_at = nowBoolean(banData.banned)), creator_banned_from_community = banData.banned, creator = banData.person) }
     }
 
     fun findAndUpdatePostHidden(hidePost: HidePost) {
         updateAll(
             {
                 it.indexesOf { postView ->
-                    hidePost.post_ids.contains(postView.post.id)
+                    hidePost.post_id == postView.post.id
                 }
             },
-        ) { it.copy(hidden = hidePost.hide) }
+        ) { it.copy(post_actions = it.post_actions?.copy(hidden_at = nowBoolean(hidePost.hide))) }
     }
 }

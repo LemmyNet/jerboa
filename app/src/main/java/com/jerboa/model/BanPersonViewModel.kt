@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.util.Log
@@ -19,19 +18,19 @@ import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.datatypes.BanPerson
-import it.vercruysse.lemmyapi.datatypes.BanPersonResponse
+import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import kotlinx.coroutines.launch
 
 class BanPersonViewModel : ViewModel() {
-    var banPersonRes: ApiState<BanPersonResponse> by mutableStateOf(ApiState.Empty)
+    var banPersonRes: ApiState<PersonResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun banOrUnbanPerson(
         personId: PersonId,
         ban: Boolean,
-        removeData: Boolean? = null,
+        removeOrRestoreData: Boolean? = null,
         reason: String,
         expireDays: Long? = null,
         ctx: Context,
@@ -44,9 +43,9 @@ class BanPersonViewModel : ViewModel() {
                 BanPerson(
                     person_id = personId,
                     ban = ban,
-                    remove_data = removeData,
+                    remove_or_restore_data = removeOrRestoreData,
                     reason = reason,
-                    expires = futureDaysToUnixTime(expireDays),
+                    expires_at = futureDaysToUnixTime(expireDays),
                 )
 
             banPersonRes = ApiState.Loading

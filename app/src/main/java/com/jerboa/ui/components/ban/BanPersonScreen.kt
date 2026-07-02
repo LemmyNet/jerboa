@@ -80,7 +80,7 @@ fun BanPersonScreen(
                         banPersonViewModel.banOrUnbanPerson(
                             personId = person.id,
                             ban = isBan,
-                            removeData = if (isBan) removeData else false,
+                            removeOrRestoreData = if (isBan) removeData else false,
                             expireDays = if (!isBan or permaBan) null else expireDays,
                             reason = reason.text,
                             ctx = ctx,

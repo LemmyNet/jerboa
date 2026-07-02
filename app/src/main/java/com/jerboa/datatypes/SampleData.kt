@@ -25,6 +25,7 @@ import it.vercruysse.lemmyapi.datatypes.RegistrationApplication
 import it.vercruysse.lemmyapi.datatypes.RegistrationApplicationView
 import it.vercruysse.lemmyapi.datatypes.Site
 import it.vercruysse.lemmyapi.datatypes.SiteView
+import it.vercruysse.lemmyapi.enums.CommentSortType
 import it.vercruysse.lemmyapi.enums.CommunityVisibility
 import it.vercruysse.lemmyapi.enums.FederationMode
 import it.vercruysse.lemmyapi.enums.ImageMode
@@ -314,7 +315,7 @@ val sampleLocalUser = LocalUser(
     email = null,
     animated_images_enabled = false,
     private_messages_enabled = false,
-    default_comment_sort_type = SortType.Active,
+    default_comment_sort_type = CommentSortType.Hot,
     auto_mark_fetched_posts_as_read = false,
     hide_media = false,
     default_post_time_range_seconds = null,
@@ -651,7 +652,7 @@ val sampleLocalSite =
         default_post_sort_type = SortType.Active,
         default_post_listing_mode = PostListingMode.Card,
         email_verification_required = false,
-        default_comment_sort_type = SortType.Active,
+        default_comment_sort_type = CommentSortType.Hot,
         oauth_registration = false,
         post_upvotes = FederationMode.All,
         post_downvotes = FederationMode.All,

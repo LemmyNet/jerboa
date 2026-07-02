@@ -90,7 +90,7 @@ fun BanFromCommunityScreen(
                             personId = person.id,
                             community = community,
                             ban = isBan,
-                            removeData = if (isBan) removeData else false,
+                            removeOrRestoreData = if (isBan) removeData else false,
                             expireDays = if (!isBan or permaBan) null else expireDays,
                             reason = reason.text,
                             ctx = ctx,
