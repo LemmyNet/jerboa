@@ -88,6 +88,7 @@ fun LookAndFeelScreen(
     var swipeToActionPresetState by remember { mutableStateOf(SwipeToActionPreset.entries[settings.swipeToActionPreset]) }
 
     var showBottomNavState by remember { mutableStateOf(settings.showBottomNav) }
+    var enableInfiniteScrollState by remember { mutableStateOf(settings.enableInfiniteScroll) }
     var showTextDescriptionsInNavbarState by remember { mutableStateOf(settings.showTextDescriptionsInNavbar) }
     var showCollapsedCommentContentState by remember { mutableStateOf(settings.showCollapsedCommentContent) }
     var showCommentActionBarByDefaultState by remember { mutableStateOf(settings.showCommentActionBarByDefault) }
@@ -117,6 +118,7 @@ fun LookAndFeelScreen(
                 fontSize = fontSizeState.toInt(),
                 postViewMode = postViewModeState.ordinal,
                 showBottomNav = showBottomNavState,
+                enableInfiniteScroll = enableInfiniteScrollState,
                 showCollapsedCommentContent = showCollapsedCommentContentState,
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState,
                 showVotingArrowsInListView = showVotingArrowsInListViewState,
@@ -426,6 +428,17 @@ fun LookAndFeelScreen(
                         },
                         title = {
                             Text(text = stringResource(R.string.look_and_feel_show_navigation_bar))
+                        },
+                    )
+
+                    SwitchPreference(
+                        value = enableInfiniteScrollState,
+                        onValueChange = {
+                            enableInfiniteScrollState = it
+                            updateAppSettings()
+                        },
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_enable_infinite_scroll))
                         },
                     )
 
