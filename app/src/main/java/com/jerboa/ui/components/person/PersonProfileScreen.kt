@@ -667,7 +667,7 @@ fun UserTabs(
                                         if (!account.isAnon() && !it.read) {
                                             personProfileViewModel.markPostAsRead(
                                                 MarkPostAsRead(
-                                                    post_ids = listOf(it.post.id),
+                                                    post_id = it.post.id,
                                                     read = true,
                                                 ),
                                                 it,

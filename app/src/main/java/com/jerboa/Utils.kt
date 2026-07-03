@@ -970,6 +970,26 @@ fun findAndUpdateComment(
     }
 }
 
+fun findAndUpdateCommentInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    updated: CommentView,
+): List<PostCommentCombinedView> {
+    val foundIndex =
+        items.indexOfFirst {
+            when(it) {
+                is CommentView -> it.comment.id == updated.comment.id
+                is PostView -> false
+            }
+        }
+    return if (foundIndex != -1) {
+        val mutable = items.toMutableList()
+        mutable[foundIndex] = updated
+        mutable.toList()
+    } else {
+        items
+    }
+}
+
 fun findAndUpdatePostCreator(
     posts: List<PostView>,
     person: Person,
@@ -983,6 +1003,33 @@ fun findAndUpdatePostCreator(
         }
     }
     return newPosts
+}
+
+fun findAndUpdateCreatorInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    person: Person,
+): List<PostCommentCombinedView> {
+    val newItems = items.toMutableList()
+
+    newItems.replaceAll {
+        when (it) {
+            is CommentView -> {
+                if (it.creator.id == person.id) {
+                    it.copy(creator = person)
+                } else {
+                    it
+                }
+            }
+            is PostView -> {
+                if (it.creator.id == person.id) {
+                    it.copy(creator = person)
+                } else {
+                    it
+                }
+            }
+        }
+    }
+    return newItems
 }
 
 fun findAndUpdatePostHidden(
@@ -1014,6 +1061,32 @@ fun findAndUpdatePostCreatorBannedFromCommunity(
         }
     }
     return newPosts
+}
+
+fun findAndUpdateCreatorBannedFromCommunityInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    banData: BanFromCommunityData,
+): List<PostCommentCombinedView> {
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
+        when(it) {
+            is CommentView -> {
+                if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+                    it.copy(creator_banned_from_community = banData.banned)
+                } else {
+                    it
+                }
+            }
+            is PostView -> {
+                if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+                    it.copy(creator_banned_from_community = banData.banned)
+                } else {
+                    it
+                }
+            }
+        }
+    }
+    return newItems
 }
 
 fun findAndUpdateCommentCreator(
@@ -1070,6 +1143,28 @@ fun findAndUpdatePost(
         mutable.toList()
     } else {
         posts
+    }
+}
+
+fun findAndUpdatePostInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    updatedPostView: PostView,
+): List<PostCommentCombinedView> {
+    val foundIndex =
+        items.indexOfFirst {
+            when(it) {
+                is CommentView -> {false}
+                is PostView -> {
+                    it.post.id == updatedPostView.post.id
+                }
+            }
+        }
+    return if (foundIndex != -1) {
+        val mutable = items.toMutableList()
+        mutable[foundIndex] = updatedPostView
+        mutable.toList()
+    } else {
+        items
     }
 }
 

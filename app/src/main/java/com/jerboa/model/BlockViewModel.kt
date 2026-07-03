@@ -60,7 +60,7 @@ class BlockViewModel : ViewModel() {
                             blockInstanceResp = Result.failure(it),
                             instance = instance.domain,
                             blocked = false,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 }
@@ -86,7 +86,7 @@ class BlockViewModel : ViewModel() {
                             blockInstanceResp = Result.failure(it),
                             instance = instance.domain,
                             blocked = false,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 }
