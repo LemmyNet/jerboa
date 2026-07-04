@@ -268,6 +268,7 @@ fun BottomNavScreen(
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
+                            enableInfiniteScroll = appSettings.enableInfiniteScroll
                         )
                     }
 
@@ -338,7 +339,8 @@ fun BottomNavScreen(
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
-                            padding = padding,
+                            enableInfiniteScroll = appSettings.enableInfiniteScroll,
+                            padding = padding
                         )
                     }
 
@@ -362,6 +364,7 @@ fun BottomNavScreen(
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
+                            enableInfiniteScroll = appSettings.enableInfiniteScroll,
                             padding = padding,
                         )
                     }

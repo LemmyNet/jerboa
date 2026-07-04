@@ -510,4 +510,7 @@
     <string name="unmute">Unmute</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="page_number">Page %1$d</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 </resources>

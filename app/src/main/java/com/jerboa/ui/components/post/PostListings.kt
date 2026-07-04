@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +28,7 @@ import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
+import com.jerboa.ui.components.common.PaginationButton
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -69,6 +71,7 @@ fun PostListings(
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
+    enableInfiniteScroll: Boolean,
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -160,12 +163,23 @@ fun PostListings(
                 RetryLoadingPosts(loadMorePosts)
             }
         }
+
+        if (!enableInfiniteScroll) {
+            item(contentType = "pagination_buttons") {
+                Spacer(Modifier.padding(vertical = SMALL_PADDING))
+                PaginationButton(
+                    currentPage = 1, // TODO: pass correct value
+                    onNext =  { },
+                    onPrevious = { }
+                )
+            }
+        }
     }
 
     TriggerWhenReachingEnd(listState, showPostAppendRetry, loadMorePosts)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewPostListings() {
     PostListings(
@@ -210,5 +224,6 @@ fun PreviewPostListings() {
         onReplyClick = {},
         disableVideoAutoplay = false,
         lowBandwidthMode = false,
+        enableInfiniteScroll = false
     )
 }

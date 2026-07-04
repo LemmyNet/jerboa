@@ -127,6 +127,7 @@ fun PersonProfileScreen(
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    enableInfiniteScroll: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to person screen")
@@ -319,6 +320,7 @@ fun PersonProfileScreen(
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
                     lowBandwidthMode = lowBandwidthMode,
+                    enableInfiniteScroll = enableInfiniteScroll
                 )
             }
         },
@@ -358,6 +360,7 @@ fun UserTabs(
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    enableInfiniteScroll: Boolean,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -681,6 +684,7 @@ fun UserTabs(
                                     swipeToActionPreset = swipeToActionPreset,
                                     disableVideoAutoplay = disableVideoAutoplay,
                                     lowBandwidthMode = lowBandwidthMode,
+                                    enableInfiniteScroll = enableInfiniteScroll
                                 )
                             }
 

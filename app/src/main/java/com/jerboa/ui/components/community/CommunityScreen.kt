@@ -90,6 +90,7 @@ fun CommunityScreen(
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    enableInfiniteScroll: Boolean,
 ) {
     Log.d("jerboa", "got to community screen")
 
@@ -457,6 +458,7 @@ fun CommunityScreen(
                             swipeToActionPreset = swipeToActionPreset,
                             disableVideoAutoplay = disableVideoAutoplay,
                             lowBandwidthMode = lowBandwidthMode,
+                            enableInfiniteScroll = enableInfiniteScroll
                         )
                     }
 

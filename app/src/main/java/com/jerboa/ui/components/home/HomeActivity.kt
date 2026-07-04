@@ -99,6 +99,7 @@ fun HomeScreen(
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
     padding: PaddingValues,
+    enableInfiniteScroll: Boolean
 ) {
     Log.d("jerboa", "got to home screen")
 
@@ -183,6 +184,7 @@ fun HomeScreen(
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
                     lowBandwidthMode = lowBandwidthMode,
+                    enableInfiniteScroll = enableInfiniteScroll
                 )
             }
         },
@@ -235,6 +237,7 @@ fun MainPostListingsContent(
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    enableInfiniteScroll: Boolean
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -471,6 +474,7 @@ fun MainPostListingsContent(
             swipeToActionPreset = swipeToActionPreset,
             disableVideoAutoplay = disableVideoAutoplay,
             lowBandwidthMode = lowBandwidthMode,
+            enableInfiniteScroll = enableInfiniteScroll
         )
     }
 }
