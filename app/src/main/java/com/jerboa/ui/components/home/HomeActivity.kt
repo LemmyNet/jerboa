@@ -474,7 +474,10 @@ fun MainPostListingsContent(
             swipeToActionPreset = swipeToActionPreset,
             disableVideoAutoplay = disableVideoAutoplay,
             lowBandwidthMode = lowBandwidthMode,
-            enableInfiniteScroll = enableInfiniteScroll
+            enableInfiniteScroll = enableInfiniteScroll,
+            onPreviousPage = { },
+            onNextPage = homeViewModel::nextPage,
+            currentPage = 1
         )
     }
 }

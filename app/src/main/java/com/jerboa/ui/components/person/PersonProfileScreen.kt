@@ -684,7 +684,10 @@ fun UserTabs(
                                     swipeToActionPreset = swipeToActionPreset,
                                     disableVideoAutoplay = disableVideoAutoplay,
                                     lowBandwidthMode = lowBandwidthMode,
-                                    enableInfiniteScroll = enableInfiniteScroll
+                                    enableInfiniteScroll = enableInfiniteScroll,
+                                    onNextPage = { },
+                                    onPreviousPage = { },
+                                    currentPage = 1,
                                 )
                             }
 

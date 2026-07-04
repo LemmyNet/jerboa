@@ -65,6 +65,9 @@ fun PostListings(
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     loadMorePosts: () -> Unit,
+    onNextPage: () -> Unit,
+    onPreviousPage: () -> Unit,
+    currentPage: Long,
     account: Account,
     showCommunityName: Boolean = true,
     listState: LazyListState,
@@ -168,15 +171,15 @@ fun PostListings(
             item(contentType = "pagination_buttons") {
                 Spacer(Modifier.padding(vertical = SMALL_PADDING))
                 PaginationButton(
-                    currentPage = 1, // TODO: pass correct value
-                    onNext =  { },
-                    onPrevious = { }
+                    currentPage = currentPage, // TODO: current page not updating properly
+                    onNext =  onNextPage,
+                    onPrevious = onPreviousPage
                 )
             }
         }
     }
 
-    TriggerWhenReachingEnd(listState, showPostAppendRetry, loadMorePosts)
+    if (enableInfiniteScroll) TriggerWhenReachingEnd(listState, showPostAppendRetry, loadMorePosts)
 }
 
 @Preview(showBackground = true)
@@ -224,6 +227,9 @@ fun PreviewPostListings() {
         onReplyClick = {},
         disableVideoAutoplay = false,
         lowBandwidthMode = false,
-        enableInfiniteScroll = false
+        enableInfiniteScroll = false,
+        onNextPage = { },
+        onPreviousPage = { },
+        currentPage = 1
     )
 }

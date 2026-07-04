@@ -36,12 +36,14 @@ fun RetryLoadingPosts(onClick: () -> Unit) {
 
 @Composable
 fun PaginationButton(
-    currentPage: Int,
+    currentPage: Long,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = XXL_PADDING),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -63,4 +65,10 @@ private fun PaginationButtonPreview() {
         onNext = { },
         onPrevious = { }
     )
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun RetryLoadingPostsPreview() {
+    RetryLoadingPosts {  }
 }
