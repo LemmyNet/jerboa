@@ -502,4 +502,8 @@
     <string name="database_backed_up">Базата данни е архивирана</string>
     <string name="play">Пускане</string>
     <string name="settings_about_baseline_profile">Базов профил</string>
+    <string name="settings_low_bandwidth_mode">Режим на малко данни</string>
+    <string name="low_bandwidth_mode_auto">Автоматично (Икономия на данни)</string>
+    <string name="low_bandwidth_mode_always">Винаги включено</string>
+    <string name="low_bandwidth_mode_never">Изключено</string>
 </resources>
