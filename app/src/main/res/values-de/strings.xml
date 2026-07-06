@@ -90,7 +90,7 @@
     <string name="post_listing_copy_permalink">Permalink kopieren</string>
     <string name="post_listing_report_post">Beitrag melden</string>
     <string name="edit">Bearbeiten</string>
-    <string name="restore">Wiederherstellen</string>
+    <string name="restore">wiederherstellen</string>
     <string name="delete">Löschen</string>
     <string name="private_message_to">"zu "</string>
     <string name="private_message_from">"von "</string>
@@ -236,7 +236,7 @@
     <string name="look_and_feel_show_voting_arrows_list_view">Bewertungspfeile in Listenansicht anzeigen</string>
     <string name="upvote">Hochstimmen</string>
     <string name="downvote">Runterstimmen</string>
-    <string name="upvoted">Hochgestimmt</string>
+    <string name="upvoted">upgevoted</string>
     <string name="downvoted">Runtergestimmt</string>
     <string name="create_report_view_model_report_fail">Konnte Repost nicht erstellen: %1$s</string>
     <string name="look_and_feel_secure_window">Screenshots unterbinden</string>
@@ -268,4 +268,6 @@
     <string name="share_post">Beitrag teilen</string>
     <string name="unlock_post">Beitrag entsperren</string>
     <string name="lock_post">Beitrag sperren</string>
+    <string name="show_upvote_percentage">Upvoteverhältnis in % anzeigen</string>
+    <string name="remove_post">Beitrag entfernen</string>
 </resources>
