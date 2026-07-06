@@ -261,4 +261,11 @@
     <string name="inbox_screen_messages">Nachrichten</string>
     <string name="bookmarks_screen_saved">Gespeichert</string>
     <string name="create_post_tag_nsfw">Markiere Post als NSFW</string>
+    <string name="show_upvotes">Upvotes anzeigen</string>
+    <string name="show_downvotes">Downvotes anzeigen</string>
+    <string name="remove_content">Inhalt entfernen</string>
+    <string name="remove_comment">Kommentar löschen</string>
+    <string name="share_post">Beitrag teilen</string>
+    <string name="unlock_post">Beitrag entsperren</string>
+    <string name="lock_post">Beitrag sperren</string>
 </resources>
