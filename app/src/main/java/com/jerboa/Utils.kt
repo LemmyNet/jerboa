@@ -903,12 +903,15 @@ fun findAndUpdateApplication(
 }
 
 fun findAndUpdatePostReport(
-    reports: List<PostReportView>,
+    reports: List<ReportCombinedView>,
     updatedReport: PostReportView,
-): List<PostReportView> {
+): List<ReportCombinedView> {
     val foundIndex =
         reports.indexOfFirst {
-            it.post_report.id == updatedReport.post_report.id
+            when(it) {
+                is PostReportView -> it.post_report.id == updatedReport.post_report.id
+                else -> false
+            }
         }
     return if (foundIndex != -1) {
         val mutable = reports.toMutableList()
@@ -920,12 +923,15 @@ fun findAndUpdatePostReport(
 }
 
 fun findAndUpdateCommentReport(
-    reports: List<CommentReportView>,
+    reports: List<ReportCombinedView>,
     updatedReport: CommentReportView,
-): List<CommentReportView> {
+): List<ReportCombinedView> {
     val foundIndex =
         reports.indexOfFirst {
-            it.comment_report.id == updatedReport.comment_report.id
+            when(it) {
+                is CommentReportView -> it.comment_report.id == updatedReport.comment_report.id
+                else -> false
+            }
         }
     return if (foundIndex != -1) {
         val mutable = reports.toMutableList()
@@ -937,12 +943,35 @@ fun findAndUpdateCommentReport(
 }
 
 fun findAndUpdatePrivateMessageReport(
-    reports: List<PrivateMessageReportView>,
+    reports: List<ReportCombinedView>,
     updatedReport: PrivateMessageReportView,
-): List<PrivateMessageReportView> {
+): List<ReportCombinedView> {
     val foundIndex =
         reports.indexOfFirst {
-            it.private_message_report.id == updatedReport.private_message_report.id
+            when(it) {
+                is PrivateMessageReportView -> it.private_message_report.id == updatedReport.private_message_report.id
+                else -> false
+            }
+        }
+    return if (foundIndex != -1) {
+        val mutable = reports.toMutableList()
+        mutable[foundIndex] = updatedReport
+        mutable.toList()
+    } else {
+        reports
+    }
+}
+
+fun findAndUpdateCommunityReport(
+    reports: List<ReportCombinedView>,
+    updatedReport: CommunityReportView,
+): List<ReportCombinedView> {
+    val foundIndex =
+        reports.indexOfFirst {
+            when(it) {
+                is CommunityReportView -> it.community_report.id == updatedReport.community_report.id
+                else -> false
+            }
         }
     return if (foundIndex != -1) {
         val mutable = reports.toMutableList()

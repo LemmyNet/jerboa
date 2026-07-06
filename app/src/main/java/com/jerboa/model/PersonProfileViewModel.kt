@@ -119,7 +119,7 @@ class PersonProfileViewModel(
             personContentRes = state
             personContentRes = API.getInstance().listPersonContent(form).toApiState()
             when (val res = personContentRes) {
-                is Holder -> {
+                is Success -> {
                     pageController.nextPage(res.data.next_page)
                 }
 
@@ -133,8 +133,7 @@ class PersonProfileViewModel(
             val oldRes = personContentRes
             personContentRes =
                 when (oldRes) {
-                    is Appending -> return@launch
-                    is Holder -> Appending(oldRes.data)
+                    is Success -> Appending(oldRes.data)
                     else -> return@launch
                 }
 

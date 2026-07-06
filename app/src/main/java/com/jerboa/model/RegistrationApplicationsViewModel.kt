@@ -1,7 +1,6 @@
 package com.jerboa.model
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feed.PaginationController
 import com.jerboa.findAndUpdateApplication
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.*
@@ -22,23 +22,19 @@ class RegistrationApplicationsViewModel(
     account: Account,
     siteViewModel: SiteViewModel,
 ) : ViewModel() {
-    var applicationsRes: ApiState<ListRegistrationApplicationsResponse> by mutableStateOf(
+    var applicationsRes: ApiState<PagedResponse<RegistrationApplicationView>> by mutableStateOf(
         ApiState.Empty,
     )
         private set
+
+    private val pageController = PaginationController()
 
     private var approveRes: ApiState<RegistrationApplicationResponse> by mutableStateOf(
         ApiState.Empty,
     )
 
-    private var page by mutableLongStateOf(1)
-
     var unreadOnly by mutableStateOf(true)
         private set
-
-    fun resetPage() {
-        page = 1
-    }
 
     fun updateUnreadOnly(unreadOnly: Boolean) {
         this.unreadOnly = unreadOnly
@@ -47,16 +43,24 @@ class RegistrationApplicationsViewModel(
     fun getFormApplications(): ListRegistrationApplications =
         ListRegistrationApplications(
             unread_only = this.unreadOnly,
-            page = this.page,
+            page = pageController.page,
+            page_cursor = pageController.pageCursor,
         )
 
     fun listApplications(
         form: ListRegistrationApplications,
-        state: ApiState<ListRegistrationApplicationsResponse> = ApiState.Loading,
+        state: ApiState<PagedResponse<RegistrationApplicationView>> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             applicationsRes = state
             applicationsRes = API.getInstance().listRegistrationApplications(form).toApiState()
+        }
+        when (val res = applicationsRes) {
+            is ApiState.Success -> {
+                pageController.nextPage(res.data.next_page)
+            }
+
+            else -> {}
         }
     }
 
@@ -68,24 +72,22 @@ class RegistrationApplicationsViewModel(
                 else -> return@launch
             }
 
-            page += 1
             val newRes = API.getInstance().listRegistrationApplications(getFormApplications()).toApiState()
 
             applicationsRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        val mergedReplies =
+                        val appended =
                             getDeduplicateMerge(
-                                oldRes.data.registration_applications,
-                                newRes.data.registration_applications,
+                                oldRes.data.items,
+                                newRes.data.items,
                             ) { it.registration_application.id }
 
-                        ApiState.Success(oldRes.data.copy(registration_applications = mergedReplies))
+                        ApiState.Success(oldRes.data.copy(items = appended))
                     }
 
                     else -> {
-                        page -= 1
-                        oldRes
+                        ApiState.AppendingFailure(oldRes.data)
                     }
                 }
         }
@@ -102,10 +104,10 @@ class RegistrationApplicationsViewModel(
                         is ApiState.Success -> {
                             val newApps =
                                 findAndUpdateApplication(
-                                    existing.data.registration_applications,
+                                    existing.data.items,
                                     approveRes.data.registration_application,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(registration_applications = newApps))
+                            val newRes = ApiState.Success(existing.data.copy(items = newApps))
                             applicationsRes = newRes
                         }
 
@@ -120,7 +122,7 @@ class RegistrationApplicationsViewModel(
 
     init {
         if (!account.isAnon()) {
-            this.resetPage()
+            pageController.reset()
             this.listApplications(
                 this.getFormApplications(),
             )
