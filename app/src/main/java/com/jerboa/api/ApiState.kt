@@ -27,3 +27,9 @@ sealed class ApiState<out T> {
 
     data object Empty : ApiState<Nothing>()
 }
+
+fun <T> ApiState<T>.toOpt(): T? =
+    when (this) {
+        is ApiState.Success -> this.data
+        else -> null
+    }

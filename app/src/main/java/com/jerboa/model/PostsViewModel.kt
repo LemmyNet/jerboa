@@ -31,8 +31,8 @@ import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
-import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.enums.ListingType
+import it.vercruysse.lemmyapi.enums.SortType
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -73,7 +73,7 @@ open class PostsViewModel(
             postsRes = API.getInstance().getPosts(form).fold(
                 onSuccess = {
                     pageController.nextPage(it.next_page)
-                    postController.addAll(it.posts)
+                    postController.addAll(it.items)
                     ApiState.Success(postController.feed)
                 },
                 onFailure = { ApiState.Failure(it) },
@@ -94,7 +94,7 @@ open class PostsViewModel(
             when (val newRes = API.getInstance().getPosts(getForm()).toApiState()) {
                 is ApiState.Success -> {
                     pageController.nextPage(newRes.data.next_page)
-                    postController.addAll(newRes.data.posts)
+                    postController.addAll(newRes.data.items)
                     postsRes = ApiState.Success(oldRes.data)
                 }
 
@@ -134,12 +134,11 @@ open class PostsViewModel(
 
     fun markPostAsRead(
         form: MarkPostAsRead,
-        post: PostView,
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
             API.getInstance().markPostAsRead(form).onSuccess {
-                updatePost(post.copy(read = form.read))
+                updatePost(it.post_view)
             }
         }
     }

@@ -11,28 +11,31 @@ import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.nowBoolean
+import it.vercruysse.lemmyapi.datatypes.CommunityActions
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.CommunityView
-import it.vercruysse.lemmyapi.datatypes.Search
-import it.vercruysse.lemmyapi.datatypes.SearchResponse
-import it.vercruysse.lemmyapi.enums.SearchType
+import it.vercruysse.lemmyapi.datatypes.ListCommunities
+import it.vercruysse.lemmyapi.datatypes.PagedResponse
+import it.vercruysse.lemmyapi.enums.CommunityFollowerState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class CommunityListViewModel(
     communities: List<CommunityFollowerView>,
 ) : ViewModel() {
-    var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
+    var listRes: ApiState<PagedResponse<CommunityView>> by mutableStateOf(ApiState.Empty)
         private set
     private var fetchCommunitiesJob: Job? = null
 
-    fun searchCommunities(form: Search) {
+    fun listCommunities(form: ListCommunities) {
         fetchCommunitiesJob?.cancel()
         fetchCommunitiesJob = viewModelScope.launch {
-            delay(DEBOUNCE_DELAY)
-            searchRes = ApiState.Loading
-            searchRes = API.getInstance().search(form).toApiState()
+            delay(DEBOUNCE_DELAY.milliseconds)
+            listRes = ApiState.Loading
+            listRes = API.getInstance().listCommunities(form).toApiState()
         }
     }
 
@@ -46,33 +49,19 @@ class CommunityListViewModel(
             myFollows.map { cfv ->
                 CommunityView(
                     community = cfv.community,
-                    subscribed = SubscribedType.Subscribed,
-                    blocked = false,
-                    counts =
-                        CommunityAggregates(
-                            community_id = cfv.community.id,
-                            subscribers = 0,
-                            subscribers_local = 0,
-                            posts = 0,
-                            comments = 0,
-                            published = "",
-                            users_active_day = 0,
-                            users_active_week = 0,
-                            users_active_month = 0,
-                            users_active_half_year = 0,
-                        ),
-                    banned_from_community = false,
+                    community_actions = CommunityActions(
+                        followed_at = nowBoolean(true),
+                        follow_state = CommunityFollowerState.Accepted
+                    ),
+                    can_mod = false,
+                    tags = emptyList(),
                 )
             }
 
-        searchRes =
+        listRes =
             ApiState.Success(
-                SearchResponse(
-                    type_ = SearchType.Communities,
-                    communities = followsIntoCommunityViews,
-                    comments = emptyList(),
-                    posts = emptyList(),
-                    users = emptyList(),
+                PagedResponse(
+                    items = followsIntoCommunityViews,
                 ),
             )
     }
