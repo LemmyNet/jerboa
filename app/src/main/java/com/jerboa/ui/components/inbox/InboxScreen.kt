@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -47,7 +46,7 @@ import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.getCommentParentId
 import com.jerboa.model.AccountViewModel
-import com.jerboa.model.InboxViewModel
+import com.jerboa.model.NotificationViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
@@ -93,7 +92,7 @@ fun InboxScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val inboxViewModel: InboxViewModel = viewModel(factory = InboxViewModel.Companion.Factory(account, siteViewModel))
+    val notificationViewModel: NotificationViewModel = viewModel(factory = NotificationViewModel.Companion.Factory(account, siteViewModel))
 
     val baseModifier = if (padding == null) {
         Modifier
@@ -118,7 +117,7 @@ fun InboxScreen(
                         drawerState.open()
                     }
                 },
-                selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
+                selectedUnreadOrAll = unreadOrAllFromBool(notificationViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
                     account.doIfReadyElseDisplayInfo(
                         appState,
@@ -130,16 +129,16 @@ fun InboxScreen(
                         accountViewModel,
                         loginAsToast = true,
                     ) {
-                        inboxViewModel.resetPages()
-                        inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
-                        inboxViewModel.getReplies(
-                            inboxViewModel.getFormReplies(),
+                        notificationViewModel.resetPages()
+                        notificationViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
+                        notificationViewModel.getReplies(
+                            notificationViewModel.getFormReplies(),
                         )
-                        inboxViewModel.getMentions(
-                            inboxViewModel.getFormMentions(),
+                        notificationViewModel.getMentions(
+                            notificationViewModel.getFormMentions(),
                         )
-                        inboxViewModel.getMessages(
-                            inboxViewModel.getFormMessages(),
+                        notificationViewModel.getMessages(
+                            notificationViewModel.getFormMessages(),
                         )
                     }
                 },
@@ -153,18 +152,18 @@ fun InboxScreen(
                         siteViewModel,
                         accountViewModel,
                     ) {
-                        inboxViewModel.markAllAsRead(
+                        notificationViewModel.markAllAsRead(
                             onComplete = {
                                 siteViewModel.fetchUnreadCounts()
-                                inboxViewModel.resetPages()
-                                inboxViewModel.getReplies(
-                                    inboxViewModel.getFormReplies(),
+                                notificationViewModel.resetPages()
+                                notificationViewModel.getReplies(
+                                    notificationViewModel.getFormReplies(),
                                 )
-                                inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(),
+                                notificationViewModel.getMentions(
+                                    notificationViewModel.getFormMentions(),
                                 )
-                                inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(),
+                                notificationViewModel.getMessages(
+                                    notificationViewModel.getFormMessages(),
                                 )
                             },
                         )
@@ -176,7 +175,7 @@ fun InboxScreen(
             Box(modifier = Modifier.padding(it)) {
                 InboxTabs(
                     appState = appState,
-                    inboxViewModel = inboxViewModel,
+                    notificationViewModel = notificationViewModel,
                     siteViewModel = siteViewModel,
                     ctx = ctx,
                     resources = resources,
@@ -203,7 +202,7 @@ enum class InboxTab(
 @Composable
 fun InboxTabs(
     appState: JerboaAppState,
-    inboxViewModel: InboxViewModel,
+    notificationViewModel: NotificationViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
     resources: Resources,
@@ -242,7 +241,7 @@ fun InboxTabs(
                     val listState = rememberLazyListState()
 
                     TriggerWhenReachingEnd(listState, false) {
-                        inboxViewModel.appendReplies()
+                        notificationViewModel.appendReplies()
                     }
 
                     val goToComment = { crv: CommentReplyView ->
@@ -264,7 +263,7 @@ fun InboxTabs(
                             scope,
                             siteViewModel,
                         ) {
-                            inboxViewModel.markReplyAsRead(
+                            notificationViewModel.markReplyAsRead(
                                 MarkCommentReplyAsRead(
                                     comment_reply_id = crv.comment_reply.id,
                                     read = !crv.comment_reply.read,
@@ -277,7 +276,7 @@ fun InboxTabs(
                     }
 
                     PullToRefreshBox(
-                        isRefreshing = inboxViewModel.repliesRes.isRefreshing(),
+                        isRefreshing = notificationViewModel.notifsRes.isRefreshing(),
                         onRefresh = {
                             account.doIfReadyElseDisplayInfo(
                                 appState,
@@ -287,18 +286,18 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.resetPageReplies()
-                                inboxViewModel.getReplies(
-                                    inboxViewModel.getFormReplies(),
+                                notificationViewModel.resetPageReplies()
+                                notificationViewModel.getReplies(
+                                    notificationViewModel.getFormReplies(),
                                     ApiState.Refreshing,
                                 )
                                 siteViewModel.fetchUnreadCounts()
                             }
                         },
                     ) {
-                        JerboaLoadingBar(inboxViewModel.repliesRes)
+                        JerboaLoadingBar(notificationViewModel.notifsRes)
 
-                        when (val repliesRes = inboxViewModel.repliesRes) {
+                        when (val repliesRes = notificationViewModel.notifsRes) {
                             ApiState.Empty -> {
                                 ApiEmptyText()
                             }
@@ -332,7 +331,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.likeReply(
+                                                    notificationViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Upvote),
@@ -349,7 +348,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.likeReply(
+                                                    notificationViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Downvote),
@@ -371,7 +370,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.saveReply(
+                                                    notificationViewModel.saveReply(
                                                         SaveComment(
                                                             comment_id = cr.comment.id,
                                                             save = !cr.saved,
@@ -406,7 +405,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.blockPerson(
+                                                    notificationViewModel.blockPerson(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
@@ -440,11 +439,11 @@ fun InboxTabs(
                     val listState = rememberLazyListState()
 
                     TriggerWhenReachingEnd(listState, false) {
-                        inboxViewModel.appendMentions()
+                        notificationViewModel.appendMentions()
                     }
 
                     PullToRefreshBox(
-                        isRefreshing = inboxViewModel.mentionsRes.isRefreshing(),
+                        isRefreshing = notificationViewModel.mentionsRes.isRefreshing(),
                         onRefresh = {
                             account.doIfReadyElseDisplayInfo(
                                 appState,
@@ -454,18 +453,18 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.resetPageMentions()
-                                inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(),
+                                notificationViewModel.resetPageMentions()
+                                notificationViewModel.getMentions(
+                                    notificationViewModel.getFormMentions(),
                                     ApiState.Refreshing,
                                 )
                                 siteViewModel.fetchUnreadCounts()
                             }
                         },
                     ) {
-                        JerboaLoadingBar(inboxViewModel.mentionsRes)
+                        JerboaLoadingBar(notificationViewModel.mentionsRes)
 
-                        when (val mentionsRes = inboxViewModel.mentionsRes) {
+                        when (val mentionsRes = notificationViewModel.mentionsRes) {
                             ApiState.Empty -> {
                                 ApiEmptyText()
                             }
@@ -502,7 +501,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.likeMention(
+                                                    notificationViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Upvote),
@@ -519,7 +518,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.likeMention(
+                                                    notificationViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Downvote),
@@ -541,7 +540,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.saveMention(
+                                                    notificationViewModel.saveMention(
                                                         SaveComment(
                                                             comment_id = pm.comment.id,
                                                             save = !pm.saved,
@@ -558,7 +557,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.markPersonMentionAsRead(
+                                                    notificationViewModel.markPersonMentionAsRead(
                                                         MarkPersonMentionAsRead(
                                                             person_mention_id = pm.person_mention.id,
                                                             read = !pm.person_mention.read,
@@ -601,7 +600,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    inboxViewModel.blockPerson(
+                                                    notificationViewModel.blockPerson(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
@@ -630,11 +629,11 @@ fun InboxTabs(
                     val listState = rememberLazyListState()
 
                     TriggerWhenReachingEnd(listState, false) {
-                        inboxViewModel.appendMessages()
+                        notificationViewModel.appendMessages()
                     }
 
                     PullToRefreshBox(
-                        isRefreshing = inboxViewModel.messagesRes.isRefreshing(),
+                        isRefreshing = notificationViewModel.messagesRes.isRefreshing(),
                         onRefresh = {
                             account.doIfReadyElseDisplayInfo(
                                 appState,
@@ -644,18 +643,18 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.resetPageMessages()
-                                inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(),
+                                notificationViewModel.resetPageMessages()
+                                notificationViewModel.getMessages(
+                                    notificationViewModel.getFormMessages(),
                                     ApiState.Refreshing,
                                 )
                                 siteViewModel.fetchUnreadCounts()
                             }
                         },
                     ) {
-                        JerboaLoadingBar(inboxViewModel.messagesRes)
+                        JerboaLoadingBar(notificationViewModel.messagesRes)
 
-                        when (val messagesRes = inboxViewModel.messagesRes) {
+                        when (val messagesRes = notificationViewModel.messagesRes) {
                             ApiState.Empty -> {
                                 ApiEmptyText()
                             }
@@ -687,7 +686,7 @@ fun InboxTabs(
                                                 )
                                             },
                                             onMarkAsReadClick = { pm ->
-                                                inboxViewModel.markPrivateMessageAsRead(
+                                                notificationViewModel.markPrivateMessageAsRead(
                                                     MarkPrivateMessageAsRead(
                                                         private_message_id = pm.private_message.id,
                                                         read = !pm.private_message.read,

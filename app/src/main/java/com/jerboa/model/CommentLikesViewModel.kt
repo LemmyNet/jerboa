@@ -12,6 +12,8 @@ import com.jerboa.VIEW_VOTES_LIMIT
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.api.toOpt
+import com.jerboa.feed.PaginationController
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.ListCommentLikes
@@ -24,14 +26,14 @@ class CommentLikesViewModel(
 ) : ViewModel() {
     var likesRes: ApiState<PagedResponse<VoteView>> by mutableStateOf(ApiState.Empty)
         private set
-    private var page by mutableLongStateOf(1)
+    private val pageController = PaginationController()
 
     init {
         getLikes()
     }
 
     fun resetPage() {
-        page = 1
+        pageController.reset()
     }
 
     fun getLikes(state: ApiState<PagedResponse<VoteView>> = ApiState.Loading) {
@@ -39,13 +41,21 @@ class CommentLikesViewModel(
             likesRes = state
             likesRes = API.getInstance().listCommentLikes(getForm()).toApiState()
         }
+        when (val res = likesRes) {
+            is ApiState.Success -> {
+            pageController.nextPage(res.data.next_page)
+        }
+
+            else -> {}
+        }
     }
 
     private fun getForm(): ListCommentLikes =
         ListCommentLikes(
             comment_id = id,
             limit = VIEW_VOTES_LIMIT,
-            page = page,
+            page = pageController.page,
+            page_cursor = pageController.pageCursor
         )
 
     fun appendLikes() {
@@ -56,7 +66,6 @@ class CommentLikesViewModel(
                 else -> return@launch
             }
 
-            page += 1
             val newRes = API.getInstance().listCommentLikes(getForm()).toApiState()
 
             likesRes =

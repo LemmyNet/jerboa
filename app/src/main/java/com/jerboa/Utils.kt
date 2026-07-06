@@ -1019,6 +1019,26 @@ fun findAndUpdateCommentInPostCommentCombined(
     }
 }
 
+fun findAndUpdateCommentInNotificationView(
+    items: List<NotificationView>,
+    updated: CommentView,
+): List<NotificationView> {
+    val newItems = items.toMutableList()
+    newItems.replaceAll { item ->
+        when(val data = item.data) {
+            is CommentView -> {
+                if(data.comment.id == updated.comment.id) {
+                    item.copy(data = updated)
+                } else {
+                    item
+                }
+            }
+            else -> item
+        }
+    }
+    return newItems
+    }
+
 fun findAndUpdatePostCreator(
     posts: List<PostView>,
     person: Person,

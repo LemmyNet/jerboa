@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class ReportsViewModel(
     account: Account,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
 ) : ViewModel() {
     var reportsRes: ApiState<PagedResponse<ReportCombinedView>> by mutableStateOf(
         ApiState.Empty,
@@ -237,20 +237,20 @@ class ReportsViewModel(
         if (!account.isAnon()) {
             pageController.reset()
             listReports(getFormReports())
-            siteViewModel.fetchUnreadReportCount()
+            myUserInfoViewModel.fetchUnreadCounts()
         }
     }
 
     companion object {
         class Factory(
             private val account: Account,
-            private val siteViewModel: SiteViewModel,
+            private val myUserInfoViewModel: MyUserInfoViewModel,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T = ReportsViewModel(account, siteViewModel) as T
+            ): T = ReportsViewModel(account, myUserInfoViewModel) as T
         }
     }
 }
