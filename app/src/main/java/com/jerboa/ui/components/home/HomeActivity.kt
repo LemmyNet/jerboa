@@ -475,7 +475,7 @@ fun MainPostListingsContent(
             disableVideoAutoplay = disableVideoAutoplay,
             lowBandwidthMode = lowBandwidthMode,
             enableInfiniteScroll = enableInfiniteScroll,
-            onPreviousPage = { },
+            onPreviousPage = homeViewModel::previousPage,
             onNextPage = homeViewModel::nextPage,
             currentPage = 1
         )

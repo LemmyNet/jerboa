@@ -161,13 +161,13 @@ fun PostListings(
             )
         }
 
-        if (showPostAppendRetry) {
+        if (enableInfiniteScroll && showPostAppendRetry) {
             item(contentType = "retry_posts") {
                 RetryLoadingPosts(loadMorePosts)
             }
         }
 
-        if (!enableInfiniteScroll) {
+        if (!enableInfiniteScroll && posts.isNotEmpty()) {
             item(contentType = "pagination_buttons") {
                 Spacer(Modifier.padding(vertical = SMALL_PADDING))
                 PaginationButton(

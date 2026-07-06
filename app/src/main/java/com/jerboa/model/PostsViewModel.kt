@@ -28,6 +28,7 @@ import it.vercruysse.lemmyapi.datatypes.GetPosts
 import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
 import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.datatypes.PaginationCursor
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
@@ -67,12 +68,14 @@ open class PostsViewModel(
     private fun initPosts(
         form: GetPosts,
         state: ApiState<List<PostView>> = ApiState.Loading,
+        onSuccess: (PaginationCursor?) -> Unit = {},
     ) {
+        postController.clear()
         viewModelScope.launch {
             postsRes = state
             postsRes = API.getInstance().getPosts(form).fold(
                 onSuccess = {
-                    pageController.nextPage(it.next_page)
+                    onSuccess(it.next_page)
                     postController.addAll(it.posts)
                     ApiState.Success(postController.feed)
                 },
@@ -93,7 +96,7 @@ open class PostsViewModel(
 
             when (val newRes = API.getInstance().getPosts(getForm()).toApiState()) {
                 is ApiState.Success -> {
-                    pageController.nextPage(newRes.data.next_page)
+                    pageController.appendPage(newRes.data.next_page)
                     postController.addAll(newRes.data.posts)
                     postsRes = ApiState.Success(oldRes.data)
                 }
@@ -114,25 +117,48 @@ open class PostsViewModel(
     }
 
     fun nextPage() {
-        postController.clear()
-        initPosts(getForm(), ApiState.Loading)
+        initPosts(
+            getForm(),
+            ApiState.Loading,
+            onSuccess = pageController::nextPage
+        )
+    }
+
+    fun previousPage() {
+        if (!pageController.canMoveToPreviousPage()) return
+
+        pageController.page--
+        pageController.currentPageCursor = pageController.previousPageCursors.pop()
+
+        initPosts(
+            getPreviousPageForm(),
+            ApiState.Loading,
+            onSuccess = { pageController.nextPageCursor = it },
+        )
     }
 
     fun resetPosts(state: ApiState<List<PostView>> = ApiState.Loading) {
         pageController.reset()
-        postController.clear()
         initPosts(
             getForm(),
             state,
+            onSuccess = { pageController.nextPageCursor = it }
         )
     }
 
     fun refreshPosts() = resetPosts(ApiState.Refreshing)
 
+    private fun getPreviousPageForm() = GetPosts(
+        page = pageController.page,
+        page_cursor = pageController.currentPageCursor,
+        sort = sortType,
+        type_ = listingType,
+    )
+
     protected open fun getForm(): GetPosts =
         GetPosts(
             page = pageController.page,
-            page_cursor = pageController.pageCursor,
+            page_cursor = pageController.nextPageCursor,
             sort = sortType,
             type_ = listingType,
         )
