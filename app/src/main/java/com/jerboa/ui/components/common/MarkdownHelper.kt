@@ -203,11 +203,10 @@ object MarkdownHelper {
         )
     }
 
-    private fun createTextView(context: Context): TextView {
-        return TextView(context).apply {
+    private fun createTextView(context: Context): TextView =
+        TextView(context).apply {
             width = maxWidth
         }
-    }
 
     private fun applyTextStyle(
         textView: TextView,
@@ -281,8 +280,8 @@ object MarkdownHelper {
     private fun createTextViewPreview(
         context: Context,
         maxLines: Int = 5,
-    ): TextView {
-        return TextView(context).apply {
+    ): TextView =
+        TextView(context).apply {
             width = maxWidth
             layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             this.movementMethod = null
@@ -291,7 +290,6 @@ object MarkdownHelper {
             setMaxLines(maxLines)
             focusable = NOT_FOCUSABLE
         }
-    }
 
     private fun applyTextStylePreview(
         textView: TextView,
@@ -316,4 +314,3 @@ object MarkdownHelper {
         }
     }
 }
-
