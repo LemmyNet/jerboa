@@ -34,6 +34,7 @@ import it.vercruysse.lemmyapi.datatypes.CommunityId
 import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -95,8 +96,8 @@ class JerboaAppState(
         navController.navigate(Route.COMMENT_REMOVE)
     }
 
-    fun toBanPerson(person: Person) {
-        sendReturnForwards(BanPersonReturn.PERSON_SEND, person)
+    fun toBanPerson(personView: PersonView) {
+        sendReturnForwards(BanPersonReturn.PERSON_SEND, personView)
         navController.navigate(Route.BAN_PERSON)
     }
 

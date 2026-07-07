@@ -24,7 +24,7 @@ import com.jerboa.model.BanPersonViewModel
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.PersonView
 
 object BanPersonReturn {
     const val PERSON_VIEW = "ban-person::return(person-view)"
@@ -43,7 +43,7 @@ fun BanPersonScreen(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val banPersonViewModel: BanPersonViewModel = viewModel()
-    val person = appState.getPrevReturn<Person>(key = BanPersonReturn.PERSON_SEND)
+    val personView = appState.getPrevReturn<PersonView>(key = BanPersonReturn.PERSON_SEND)
 
     var removeData by rememberSaveable { mutableStateOf(false) }
     var permaBan by rememberSaveable { mutableStateOf(false) }
@@ -62,9 +62,9 @@ fun BanPersonScreen(
         }
 
     val focusManager = LocalFocusManager.current
-    val title = stringResource(if (person.banned) R.string.unban_person else R.string.ban_person, personNameShown(person, true))
+    val title = stringResource(if (personView.banned) R.string.unban_person else R.string.ban_person, personNameShown(personView.person, true))
 
-    val isBan = !person.banned
+    val isBan = !personView.banned
 
     // Make sure the form is valid only if permaban is checked or expireDays is not null
     val isValid = !isBan or permaBan or (expireDays !== null)
@@ -78,7 +78,7 @@ fun BanPersonScreen(
                 onActionClick = {
                     if (!account.isAnon()) {
                         banPersonViewModel.banOrUnbanPerson(
-                            personId = person.id,
+                            personId = personView.person.id,
                             ban = isBan,
                             removeOrRestoreData = if (isBan) removeData else false,
                             expireDays = if (!isBan or permaBan) null else expireDays,
