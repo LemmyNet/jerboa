@@ -67,7 +67,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
-import kotlin.collections.indexOfFirst
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.time.Clock
@@ -872,151 +871,141 @@ fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
     updated: PrivateMessageView,
 ): List<PrivateMessageView> {
-    val foundIndex =
-        messages.indexOfFirst {
-            it.private_message.id == updated.private_message.id
+    val newMessages = messages.toMutableList()
+    newMessages.replaceAll {
+            if (it.private_message.id == updated.private_message.id) {
+                updated
+            } else {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = messages.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        messages
-    }
+    return newMessages
 }
 
 fun findAndUpdateApplication(
     applications: List<RegistrationApplicationView>,
     updatedApplication: RegistrationApplicationView,
 ): List<RegistrationApplicationView> {
-    val foundIndex =
-        applications.indexOfFirst {
-            it.registration_application.id == updatedApplication.registration_application.id
+    val newApplications = applications.toMutableList()
+    newApplications.replaceAll {
+            if (it.registration_application.id == updatedApplication.registration_application.id) {
+                updatedApplication
+            } else {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = applications.toMutableList()
-        mutable[foundIndex] = updatedApplication
-        mutable.toList()
-    } else {
-        applications
-    }
+    return newApplications
 }
 
 fun findAndUpdatePostReport(
     reports: List<ReportCombinedView>,
     updatedReport: PostReportView,
 ): List<ReportCombinedView> {
-    val foundIndex =
-        reports.indexOfFirst {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
             when(it) {
-                is PostReportView -> it.post_report.id == updatedReport.post_report.id
-                else -> false
+                is PostReportView ->
+                    if (it.post_report.id == updatedReport.post_report.id) {
+                        updatedReport
+                    } else {
+                        it
+                    }
+                else -> it
             }
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
-    }
+    return newReports
 }
 
 fun findAndUpdateCommentReport(
     reports: List<ReportCombinedView>,
     updatedReport: CommentReportView,
 ): List<ReportCombinedView> {
-    val foundIndex =
-        reports.indexOfFirst {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
             when(it) {
-                is CommentReportView -> it.comment_report.id == updatedReport.comment_report.id
-                else -> false
+                is CommentReportView ->
+                    if (it.comment_report.id == updatedReport.comment_report.id) {
+                        updatedReport
+                    } else {
+                        it
+                    }
+                else -> it
             }
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
-    }
+    return newReports
 }
 
 fun findAndUpdatePrivateMessageReport(
     reports: List<ReportCombinedView>,
     updatedReport: PrivateMessageReportView,
 ): List<ReportCombinedView> {
-    val foundIndex =
-        reports.indexOfFirst {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
             when(it) {
-                is PrivateMessageReportView -> it.private_message_report.id == updatedReport.private_message_report.id
-                else -> false
+                is PrivateMessageReportView ->
+                    if (it.private_message_report.id == updatedReport.private_message_report.id) {
+                        updatedReport
+                    } else {
+                        it
+                    }
+                else -> it
             }
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
-    }
+    return newReports
 }
 
 fun findAndUpdateCommunityReport(
     reports: List<ReportCombinedView>,
     updatedReport: CommunityReportView,
 ): List<ReportCombinedView> {
-    val foundIndex =
-        reports.indexOfFirst {
-            when(it) {
-                is CommunityReportView -> it.community_report.id == updatedReport.community_report.id
-                else -> false
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
+        when(it) {
+            is CommunityReportView -> {
+                if(it.community_report.id == updatedReport.community_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
             }
+            else -> it
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
     }
+    return newReports
 }
 
 fun findAndUpdateComment(
     comments: List<CommentView>,
     updated: CommentView,
 ): List<CommentView> {
-    val foundIndex =
-        comments.indexOfFirst {
-            it.comment.id == updated.comment.id
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.comment.id == updated.comment.id) {
+            updated
+        } else {
+            it
         }
-    return if (foundIndex != -1) {
-        val mutable = comments.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        comments
     }
+    return newComments
 }
 
 fun findAndUpdateCommentInPostCommentCombined(
     items: List<PostCommentCombinedView>,
     updated: CommentView,
 ): List<PostCommentCombinedView> {
-    val foundIndex =
-        items.indexOfFirst {
-            when(it) {
-                is CommentView -> it.comment.id == updated.comment.id
-                is PostView -> false
-            }
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
+        when(it) {
+            is CommentView ->
+                if(it.comment.id == updated.comment.id) {
+                    updated
+                } else {
+                    it
+                }
+            is PostView -> it
         }
-    return if (foundIndex != -1) {
-        val mutable = items.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        items
     }
+    return newItems
 }
 
 fun findAndUpdateCommentInNotificationView(
@@ -1024,16 +1013,16 @@ fun findAndUpdateCommentInNotificationView(
     updated: CommentView,
 ): List<NotificationView> {
     val newItems = items.toMutableList()
-    newItems.replaceAll { item ->
-        when(val data = item.data) {
+    newItems.replaceAll {
+        when(val data = it.data) {
             is CommentView -> {
                 if(data.comment.id == updated.comment.id) {
-                    item.copy(data = updated)
+                    it.copy(data = updated)
                 } else {
-                    item
+                    it
                 }
             }
-            else -> item
+            else -> it
         }
     }
     return newItems
@@ -1182,39 +1171,36 @@ fun findAndUpdatePost(
     posts: List<PostView>,
     updatedPostView: PostView,
 ): List<PostView> {
-    val foundIndex =
-        posts.indexOfFirst {
-            it.post.id == updatedPostView.post.id
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+            if (it.post.id == updatedPostView.post.id) {
+                updatedPostView
+            }else {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = posts.toMutableList()
-        mutable[foundIndex] = updatedPostView
-        mutable.toList()
-    } else {
-        posts
-    }
+    return newPosts
 }
 
 fun findAndUpdatePostInPostCommentCombined(
     items: List<PostCommentCombinedView>,
     updatedPostView: PostView,
 ): List<PostCommentCombinedView> {
-    val foundIndex =
-        items.indexOfFirst {
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
             when(it) {
-                is CommentView -> {false}
                 is PostView -> {
-                    it.post.id == updatedPostView.post.id
+                    if(it.post.id == updatedPostView.post.id) {
+                        updatedPostView
+                    } else {
+                        it
+                    }
                 }
+
+                else -> it
             }
         }
-    return if (foundIndex != -1) {
-        val mutable = items.toMutableList()
-        mutable[foundIndex] = updatedPostView
-        mutable.toList()
-    } else {
-        items
-    }
+    return newItems
 }
 
 fun scrollToNextParentComment(
