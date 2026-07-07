@@ -2,7 +2,6 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -16,37 +15,28 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.feed.PaginationController
-import com.jerboa.findAndUpdateComment
-import com.jerboa.findAndUpdatePrivateMessage
+import com.jerboa.findAndUpdateCommentInNotificationView
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.*
 import it.vercruysse.lemmyapi.enums.NotificationDataType
-import it.vercruysse.lemmyapi.enums.NotificationType
 import kotlinx.coroutines.launch
 
 class NotificationViewModel(
     account: Account,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel
 ) : ViewModel() {
     var notifsRes: ApiState<PagedResponse<NotificationView>> by mutableStateOf(
         ApiState.Empty,
     )
         private set
 
-    private var likeReplyRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+    private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    private var saveReplyRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
-
-    private var likeMentionRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
-
-    private var saveMentionRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+    private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
     private var markNotificationAsReadRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
 
     private var markAllAsReadRes: ApiState<Unit> by mutableStateOf(ApiState.Empty)
-
-    private var blockCommunityRes: ApiState<CommunityResponse> by
-        mutableStateOf(ApiState.Empty)
 
     private var blockPersonRes: ApiState<PersonResponse> by
         mutableStateOf(ApiState.Empty)
@@ -116,17 +106,17 @@ class NotificationViewModel(
         }
     }
 
-    fun likeReply(form: CreateCommentLike) {
+    fun likeComment(form: CreateCommentLike) {
         viewModelScope.launch {
-            likeReplyRes = ApiState.Loading
-            likeReplyRes = API.getInstance().createCommentLike(form).toApiState()
+            likeCommentRes = ApiState.Loading
+            likeCommentRes = API.getInstance().createCommentLike(form).toApiState()
 
-            when (val likeRes = likeReplyRes) {
+            when (val likeRes = likeCommentRes) {
                 is ApiState.Success -> {
                     when (val existing = notifsRes) {
                         is ApiState.Success -> {
                             val newReplies =
-                                findAndUpdateComment(
+                                findAndUpdateCommentInNotificationView(
                                     existing.data.items,
                                     likeRes.data.comment_view,
                                 )
@@ -143,21 +133,21 @@ class NotificationViewModel(
         }
     }
 
-    fun saveReply(form: SaveComment) {
+    fun saveComment(form: SaveComment) {
         viewModelScope.launch {
-            saveReplyRes = ApiState.Loading
-            saveReplyRes = API.getInstance().saveComment(form).toApiState()
+            saveCommentRes = ApiState.Loading
+            saveCommentRes = API.getInstance().saveComment(form).toApiState()
 
-            when (val saveRes = saveReplyRes) {
+            when (val saveRes = saveCommentRes) {
                 is ApiState.Success -> {
                     when (val existing = notifsRes) {
                         is ApiState.Success -> {
                             val newReplies =
-                                findAndUpdateCommentReply(
-                                    existing.data.replies,
+                                findAndUpdateCommentInNotificationView(
+                                    existing.data.items,
                                     saveRes.data.comment_view,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(replies = newReplies))
+                            val newRes = ApiState.Success(existing.data.copy(items = newReplies))
                             notifsRes = newRes
                         }
 
@@ -170,85 +160,29 @@ class NotificationViewModel(
         }
     }
 
-    fun likeMention(form: CreateCommentLike) {
-        viewModelScope.launch {
-            likeMentionRes = ApiState.Loading
-            likeMentionRes = API.getInstance().createCommentLike(form).toApiState()
-
-            when (val likeRes = likeMentionRes) {
-                is ApiState.Success -> {
-                    when (val existing = mentionsRes) {
-                        is ApiState.Success -> {
-                            val newMentions =
-                                findAndUpdatePersonMention(
-                                    existing.data.mentions,
-                                    likeRes.data.comment_view,
-                                )
-                            val newRes =
-                                ApiState.Success(existing.data.copy(mentions = newMentions))
-                            mentionsRes = newRes
-                        }
-
-                        else -> {}
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun saveMention(form: SaveComment) {
-        viewModelScope.launch {
-            saveReplyRes = ApiState.Loading
-            saveReplyRes = API.getInstance().saveComment(form).toApiState()
-
-            when (val saveRes = saveMentionRes) {
-                is ApiState.Success -> {
-                    when (val existing = mentionsRes) {
-                        is ApiState.Success -> {
-                            val newMentions =
-                                findAndUpdatePersonMention(
-                                    existing.data.mentions,
-                                    saveRes.data.comment_view,
-                                )
-                            val newRes =
-                                ApiState.Success(existing.data.copy(mentions = newMentions))
-                            mentionsRes = newRes
-                        }
-
-                        else -> {}
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun markReplyAsRead(
-        form: MarkCommentReplyAsRead,
+    fun markNotificationsAsRead(
+        form: MarkNotificationAsRead,
         onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
-            markReplyAsReadRes = ApiState.Loading
-            markReplyAsReadRes = API.getInstance().markCommentReplyAsRead(form).toApiState()
+            markNotificationAsReadRes = ApiState.Loading
+            markNotificationAsReadRes = API.getInstance().markNotificationAsRead(form).toApiState()
 
-            when (val readRes = markReplyAsReadRes) {
+            when (markNotificationAsReadRes) {
                 is ApiState.Success -> {
                     when (val existing = notifsRes) {
                         is ApiState.Success -> {
-                            val mutable = existing.data.replies.toMutableList()
-                            val foundIndex =
-                                mutable.indexOfFirst {
-                                    it.comment_reply.comment_id == readRes.data.comment_reply_view.comment.id
+                            val newNotifs = existing.data.items.toMutableList()
+                            newNotifs.replaceAll {
+                                if(it.notification.id == form.notification_id) {
+                                    it.copy(notification = it.notification.copy(read = form.read))
+                                } else {
+                                    it
                                 }
-                            val cr = mutable[foundIndex].comment_reply
-                            val newCr = cr.copy(read = !cr.read)
-                            mutable[foundIndex] = mutable[foundIndex].copy(comment_reply = newCr)
+                            }
 
                             val newRes =
-                                ApiState.Success(existing.data.copy(replies = mutable.toList()))
+                                ApiState.Success(existing.data.copy(items = newNotifs))
                             notifsRes = newRes
                             onSuccess()
                         }
@@ -262,67 +196,6 @@ class NotificationViewModel(
         }
     }
 
-    fun markPersonMentionAsRead(
-        form: MarkPersonMentionAsRead,
-        onSuccess: () -> Unit,
-    ) {
-        viewModelScope.launch {
-            markMentionAsReadRes = ApiState.Loading
-            markMentionAsReadRes = API.getInstance().markPersonMentionAsRead(form).toApiState()
-
-            when (val readRes = markMentionAsReadRes) {
-                is ApiState.Success -> {
-                    when (val existing = mentionsRes) {
-                        is ApiState.Success -> {
-                            val newMentions =
-                                findAndUpdateMention(
-                                    existing.data.mentions,
-                                    readRes.data.person_mention_view,
-                                )
-                            val newRes = ApiState.Success(existing.data.copy(mentions = newMentions))
-                            mentionsRes = newRes
-                            onSuccess()
-                        }
-
-                        else -> {}
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun markPrivateMessageAsRead(
-        form: MarkPrivateMessageAsRead,
-        onSuccess: () -> Unit,
-    ) {
-        viewModelScope.launch {
-            markMessageAsReadRes = ApiState.Loading
-            markMessageAsReadRes = API.getInstance().markPrivateMessageAsRead(form).toApiState()
-
-            when (val readRes = markMessageAsReadRes) {
-                is ApiState.Success -> {
-                    when (val existing = messagesRes) {
-                        is ApiState.Success -> {
-                            val newMessages =
-                                findAndUpdatePrivateMessage(
-                                    existing.data.private_messages,
-                                    readRes.data.private_message_view,
-                                )
-                            val newRes = ApiState.Success(existing.data.copy(private_messages = newMessages))
-                            messagesRes = newRes
-                            onSuccess()
-                        }
-
-                        else -> {}
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
 
     fun blockPerson(
         form: BlockPerson,
@@ -339,89 +212,59 @@ class NotificationViewModel(
     fun markAllAsRead(onComplete: () -> Unit) {
         viewModelScope.launch {
             markAllAsReadRes = ApiState.Loading
-            markAllAsReadRes = API.getInstance().markAllAsRead().toApiState()
+            markAllAsReadRes = API.getInstance().markAllNotificationsAsRead().toApiState()
 
-            when (val replies = notifsRes) {
+            when (markAllAsReadRes) {
                 is ApiState.Success -> {
-                    val mutable = replies.data.replies.toMutableList()
-                    mutable.replaceAll { it.copy(comment_reply = it.comment_reply.copy(read = true)) }
-                    notifsRes = ApiState.Success(replies.data.copy(replies = mutable.toList()))
-                }
+                    when (val existing = notifsRes) {
+                        is ApiState.Success -> {
+                            val newNotifs = existing.data.items.toMutableList()
+                            newNotifs.replaceAll {
+                                it.copy(notification = it.notification.copy(read = true))
+                            }
 
+                            val newRes =
+                                ApiState.Success(existing.data.copy(items = newNotifs))
+                            notifsRes = newRes
+                        }
+
+                        else -> {}
+                    }
+                }
                 else -> {}
             }
 
-            when (val mentions = mentionsRes) {
-                is ApiState.Success -> {
-                    val mutable = mentions.data.mentions.toMutableList()
-                    mutable.replaceAll { it.copy(person_mention = it.person_mention.copy(read = true)) }
-                    mentionsRes = ApiState.Success(mentions.data.copy(mentions = mutable.toList()))
-                }
 
-                else -> {}
-            }
-
-            when (val messages = messagesRes) {
-                is ApiState.Success -> {
-                    val mutable = messages.data.private_messages.toMutableList()
-                    mutable.replaceAll { it.copy(private_message = it.private_message.copy(read = true)) }
-                    messagesRes = ApiState.Success(messages.data.copy(private_messages = mutable.toList()))
-                }
-
-                else -> {}
-            }
             onComplete()
         }
     }
 
     fun listNotificationsForm(): ListNotifications =
         ListNotifications(
-            type_ = notificationType,
+            type_ = notificationDataType,
             unread_only = unreadOnly,
-            sort = CommentSortType.New,
             page = pageController.page,
             page_cursor = pageController.pageCursor
         )
 
-    fun getFormMentions(): GetPersonMentions =
-        GetPersonMentions(
-            unread_only = unreadOnly,
-            sort = CommentSortType.New,
-            page = pageMentions,
-        )
-
-    fun getFormMessages(): GetPrivateMessages =
-        GetPrivateMessages(
-            unread_only = unreadOnly,
-            page = pageMessages,
-        )
-
     init {
         if (!account.isAnon()) {
-            this.resetPages()
-            this.getReplies(
-                this.getFormReplies(),
-            )
-            this.getMentions(
-                this.getFormMentions(),
-            )
-            this.getMessages(
-                this.getFormMessages(),
-            )
-            siteViewModel.fetchUnreadCounts()
+            this.resetPage()
+            this.listNotifications(listNotificationsForm())
+            myUserInfoViewModel.fetchUnreadCounts()
         }
     }
 
     companion object {
         class Factory(
             private val account: Account,
-            private val siteViewModel: SiteViewModel,
+            private val myUserInfoViewModel: MyUserInfoViewModel,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T = NotificationViewModel(account, siteViewModel) as T
+            ): T = NotificationViewModel(account, myUserInfoViewModel) as T
         }
     }
 }

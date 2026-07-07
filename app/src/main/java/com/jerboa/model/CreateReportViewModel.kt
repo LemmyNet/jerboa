@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.widget.Toast

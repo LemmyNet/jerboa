@@ -331,7 +331,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    notificationViewModel.likeReply(
+                                                    notificationViewModel.likeComment(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Upvote),
@@ -348,7 +348,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    notificationViewModel.likeReply(
+                                                    notificationViewModel.likeComment(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Downvote),
@@ -370,7 +370,7 @@ fun InboxTabs(
                                                     scope,
                                                     siteViewModel,
                                                 ) {
-                                                    notificationViewModel.saveReply(
+                                                    notificationViewModel.saveComment(
                                                         SaveComment(
                                                             comment_id = cr.comment.id,
                                                             save = !cr.saved,
