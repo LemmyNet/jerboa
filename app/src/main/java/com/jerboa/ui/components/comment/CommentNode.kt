@@ -142,6 +142,7 @@ fun CommentNodeHeaderPreview() {
 @Composable
 fun CommentBody(
     comment: Comment,
+    postId: PostId,
     viewSource: Boolean,
     onClick: () -> Unit,
     onLongClick: ((View) -> Boolean),
@@ -159,6 +160,9 @@ fun CommentBody(
             onClick = onClick,
             onLongClick = onLongClick,
             modifier = Modifier.padding(0.dp, 0.dp, 0.dp, MEDIUM_PADDING),
+            // commentId alone isn't globally unique (it's only unique per post/instance), so
+            // combine it with postId for a cache key that's unique enough in practice.
+            cacheKey = "${postId}_${comment.id}",
         )
     }
 }
@@ -168,6 +172,7 @@ fun CommentBody(
 fun CommentBodyPreview() {
     CommentBody(
         comment = sampleCommentView.comment,
+        postId = sampleCommentView.post.id,
         viewSource = false,
         onClick = {},
         onLongClick = { true },
@@ -345,6 +350,7 @@ fun LazyListScope.commentNodeItem(
                             Column {
                                 CommentBody(
                                     comment = commentView.comment,
+                                    postId = commentView.post.id,
                                     viewSource = viewSource,
                                     onClick = { onCommentClick(commentView) },
                                     onLongClick = { v ->
