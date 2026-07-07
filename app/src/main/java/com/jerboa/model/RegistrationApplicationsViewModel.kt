@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class RegistrationApplicationsViewModel(
     account: Account,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
 ) : ViewModel() {
     var applicationsRes: ApiState<PagedResponse<RegistrationApplicationView>> by mutableStateOf(
         ApiState.Empty,
@@ -126,20 +126,20 @@ class RegistrationApplicationsViewModel(
             this.listApplications(
                 this.getFormApplications(),
             )
-            siteViewModel.fetchUnreadAppCount()
+            myUserInfoViewModel.fetchUnreadCounts()
         }
     }
 
     companion object {
         class Factory(
             private val account: Account,
-            private val siteViewModel: SiteViewModel,
+            private val myUserInfoViewModel: MyUserInfoViewModel,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T = RegistrationApplicationsViewModel(account, siteViewModel) as T
+            ): T = RegistrationApplicationsViewModel(account, myUserInfoViewModel) as T
         }
     }
 }
