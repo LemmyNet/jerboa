@@ -344,7 +344,6 @@ fun CommentMentionNode(
             Column {
                 CommentBody(
                     comment = personMentionView.comment,
-                    postId = personMentionView.post.id,
                     viewSource = viewSource,
                     onClick = {},
                     onLongClick = {

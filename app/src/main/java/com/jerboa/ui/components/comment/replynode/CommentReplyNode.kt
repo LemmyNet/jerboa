@@ -297,7 +297,6 @@ fun CommentReplyNodeInbox(
             Column {
                 CommentBody(
                     comment = commentReplyView.comment,
-                    postId = commentReplyView.post.id,
                     viewSource = viewSource,
                     onClick = { onCommentClick(commentReplyView) },
                     onLongClick = {

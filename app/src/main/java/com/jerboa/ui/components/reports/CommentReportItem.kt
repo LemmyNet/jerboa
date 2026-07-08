@@ -71,7 +71,6 @@ fun CommentReportItem(
 
         CommentBody(
             comment = commentView.comment,
-            postId = commentView.post.id,
             viewSource = false,
             onClick = { onCommentClick(commentView.comment.id) },
             onLongClick = { false },
