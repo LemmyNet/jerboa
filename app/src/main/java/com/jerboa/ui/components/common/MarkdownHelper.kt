@@ -2,8 +2,10 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.util.Linkify
+import android.util.LruCache
 import android.util.TypedValue
 import android.view.View
 import android.view.View.NOT_FOCUSABLE
@@ -76,6 +78,23 @@ val lemmyUserPattern: Pattern =
 object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
+
+    /**
+     * Caches the parsed [Spanned] result of a markdown string, keyed by [CachedMarkdown].
+     *
+     * This exists because items inside a LazyColumn are fully disposed and recreated (including
+     * their underlying AndroidView) whenever they scroll out of and back into the viewport. Without
+     * this cache, every re-entry into the viewport would re-parse the markdown from scratch and
+     * recreate the image spans, causing embedded images to visibly pop out and back in on every
+     * scroll pass. Reusing the same Spanned (and thus the same already-resolved image drawables)
+     * across recreations avoids that.
+     */
+    private val parsedMarkdownCache = LruCache<String, CachedMarkdown>(500)
+
+    private data class CachedMarkdown(
+        val sourceText: String,
+        val spanned: Spanned,
+    )
 
     fun init(
         appState: JerboaAppState,
@@ -171,6 +190,15 @@ object MarkdownHelper {
         onClick: (() -> Unit)? = null,
         onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
+        // Stable identifier (e.g. "${postId}_${commentId}") used to cache the parsed markdown
+        // across recompositions/view recreations. Prefer a unique per-item id over falling back
+        // to the markdown text: two different items can have identical text, and a shared Spanned
+        // means sharing its AsyncDrawableSpan/AsyncDrawable image spans too. Android's
+        // Drawable.setCallback() only tracks one callback at a time, so if two such items are on
+        // screen simultaneously, only the most recently scheduled one reliably repaints when its
+        // image loads - the other can show a stale/blank image. Falls back to the markdown text
+        // itself when no id is available, which is still correct as long as that scenario can't occur.
+        cacheKey: String? = null,
     ) {
         AndroidView(
             factory = { ctx -> createTextView(context = ctx) },
@@ -188,7 +216,15 @@ object MarkdownHelper {
                 textView.setOnLongClickListener(onLongClick)
 
                 val parser = markwon!!
-                val md = parser.toMarkdown(markdown)
+                val effectiveKey = cacheKey ?: markdown
+                val cached = parsedMarkdownCache.get(effectiveKey)
+                val md = if (cached != null && cached.sourceText == markdown) {
+                    cached.spanned
+                } else {
+                    parser.toMarkdown(markdown).also {
+                        parsedMarkdownCache.put(effectiveKey, CachedMarkdown(markdown, it))
+                    }
+                }
                 for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
                     img.drawable.initWithKnownDimensions(textView.width, textView.textSize)
                 }
