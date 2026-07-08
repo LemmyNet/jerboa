@@ -44,7 +44,6 @@ class PersonProfileViewModel(
     private var hidePostRes: ApiState<(Unit)> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
@@ -123,6 +122,27 @@ class PersonProfileViewModel(
         viewModelScope.launch {
             personDetailsRes = state
             personDetailsRes = API.getInstance().getPersonDetails(form).toApiState()
+        }
+    }
+
+    fun navigatePagination(profileId: PersonId, pageIncrement: Long) {
+        viewModelScope.launch {
+            personDetailsRes = ApiState.Loading
+
+            page += pageIncrement
+            val form = GetPersonDetails(
+                person_id = profileId,
+                sort = sortType,
+                page = page,
+                saved_only = savedOnly,
+            )
+            val newRes = API.getInstance().getPersonDetails(form).toApiState()
+
+            if (newRes is ApiState.Success) {
+                personDetailsRes = ApiState.Success(newRes.data)
+            } else {
+                page -= pageIncrement
+            }
         }
     }
 
@@ -259,18 +279,6 @@ class PersonProfileViewModel(
 
                 else -> {}
             }
-        }
-    }
-
-    fun blockCommunity(
-        form: BlockCommunity,
-        ctx: Context,
-    ) {
-        viewModelScope.launch {
-            blockCommunityRes = ApiState.Loading
-            val res = API.getInstance().blockCommunity(form)
-            blockCommunityRes = res.toApiState()
-            showBlockCommunityToast(res, ctx)
         }
     }
 

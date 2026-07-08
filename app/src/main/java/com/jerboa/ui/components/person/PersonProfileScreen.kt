@@ -485,6 +485,7 @@ fun UserTabs(
                             }
 
                             is ApiState.Holder -> {
+                                val profileId = profileRes.data.person_view.person.id
                                 PostListings(
                                     posts = profileRes.data.posts.toList(),
                                     admins = siteViewModel.admins(),
@@ -649,9 +650,7 @@ fun UserTabs(
                                     },
                                     onPersonClick = appState::toProfile,
                                     loadMorePosts = {
-                                        personProfileViewModel.appendData(
-                                            profileRes.data.person_view.person.id,
-                                        )
+                                        personProfileViewModel.appendData(profileId)
                                     },
                                     account = account,
                                     listState = postListState,
@@ -685,9 +684,13 @@ fun UserTabs(
                                     disableVideoAutoplay = disableVideoAutoplay,
                                     lowBandwidthMode = lowBandwidthMode,
                                     enableInfiniteScroll = enableInfiniteScroll,
-                                    onNextPage = { },
-                                    onPreviousPage = { },
-                                    currentPage = 1,
+                                    onNextPage = {
+                                        personProfileViewModel.navigatePagination(profileId, 1)
+                                    },
+                                    onPreviousPage = {
+                                        personProfileViewModel.navigatePagination(profileId, -1)
+                                    },
+                                    currentPage = personProfileViewModel.page,
                                 )
                             }
 

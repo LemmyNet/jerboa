@@ -169,7 +169,6 @@ fun PostListings(
 
         if (!enableInfiniteScroll && posts.isNotEmpty()) {
             item(contentType = "pagination_buttons") {
-                Spacer(Modifier.padding(vertical = SMALL_PADDING))
                 PaginationButton(
                     currentPage = currentPage,
                     onNext =  onNextPage,
