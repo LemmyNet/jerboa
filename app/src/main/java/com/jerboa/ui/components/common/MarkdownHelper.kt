@@ -201,16 +201,20 @@ object MarkdownHelper {
         cacheKey: String? = null,
     ) {
         AndroidView(
-            factory = { ctx ->
-                createTextView(
-                    context = ctx,
+            factory = { ctx -> createTextView(context = ctx) },
+            update = { textView ->
+                applyTextStyle(
+                    textView = textView,
                     color = color,
                     style = style,
-                    onClick = onClick,
-                    onLongClick = onLongClick,
                 )
-            },
-            update = { textView ->
+                // Set on every recomposition (not just in `factory`), since with onReset
+                // the underlying View may be pooled/reused for a different item. If we only
+                // set these in `factory`, a reused View would keep firing the click handlers
+                // of the item it was originally created for.
+                textView.setOnClickListener(onClick?.let { click -> View.OnClickListener { click() } })
+                textView.setOnLongClickListener(onLongClick)
+
                 val parser = markwon!!
                 val effectiveKey = cacheKey ?: markdown
                 val cached = parsedMarkdownCache.get(effectiveKey)
@@ -226,19 +230,28 @@ object MarkdownHelper {
                 }
                 parser.setParsedMarkdown(textView, md)
             },
+            onReset = { textView ->
+                textView.setOnClickListener(null)
+                textView.setOnLongClickListener(null)
+                textView.text = null
+            },
             modifier = modifier,
         )
     }
 
-    private fun createTextView(
-        context: Context,
-        color: Color = Color.Unspecified,
+    private fun createTextView(context: Context): TextView =
+        TextView(context).apply {
+            width = maxWidth
+        }
+
+    private fun applyTextStyle(
+        textView: TextView,
+        color: Color,
         textAlign: TextAlign? = null,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
-        onClick: (() -> Unit)? = null,
-        onLongClick: ((View) -> Boolean)? = null,
-    ): TextView {
+    ) {
+        val context = textView.context
         val textColor = color.takeOrElse { style.color }
         val mergedStyle =
             style.merge(
@@ -248,15 +261,12 @@ object MarkdownHelper {
                     textAlign = textAlign ?: TextAlign.Unspecified,
                 ),
             )
-        return TextView(context).apply {
-            onClick?.let { setOnClickListener { onClick() } }
-            onLongClick?.let { setOnLongClickListener(it) }
+        textView.apply {
             setTextColor(textColor.toArgb())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
             }
-            width = maxWidth
 
             textAlign?.let { align ->
                 textAlignment =
@@ -268,9 +278,7 @@ object MarkdownHelper {
                     }
             }
 
-            fontResource?.let { font ->
-                typeface = ResourcesCompat.getFont(context, font)
-            }
+            typeface = fontResource?.let { font -> ResourcesCompat.getFont(context, font) }
         }
     }
 
@@ -283,16 +291,23 @@ object MarkdownHelper {
         style: TextStyle,
     ) {
         AndroidView(
-            factory = { ctx ->
-                createTextViewPreview(
-                    context = ctx,
+            factory = { ctx -> createTextViewPreview(context = ctx) },
+            update = { textView ->
+                applyTextStylePreview(
+                    textView = textView,
                     color = color,
                     style = style,
-                    onClick = onClick,
                 )
-            },
-            update = { textView ->
+                // Set on every recomposition (not just in `factory`), since with onReset
+                // the underlying View may be pooled/reused for a different item. If we only
+                // set this in `factory`, a reused View would keep firing the click handler
+                // of the item it was originally created for (e.g. opening the wrong post).
+                textView.setOnClickListener(onClick?.let { click -> View.OnClickListener { click() } })
                 previewMarkwon?.setMarkdown(textView, markdown)
+            },
+            onReset = { textView ->
+                textView.setOnClickListener(null)
+                textView.text = null
             },
             modifier = modifier,
         )
@@ -300,11 +315,24 @@ object MarkdownHelper {
 
     private fun createTextViewPreview(
         context: Context,
-        color: Color = Color.Unspecified,
         maxLines: Int = 5,
+    ): TextView =
+        TextView(context).apply {
+            width = maxWidth
+            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            this.movementMethod = null
+            this.linksClickable = false
+            ellipsize = TextUtils.TruncateAt.END
+            setMaxLines(maxLines)
+            focusable = NOT_FOCUSABLE
+        }
+
+    private fun applyTextStylePreview(
+        textView: TextView,
+        color: Color,
         style: TextStyle,
-        onClick: (() -> Unit)? = null,
-    ): TextView {
+    ) {
+        val context = textView.context
         val textColor = color.takeOrElse { style.color }
         val mergedStyle =
             style.merge(
@@ -313,20 +341,12 @@ object MarkdownHelper {
                     fontSize = style.fontSize,
                 ),
             )
-        return TextView(context).apply {
-            onClick?.let { setOnClickListener { onClick() } }
+        textView.apply {
             setTextColor(textColor.toArgb())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
             }
-            width = maxWidth
-            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-            this.movementMethod = null
-            this.linksClickable = false
-            ellipsize = TextUtils.TruncateAt.END
-            setMaxLines(maxLines)
-            focusable = NOT_FOCUSABLE
         }
     }
 }
