@@ -159,6 +159,7 @@ fun CommentBody(
             onClick = onClick,
             onLongClick = onLongClick,
             modifier = Modifier.padding(0.dp, 0.dp, 0.dp, MEDIUM_PADDING),
+            cacheKey = "${comment.id}",
         )
     }
 }
