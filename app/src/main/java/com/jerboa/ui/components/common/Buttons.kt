@@ -47,7 +47,7 @@ fun PaginationButton(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(onClick = onPrevious) {
+        Button(onClick = onPrevious, enabled = currentPage > 1) {
             Text(stringResource(R.string.previous))
         }
         Text(stringResource(R.string.page_number, currentPage))

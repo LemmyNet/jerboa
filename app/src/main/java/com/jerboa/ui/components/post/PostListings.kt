@@ -171,7 +171,7 @@ fun PostListings(
             item(contentType = "pagination_buttons") {
                 Spacer(Modifier.padding(vertical = SMALL_PADDING))
                 PaginationButton(
-                    currentPage = currentPage, // TODO: current page not updating properly
+                    currentPage = currentPage,
                     onNext =  onNextPage,
                     onPrevious = onPreviousPage
                 )

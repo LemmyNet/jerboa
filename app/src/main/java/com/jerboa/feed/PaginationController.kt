@@ -1,5 +1,8 @@
 package com.jerboa.feed
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.setValue
 import it.vercruysse.lemmyapi.datatypes.PaginationCursor
 import java.util.Stack
 
@@ -8,7 +11,7 @@ class PaginationController {
     val previousPageCursors = Stack<PaginationCursor?>()
     var currentPageCursor: PaginationCursor? = null
     var nextPageCursor: PaginationCursor? = null
-    var page: Long = 1
+    var page by mutableLongStateOf(1)
 
     fun appendPage(nextPage: PaginationCursor?) {
         page++

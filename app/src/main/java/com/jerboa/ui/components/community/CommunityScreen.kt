@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.community
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -38,6 +41,7 @@ import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.feat.shareLink
 import com.jerboa.hostName
+import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
@@ -104,6 +108,10 @@ fun CommunityScreen(
     val communityViewModel: CommunityViewModel =
         viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
     val postListState = communityViewModel.lazyListState
+
+    val hideFab by remember {
+        derivedStateOf { postListState.isScrolledToEnd() && !enableInfiniteScroll }
+    }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, communityViewModel::updatePost)
@@ -459,9 +467,9 @@ fun CommunityScreen(
                             disableVideoAutoplay = disableVideoAutoplay,
                             lowBandwidthMode = lowBandwidthMode,
                             enableInfiniteScroll = enableInfiniteScroll,
-                            onNextPage = { },
-                            onPreviousPage = { },
-                            currentPage = 1
+                            onNextPage = communityViewModel::nextPage,
+                            onPreviousPage = communityViewModel::previousPage,
+                            currentPage = communityViewModel.currentPage,
                         )
                     }
 
@@ -473,28 +481,30 @@ fun CommunityScreen(
         floatingActionButton = {
             when (val communityRes = communityViewModel.communityRes) {
                 is ApiState.Success -> {
-                    FloatingActionButton(
-                        onClick = {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                                loginAsToast = false,
-                            ) {
-                                appState.toCreatePost(
-                                    community = communityRes.data.community_view.community,
-                                )
-                            }
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = stringResource(R.string.floating_createPost),
-                        )
+                    AnimatedVisibility(visible = !hideFab) {
+                        FloatingActionButton(
+                            onClick = {
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    resources,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                    loginAsToast = false,
+                                ) {
+                                    appState.toCreatePost(
+                                        community = communityRes.data.community_view.community,
+                                    )
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Add,
+                                contentDescription = stringResource(R.string.floating_createPost),
+                            )
+                        }
                     }
                 }
 

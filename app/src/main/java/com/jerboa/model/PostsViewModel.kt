@@ -51,6 +51,9 @@ open class PostsViewModel(
     private val pageController = PaginationController()
     private val postController = PostController()
 
+    val currentPage: Long
+        get() = pageController.page
+
     protected fun init() {
         viewModelScope.launch {
             accountRepository.currentAccount
