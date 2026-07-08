@@ -62,7 +62,8 @@ fun BanPersonScreen(
         }
 
     val focusManager = LocalFocusManager.current
-    val title = stringResource(if (personView.banned) R.string.unban_person else R.string.ban_person, personNameShown(personView.person, true))
+    val title =
+        stringResource(if (personView.banned) R.string.unban_person else R.string.ban_person, personNameShown(personView.person, true))
 
     val isBan = !personView.banned
 

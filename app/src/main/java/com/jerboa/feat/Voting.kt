@@ -8,9 +8,9 @@ enum class VoteType(
 }
 
 enum class PostOrCommentType {
-    Post, Comment
+    Post,
+    Comment,
 }
-
 
 /**
  * This stores live info about votes / scores, in order to update the front end without waiting
@@ -36,7 +36,6 @@ data class InstantScores(
             score = upvotes - downvotes,
         )
     }
-
 }
 
 // Set myVote to given action unless it was already set to that action, in which case we reset to 0
@@ -44,4 +43,3 @@ fun newVote(
     oldVote: Int,
     voteAction: VoteType,
 ): Int = if (voteAction.value == oldVote) 0 else voteAction.value
-

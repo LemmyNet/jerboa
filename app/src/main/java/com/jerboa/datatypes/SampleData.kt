@@ -236,8 +236,8 @@ val samplePerson =
         ap_id = "https://lemmy.ml/u/homeless",
         bio =
             "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
-                    "that I have in here. But I'm not sure blah blah blah\n\nI have " +
-                    "**tres ojos**.",
+                "that I have in here. But I'm not sure blah blah blah\n\nI have " +
+                "**tres ojos**.",
         local = true,
         banner = null,
         deleted = false,
@@ -355,7 +355,7 @@ val sampleCommunity =
         users_active_week = 98,
         users_active_month = 82,
         users_active_half_year = 91,
-        report_count =0,
+        report_count = 0,
         unresolved_report_count = 0,
         local_removed = false,
     )
@@ -464,9 +464,9 @@ val sampleComment =
         post_id = 139549,
         content =
             "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
-                    " " +
-                    "work" +
-                    ".\n\nIts kind of a long comment\n\nbut I don't want...",
+                " " +
+                "work" +
+                ".\n\nIts kind of a long comment\n\nbut I don't want...",
         removed = false,
         published_at = "2022-01-07T03:12:26.398434Z",
         updated_at = "2022-01-07T03:15:37.360888Z",
@@ -717,7 +717,7 @@ val sampleGetSiteRes = GetSiteResponse(
     oauth_providers = emptyList(),
     admin_oauth_providers = emptyList(),
     active_plugins = emptyList(),
-    captcha_enabled =false,
+    captcha_enabled = false,
 )
 
 val samplePendingRegistrationApplication =

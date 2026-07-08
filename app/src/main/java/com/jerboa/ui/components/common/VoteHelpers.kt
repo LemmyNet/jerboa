@@ -45,21 +45,28 @@ fun VoteGeneric(
 
     val contentDescription = buildContentDescription(voteType, instantScores)
 
-    data class VoteData(val votes: Long, val enabled: Boolean, val show: Boolean)
+    data class VoteData(
+        val votes: Long,
+        val enabled: Boolean,
+        val show: Boolean,
+    )
 
     val voteData = when (voteType) {
-        VoteType.Upvote ->
+        VoteType.Upvote -> {
             VoteData(
                 instantScores.upvotes,
                 enableUpvotes(localSite, voteContentType),
-                showUpvotes(localUser,localSite, voteContentType) && instantScores.upvotes != 0L,
+                showUpvotes(localUser, localSite, voteContentType) && instantScores.upvotes != 0L,
             )
-        VoteType.Downvote ->
+        }
+
+        VoteType.Downvote -> {
             VoteData(
                 instantScores.downvotes,
                 enableDownvotes(localSite, voteContentType),
                 showDownvotes(localUser, localSite, voteContentType, creatorId) && instantScores.downvotes != 0L,
             )
+        }
     }
 
     val voteStr = if (voteData.show) {
@@ -106,10 +113,9 @@ fun VoteScore(
 ) {
     val iconAndColor = scoreIconAndColor(myVote = instantScores.myVote)
 
-    val showUpvotes = showUpvotes(localUser,localSite, voteContentType)
+    val showUpvotes = showUpvotes(localUser, localSite, voteContentType)
     val showScore = showScore(localUser)
     val enabled = enableUpvotes(localSite, voteContentType)
-
 
     // If the score is the same as the upvotes,
     // and both score and upvotes are enabled,
@@ -155,14 +161,13 @@ fun UpvotePercentage(
     voteContentType: PostOrCommentType,
     account: Account,
 ) {
-
     val upvotePct = upvotePercent(
         upvotes = instantScores.upvotes,
         downvotes = instantScores.downvotes,
     )
 
     val showPct = showPercentage(localUser, localSite, voteContentType) &&
-            (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)
+        (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)
 
     if (showPct) {
         ActionBarButton(
@@ -274,43 +279,43 @@ fun scoreIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
 
 private fun showUpvotes(
     localUser: LocalUser?,
-localSite: LocalSite,
-type: PostOrCommentType,
-    ): Boolean =
-    enableUpvotes(localSite, type) && (localUser?.show_upvotes ?: true)
+    localSite: LocalSite,
+    type: PostOrCommentType,
+): Boolean = enableUpvotes(localSite, type) && (localUser?.show_upvotes ?: true)
 
 private fun showDownvotes(
     localUser: LocalUser?,
     localSite: LocalSite,
     type: PostOrCommentType,
     creatorId: PersonId,
-    ): Boolean {
+): Boolean {
     val show = localUser?.show_downvotes === VoteShow.Show ||
-            (localUser?.show_downvotes === VoteShow.ShowForOthers && localUser.person_id != creatorId)
+        (localUser?.show_downvotes === VoteShow.ShowForOthers && localUser.person_id != creatorId)
     return enableDownvotes(localSite, type) && show
 }
 
-private fun showScore(localUser: LocalUser?): Boolean =
-    localUser?.show_score ?: false
+private fun showScore(localUser: LocalUser?): Boolean = localUser?.show_score ?: false
 
 private fun showPercentage(
-localUser: LocalUser?,
-localSite: LocalSite,
-type: PostOrCommentType,
-    ): Boolean =
-    localUser?.show_upvote_percentage ?: true && enableUpvotes(localSite, type) && enableDownvotes(localSite, type)
+    localUser: LocalUser?,
+    localSite: LocalSite,
+    type: PostOrCommentType,
+): Boolean = localUser?.show_upvote_percentage ?: true && enableUpvotes(localSite, type) && enableDownvotes(localSite, type)
 
 private fun enableDownvotes(
-localSite: LocalSite,
-type: PostOrCommentType,
+    localSite: LocalSite,
+    type: PostOrCommentType,
 ): Boolean =
-    when(type) {
+    when (type) {
         PostOrCommentType.Post -> localSite.post_downvotes !== FederationMode.Disable
         PostOrCommentType.Comment -> localSite.comment_downvotes !== FederationMode.Disable
     }
 
-private fun enableUpvotes(localSite: LocalSite, type: PostOrCommentType): Boolean =
-    when(type) {
+private fun enableUpvotes(
+    localSite: LocalSite,
+    type: PostOrCommentType,
+): Boolean =
+    when (type) {
         PostOrCommentType.Post -> localSite.post_upvotes !== FederationMode.Disable
         PostOrCommentType.Comment -> localSite.comment_upvotes !== FederationMode.Disable
     }
@@ -329,16 +334,14 @@ private fun scoreOrPctStr(
     score: Long,
     upvotes: Long,
     downvotes: Long,
-): String? {
-
-    return if (showScore(localUser)) {
+): String? =
+    if (showScore(localUser)) {
         score.toString()
     } else if (showPercentage(localUser, localSite, type)) {
         formatPercent(upvotePercent(upvotes, downvotes))
     } else {
         null
     }
-}
 
 fun InstantScores.scoreOrPctStr(
     localUser: LocalUser?,

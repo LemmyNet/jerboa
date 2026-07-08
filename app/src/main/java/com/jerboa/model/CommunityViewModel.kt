@@ -16,8 +16,8 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feat.showBlockCommunityToast
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.CommunityResponse
 import it.vercruysse.lemmyapi.datatypes.CommunityId
+import it.vercruysse.lemmyapi.datatypes.CommunityResponse
 import it.vercruysse.lemmyapi.datatypes.FollowCommunity
 import it.vercruysse.lemmyapi.datatypes.GetCommunity
 import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse

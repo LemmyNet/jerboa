@@ -18,8 +18,8 @@ import com.jerboa.feat.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.datatypes.BanPerson
-import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import kotlinx.coroutines.launch
 

@@ -29,9 +29,8 @@ import kotlinx.coroutines.launch
 
 @Stable
 class MyUserInfoViewModel(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
 ) : ViewModel() {
-
     // Can't be private, because it needs to be set by the login viewmodel
     var myUserRes: ApiState<MyUserInfo> by mutableStateOf(ApiState.Empty)
 
@@ -68,27 +67,26 @@ class MyUserInfoViewModel(
             when (val res = myUserRes) {
                 is ApiState.Success -> {
                     val mui = res.data
-                        val currAcc = accountRepository.currentAccount.value
-                        val localUser = mui.local_user_view.local_user
-                        if (currAcc != null) {
-                            val newAccount =
-                                currAcc.copy(
-                                    defaultListingType = localUser.default_listing_type.ordinal,
-                                    defaultSortType = localUser.default_post_sort_type.ordinal,
-                                    isAdmin = localUser.admin,
-                                    isMod = mui.moderates.isNotEmpty(),
-                                )
+                    val currAcc = accountRepository.currentAccount.value
+                    val localUser = mui.local_user_view.local_user
+                    if (currAcc != null) {
+                        val newAccount =
+                            currAcc.copy(
+                                defaultListingType = localUser.default_listing_type.ordinal,
+                                defaultSortType = localUser.default_post_sort_type.ordinal,
+                                isAdmin = localUser.admin,
+                                isMod = mui.moderates.isNotEmpty(),
+                            )
 
-                            if (currAcc != newAccount) {
-                                accountRepository.update(newAccount)
-                            }
+                        if (currAcc != newAccount) {
+                            accountRepository.update(newAccount)
                         }
                     }
+                }
 
                 else -> {}
             }
         }
-
 
     fun fetchUnreadCounts() {
         viewModelScope.launch {
@@ -98,18 +96,19 @@ class MyUserInfoViewModel(
     }
 
     fun showAvatar(): Boolean =
-        myUserRes.toOpt()?.
-                    local_user_view
-                    ?.local_user
-                    ?.show_avatars ?: true
+        myUserRes
+            .toOpt()
+            ?.local_user_view
+            ?.local_user
+            ?.show_avatars ?: true
 
     fun moderatedCommunities(): List<CommunityId>? =
-        myUserRes.toOpt()
-                    ?.moderates
-                    ?.map { it.community.id }
+        myUserRes
+            .toOpt()
+            ?.moderates
+            ?.map { it.community.id }
 
-    fun getFollowList(): List<CommunityFollowerView> =
-            myUserRes.toOpt()?.follows ?: emptyList()
+    fun getFollowList(): List<CommunityFollowerView> = myUserRes.toOpt()?.follows ?: emptyList()
 
     companion object {
         val Factory =

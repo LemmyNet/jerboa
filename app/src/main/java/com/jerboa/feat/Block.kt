@@ -6,8 +6,8 @@ import android.widget.Toast
 import com.jerboa.R
 import com.jerboa.api.API
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.CommunityResponse
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
+import it.vercruysse.lemmyapi.datatypes.CommunityResponse
 import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

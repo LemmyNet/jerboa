@@ -434,7 +434,7 @@ class PersonProfileViewModel(
 
             when (val res = markPostRes) {
                 is Success -> {
-                    updatePost(res.data.post_view )
+                    updatePost(res.data.post_view)
                 }
 
                 else -> {}

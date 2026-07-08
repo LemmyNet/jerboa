@@ -51,7 +51,7 @@ class CommunityListViewModel(
                     community = cfv.community,
                     community_actions = CommunityActions(
                         followed_at = nowBoolean(true),
-                        follow_state = CommunityFollowerState.Accepted
+                        follow_state = CommunityFollowerState.Accepted,
                     ),
                     can_mod = false,
                     tags = emptyList(),

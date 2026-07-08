@@ -873,12 +873,12 @@ fun findAndUpdatePrivateMessage(
 ): List<PrivateMessageView> {
     val newMessages = messages.toMutableList()
     newMessages.replaceAll {
-            if (it.private_message.id == updated.private_message.id) {
-                updated
-            } else {
-                it
-            }
+        if (it.private_message.id == updated.private_message.id) {
+            updated
+        } else {
+            it
         }
+    }
     return newMessages
 }
 
@@ -888,12 +888,12 @@ fun findAndUpdateApplication(
 ): List<RegistrationApplicationView> {
     val newApplications = applications.toMutableList()
     newApplications.replaceAll {
-            if (it.registration_application.id == updatedApplication.registration_application.id) {
-                updatedApplication
-            } else {
-                it
-            }
+        if (it.registration_application.id == updatedApplication.registration_application.id) {
+            updatedApplication
+        } else {
+            it
         }
+    }
     return newApplications
 }
 
@@ -903,16 +903,20 @@ fun findAndUpdatePostReport(
 ): List<ReportCombinedView> {
     val newReports = reports.toMutableList()
     newReports.replaceAll {
-            when(it) {
-                is PostReportView ->
-                    if (it.post_report.id == updatedReport.post_report.id) {
-                        updatedReport
-                    } else {
-                        it
-                    }
-                else -> it
+        when (it) {
+            is PostReportView -> {
+                if (it.post_report.id == updatedReport.post_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
             }
         }
+    }
     return newReports
 }
 
@@ -922,16 +926,20 @@ fun findAndUpdateCommentReport(
 ): List<ReportCombinedView> {
     val newReports = reports.toMutableList()
     newReports.replaceAll {
-            when(it) {
-                is CommentReportView ->
-                    if (it.comment_report.id == updatedReport.comment_report.id) {
-                        updatedReport
-                    } else {
-                        it
-                    }
-                else -> it
+        when (it) {
+            is CommentReportView -> {
+                if (it.comment_report.id == updatedReport.comment_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
             }
         }
+    }
     return newReports
 }
 
@@ -941,16 +949,20 @@ fun findAndUpdatePrivateMessageReport(
 ): List<ReportCombinedView> {
     val newReports = reports.toMutableList()
     newReports.replaceAll {
-            when(it) {
-                is PrivateMessageReportView ->
-                    if (it.private_message_report.id == updatedReport.private_message_report.id) {
-                        updatedReport
-                    } else {
-                        it
-                    }
-                else -> it
+        when (it) {
+            is PrivateMessageReportView -> {
+                if (it.private_message_report.id == updatedReport.private_message_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
             }
         }
+    }
     return newReports
 }
 
@@ -960,15 +972,18 @@ fun findAndUpdateCommunityReport(
 ): List<ReportCombinedView> {
     val newReports = reports.toMutableList()
     newReports.replaceAll {
-        when(it) {
+        when (it) {
             is CommunityReportView -> {
-                if(it.community_report.id == updatedReport.community_report.id) {
+                if (it.community_report.id == updatedReport.community_report.id) {
                     updatedReport
                 } else {
                     it
                 }
             }
-            else -> it
+
+            else -> {
+                it
+            }
         }
     }
     return newReports
@@ -995,14 +1010,18 @@ fun findAndUpdateCommentInPostCommentCombined(
 ): List<PostCommentCombinedView> {
     val newItems = items.toMutableList()
     newItems.replaceAll {
-        when(it) {
-            is CommentView ->
-                if(it.comment.id == updated.comment.id) {
+        when (it) {
+            is CommentView -> {
+                if (it.comment.id == updated.comment.id) {
                     updated
                 } else {
                     it
                 }
-            is PostView -> it
+            }
+
+            is PostView -> {
+                it
+            }
         }
     }
     return newItems
@@ -1014,19 +1033,22 @@ fun findAndUpdateCommentInNotificationView(
 ): List<NotificationView> {
     val newItems = items.toMutableList()
     newItems.replaceAll {
-        when(val data = it.data) {
+        when (val data = it.data) {
             is CommentView -> {
-                if(data.comment.id == updated.comment.id) {
+                if (data.comment.id == updated.comment.id) {
                     it.copy(data = updated)
                 } else {
                     it
                 }
             }
-            else -> it
+
+            else -> {
+                it
+            }
         }
     }
     return newItems
-    }
+}
 
 fun findAndUpdatePostCreator(
     posts: List<PostView>,
@@ -1058,6 +1080,7 @@ fun findAndUpdateCreatorInPostCommentCombined(
                     it
                 }
             }
+
             is PostView -> {
                 if (it.creator.id == person.id) {
                     it.copy(creator = person)
@@ -1107,7 +1130,7 @@ fun findAndUpdateCreatorBannedFromCommunityInPostCommentCombined(
 ): List<PostCommentCombinedView> {
     val newItems = items.toMutableList()
     newItems.replaceAll {
-        when(it) {
+        when (it) {
             is CommentView -> {
                 if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
                     it.copy(creator_banned_from_community = banData.banned)
@@ -1115,6 +1138,7 @@ fun findAndUpdateCreatorBannedFromCommunityInPostCommentCombined(
                     it
                 }
             }
+
             is PostView -> {
                 if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
                     it.copy(creator_banned_from_community = banData.banned)
@@ -1173,12 +1197,12 @@ fun findAndUpdatePost(
 ): List<PostView> {
     val newPosts = posts.toMutableList()
     newPosts.replaceAll {
-            if (it.post.id == updatedPostView.post.id) {
-                updatedPostView
-            }else {
-                it
-            }
+        if (it.post.id == updatedPostView.post.id) {
+            updatedPostView
+        } else {
+            it
         }
+    }
     return newPosts
 }
 
@@ -1188,18 +1212,20 @@ fun findAndUpdatePostInPostCommentCombined(
 ): List<PostCommentCombinedView> {
     val newItems = items.toMutableList()
     newItems.replaceAll {
-            when(it) {
-                is PostView -> {
-                    if(it.post.id == updatedPostView.post.id) {
-                        updatedPostView
-                    } else {
-                        it
-                    }
+        when (it) {
+            is PostView -> {
+                if (it.post.id == updatedPostView.post.id) {
+                    updatedPostView
+                } else {
+                    it
                 }
+            }
 
-                else -> it
+            else -> {
+                it
             }
         }
+    }
     return newItems
 }
 
@@ -1317,8 +1343,8 @@ inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
 fun matchLoginErrorMsgToStringRes(
     resources: Resources,
     e: Throwable,
-): String {
-    return when (e.message) {
+): String =
+    when (e.message) {
         "incorrect_login" -> {
             resources.getString(R.string.login_view_model_incorrect_login)
         }
@@ -1352,7 +1378,6 @@ fun matchLoginErrorMsgToStringRes(
             }
         }
     }
-}
 
 fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
     this

@@ -107,7 +107,7 @@ class ReportsViewModel(
                                 oldRes.data.items,
                                 newRes.data.items,
                             ) {
-                                when(it) {
+                                when (it) {
                                     is CommentReportView -> it.comment_report.id
                                     is CommunityReportView -> it.community_report.id
                                     is PostReportView -> it.post_report.id

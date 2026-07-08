@@ -43,8 +43,8 @@ class CommentLikesViewModel(
         }
         when (val res = likesRes) {
             is ApiState.Success -> {
-            pageController.nextPage(res.data.next_page)
-        }
+                pageController.nextPage(res.data.next_page)
+            }
 
             else -> {}
         }
@@ -55,7 +55,7 @@ class CommentLikesViewModel(
             comment_id = id,
             limit = VIEW_VOTES_LIMIT,
             page = pageController.page,
-            page_cursor = pageController.pageCursor
+            page_cursor = pageController.pageCursor,
         )
 
     fun appendLikes() {

@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class NotificationViewModel(
     account: Account,
-    myUserInfoViewModel: MyUserInfoViewModel
+    myUserInfoViewModel: MyUserInfoViewModel,
 ) : ViewModel() {
     var notifsRes: ApiState<PagedResponse<NotificationView>> by mutableStateOf(
         ApiState.Empty,
@@ -174,7 +174,7 @@ class NotificationViewModel(
                         is ApiState.Success -> {
                             val newNotifs = existing.data.items.toMutableList()
                             newNotifs.replaceAll {
-                                if(it.notification.id == form.notification_id) {
+                                if (it.notification.id == form.notification_id) {
                                     it.copy(notification = it.notification.copy(read = form.read))
                                 } else {
                                     it
@@ -195,7 +195,6 @@ class NotificationViewModel(
             }
         }
     }
-
 
     fun blockPerson(
         form: BlockPerson,
@@ -231,9 +230,9 @@ class NotificationViewModel(
                         else -> {}
                     }
                 }
+
                 else -> {}
             }
-
 
             onComplete()
         }
@@ -244,7 +243,7 @@ class NotificationViewModel(
             type_ = notificationDataType,
             unread_only = unreadOnly,
             page = pageController.page,
-            page_cursor = pageController.pageCursor
+            page_cursor = pageController.pageCursor,
         )
 
     init {

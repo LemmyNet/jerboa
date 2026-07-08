@@ -29,7 +29,6 @@ sealed class ReplyItem {
     class CommentItem(
         val item: CommentView,
     ) : ReplyItem()
-
 }
 
 class CommentReplyViewModel : ViewModel() {

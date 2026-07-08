@@ -47,14 +47,14 @@ import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.UserBlockInstanceCommunitiesParams
-import it.vercruysse.lemmyapi.datatypes.UserBlockInstancePersonsParams
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstanceCommunitiesParams
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstancePersonsParams
 import it.vercruysse.lemmyapi.enums.PostFeatureType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

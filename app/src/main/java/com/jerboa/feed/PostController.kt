@@ -28,7 +28,13 @@ open class PostController : UniqueFeedController<PostView>() {
                     postView.creator.id == banData.person.id && postView.community.id == banData.community.id
                 }
             },
-        ) { it.copy(community_actions = it.community_actions?.copy(received_ban_at = nowBoolean(banData.banned)), creator_banned_from_community = banData.banned, creator = banData.person) }
+        ) {
+            it.copy(
+                community_actions = it.community_actions?.copy(received_ban_at = nowBoolean(banData.banned)),
+                creator_banned_from_community = banData.banned,
+                creator = banData.person,
+            )
+        }
     }
 
     fun findAndUpdatePostHidden(hidePost: HidePost) {
