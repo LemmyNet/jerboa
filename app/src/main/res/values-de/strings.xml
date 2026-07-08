@@ -268,6 +268,6 @@
     <string name="share_post">Beitrag teilen</string>
     <string name="unlock_post">Beitrag entsperren</string>
     <string name="lock_post">Beitrag sperren</string>
-    <string name="show_upvote_percentage">Upvoteverhältnis in % anzeigen</string>
+    <string name="show_upvote_percentage">Upvoteverhältnis in %% anzeigen</string>
     <string name="remove_post">Beitrag entfernen</string>
 </resources>
