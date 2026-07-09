@@ -39,6 +39,7 @@ fun PaginationButton(
     currentPage: Long,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
+    onNextEnabled: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -51,7 +52,7 @@ fun PaginationButton(
             Text(stringResource(R.string.previous))
         }
         Text(stringResource(R.string.page_number, currentPage))
-        Button(onClick = onNext) {
+        Button(onClick = onNext, enabled = onNextEnabled) {
             Text(stringResource(R.string.next))
         }
     }

@@ -1,20 +1,29 @@
 package com.jerboa.ui.components.comment
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
+import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
+import com.jerboa.ui.components.common.PaginationButton
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
@@ -68,54 +77,95 @@ fun CommentNodes(
     blurNSFW: BlurNSFW,
     voteDisplayMode: LocalUserVoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
+    enableInfiniteScroll: Boolean,
+    nextPage: () -> Unit,
+    previousPage: () -> Unit,
+    page: Long
 ) {
-    LazyColumn(state = listState) {
-        commentNodeItems(
-            nodes = nodes,
-            admins = admins,
-            moderators = moderators,
-            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
-            addToParentIndexes = addToParentIndexes,
-            isFlat = isFlat,
-            isExpanded = isExpanded,
-            toggleExpanded = toggleExpanded,
-            toggleActionBar = toggleActionBar,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
-            onReplyClick = onReplyClick,
-            onSaveClick = onSaveClick,
-            onMarkAsReadClick = onMarkAsReadClick,
-            onCommentClick = onCommentClick,
-            onEditCommentClick = onEditCommentClick,
-            onDeleteCommentClick = onDeleteCommentClick,
-            onReportClick = onReportClick,
-            onRemoveClick = onRemoveClick,
-            onDistinguishClick = onDistinguishClick,
-            onBanPersonClick = onBanPersonClick,
-            onBanFromCommunityClick = onBanFromCommunityClick,
-            onCommentLinkClick = onCommentLinkClick,
-            onFetchChildrenClick = onFetchChildrenClick,
-            onPersonClick = onPersonClick,
-            onViewVotesClick = onViewVotesClick,
-            onHeaderClick = onHeaderClick,
-            onHeaderLongClick = onHeaderLongClick,
-            onCommunityClick = onCommunityClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            onPostClick = onPostClick,
-            account = account,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            showCollapsedCommentContent = showCollapsedCommentContent,
-            isCollapsedByParent = isCollapsedByParent,
-            showActionBar = showActionBar,
-            enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
-            blurNSFW = blurNSFW,
-            voteDisplayMode = voteDisplayMode,
-            swipeToActionPreset = swipeToActionPreset,
-        )
-        item {
-            Spacer(modifier = Modifier.height(100.dp))
+    if (nodes.isEmpty() && !enableInfiniteScroll) {
+        NoMoreComments(page, previousPage)
+    } else {
+        LazyColumn(state = listState) {
+            commentNodeItems(
+                nodes = nodes,
+                admins = admins,
+                moderators = moderators,
+                increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+                addToParentIndexes = addToParentIndexes,
+                isFlat = isFlat,
+                isExpanded = isExpanded,
+                toggleExpanded = toggleExpanded,
+                toggleActionBar = toggleActionBar,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
+                onSaveClick = onSaveClick,
+                onMarkAsReadClick = onMarkAsReadClick,
+                onCommentClick = onCommentClick,
+                onEditCommentClick = onEditCommentClick,
+                onDeleteCommentClick = onDeleteCommentClick,
+                onReportClick = onReportClick,
+                onRemoveClick = onRemoveClick,
+                onDistinguishClick = onDistinguishClick,
+                onBanPersonClick = onBanPersonClick,
+                onBanFromCommunityClick = onBanFromCommunityClick,
+                onCommentLinkClick = onCommentLinkClick,
+                onFetchChildrenClick = onFetchChildrenClick,
+                onPersonClick = onPersonClick,
+                onViewVotesClick = onViewVotesClick,
+                onHeaderClick = onHeaderClick,
+                onHeaderLongClick = onHeaderLongClick,
+                onCommunityClick = onCommunityClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                onPostClick = onPostClick,
+                account = account,
+                showPostAndCommunityContext = showPostAndCommunityContext,
+                showCollapsedCommentContent = showCollapsedCommentContent,
+                isCollapsedByParent = isCollapsedByParent,
+                showActionBar = showActionBar,
+                enableDownVotes = enableDownVotes,
+                showAvatar = showAvatar,
+                blurNSFW = blurNSFW,
+                voteDisplayMode = voteDisplayMode,
+                swipeToActionPreset = swipeToActionPreset,
+            )
+            item {
+                if (enableInfiniteScroll) Spacer(modifier = Modifier.height(100.dp))
+            }
+            item {
+                if (!enableInfiniteScroll) {
+                    PaginationButton(
+                        currentPage = page,
+                        onNext = nextPage,
+                        onPrevious = previousPage,
+                        onNextEnabled = nodes.isNotEmpty()
+                    )
+                }
+            }
         }
+    }
+}
+
+@Composable
+private fun NoMoreComments(
+    page: Long,
+    previousPage: () -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            textAlign = TextAlign.Center,
+            text = stringResource(R.string.no_more_comments)
+        )
+        PaginationButton(
+            currentPage = page,
+            onNext = { },
+            onPrevious = previousPage,
+            onNextEnabled = false
+        )
     }
 }
 

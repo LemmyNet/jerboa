@@ -716,13 +716,14 @@ fun UserTabs(
 
                             is ApiState.Holder -> {
                                 val nodes = commentsToFlatNodes(profileRes.data.comments)
+                                val profileId = profileRes.data.person_view.person.id
 
                                 val listState = rememberLazyListState()
 
-                                TriggerWhenReachingEnd(listState, false) {
-                                    personProfileViewModel.appendData(
-                                        profileRes.data.person_view.person.id,
-                                    )
+                                if (enableInfiniteScroll) {
+                                    TriggerWhenReachingEnd(listState, false) {
+                                        personProfileViewModel.appendData(profileId)
+                                    }
                                 }
 
                                 // Holds the un-expanded comment ids
@@ -918,6 +919,10 @@ fun UserTabs(
                                     blurNSFW = blurNSFW,
                                     voteDisplayMode = voteDisplayMode,
                                     swipeToActionPreset = swipeToActionPreset,
+                                    enableInfiniteScroll = enableInfiniteScroll,
+                                    nextPage = { personProfileViewModel.navigatePagination(profileId, 1) },
+                                    previousPage = { personProfileViewModel.navigatePagination(profileId, -1) },
+                                    page = personProfileViewModel.page
                                 )
                             }
 

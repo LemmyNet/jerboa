@@ -513,4 +513,5 @@
     <string name="page_number">Page %1$d</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="no_more_comments">No more comments available</string>
 </resources>

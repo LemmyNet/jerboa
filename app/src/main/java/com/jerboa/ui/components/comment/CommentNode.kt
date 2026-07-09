@@ -941,6 +941,10 @@ fun CommentNodesPreview() {
         account = AnonAccount,
         voteDisplayMode = LocalUserVoteDisplayMode.default(),
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
+        nextPage = { },
+        previousPage = { },
+        page = 2,
+        enableInfiniteScroll = false,
     )
 }
 
