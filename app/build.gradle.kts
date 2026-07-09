@@ -6,11 +6,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
-//    id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
-    kotlin("plugin.serialization") version "2.4.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
+    kotlin("plugin.serialization") version "2.2.10"
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
@@ -92,19 +91,10 @@ configure<ApplicationExtension> {
                 signingConfig = signingConfigs.getByName("release")
             }
 
-            // Keep using until AGP 9.0 then research proguard rules to retain debug info for stack traces
+            // R8 shrinking and optimization replace the removed AGP 8 postprocessing DSL.
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles("proguard-rules.pro")
-// TODO: removed
-
-//            postprocessing {
-//                isRemoveUnusedCode = true
-//                isObfuscate = false
-//                isOptimizeCode = true
-//                isRemoveUnusedResources = true
-//                proguardFiles("proguard-rules.pro")
-//            }
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -139,11 +129,10 @@ dependencies {
 
     val composeBom = platform("androidx.compose:compose-bom:2026.06.00")
 
-    api(composeBom)
+    implementation(composeBom)
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
@@ -196,7 +185,6 @@ dependencies {
     // optional - Test helpers
     testImplementation("androidx.room:room-testing:2.8.4")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.8.4")
 
     implementation("io.arrow-kt:arrow-core:2.2.3")
 
@@ -223,7 +211,7 @@ dependencies {
 
     implementation("androidx.browser:browser:1.10.0")
 
-    implementation("androidx.profileinstaller:profileinstaller")
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")

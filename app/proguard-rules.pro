@@ -20,6 +20,15 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# AGP 9 removed the build type postprocessing DSL. Keep the previous release
+# behavior by configuring the equivalent R8 option here.
+-dontobfuscate
+
+# Optional Jetpack Window extensions are supplied by the platform on supported
+# devices and are intentionally absent from the application dependency graph.
+-dontwarn androidx.window.extensions.**
+-dontwarn androidx.window.sidecar.**
+
 # With R8 full mode generic signatures are stripped for classes that are not 
 # kept. Suspend functions are wrapped in continuations where the type argument 
 # is used. 

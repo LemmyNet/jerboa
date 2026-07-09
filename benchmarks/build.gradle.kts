@@ -5,7 +5,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.test")
-    id("org.jetbrains.kotlin.android")
     id("androidx.baselineprofile")
 }
 
@@ -66,7 +65,7 @@ baselineProfile {
 dependencies {
     implementation("androidx.test.ext:junit:1.3.0")
     implementation("androidx.test.espresso:espresso-core:3.7.0")
-    implementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    implementation("androidx.test.uiautomator:uiautomator:2.4.0")
     implementation("androidx.benchmark:benchmark-macro-junit4:1.4.1")
 }
 
