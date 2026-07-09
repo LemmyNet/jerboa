@@ -17,8 +17,9 @@ class ScriptRewriteSupportPlugin : AbstractMarkwonPlugin() {
          * Superscript has the definition:
          * Any text between a '^' that is not interrupted by a linebreak where the starting
          * or ending text can't be a whitespace character.
+         * The '^' must not be prefixed by a '[' (To prevent clashing with markdown links)
          */
-        val SUPERSCRIPT_RGX = Regex("""\^(?!\s)([^\n^]+)(?<!\s)\^""")
+        val SUPERSCRIPT_RGX = Regex("""(?<!\[)\^(?!\s)([^\n^]+)(?<!\s)\^""")
 
         /*
          * Subscript has the definition:

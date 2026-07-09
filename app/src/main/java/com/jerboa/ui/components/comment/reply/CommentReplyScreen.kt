@@ -39,6 +39,7 @@ fun CommentReplyScreen(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appState: JerboaAppState,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply screen")
     val ctx = LocalContext.current
@@ -101,7 +102,7 @@ fun CommentReplyScreen(
                                     .padding(padding)
                                     .consumeWindowInsets(padding)
                                     .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
 
@@ -112,7 +113,7 @@ fun CommentReplyScreen(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             modifier =
                                 Modifier
                                     .padding(padding)
@@ -133,7 +134,7 @@ fun CommentReplyScreen(
                                     .padding(padding)
                                     .consumeWindowInsets(padding)
                                     .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
 
@@ -149,7 +150,7 @@ fun CommentReplyScreen(
                                     .padding(padding)
                                     .consumeWindowInsets(padding)
                                     .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                         )
                     }
                 }

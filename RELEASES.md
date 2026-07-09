@@ -1,3 +1,44 @@
+## What's Changed in 0.0.87
+
+- restrict low bandwidth auto mode to Data Saver by @KiaraGrouwstra in [#2123](https://github.com/LemmyNet/jerboa/pull/2123)
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.86...0.0.87
+
+## What's Changed in 0.0.86
+
+- Updating build script. by @dessalines
+- Consolidate gplay and fdroid versions using flavors by @dessalines in [#2116](https://github.com/LemmyNet/jerboa/pull/2116)
+- add low-bandwidth mode by @KiaraGrouwstra in [#2111](https://github.com/LemmyNet/jerboa/pull/2111)
+- Adding freedroidwarn by @dessalines in [#2112](https://github.com/LemmyNet/jerboa/pull/2112)
+
+## New Contributors
+
+- @KiaraGrouwstra made their first contribution in [#2111](https://github.com/LemmyNet/jerboa/pull/2111)
+- @em-s-h made their first contribution
+- @ccd2s made their first contribution
+- @neercsys made their first contribution
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.85...0.0.86
+
+## What's Changed in 0.0.85
+
+- Fixing nonfinalresIds by @dessalines in [#2077](https://github.com/LemmyNet/jerboa/pull/2077)
+- Fix #2050: Prevent superscript clashing with markdown footnotes by @MV-GH in [#2051](https://github.com/LemmyNet/jerboa/pull/2051)
+- Disable fastlane changelogs. by @dessalines in [#2029](https://github.com/LemmyNet/jerboa/pull/2029)
+- Use resources.getString instead of ctx.getString or getString by @dessalines in [#2022](https://github.com/LemmyNet/jerboa/pull/2022)
+- Use jauderho prettier by @dessalines in [#2021](https://github.com/LemmyNet/jerboa/pull/2021)
+- Fixing fastlane changelog by @dessalines in [#2017](https://github.com/LemmyNet/jerboa/pull/2017)
+- Reduce recompositions in the comments by @MV-GH in [#1979](https://github.com/LemmyNet/jerboa/pull/1979)
+
+## New Contributors
+
+- @fransecs made their first contribution
+- @boraguneyc-pixel made their first contribution
+- @jimkats1 made their first contribution
+- @TFX202X made their first contribution
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.84...0.0.85
+
 ## What's Changed in 0.0.84
 
 - Restore deprecated apk post processing config by @MV-GH in [#1969](https://github.com/LemmyNet/jerboa/pull/1969)
@@ -8,13 +49,12 @@
 - Add option to disable video auto play by @MV-GH in [#1936](https://github.com/LemmyNet/jerboa/pull/1936)
 - Fix #1934 some urls being wrongly interpreted as video by @MV-GH in [#1941](https://github.com/LemmyNet/jerboa/pull/1941)
 - Merge branch 'main' of https://github.com/LemmyNet/jerboa by @dessalines
-- Update strings.xml by @jwkwshjsjsj in [#1928](https://github.com/LemmyNet/jerboa/pull/1928)
-- Update README.md by @jwkwshjsjsj in [#1926](https://github.com/LemmyNet/jerboa/pull/1926)
+- Update strings.xml in [#1928](https://github.com/LemmyNet/jerboa/pull/1928)
+- Update README.md in [#1926](https://github.com/LemmyNet/jerboa/pull/1926)
 
 ## New Contributors
 
 - @weblate made their first contribution
-- @jwkwshjsjsj made their first contribution in [#1928](https://github.com/LemmyNet/jerboa/pull/1928)
 
 **Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.83...0.0.84
 

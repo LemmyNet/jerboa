@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import com.jerboa.BuildConfig
 import com.jerboa.DONATE_LINK
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -77,20 +78,23 @@ fun ShowAppStartupDialogs(
         }
 
         DialogType.Donation -> {
-            val uriHandler = LocalUriHandler.current
-            DonationNotificationDialog(
-                onClick = {
-                    uriHandler.openUri(DONATE_LINK)
-                    markDonationNotificationShown(scope = scope) {
-                        activeDialog = null
-                    }
-                },
-                onDismiss = {
-                    markDonationNotificationShown(scope = scope) {
-                        activeDialog = null
-                    }
-                },
-            )
+            // Only include donation text in f-droid
+            if (BuildConfig.FLAVOR == "fdroid") {
+                val uriHandler = LocalUriHandler.current
+                DonationNotificationDialog(
+                    onClick = {
+                        uriHandler.openUri(DONATE_LINK)
+                        markDonationNotificationShown(scope = scope) {
+                            activeDialog = null
+                        }
+                    },
+                    onDismiss = {
+                        markDonationNotificationShown(scope = scope) {
+                            activeDialog = null
+                        }
+                    },
+                )
+            }
         }
 
         null -> {} // No dialog

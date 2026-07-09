@@ -385,7 +385,7 @@
     <string name="comment_restored">评论已恢复</string>
     <string name="post_removed">帖文已移除</string>
     <string name="post_restored">帖文已恢复</string>
-    <string name="remove_comment">删除评论</string>
+    <string name="remove_comment">移除评论</string>
     <string name="restore_comment">恢复评论</string>
     <string name="remove_post">移除帖子</string>
     <string name="restore_post">恢复帖子</string>
@@ -410,9 +410,9 @@
     <string name="remove_content">移除内容</string>
     <string name="permaban">永久封禁</string>
     <string name="days_until_expiration">到期前的天数</string>
-    <string name="feature_in_community">在社群中添加精选</string>
+    <string name="feature_in_community">在社区中精选</string>
     <string name="unfeature_in_community">取消设为社区特色</string>
-    <string name="feature_in_local">设为本站特色</string>
+    <string name="feature_in_local">在本地精选</string>
     <string name="unfeature_in_local">取消设为本站特色</string>
     <string name="swipe_to_action_presets">滑动手势预设</string>
     <string name="swipe_action_preset_only_votes">只投票</string>
@@ -452,9 +452,9 @@
     <string name="post_unhidden">帖文未隐藏</string>
     <string name="hide_post">隐藏帖子</string>
     <string name="unhide_post">取消隐藏帖子</string>
-    <string name="show_upvotes">显示点赞</string>
-    <string name="show_downvotes">显示被踩</string>
-    <string name="show_upvote_percentage">显示点赞比</string>
+    <string name="show_upvotes">显示顶数</string>
+    <string name="show_downvotes">显示踩数</string>
+    <string name="show_upvote_percentage">显示顶数百分比%</string>
     <string name="score">分数</string>
     <string name="info">信息</string>
     <string name="settings_about_baseline_profile">基线配置文件</string>

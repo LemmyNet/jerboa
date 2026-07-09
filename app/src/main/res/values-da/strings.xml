@@ -225,4 +225,7 @@
     <string name="bottomBar_label_inbox">Indbakke</string>
     <string name="bottomBar_label_bookmarks">Bogmærker</string>
     <string name="bottomBar_label_profile">Profil</string>
+    <string name="share_post">Del indlæg</string>
+    <string name="unlock_post">Lås op for indlægget</string>
+    <string name="lock_post">Lås indlæg</string>
 </resources>

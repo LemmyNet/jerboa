@@ -40,6 +40,7 @@ fun PrivateMessageReplyScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    lowBandwidthMode: Boolean,
     onBack: () -> Unit,
     onProfile: (PostId) -> Unit,
 ) {
@@ -96,7 +97,7 @@ fun PrivateMessageReplyScreen(
                                 .padding(padding)
                                 .consumeWindowInsets(padding)
                                 .imePadding(),
-                        showAvatar = siteViewModel.showAvatar(),
+                        showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                     )
                 }
             },

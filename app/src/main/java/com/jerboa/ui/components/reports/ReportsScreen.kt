@@ -65,6 +65,7 @@ fun ReportsScreen(
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to reports screen")
@@ -141,6 +142,7 @@ fun ReportsScreen(
                 account = account,
                 scope = scope,
                 blurNSFW = blurNSFW,
+                lowBandwidthMode = lowBandwidthMode,
                 snackbarHostState = snackbarHostState,
             )
         },
@@ -169,6 +171,7 @@ fun ReportsTabs(
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
     blurNSFW: BlurNSFW,
+    lowBandwidthMode: Boolean,
 ) {
     val tabs = remember(account.isAdmin) {
         ReportsTab.entries
@@ -264,7 +267,7 @@ fun ReportsTabs(
                                         PostReportItem(
                                             postReportView = reportView,
                                             blurNSFW = blurNSFW,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             onCommunityClick = { community ->
                                                 appState.toCommunity(id = community.id)
                                             },
@@ -359,7 +362,7 @@ fun ReportsTabs(
                                     ) { reportView ->
                                         CommentReportItem(
                                             commentReportView = reportView,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                             onPersonClick = appState::toProfile,
                                             onCommentClick = appState::toComment,
                                             onResolveClick = { form ->
@@ -465,7 +468,7 @@ fun ReportsTabs(
                                                 }
                                             },
                                             onPersonClick = appState::toProfile,
-                                            showAvatar = siteViewModel.showAvatar(),
+                                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                                         )
                                     }
                                 }

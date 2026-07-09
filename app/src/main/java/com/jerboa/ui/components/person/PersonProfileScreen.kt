@@ -126,6 +126,7 @@ fun PersonProfileScreen(
     onBack: (() -> Unit)?,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to person screen")
@@ -306,7 +307,7 @@ fun PersonProfileScreen(
                     appSettingsViewModel = appSettingsViewModel,
                     showVotingArrowsInListView = showVotingArrowsInListView,
                     enableDownVotes = siteViewModel.enableDownvotes(),
-                    showAvatar = siteViewModel.showAvatar(),
+                    showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                     useCustomTabs = useCustomTabs,
                     usePrivateTabs = usePrivateTabs,
                     blurNSFW = blurNSFW,
@@ -317,6 +318,7 @@ fun PersonProfileScreen(
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
                 )
             }
         },
@@ -355,6 +357,7 @@ fun UserTabs(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     val tabTitles =
         if (savedMode) {
@@ -677,6 +680,7 @@ fun UserTabs(
                                     showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                     swipeToActionPreset = swipeToActionPreset,
                                     disableVideoAutoplay = disableVideoAutoplay,
+                                    lowBandwidthMode = lowBandwidthMode,
                                 )
                             }
 

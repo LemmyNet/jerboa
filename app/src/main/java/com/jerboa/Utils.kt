@@ -1290,6 +1290,9 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         ?: true
 
+fun ConnectivityManager?.isDataSaverEnabled(): Boolean =
+    this?.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+
 /**
  * When calling this, you must call ActivityResultLauncher.unregister()
  * on the returned ActivityResultLauncher when the launcher is no longer

@@ -155,6 +155,7 @@ fun RegistrationApplications(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
+    lowBandwidthMode: Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -238,7 +239,7 @@ fun RegistrationApplications(
                             onPersonClick = { personId ->
                                 appState.toProfile(id = personId)
                             },
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             account = account,
                         )
                     }

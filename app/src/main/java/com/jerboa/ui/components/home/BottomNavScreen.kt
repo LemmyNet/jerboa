@@ -153,6 +153,7 @@ fun BottomNavScreen(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    lowBandwidthMode: Boolean,
 ) {
     val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
     val account by remember {
@@ -265,6 +266,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -276,7 +278,7 @@ fun BottomNavScreen(
                             followList = siteViewModel.getFollowList(),
                             blurNSFW = appSettings.blurNSFW.toEnum(),
                             drawerState = drawerState,
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -287,6 +289,7 @@ fun BottomNavScreen(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            lowBandwidthMode = lowBandwidthMode,
                             drawerState = drawerState,
                             padding = padding,
                         )
@@ -298,6 +301,7 @@ fun BottomNavScreen(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -309,6 +313,7 @@ fun BottomNavScreen(
                             siteViewModel = siteViewModel,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW.toEnum(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -332,6 +337,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }
@@ -355,6 +361,7 @@ fun BottomNavScreen(
                             postActionBarMode = appSettings.postActionBarMode.toEnum(),
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }

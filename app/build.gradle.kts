@@ -9,14 +9,12 @@ plugins {
 //    id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.0"
-    kotlin("plugin.serialization") version "2.3.0"
-
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
+    kotlin("plugin.serialization") version "2.4.0"
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
-//apply(from = "update_instances.gradle.kts")
-
+// apply(from = "update_instances.gradle.kts")
 
 kotlin {
     compilerOptions {
@@ -33,12 +31,24 @@ configure<ApplicationExtension> {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 36
-        versionCode = 84
-        versionName = "0.0.84"
+        versionCode = 87
+        versionName = "0.0.87"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    flavorDimensions += "version"
+    productFlavors {
+        create("fdroid") {
+            dimension = "version"
+            versionNameSuffix = "-fdroid"
+        }
+        create("gplay") {
+            dimension = "version"
+            versionNameSuffix = "-gplay"
         }
     }
 
@@ -60,7 +70,6 @@ configure<ApplicationExtension> {
         // Adds exported schema location as test app assets.
         getByName("androidTest").assets.directories.add("$projectDir/schemas")
     }
-
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
@@ -108,6 +117,7 @@ configure<ApplicationExtension> {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     // Match build tools with CI image
     buildToolsVersion = "36.0.0"
@@ -125,9 +135,9 @@ baselineProfile {
 
 dependencies {
     // Exporting / importing DB helper
-    implementation("com.github.dessalines:room-db-export-import:0.1.0")
+    implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.01.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.06.00")
 
     api(composeBom)
     implementation("androidx.activity:activity-ktx")
@@ -137,6 +147,9 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
+
+    // Freedroidwarn
+    implementation("com.github.woheller69:FreeDroidWarn:V1.13")
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
@@ -157,14 +170,14 @@ dependencies {
     implementation("io.coil-kt:coil-video:2.7.0")
 
     // Media3 for video playback
-    implementation("androidx.media3:media3-exoplayer:1.9.0")
-    implementation("androidx.media3:media3-ui:1.9.0")
-    implementation("androidx.media3:media3-common:1.9.0")
-    implementation("androidx.media3:media3-exoplayer-hls:1.9.0")
-    implementation("androidx.media3:media3-exoplayer-dash:1.9.0")
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.9.0")
+    implementation("androidx.media3:media3-exoplayer:1.10.1")
+    implementation("androidx.media3:media3-ui:1.10.1")
+    implementation("androidx.media3:media3-common:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-hls:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.10.1")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.18.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.19.0")
     // Animated dropdowns
     implementation("me.saket.cascade:cascade-compose:2.3.0")
 
@@ -185,8 +198,7 @@ dependencies {
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 
-    implementation("io.arrow-kt:arrow-core:2.2.1.1")
-
+    implementation("io.arrow-kt:arrow-core:2.2.3")
 
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
@@ -199,24 +211,24 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    implementation("androidx.navigation:navigation-compose:2.9.6")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit")
     androidTestImplementation("androidx.test.espresso:espresso-core")
 
-    testImplementation("org.mockito:mockito-core:5.21.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.1")
+    testImplementation("org.mockito:mockito-core:5.23.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
 
-    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.browser:browser:1.10.0")
 
     implementation("androidx.profileinstaller:profileinstaller")
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.3.3")
+    implementation("io.ktor:ktor-client-logging:3.5.1")
 }

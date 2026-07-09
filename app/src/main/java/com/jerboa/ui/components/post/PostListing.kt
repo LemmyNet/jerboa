@@ -116,6 +116,7 @@ fun PostListing(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -213,6 +214,7 @@ fun PostListing(
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
+                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 
@@ -259,6 +261,7 @@ fun PostListing(
                         voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
+                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 
@@ -279,6 +282,7 @@ fun PostListing(
                         showIfRead = showIfRead,
                         enableDownVotes = enableDownVotes,
                         voteDisplayMode = voteDisplayMode,
+                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
             }
@@ -308,91 +312,131 @@ fun ThumbnailTile(
     usePrivateTabs: Boolean,
     blurEnabled: Boolean,
     appState: JerboaAppState,
+    lowBandwidthMode: Boolean,
 ) {
-    if (post.url == null) {
-        return
-    }
+    val postUrl = post.url ?: return // no URL means no thumbnail to render
 
-    EmbeddedDataLoader(post, imageDetails, {
-        AsyncImage(
-            model = null,
-            contentDescription = null,
-            placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_mono),
-            error = rememberAsyncImagePainter(R.drawable.ic_launcher_mono),
-            modifier = Modifier.size(POST_LINK_PIC_SIZE).clip(Shapes.large),
+    if (lowBandwidthMode) {
+        // Skip EmbeddedDataLoader (which would fetch metadata over the
+        // network) and render the same link placeholder the normal path
+        // falls back to when no thumbnail is available.
+        val postLinkType = PostLinkType.fromURL(postUrl)
+        ThumbnailBox(
+            thumbnailUrl = null,
+            targetUrl = postUrl,
+            postLinkType = postLinkType,
+            blurEnabled = blurEnabled,
+            altText = post.alt_text,
+            appState = appState,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
         )
-    }) {
-        if (it.isFailure) {
-            Log.e("EmbeddedData", "Data failed loading", it.exceptionOrNull())
-            return@EmbeddedDataLoader
-        }
-        val embeddedData = it.getOrThrow()
-        val targetUrl = embeddedData.videoUrl ?: post.url ?: return@EmbeddedDataLoader
-        val postLinkType = PostLinkType.fromURL(targetUrl)
-        val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType == PostLinkType.Image) post.url else null
-
-        val postLinkPicMod = Modifier
-            .size(POST_LINK_PIC_SIZE)
-            .combinedClickable(
-                onClick = {
-                    if (postLinkType != PostLinkType.Link) {
-                        appState.openMediaViewer(targetUrl, postLinkType)
-                    } else {
-                        appState.openLink(
-                            targetUrl,
-                            useCustomTabs,
-                            usePrivateTabs,
-                        )
-                    }
-                },
-                onLongClick = {
-                    appState.showLinkPopup(targetUrl)
-                },
+    } else {
+        EmbeddedDataLoader(post, imageDetails, {
+            AsyncImage(
+                model = null,
+                contentDescription = null,
+                placeholder = rememberAsyncImagePainter(R.drawable.ic_launcher_mono),
+                error = rememberAsyncImagePainter(R.drawable.ic_launcher_mono),
+                modifier = Modifier.size(POST_LINK_PIC_SIZE).clip(Shapes.large),
             )
+        }) {
+            if (it.isFailure) {
+                Log.e("EmbeddedData", "Data failed loading", it.exceptionOrNull())
+                return@EmbeddedDataLoader
+            }
+            val embeddedData = it.getOrThrow()
+            val targetUrl = embeddedData.videoUrl ?: postUrl
+            val postLinkType = PostLinkType.fromURL(targetUrl)
+            val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType == PostLinkType.Image) postUrl else null
 
-        Box {
-            if (thumbnailUrl != null) {
-                PictrsThumbnailImage(
-                    thumbnail = thumbnailUrl,
-                    blur = blurEnabled,
-                    roundBottomEndCorner = postLinkType != PostLinkType.Link,
-                    contentDescription = post.alt_text,
-                    modifier = postLinkPicMod,
-                )
-            } else {
-                Card(
-                    modifier = postLinkPicMod,
-                    shape = MaterialTheme.shapes.large,
+            ThumbnailBox(
+                thumbnailUrl = thumbnailUrl,
+                targetUrl = targetUrl,
+                postLinkType = postLinkType,
+                blurEnabled = blurEnabled,
+                altText = post.alt_text,
+                appState = appState,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ThumbnailBox(
+    thumbnailUrl: String?,
+    targetUrl: String,
+    postLinkType: PostLinkType,
+    blurEnabled: Boolean,
+    altText: String?,
+    appState: JerboaAppState,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
+) {
+    val postLinkPicMod = Modifier
+        .size(POST_LINK_PIC_SIZE)
+        .combinedClickable(
+            onClick = {
+                if (postLinkType != PostLinkType.Link) {
+                    appState.openMediaViewer(targetUrl, postLinkType)
+                } else {
+                    appState.openLink(
+                        targetUrl,
+                        useCustomTabs,
+                        usePrivateTabs,
+                    )
+                }
+            },
+            onLongClick = {
+                appState.showLinkPopup(targetUrl)
+            },
+        )
+
+    Box {
+        if (thumbnailUrl != null) {
+            PictrsThumbnailImage(
+                thumbnail = thumbnailUrl,
+                blur = blurEnabled,
+                roundBottomEndCorner = postLinkType != PostLinkType.Link,
+                contentDescription = altText,
+                modifier = postLinkPicMod,
+            )
+        } else {
+            Card(
+                modifier = postLinkPicMod,
+                shape = MaterialTheme.shapes.large,
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Link,
-                            contentDescription = null,
-                            modifier = Modifier.size(LINK_ICON_SIZE),
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Link,
+                        contentDescription = null,
+                        modifier = Modifier.size(LINK_ICON_SIZE),
+                    )
                 }
             }
+        }
 
-            // Display a caret in the bottom right corner to denote this as an image/video
-            if (postLinkType != PostLinkType.Link) {
-                Icon(
-                    painter = painterResource(id = R.drawable.triangle),
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .size(THUMBNAIL_CARET_SIZE)
-                            .align(Alignment.BottomEnd),
-                    tint =
-                        when (postLinkType) {
-                            PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
-                            else -> MaterialTheme.jerboaColorScheme.imageHighlight
-                        },
-                )
-            }
+        // Display a caret in the bottom right corner to denote this as an image/video
+        if (postLinkType != PostLinkType.Link) {
+            Icon(
+                painter = painterResource(id = R.drawable.triangle),
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .size(THUMBNAIL_CARET_SIZE)
+                        .align(Alignment.BottomEnd),
+                tint =
+                    when (postLinkType) {
+                        PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                        else -> MaterialTheme.jerboaColorScheme.imageHighlight
+                    },
+            )
         }
     }
 }

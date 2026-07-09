@@ -89,6 +89,7 @@ fun CommunityScreen(
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to community screen")
 
@@ -430,7 +431,7 @@ fun CommunityScreen(
                             postViewMode = getPostViewMode(appSettingsViewModel),
                             showVotingArrowsInListView = showVotingArrowsInListView,
                             enableDownVotes = siteViewModel.enableDownvotes(),
-                            showAvatar = siteViewModel.showAvatar(),
+                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW.changeBlurTypeInsideCommunity(),
@@ -455,6 +456,7 @@ fun CommunityScreen(
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                             swipeToActionPreset = swipeToActionPreset,
                             disableVideoAutoplay = disableVideoAutoplay,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 
