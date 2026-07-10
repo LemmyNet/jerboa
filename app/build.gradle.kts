@@ -95,11 +95,8 @@ configure<ApplicationExtension> {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
-            } else {
-                signingConfig = signingConfigs.getByName("debug")
             }
 
-            // R8 shrinking and optimization replace the removed AGP 8 postprocessing DSL.
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles("proguard-rules.pro")
