@@ -278,7 +278,7 @@ fun MainPostListingsContent(
     ) {
         JerboaLoadingBar(homeViewModel.postsRes)
 
-        val posts: List<PostView> = when (val postsRes = homeViewModel.postsRes) {
+        val posts: List<PostView>? = when (val postsRes = homeViewModel.postsRes) {
             is ApiState.Failure -> {
                 apiErrorToast(ctx, postsRes.msg)
                 listOf()
@@ -289,7 +289,7 @@ fun MainPostListingsContent(
             }
 
             else -> {
-                listOf()
+                null
             }
         }
 

@@ -514,4 +514,5 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="no_more_comments">No more comments available</string>
+    <string name="no_more_posts">No more posts available</string>
 </resources>
