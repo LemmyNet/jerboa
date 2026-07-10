@@ -151,7 +151,7 @@ open class PostsViewModel(
 
     fun refreshPosts() = resetPosts(ApiState.Refreshing)
 
-    private fun getPreviousPageForm() = GetPosts(
+    protected open fun getPreviousPageForm() = GetPosts(
         page = pageController.page,
         page_cursor = pageController.currentPageCursor,
         sort = sortType,

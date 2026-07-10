@@ -119,6 +119,12 @@ class CommunityViewModel(
         init()
     }
 
+    override fun getPreviousPageForm(): GetPosts =
+        super.getPreviousPageForm().copy(
+            community_id = communityId,
+            community_name = communityName,
+        )
+
     override fun getForm(): GetPosts =
         super.getForm().copy(
             community_id = communityId,
