@@ -109,7 +109,7 @@ fun CommunityScreen(
         viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
     val postListState = communityViewModel.lazyListState
 
-    val hideFab by remember {
+    val hideFab by remember(enableInfiniteScroll) {
         derivedStateOf { postListState.isScrolledToEnd() && !enableInfiniteScroll }
     }
 

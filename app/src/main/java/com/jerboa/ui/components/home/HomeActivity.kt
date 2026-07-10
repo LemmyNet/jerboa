@@ -120,7 +120,7 @@ fun HomeScreen(
     // Forget snackbars of previous accounts
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
-    val hideFab by remember {
+    val hideFab by remember(enableInfiniteScroll) {
         derivedStateOf { postListState.isScrolledToEnd() && !enableInfiniteScroll }
     }
 
