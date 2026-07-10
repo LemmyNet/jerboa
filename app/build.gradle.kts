@@ -24,6 +24,21 @@ kotlin {
 
 // The mapping producer currently requests an unpublished compose-group-mapping artifact.
 // https://kotlinlang.org/docs/whatsnew23.html#compose-compiler-stack-traces-for-minified-android-applications
+// Fails with
+
+// Configuration cache state could not be cached: field `__classpath__` of task `:app:produceFdroidReleaseComposeMapping` of type `org.jetbrains.kotlin.compose.compiler.gradle.internal.ProduceMappingFileTask`: error writing value of type 'org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection'
+//> Could not resolve all files for configuration ':app:composeMappingProducerClasspath'.
+//   > Could not find org.jetbrains.kotlin:compose-group-mapping:2.2.10.
+//     Searched in the following locations:
+//       - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/compose-group-mapping/2.2.10/compose-group-mapping-2.2.10.pom
+//       - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/compose-group-mapping/2.2.10/compose-group-mapping-2.2.10.pom
+//       - https://jitpack.io/org/jetbrains/kotlin/compose-group-mapping/2.2.10/compose-group-mapping-2.2.10.pom
+//     Required by:
+//         project ':app'
+
+// see https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/compose-group-mapping/
+// Entries exist since 2.3.0, but we use 2.4.0 afaik so i dont know why it pull old kotlin deps here for that
+
 composeCompiler {
     includeComposeMappingFile.set(false)
 }
@@ -95,6 +110,8 @@ android {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
             }
 
             isMinifyEnabled = true
