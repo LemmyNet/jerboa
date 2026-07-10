@@ -190,8 +190,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.8.4")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
+    androidTestImplementation("androidx.room:room-testing:2.8.4")
 
     implementation("io.arrow-kt:arrow-core:2.2.3")
 
