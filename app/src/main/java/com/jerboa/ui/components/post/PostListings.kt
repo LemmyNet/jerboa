@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -96,6 +97,11 @@ fun PostListings(
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
 ) {
+
+    LaunchedEffect(posts) {
+        if (!enableInfiniteScroll) listState.scrollToItem(index = 0)
+    }
+
     LazyColumn(
         state = listState,
         modifier = Modifier
