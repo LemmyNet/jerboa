@@ -1,6 +1,5 @@
-@file:Suppress("UnstableApiUsage")
 import com.android.build.api.dsl.ManagedVirtualDevice
-import com.android.build.api.dsl.TestExtension
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -11,11 +10,12 @@ plugins {
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget("17")
-        freeCompilerArgs = listOf("-Xjvm-default=all-compatibility", "-opt-in=kotlin.RequiresOptIn")
+        optIn.add("kotlin.RequiresOptIn")
+        jvmDefault.set(JvmDefaultMode.ENABLE)
     }
 }
 
-configure<TestExtension> {
+android {
     namespace = "com.jerboa.benchmarks"
     compileSdk = 36
 

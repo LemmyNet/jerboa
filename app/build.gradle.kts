@@ -1,5 +1,4 @@
-@file:Suppress("UnstableApiUsage")
-import com.android.build.api.dsl.ApplicationExtension
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -18,7 +17,8 @@ plugins {
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget("17")
-        freeCompilerArgs = listOf("-Xjvm-default=all-compatibility", "-opt-in=kotlin.RequiresOptIn")
+        optIn.add("kotlin.RequiresOptIn")
+        jvmDefault.set(JvmDefaultMode.ENABLE)
     }
 }
 
@@ -28,7 +28,7 @@ composeCompiler {
     includeComposeMappingFile.set(false)
 }
 
-configure<ApplicationExtension> {
+android {
     compileSdk = 36
 
     defaultConfig {
@@ -132,9 +132,11 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.06.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.06.01")
 
     implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.appcompat:appcompat:1.7.1")
@@ -208,8 +210,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit")
-    androidTestImplementation("androidx.test.espresso:espresso-core")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     testImplementation("org.mockito:mockito-core:5.23.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
