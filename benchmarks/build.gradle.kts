@@ -30,6 +30,10 @@ android {
         targetSdk =  36
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // The :app module declares a "version" flavor dimension (fdroid/gplay).
+        // The test module must pick one so Gradle can resolve the :app variant.
+        missingDimensionStrategy("version", "fdroid")
     }
 
     targetProjectPath = ":app"
