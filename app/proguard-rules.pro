@@ -35,10 +35,8 @@
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 
-# Some prettytime stuff
--keep class com.ocpsoft.pretty.time.i18n.**
--keep class org.ocpsoft.prettytime.i18n.**
--keepnames class ** implements org.ocpsoft.prettytime.TimeUnit
+# PrettyTime needed
+-keep class org.ocpsoft.prettytime.i18n.** { *; }
 
 # Ktor needs this
 -dontwarn org.slf4j.impl.StaticLoggerBinder

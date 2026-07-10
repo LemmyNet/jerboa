@@ -8,8 +8,8 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
-    kotlin("plugin.serialization") version "2.2.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
+    kotlin("plugin.serialization") version "2.4.0"
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
@@ -20,6 +20,12 @@ kotlin {
         jvmTarget = JvmTarget.fromTarget("17")
         freeCompilerArgs = listOf("-Xjvm-default=all-compatibility", "-opt-in=kotlin.RequiresOptIn")
     }
+}
+
+// The mapping producer currently requests an unpublished compose-group-mapping artifact.
+// https://kotlinlang.org/docs/whatsnew23.html#compose-compiler-stack-traces-for-minified-android-applications
+composeCompiler {
+    includeComposeMappingFile.set(false)
 }
 
 configure<ApplicationExtension> {
@@ -89,6 +95,8 @@ configure<ApplicationExtension> {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
             }
 
             // R8 shrinking and optimization replace the removed AGP 8 postprocessing DSL.
