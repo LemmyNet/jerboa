@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.imageviewer
 
 import android.app.Activity
+import android.util.Log
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -47,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
 import com.jerboa.JerboaAppState
@@ -72,7 +74,6 @@ fun ImageViewerScreen(
     appState: JerboaAppState,
 ) {
     val ctx = LocalContext.current
-    val resources = LocalResources.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
@@ -118,8 +119,14 @@ fun ImageViewerScreen(
             .data(url)
             .setParameter("retry_hash", retryHash, memoryCacheKey = null)
             .listener(
+                onStart = {
+                    Log.d("ImageViewerScreen", "Image loading started for $url")
+                },
                 onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
                 onError = { _, _ -> imageState = ImageState.FAILED },
+                onCancel = {
+                    Log.d("ImageViewerScreen", "Image loading cancelled for $url")
+                },
             ).build()
     }
 

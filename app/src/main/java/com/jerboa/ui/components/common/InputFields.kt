@@ -632,6 +632,7 @@ fun MyMarkdownText(
     color: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit,
     onLongClick: ((View) -> Boolean)? = null,
+    cacheKey: String? = null,
 ) {
     MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
@@ -639,6 +640,7 @@ fun MyMarkdownText(
         onClick = onClick,
         onLongClick = onLongClick,
         modifier = modifier,
+        cacheKey = cacheKey,
     )
 }
 
