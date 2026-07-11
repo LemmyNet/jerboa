@@ -27,8 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -123,12 +126,21 @@ fun HomeScreen(
     val hideFab by remember(enableInfiniteScroll) {
         derivedStateOf { postListState.isScrolledToEnd() && !enableInfiniteScroll }
     }
+    var currentEnableInfiniteScroll by rememberSaveable { mutableStateOf(enableInfiniteScroll) }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
+
+    LaunchedEffect(enableInfiniteScroll) {
+        if (currentEnableInfiniteScroll != enableInfiniteScroll) {
+            currentEnableInfiniteScroll = enableInfiniteScroll
+            postListState.scrollToItem(0)
+            homeViewModel.resetPosts()
+        }
+    }
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
