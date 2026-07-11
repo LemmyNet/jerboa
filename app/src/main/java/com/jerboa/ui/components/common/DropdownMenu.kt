@@ -35,9 +35,9 @@ import com.jerboa.datatypes.data
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.ui.theme.Shapes
-import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.dto.SortType
 import it.vercruysse.lemmyapi.dto.getSupportedEntries
+import it.vercruysse.lemmyapi.enums.CommentSortType
+import it.vercruysse.lemmyapi.enums.SortType
 import me.saket.cascade.CascadeColumnScope
 import me.saket.cascade.CascadeDropdownMenu
 

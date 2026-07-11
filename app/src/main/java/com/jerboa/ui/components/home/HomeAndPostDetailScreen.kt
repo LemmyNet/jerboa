@@ -32,6 +32,7 @@ import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.toBool
 import com.jerboa.toEnum
@@ -53,6 +54,8 @@ fun HomeAndPostDetailScreen(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
+    // TODO why are these duped, just use one
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
@@ -99,6 +102,7 @@ fun HomeAndPostDetailScreen(
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            myUserInfoViewModel = myUserInfoViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             useCustomTabs = appSettings.useCustomTabs,

@@ -47,6 +47,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.ban.BanFromCommunityScreen
 import com.jerboa.ui.components.ban.BanPersonScreen
@@ -95,6 +96,7 @@ import org.woheller69.freeDroidWarn.FreeDroidWarn
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
     val accountViewModel by viewModels<AccountViewModel>(factoryProducer = { AccountViewModelFactory.Factory })
+    val myUserInfoViewModel by viewModels<MyUserInfoViewModel>(factoryProducer = { AccountViewModelFactory.Factory })
     private val appSettingsViewModel by viewModels<AppSettingsViewModel>(factoryProducer = { AppSettingsViewModelFactory.Factory })
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>(
         factoryProducer = { AccountSettingsViewModelFactory.Factory },
@@ -328,7 +330,7 @@ class MainActivity : AppCompatActivity() {
                             CommunitySidebarScreen(
                                 appState = appState,
                                 onClickBack = appState::popBackStack,
-                                showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                                showAvatar = myUserInfoViewModel.showAvatar() && !lowBandwidthMode,
                             )
                         }
 
@@ -425,8 +427,8 @@ class MainActivity : AppCompatActivity() {
                                 selectMode = args.select,
                                 blurNSFW = appSettings.blurNSFW.toEnum(),
                                 drawerState = drawerState,
-                                followList = siteViewModel.getFollowList(),
-                                showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                                followList = myUserInfoViewModel.getFollowList(),
+                                showAvatar = myUserInfoViewModel.showAvatar() && !lowBandwidthMode,
                             )
                         }
 

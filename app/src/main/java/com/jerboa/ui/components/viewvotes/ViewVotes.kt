@@ -75,9 +75,9 @@ private data class VoteInfo(
 )
 
 @Composable
-private fun buildVoteInfo(vote: Long): VoteInfo =
+private fun buildVoteInfo(vote: Int): VoteInfo =
     when (vote) {
-        1L -> {
+        1 -> {
             VoteInfo(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 MaterialTheme.colorScheme.secondary,

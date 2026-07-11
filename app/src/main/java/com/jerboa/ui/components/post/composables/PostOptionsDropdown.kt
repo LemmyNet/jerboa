@@ -386,7 +386,7 @@ fun PostOptionsDropdown(
                                         ),
                                     )
                                 withContext(Dispatchers.Main) {
-                                    showBlockInstanceToast(resp, instance, ctx)
+                                    showBlockInstanceToast(resp, instance, blocked = true, ctx)
                                 }
                             }
                         },
@@ -405,7 +405,7 @@ fun PostOptionsDropdown(
                                         ),
                                     )
                                 withContext(Dispatchers.Main) {
-                                    showBlockInstanceToast(resp, instance, ctx)
+                                    showBlockInstanceToast(resp, instance, blocked = true, ctx)
                                 }
                             }
                         },
@@ -447,10 +447,15 @@ fun PostOptionsDropdown(
                         },
                     )
                     if (amAdmin) {
-                        BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+                        BanPersonPopupMenuItem(
+                            person = postView.creator,
+                            banned = postView.creator_banned,
+                            onDismissRequest = onDismissRequest,
+                            onBanPersonClick = onBanPersonClick,
+                        )
                     }
 
-                    // Only show ban from community button if its a local community
+                    // Only show ban from community button if it's a local community
                     if (postView.community.local) {
                         BanFromCommunityPopupMenuItem(
                             BanFromCommunityData(

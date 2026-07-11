@@ -41,7 +41,7 @@ fun PersonName(
     } else {
         ItemAndInstanceTitle(
             title = name,
-            actorId = person.actor_id,
+            apId = person.actor_id,
             local = person.local,
             itemColor = color,
             itemStyle = style,

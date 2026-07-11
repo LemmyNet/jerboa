@@ -71,7 +71,7 @@ import it.vercruysse.lemmyapi.datatypes.CommunityModeratorView
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
-import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.enums.SortType
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,26 +82,26 @@ fun SimpleTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    TopAppBar(
-        scrollBehavior = scrollBehavior,
-        title = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                modifier = Modifier.customMarquee(),
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.topAppBar_back),
+        TopAppBar(
+            scrollBehavior = scrollBehavior,
+            title = {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    modifier = Modifier.customMarquee(),
                 )
-            }
-        },
-        actions = actions,
-    )
+            },
+            navigationIcon = {
+                IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
+                    Icon(
+                        Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.topAppBar_back),
+                    )
+                }
+            },
+            actions = actions,
+        )
 }
 
 @Preview
@@ -116,7 +116,7 @@ fun NavigationSuiteScope.adaptiveNavigationBar(
     selectedTab: NavTab,
     onSelectTab: (NavTab) -> Unit,
     userViewType: UserViewType,
-    unreadCounts: Long,
+    unreadNotificationCount: Long,
     unreadAppCount: Long?,
     unreadReportCount: Long?,
     showTextDescriptionsInNavbar: Boolean,
@@ -124,7 +124,7 @@ fun NavigationSuiteScope.adaptiveNavigationBar(
     for (tab in NavTab.getEntries(userViewType)) {
         val selected = tab == selectedTab
         val iconBadgeCount = when (tab) {
-            NavTab.Inbox -> unreadCounts
+            NavTab.Inbox -> unreadNotificationCount
             NavTab.RegistrationApplications -> unreadAppCount
             NavTab.Reports -> unreadReportCount
             else -> null
@@ -168,7 +168,7 @@ fun AdaptiveNavigationBarPreview() {
             adaptiveNavigationBar(
                 selectedTab = NavTab.Home,
                 onSelectTab = {},
-                unreadCounts = 30,
+                unreadNotificationCount = 30,
                 unreadAppCount = 2,
                 unreadReportCount = 8,
                 userViewType = UserViewType.AdminOnly,
@@ -186,7 +186,7 @@ fun AdaptiveNavigationBarNoDescriptionsPreview() {
             adaptiveNavigationBar(
                 selectedTab = NavTab.Home,
                 onSelectTab = {},
-                unreadCounts = 30,
+                unreadNotificationCount = 30,
                 unreadAppCount = 2,
                 unreadReportCount = 8,
                 userViewType = UserViewType.AdminOnly,
@@ -314,8 +314,8 @@ fun CommentOrPostNodeHeader(
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
         creator = samplePerson,
-        published = samplePost.published,
-        updated = samplePost.updated,
+        published = samplePost.published_at,
+        updated = samplePost.updated_at,
         deleted = false,
         onPersonClick = {},
         isPostCreator = true,
@@ -511,6 +511,7 @@ fun Sidebar(
     banner: String?,
     icon: String?,
     content: String?,
+    summary: String?,
     published: String,
     postCount: Long,
     commentCount: Long,
@@ -559,6 +560,12 @@ fun Sidebar(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+                summary?.also {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 TimeAgo(
@@ -756,7 +763,7 @@ fun JerboaLoadingBar(apiState: ApiState<*>) {
 }
 
 /**
- * A simple top bar with a action that defaults to save
+ * A simple top bar with an action that defaults to save
  *
  */
 @OptIn(ExperimentalMaterial3Api::class)

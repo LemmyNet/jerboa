@@ -309,12 +309,13 @@ private fun imageUploadLauncher(
             uri?.also { cUri ->
                 imageUploading.value = true
                 val imageIs = imageInputStreamFromUri(ctx, cUri)
+                val imageBytes = imageIs.readBytes()
                 scope.launch {
                     if (!account.isAnon()) {
-                        val url = API.uploadPictrsImage(imageIs, ctx)
+                        val res = API.getInstance().uploadImage(imageBytes)
                         imageUploading.value = false
-                        if (url.isNotEmpty()) {
-                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, url)))
+                        res.onSuccess {
+                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, it.image_url)))
                         }
                     }
                 }

@@ -29,8 +29,6 @@ import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.Search
-import it.vercruysse.lemmyapi.dto.SearchType
-import it.vercruysse.lemmyapi.dto.SortType
 import kotlinx.coroutines.launch
 
 object CommunityListReturn {

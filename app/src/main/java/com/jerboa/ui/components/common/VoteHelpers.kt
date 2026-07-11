@@ -15,14 +15,14 @@ import com.jerboa.R
 import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLocalSite
-import com.jerboa.datatypes.sampleLocalUser
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.VoteType
 import it.vercruysse.lemmyapi.datatypes.LocalSite
-import it.vercruysse.lemmyapi.datatypes.LocalUser
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.enums.FederationMode
 import it.vercruysse.lemmyapi.enums.VoteShow
@@ -30,7 +30,7 @@ import it.vercruysse.lemmyapi.enums.VoteShow
 @Composable
 fun VoteGeneric(
     instantScores: InstantScores,
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     voteContentType: PostOrCommentType,
     voteType: VoteType,
@@ -56,7 +56,7 @@ fun VoteGeneric(
             VoteData(
                 instantScores.upvotes,
                 enableUpvotes(localSite, voteContentType),
-                showUpvotes(localUser, localSite, voteContentType) && instantScores.upvotes != 0L,
+                showUpvotes(myUserInfo, localSite, voteContentType) && instantScores.upvotes != 0L,
             )
         }
 
@@ -64,7 +64,7 @@ fun VoteGeneric(
             VoteData(
                 instantScores.downvotes,
                 enableDownvotes(localSite, voteContentType),
-                showDownvotes(localUser, localSite, voteContentType, creatorId) && instantScores.downvotes != 0L,
+                showDownvotes(myUserInfo, localSite, voteContentType, creatorId) && instantScores.downvotes != 0L,
             )
         }
     }
@@ -92,7 +92,7 @@ fun VoteGeneric(
 fun VoteGenericPreview() {
     VoteGeneric(
         instantScores = sampleInstantScores,
-        localUser = sampleLocalUser,
+        myUserInfo = sampleMyUserInfo,
         localSite = sampleLocalSite,
         voteContentType = PostOrCommentType.Post,
         voteType = VoteType.Upvote,
@@ -105,7 +105,7 @@ fun VoteGenericPreview() {
 @Composable
 fun VoteScore(
     instantScores: InstantScores,
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     voteContentType: PostOrCommentType,
     onVoteClick: () -> Unit,
@@ -113,8 +113,8 @@ fun VoteScore(
 ) {
     val iconAndColor = scoreIconAndColor(myVote = instantScores.myVote)
 
-    val showUpvotes = showUpvotes(localUser, localSite, voteContentType)
-    val showScore = showScore(localUser)
+    val showUpvotes = showUpvotes(myUserInfo, localSite, voteContentType)
+    val showScore = showScore(myUserInfo)
     val enabled = enableUpvotes(localSite, voteContentType)
 
     // If the score is the same as the upvotes,
@@ -145,7 +145,7 @@ fun VoteScore(
 fun VoteScorePreview() {
     VoteScore(
         instantScores = sampleInstantScores,
-        localUser = sampleLocalUser,
+        myUserInfo = sampleMyUserInfo,
         localSite = sampleLocalSite,
         voteContentType = PostOrCommentType.Post,
         onVoteClick = { },
@@ -156,7 +156,7 @@ fun VoteScorePreview() {
 @Composable
 fun UpvotePercentage(
     instantScores: InstantScores,
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     voteContentType: PostOrCommentType,
     account: Account,
@@ -166,7 +166,7 @@ fun UpvotePercentage(
         downvotes = instantScores.downvotes,
     )
 
-    val showPct = showPercentage(localUser, localSite, voteContentType) &&
+    val showPct = showPercentage(myUserInfo, localSite, voteContentType) &&
         (upvotePct < SHOW_UPVOTE_PCT_THRESHOLD)
 
     if (showPct) {
@@ -187,7 +187,7 @@ fun UpvotePercentage(
 fun UpvotePercentagePreview() {
     UpvotePercentage(
         instantScores = sampleInstantScores,
-        localUser = sampleLocalUser,
+        myUserInfo = sampleMyUserInfo,
         localSite = sampleLocalSite,
         voteContentType = PostOrCommentType.Post,
         account = AnonAccount,
@@ -278,31 +278,32 @@ fun scoreIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
     }
 
 private fun showUpvotes(
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     type: PostOrCommentType,
-): Boolean = enableUpvotes(localSite, type) && (localUser?.show_upvotes ?: true)
+): Boolean = enableUpvotes(localSite, type) && (myUserInfo?.local_user_view?.local_user?.show_upvotes ?: true)
 
 private fun showDownvotes(
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     type: PostOrCommentType,
     creatorId: PersonId,
 ): Boolean {
+    val localUser = myUserInfo?.local_user_view?.local_user
     val show = localUser?.show_downvotes === VoteShow.Show ||
         (localUser?.show_downvotes === VoteShow.ShowForOthers && localUser.person_id != creatorId)
     return enableDownvotes(localSite, type) && show
 }
 
-private fun showScore(localUser: LocalUser?): Boolean = localUser?.show_score ?: false
+private fun showScore(myUserInfo: MyUserInfo?): Boolean = myUserInfo?.local_user_view?.local_user?.show_score ?: false
 
 private fun showPercentage(
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     type: PostOrCommentType,
-): Boolean = localUser?.show_upvote_percentage ?: true && enableUpvotes(localSite, type) && enableDownvotes(localSite, type)
+): Boolean = myUserInfo?.local_user_view?.local_user?.show_upvote_percentage ?: true && enableUpvotes(localSite, type) && enableDownvotes(localSite, type)
 
-private fun enableDownvotes(
+fun enableDownvotes(
     localSite: LocalSite,
     type: PostOrCommentType,
 ): Boolean =
@@ -328,28 +329,28 @@ private fun upvotePercent(
 private fun formatPercent(pct: Float): String = "%.0f".format(pct * 100F)
 
 private fun scoreOrPctStr(
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     type: PostOrCommentType,
     score: Long,
     upvotes: Long,
     downvotes: Long,
 ): String? =
-    if (showScore(localUser)) {
+    if (showScore(myUserInfo)) {
         score.toString()
-    } else if (showPercentage(localUser, localSite, type)) {
+    } else if (showPercentage(myUserInfo, localSite, type)) {
         formatPercent(upvotePercent(upvotes, downvotes))
     } else {
         null
     }
 
 fun InstantScores.scoreOrPctStr(
-    localUser: LocalUser?,
+    myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     type: PostOrCommentType,
 ): String? =
     scoreOrPctStr(
-        localUser = localUser,
+        myUserInfo = myUserInfo,
         localSite = localSite,
         type = type,
         score = this.score,

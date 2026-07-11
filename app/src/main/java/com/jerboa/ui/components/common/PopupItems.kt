@@ -14,12 +14,13 @@ import it.vercruysse.lemmyapi.datatypes.Person
 @Composable
 fun BanPersonPopupMenuItem(
     person: Person,
+    banned: Boolean,
     onDismissRequest: () -> Unit,
     onBanPersonClick: (person: Person) -> Unit,
 ) {
     val personNameShown = personNameShown(person, true)
     val (banText, banIcon) =
-        if (person.banned) {
+        if (banned) {
             Pair(stringResource(R.string.unban_person, personNameShown), Icons.Outlined.Restore)
         } else {
             Pair(stringResource(R.string.ban_person, personNameShown), Icons.Outlined.Gavel)

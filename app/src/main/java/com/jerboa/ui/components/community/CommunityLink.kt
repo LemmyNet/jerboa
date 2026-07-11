@@ -47,9 +47,9 @@ fun CommunityName(
     style: TextStyle = MaterialTheme.typography.labelMedium,
 ) {
     ItemAndInstanceTitle(
-        title = community.title,
+        title = community.title ?: community.name,
         onClick = onClick,
-        actorId = community.actor_id,
+        apId = community.ap_id,
         local = community.local,
         modifier = modifier,
         itemColor = color,
@@ -161,7 +161,7 @@ fun CommunityLinkLargerWithUserCount(
 ) {
     CommunityLink(
         community = communityView.community,
-        usersPerMonth = communityView.counts.users_active_month,
+        usersPerMonth = communityView.community.users_active_month,
         color = MaterialTheme.colorScheme.onSurface,
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,

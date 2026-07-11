@@ -15,21 +15,21 @@ import androidx.compose.ui.platform.LocalUriHandler
 import com.jerboa.BuildConfig
 import com.jerboa.DONATE_LINK
 import com.jerboa.api.API
-import com.jerboa.api.ApiState
+import com.jerboa.api.toOpt
 import com.jerboa.getVersionCode
 import com.jerboa.model.AppSettingsViewModel
-import com.jerboa.model.SiteViewModel
+import com.jerboa.model.MyUserInfoViewModel
+import com.jerboa.shouldShowDonation
 import com.jerboa.ui.components.common.DonationNotificationDialog
 import com.jerboa.ui.components.common.ShowChangelog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.time.OffsetDateTime
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowAppStartupDialogs(
     appSettingsViewModel: AppSettingsViewModel,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -43,7 +43,7 @@ fun ShowAppStartupDialogs(
 
     // Check which dialogs need to be shown
     val changelogNeedsToShow = shouldShowChangelog(lastViewedVersion, currentVersionCode)
-    val donationNeedsToShow = shouldShowDonation(siteViewModel)
+    val donationNeedsToShow = myUserInfoViewModel.myUserRes.toOpt().shouldShowDonation()
 
     // Determine which dialog to show
     LaunchedEffect(changelogNeedsToShow, donationNeedsToShow) {
@@ -105,26 +105,6 @@ fun shouldShowChangelog(
     lastViewedVersion: Int?,
     currentVersionCode: Int,
 ): Boolean = lastViewedVersion != null && lastViewedVersion != currentVersionCode
-
-fun shouldShowDonation(siteViewModel: SiteViewModel): Boolean {
-    val siteRes = siteViewModel.siteRes
-    if (siteRes !is ApiState.Success) return false
-
-    val lastDonationNotification = siteRes.data.my_user
-        ?.local_user_view
-        ?.local_user
-        ?.last_donation_notification
-        ?: return false
-
-    return try {
-        val lastDonationTime = OffsetDateTime.parse(lastDonationNotification)
-        val oneYearAgo = OffsetDateTime.now().minusYears(1)
-        lastDonationTime.isBefore(oneYearAgo)
-    } catch (e: Exception) {
-        Log.e("ShowAppStartupDialogs", "Failed to parse donation time", e)
-        false
-    }
-}
 
 fun markDonationNotificationShown(
     scope: CoroutineScope,

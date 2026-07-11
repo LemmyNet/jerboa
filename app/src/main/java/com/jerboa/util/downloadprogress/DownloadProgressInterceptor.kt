@@ -15,13 +15,11 @@ class DownloadProgressInterceptor(
 
         val downloadIdentifier = originalResponse.request.url.toString()
 
-        val downloadResponseBody = originalResponse.body?.let {
-            DownloadProgressResponseBody(
-                downloadIdentifier,
-                it,
-                downloadFlow,
-            )
-        }
+        val downloadResponseBody = DownloadProgressResponseBody(
+            downloadIdentifier,
+            originalResponse.body,
+            downloadFlow,
+        )
 
         responseBuilder.body(downloadResponseBody)
         return responseBuilder.build()

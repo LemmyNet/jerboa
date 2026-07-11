@@ -14,7 +14,7 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import com.jerboa.feat.futureDaysToUnixTime
+import com.jerboa.futureDaysToUnixTime
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.datatypes.BanPerson

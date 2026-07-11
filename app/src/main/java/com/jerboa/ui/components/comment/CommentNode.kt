@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
@@ -55,6 +56,8 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
+import com.jerboa.datatypes.sampleLocalSite
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
@@ -62,14 +65,13 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
+import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
-import com.jerboa.feat.amMod
-import com.jerboa.feat.canMod
-import com.jerboa.feat.default
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
+import com.jerboa.showAvatar
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.MarkdownHelper
@@ -78,6 +80,7 @@ import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.common.VoteScore
+import com.jerboa.ui.components.common.enableDownvotes
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.theme.BORDER_WIDTH
@@ -90,7 +93,8 @@ import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.LocalSite
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
@@ -109,8 +113,8 @@ fun CommentNodeHeader(
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
-        published = commentView.comment.published,
-        updated = commentView.comment.updated,
+        published = commentView.comment.published_at,
+        updated = commentView.comment.updated_at,
         deleted = commentView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = isPostCreator(commentView),
@@ -178,10 +182,17 @@ fun CommentBodyPreview() {
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    isFlat: Boolean,
+    showCollapsedCommentContent: Boolean,
+    showPostAndCommunityContext: Boolean,
+    account: Account, // TODO why is account necessary?
+    isCollapsedByParent: Boolean,
+    localSite: LocalSite,
+    myUserInfo: MyUserInfo?,
+    blurNSFW: BlurNSFW,
+    swipeToActionPreset: SwipeToActionPreset,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
-    isFlat: Boolean,
     isExpanded: (commentId: CommentId) -> Boolean,
     toggleExpanded: (commentId: CommentId) -> Unit,
     toggleActionBar: (commentId: CommentId) -> Unit,
@@ -207,19 +218,12 @@ fun LazyListScope.commentNodeItem(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
-    showCollapsedCommentContent: Boolean,
-    showPostAndCommunityContext: Boolean = false,
-    account: Account,
-    isCollapsedByParent: Boolean,
     showActionBar: (commentId: CommentId) -> Boolean,
-    enableDownVotes: Boolean,
-    showAvatar: Boolean,
-    blurNSFW: BlurNSFW,
-    voteDisplayMode: LocalUserVoteDisplayMode,
-    swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
+
+    val enableDownVotes = enableDownvotes(localSite, PostOrCommentType.Comment)
 
     val offset = calculateCommentOffset(node.depth) // The ones with a border on
     val offset2 =
@@ -236,7 +240,7 @@ fun LazyListScope.commentNodeItem(
     val showMoreChildren =
         isExpanded(commentId) &&
             node.children.isEmpty() &&
-            commentView.counts.child_count > 0 &&
+            commentView.comment.child_count > 0 &&
             !isFlat
 
     increaseLazyListIndexTracker()
@@ -256,10 +260,10 @@ fun LazyListScope.commentNodeItem(
             remember {
                 mutableStateOf(
                     InstantScores(
-                        myVote = commentView.my_vote,
-                        score = commentView.counts.score,
-                        upvotes = commentView.counts.upvotes,
-                        downvotes = commentView.counts.downvotes,
+                        myVote = commentView.comment_actions?.like_score ?: 0,
+                        score = commentView.comment.score,
+                        upvotes = commentView.comment.upvotes,
+                        downvotes = commentView.comment.downvotes,
                     ),
                 )
             }
@@ -321,7 +325,7 @@ fun LazyListScope.commentNodeItem(
                                 onCommunityClick = onCommunityClick,
                                 onPostClick = onPostClick,
                                 blurNSFW = blurNSFW,
-                                showAvatar = showAvatar,
+                                showAvatar = myUserInfo.showAvatar(),
                             )
                         }
                         CommentNodeHeader(
@@ -333,9 +337,9 @@ fun LazyListScope.commentNodeItem(
                             onLongClick = {
                                 onHeaderLongClick(commentView)
                             },
-                            collapsedCommentsCount = commentView.counts.child_count,
+                            collapsedCommentsCount = commentView.comment.child_count,
                             isExpanded = isExpanded(commentId),
-                            showAvatar = showAvatar,
+                            showAvatar = myUserInfo.showAvatar(),
                         )
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -366,9 +370,7 @@ fun LazyListScope.commentNodeItem(
                                     CommentFooterLine(
                                         commentView = commentView,
                                         admins = admins,
-                                        moderators = moderators,
                                         instantScores = instantScores,
-                                        voteDisplayMode = voteDisplayMode,
                                         onUpvoteClick = {
                                             instantScores =
                                                 instantScores.update(VoteType.Upvote)
@@ -408,8 +410,9 @@ fun LazyListScope.commentNodeItem(
                                             toggleActionBar(commentId)
                                         },
                                         account = account,
-                                        enableDownVotes = enableDownVotes,
                                         viewSource = viewSource,
+                                        localSite = localSite,
+                                        myUserInfo = myUserInfo,
                                     )
                                 }
                             }
@@ -480,19 +483,20 @@ fun LazyListScope.commentNodeItem(
         isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
         showActionBar = showActionBar,
         enableDownVotes = enableDownVotes,
-        showAvatar = showAvatar,
+        showAvatar = myUserInfo.showAvatar(),
         blurNSFW = blurNSFW,
-        voteDisplayMode = voteDisplayMode,
         admins = admins,
-        moderators = moderators,
         swipeToActionPreset = swipeToActionPreset,
+        localSite = localSite,
+        myUserInfo = myUserInfo,
     )
 }
 
 fun LazyListScope.missingCommentNodeItem(
     node: MissingCommentNode,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    localSite: LocalSite,
+    myUserInfo: MyUserInfo?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -529,7 +533,6 @@ fun LazyListScope.missingCommentNodeItem(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     val commentId = node.missingCommentView.commentId
@@ -594,7 +597,6 @@ fun LazyListScope.missingCommentNodeItem(
     commentNodeItems(
         nodes = node.children.toList(),
         admins = admins,
-        moderators = moderators,
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
@@ -631,8 +633,9 @@ fun LazyListScope.missingCommentNodeItem(
         enableDownVotes = enableDownVotes,
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
-        voteDisplayMode = voteDisplayMode,
         swipeToActionPreset = swipeToActionPreset,
+        localSite = localSite,
+        myUserInfo = myUserInfo,
     )
 }
 
@@ -740,10 +743,9 @@ fun PostAndCommunityContextHeaderPreview() {
 fun CommentFooterLine(
     commentView: CommentView,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
-    enableDownVotes: Boolean,
+    localSite: LocalSite,
+    myUserInfo: MyUserInfo?,
     instantScores: InstantScores,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -767,25 +769,11 @@ fun CommentFooterLine(
 ) {
     var showMoreOptions by rememberSaveable { mutableStateOf(false) }
 
-    val amMod = remember(moderators) {
-        amMod(
-            moderators = moderators,
-            myId = account.id,
-        )
-    }
-
-    val canMod = remember(admins) {
-        canMod(
-            creatorId = commentView.comment.creator_id,
-            admins = admins,
-            moderators = moderators,
-            myId = account.id,
-        )
-    }
-
     if (showMoreOptions) {
         CommentOptionsDropdown(
             commentView = commentView,
+            admins = admins,
+            myUserInfo = myUserInfo,
             onDismissRequest = { showMoreOptions = false },
             onViewSourceClick = onViewSourceClick,
             onEditCommentClick = onEditCommentClick,
@@ -799,10 +787,6 @@ fun CommentFooterLine(
             onCommentLinkClick = onCommentLinkClick,
             onPersonClick = onPersonClick,
             onViewVotesClick = onViewVotesClick,
-            isCreator = account.id == commentView.creator.id,
-            canMod = canMod,
-            amMod = amMod,
-            amAdmin = account.isAdmin,
             viewSource = viewSource,
         )
     }
@@ -825,56 +809,66 @@ fun CommentFooterLine(
             VoteScore(
                 instantScores = instantScores,
                 onVoteClick = onUpvoteClick,
-                voteDisplayMode = voteDisplayMode,
+                localSite = localSite,
+                myUserInfo = myUserInfo,
+                voteContentType = PostOrCommentType.Comment,
                 account = account,
             )
             UpvotePercentage(
                 instantScores = instantScores,
-                voteDisplayMode = voteDisplayMode,
+                localSite = localSite,
+                myUserInfo = myUserInfo,
+                voteContentType = PostOrCommentType.Comment,
                 account = account,
             )
             VoteGeneric(
                 instantScores = instantScores,
-                voteDisplayMode = voteDisplayMode,
-                type = VoteType.Upvote,
+                voteType = VoteType.Upvote,
+                localSite = localSite,
+                myUserInfo = myUserInfo,
+                voteContentType = PostOrCommentType.Comment,
                 onVoteClick = onUpvoteClick,
+                creatorId = commentView.comment.creator_id,
                 account = account,
             )
-            if (enableDownVotes) {
                 VoteGeneric(
                     instantScores = instantScores,
-                    voteDisplayMode = voteDisplayMode,
-                    type = VoteType.Downvote,
+                    voteType = VoteType.Downvote,
+                    localSite = localSite,
+                    myUserInfo = myUserInfo,
+                    voteContentType = PostOrCommentType.Comment,
                     onVoteClick = onDownvoteClick,
+                    creatorId = commentView.comment.creator_id,
                     account = account,
                 )
-            }
             ActionBarButton(
                 icon = Icons.AutoMirrored.Outlined.Comment,
                 onClick = { onReplyClick(commentView) },
                 contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,
             )
+
+            data class BarItems(val icon: ImageVector, val contentStr: String, val color: Color)
+
+            val (icon, contentStr, color) = if (commentView.comment_actions?.saved_at != null) {
+                BarItems(
+                    icon = Icons.Filled.Bookmark,
+                    contentStr = stringResource(R.string.removeBookmark),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            } else {
+                BarItems(
+                    icon = Icons.Outlined.BookmarkBorder,
+                    contentStr = stringResource(R.string.addBookmark),
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+
             ActionBarButton(
-                icon =
-                    if (commentView.saved) {
-                        Icons.Filled.Bookmark
-                    } else {
-                        Icons.Outlined.BookmarkBorder
-                    },
-                contentDescription =
-                    if (commentView.saved) {
-                        stringResource(R.string.removeBookmark)
-                    } else {
-                        stringResource(R.string.addBookmark)
-                    },
+                icon = icon,
+                contentDescription = contentStr,
                 onClick = { onSaveClick(commentView) },
-                contentColor =
-                    if (commentView.saved) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.outline
-                    },
+                contentColor = color,
                 account = account,
             )
             ActionBarButton(
@@ -902,7 +896,8 @@ fun CommentNodesPreview() {
     CommentNodes(
         nodes = tree,
         admins = emptyList(),
-        moderators = emptyList(),
+        localSite = sampleLocalSite,
+        myUserInfo = sampleMyUserInfo,
         increaseLazyListIndexTracker = {},
         addToParentIndexes = {},
         isFlat = false,
@@ -939,7 +934,6 @@ fun CommentNodesPreview() {
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         account = AnonAccount,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         swipeToActionPreset = SwipeToActionPreset.TwoSides,
     )
 }
@@ -951,7 +945,7 @@ fun ShowMoreChildren(
 ) {
     TextButton(
         content = {
-            Text(stringResource(R.string.comment_node_more_replies, commentView.counts.child_count))
+            Text(stringResource(R.string.comment_node_more_replies, commentView.comment.child_count))
         },
         onClick = { onFetchChildrenClick(commentView) },
     )

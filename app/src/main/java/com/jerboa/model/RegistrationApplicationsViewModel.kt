@@ -40,6 +40,10 @@ class RegistrationApplicationsViewModel(
         this.unreadOnly = unreadOnly
     }
 
+    fun resetPage() {
+        pageController.reset()
+    }
+
     fun getFormApplications(): ListRegistrationApplications =
         ListRegistrationApplications(
             unread_only = this.unreadOnly,

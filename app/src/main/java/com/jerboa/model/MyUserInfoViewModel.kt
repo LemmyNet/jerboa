@@ -26,6 +26,8 @@ import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import kotlin.collections.map
 
 @Stable
 class MyUserInfoViewModel(
@@ -95,21 +97,6 @@ class MyUserInfoViewModel(
         }
     }
 
-    fun showAvatar(): Boolean =
-        myUserRes
-            .toOpt()
-            ?.local_user_view
-            ?.local_user
-            ?.show_avatars ?: true
-
-    fun moderatedCommunities(): List<CommunityId>? =
-        myUserRes
-            .toOpt()
-            ?.moderates
-            ?.map { it.community.id }
-
-    fun getFollowList(): List<CommunityFollowerView> = myUserRes.toOpt()?.follows ?: emptyList()
-
     companion object {
         val Factory =
             viewModelFactory {
@@ -119,3 +106,4 @@ class MyUserInfoViewModel(
             }
     }
 }
+

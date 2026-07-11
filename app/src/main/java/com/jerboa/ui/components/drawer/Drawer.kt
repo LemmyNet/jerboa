@@ -68,13 +68,13 @@ import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
-import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.enums.ListingType
 
 @Composable
 fun Drawer(
     myUserInfo: MyUserInfo?,
     follows: List<CommunityFollowerView>,
-    unreadCount: Long,
+    unreadNotificationCount: Long,
     unreadAppCount: Long?,
     unreadReportCount: Long?,
     accountViewModel: AccountViewModel,
@@ -107,7 +107,7 @@ fun Drawer(
     DrawerContent(
         accountViewModel = accountViewModel,
         follows = follows,
-        unreadCount = unreadCount,
+        unreadCount = unreadNotificationCount,
         unreadAppCount = unreadAppCount,
         unreadReportCount = unreadReportCount,
         myUserInfo = myUserInfo,

@@ -36,7 +36,7 @@ fun CommunitySidebarScreen(
                     stringResource(
                         R.string.actionbar_info_header,
                         community.name,
-                        hostName(community.actor_id) ?: "invalid_actor_id",
+                        hostName(community.ap_id) ?: "invalid_actor_id",
                     ),
                 onClickBack = onClickBack,
             )

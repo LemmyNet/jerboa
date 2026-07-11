@@ -38,6 +38,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
+import com.jerboa.api.toOpt
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
@@ -51,6 +52,7 @@ import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
@@ -88,6 +90,7 @@ fun HomePane(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
@@ -133,7 +136,7 @@ fun HomePane(
                 resources,
                 snackbarHostState,
                 scope,
-                siteViewModel,
+                myUserInfoViewModel,
                 accountViewModel,
             ) {}
         }
@@ -172,6 +175,7 @@ fun HomePane(
                 MainPostListingsContent(
                     homeViewModel = homeViewModel,
                     siteViewModel = siteViewModel,
+                    myUserInfoViewModel = myUserInfoViewModel,
                     appSettingsViewModel = appSettingsViewModel,
                     account = account,
                     appState = appState,
@@ -202,7 +206,7 @@ fun HomePane(
                         resources,
                         snackbarHostState,
                         scope,
-                        siteViewModel,
+                        myUserInfoViewModel,
                         accountViewModel,
                         loginAsToast = false,
                     ) {
@@ -226,6 +230,7 @@ fun HomePane(
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
     siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     account: Account,
     appState: JerboaAppState,
     postListState: LazyListState,
@@ -248,7 +253,7 @@ fun MainPostListingsContent(
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
 
-    var taglines: List<Tagline>? = null
+    var tagline: Tagline? = null
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading -> {
             LoadingBar()
@@ -259,7 +264,7 @@ fun MainPostListingsContent(
         }
 
         is ApiState.Success -> {
-            taglines = siteRes.data.taglines
+            tagline = siteRes.data.tagline
         }
 
         else -> {}
@@ -290,10 +295,10 @@ fun MainPostListingsContent(
 
         PostListings(
             posts = posts,
-            admins = siteViewModel.admins(),
+            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(),
             // No community moderators available here
             moderators = null,
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
+            contentAboveListings = { tagline?.let {TaglineDisplay(it)} },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
                     appState,
@@ -301,12 +306,12 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(postView.my_vote, VoteType.Upvote),
+                            score = newVote(postView.post_actions?.like_score ?: 0, VoteType.Upvote),
                         ),
                     )
                 }
@@ -318,12 +323,12 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(postView.my_vote, VoteType.Downvote),
+                            score = newVote(postView.post_actions?.like_score ?: 0, VoteType.Downvote),
                         ),
                     )
                 }
@@ -336,12 +341,12 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.savePost(
                         SavePost(
                             post_id = postView.post.id,
-                            save = !postView.saved,
+                            save = postView.post_actions?.saved_at == null,
                         ),
                     )
                 }
@@ -363,7 +368,7 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.deletePost(
                         DeletePost(
@@ -380,12 +385,12 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.hidePost(
                         HidePost(
-                            post_ids = listOf(postView.post.id),
-                            hide = !postView.hidden,
+                            post_id = postView.post.id,
+                            hide = postView.post_actions?.hidden_at == null,
                         ),
                         ctx,
                     )

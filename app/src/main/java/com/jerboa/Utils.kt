@@ -66,6 +66,9 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
@@ -466,7 +469,7 @@ fun personNameShown(
  */
 fun communityNameShown(community: Community): String =
     if (community.local) {
-        community.title
+        community.title ?: community.name
     } else {
         "${community.title}@${hostName(community.ap_id)}"
     }
@@ -1509,3 +1512,41 @@ sealed interface SelectionVisibilityState<out Item> {
         val selectedItem: Item,
     ) : SelectionVisibilityState<Item>
 }
+
+fun futureDaysToUnixTime(days: Long?): Long? =
+    days?.let {
+        Instant.now().plus(it, ChronoUnit.DAYS).epochSecond
+    }
+
+fun MyUserInfo?.showAvatar(): Boolean =
+    this
+        ?.local_user_view
+        ?.local_user
+        ?.show_avatars ?: true
+
+fun MyUserInfo?.moderatedCommunities(): List<CommunityId>? =
+    this
+        ?.moderates
+        ?.map { it.community.id }
+
+fun MyUserInfo?.shouldShowDonation(): Boolean {
+    val lastDonationNotification = this
+        ?.local_user_view
+        ?.local_user
+        ?.last_donation_notification_at
+        ?: return false
+
+    return try {
+        val lastDonationTime = OffsetDateTime.parse(lastDonationNotification)
+        val oneYearAgo = OffsetDateTime.now().minusYears(1)
+        lastDonationTime.isBefore(oneYearAgo)
+    } catch (e: Exception) {
+        Log.e("MyUserInfoViewModel", "Failed to parse donation time", e)
+        false
+    }
+}
+
+fun MyUserInfo?.amAdmin(): Boolean {
+    return this?.local_user_view?.local_user?.admin ?: false
+}
+

@@ -101,9 +101,7 @@ fun BlocksScreen(
                     }
 
                     is ApiState.Holder -> {
-                        res.data.my_user?.let {
-                            BlockList(it)
-                        } ?: ApiEmptyText()
+                        res.data.my_user?.let { BlockList(it) } ?: ApiEmptyText()
                     }
 
                     else -> {
@@ -132,20 +130,14 @@ fun BlockList(userInfo: MyUserInfo) {
     val tabTitles = BlocksTab.entries.map { resources.getString(it.label) }
     val pagerState = rememberPagerState { tabTitles.size }
 
-    LaunchedEffect(userInfo) {
-        viewModel.initData(userInfo)
-    }
+    LaunchedEffect(userInfo) { viewModel.initData(userInfo) }
 
     Column {
         TabRow(selectedTabIndex = pagerState.currentPage) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
+                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                     text = { Text(text = title) },
                 )
             }
@@ -215,9 +207,7 @@ inline fun <T> LazyListScope.itemsWithEmpty(
             Box(
                 modifier = Modifier.fillParentMaxSize(),
                 contentAlignment = Alignment.Center,
-            ) {
-                Text(stringResource(emptyText))
-            }
+            ) { Text(stringResource(emptyText)) }
         }
     } else {
         items(
@@ -243,7 +233,7 @@ fun ItemBlockView(
     ) {
         ItemAndInstanceTitle(
             title = name,
-            actorId = actor,
+            apId = actor,
             local = false,
             onClick = null,
         )
@@ -253,19 +243,25 @@ fun ItemBlockView(
             enabled = action !is ApiAction.Loading,
         ) {
             when (action) {
-                is ApiAction.Loading -> CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                is ApiAction.Loading -> {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                }
 
-                is ApiAction.Failed -> Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = stringResource(id = R.string.retry),
-                    tint = MaterialTheme.colorScheme.error,
-                )
+                is ApiAction.Failed -> {
+                    Icon(
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = stringResource(id = R.string.retry),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
 
-                is ApiAction.Ok -> Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(id = R.string.unblock),
-                    tint = MaterialTheme.colorScheme.secondary,
-                )
+                is ApiAction.Ok -> {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.unblock),
+                        tint = MaterialTheme.colorScheme.secondary,
+                    )
+                }
             }
         }
     }
@@ -281,8 +277,6 @@ fun LazyListScope.blockListHeader(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.background,
-        ) {
-            Title(stringResource(id = resId))
-        }
+        ) { Title(stringResource(id = resId)) }
     }
 }

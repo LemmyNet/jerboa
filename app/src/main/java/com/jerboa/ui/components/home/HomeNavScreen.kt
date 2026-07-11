@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.api.toOpt
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
@@ -52,7 +53,9 @@ import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.SiteViewModel
+import com.jerboa.showAvatar
 import com.jerboa.toBool
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.GuardAccount
@@ -151,6 +154,7 @@ fun HomeNavScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
@@ -194,7 +198,7 @@ fun HomeNavScreen(
                 resources,
                 snackbarHostState,
                 scope,
-                siteViewModel,
+                myUserInfoViewModel,
                 accountViewModel,
                 loginAsToast = false,
             ) {
@@ -212,7 +216,7 @@ fun HomeNavScreen(
             ModalDrawerSheet(
                 content = {
                     MainDrawer(
-                        siteViewModel = siteViewModel,
+                        myUserInfoViewModel = myUserInfoViewModel,
                         accountViewModel = accountViewModel,
                         homeViewModel = homeViewModel,
                         scope = scope,
@@ -236,9 +240,9 @@ fun HomeNavScreen(
                         adaptiveNavigationBar(
                             selectedTab = selectedTab,
                             userViewType = account.userViewType(),
-                            unreadCounts = siteViewModel.unreadCount,
-                            unreadAppCount = siteViewModel.unreadAppCount,
-                            unreadReportCount = siteViewModel.unreadReportCount,
+                            unreadNotificationCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.notification_count ?: 0,
+                            unreadAppCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.registration_application_count,
+                            unreadReportCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.report_count,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
                             onSelectTab = onSelectTab,
                         )
@@ -270,10 +274,10 @@ fun HomeNavScreen(
                                 CommunityListScreen(
                                     appState = appState,
                                     selectMode = false,
-                                    followList = siteViewModel.getFollowList(),
+                                    followList = myUserInfoViewModel.myUserRes.toOpt()?.follows ?: emptyList(),
                                     blurNSFW = appSettings.blurNSFW.toEnum(),
                                     drawerState = drawerState,
-                                    showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                                    showAvatar = myUserInfoViewModel.myUserRes.toOpt().showAvatar() && !lowBandwidthMode,
                                     padding = padding,
                                 )
                             }

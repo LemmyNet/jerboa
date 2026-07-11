@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import com.jerboa.api.ApiState
+import com.jerboa.api.toOpt
 import com.jerboa.closeDrawer
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.isAnon
@@ -11,7 +12,7 @@ import com.jerboa.db.entity.isReady
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.HomeViewModel
-import com.jerboa.model.SiteViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
 import it.vercruysse.lemmyapi.datatypes.CommunityId
@@ -19,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun MainDrawer(
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
@@ -40,13 +41,13 @@ fun MainDrawer(
 
     Drawer(
         myUserInfo =
-            when (val res = siteViewModel.siteRes) {
+            when (val res = myUserInfoViewModel.myUserRes) {
                 is ApiState.Success -> {
                     // JWT Failed
-                    if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
+                    if (!account.isAnon() && account.isReady()) {
                         accountViewModel.invalidateAccount(account)
                     }
-                    res.data.my_user
+                    res.data
                 }
 
                 is ApiState.Failure -> {
@@ -62,21 +63,13 @@ fun MainDrawer(
                     null
                 }
             },
-        follows = when (val res = siteViewModel.siteRes) {
-            is ApiState.Success -> {
-                res.data.my_user
-                    ?.follows
-                    ?.sortedBy { it.community.title.lowercase() }
-                    .orEmpty()
-            }
+        follows = myUserInfoViewModel.myUserRes.toOpt()?.follows
+            ?.sortedBy { (it.community.title ?: it.community.name).lowercase() }
+            .orEmpty(),
 
-            else -> {
-                emptyList()
-            }
-        },
-        unreadCount = siteViewModel.unreadCount,
-        unreadAppCount = siteViewModel.unreadAppCount,
-        unreadReportCount = siteViewModel.unreadReportCount,
+        unreadNotificationCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.notification_count ?: 0,
+        unreadAppCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.registration_application_count,
+        unreadReportCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.report_count,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,
         isOpen = drawerState.isOpen,

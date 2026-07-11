@@ -11,6 +11,8 @@ import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.LocalSiteRateLimit
 import it.vercruysse.lemmyapi.datatypes.LocalUser
+import it.vercruysse.lemmyapi.datatypes.LocalUserView
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
@@ -317,7 +319,8 @@ val sampleLocalUser = LocalUser(
     private_messages_enabled = false,
     default_comment_sort_type = CommentSortType.Hot,
     auto_mark_fetched_posts_as_read = false,
-    hide_media = false,
+    hide_posts_with_media = false,
+    show_media = true,
     default_post_time_range_seconds = null,
     show_score = true,
     show_upvotes = true,
@@ -325,6 +328,24 @@ val sampleLocalUser = LocalUser(
     show_upvote_percentage = true,
     show_person_votes = true,
     default_items_per_page = 20,
+)
+
+val sampleLocalUserView = LocalUserView(
+    local_user = sampleLocalUser,
+    person = samplePerson,
+    banned = false,
+)
+
+val sampleMyUserInfo = MyUserInfo(
+    local_user_view = sampleLocalUserView,
+    follows = emptyList(),
+    moderates = emptyList(),
+    multi_community_follows = emptyList(),
+    community_blocks = emptyList(),
+    instance_communities_blocks = emptyList(),
+    instance_persons_blocks = emptyList(),
+    person_blocks = emptyList(),
+    discussion_languages = emptyList(),
 )
 
 val sampleCommunity =
@@ -677,6 +698,7 @@ val sampleLocalSite =
         image_max_upload_size = 5096,
         image_allow_video_uploads = true,
         image_upload_disabled = false,
+        max_invites_per_user_allowed = 15,
     )
 
 val sampleLocalSiteRateLimit =
