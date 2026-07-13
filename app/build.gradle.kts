@@ -1,11 +1,10 @@
-@file:Suppress("UnstableApiUsage")
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
@@ -18,7 +17,8 @@ plugins {
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget("17")
-        freeCompilerArgs = listOf("-Xjvm-default=all-compatibility", "-opt-in=kotlin.RequiresOptIn")
+        optIn.add("kotlin.RequiresOptIn")
+        jvmDefault.set(JvmDefaultMode.ENABLE)
     }
 }
 
@@ -67,7 +67,7 @@ android {
 
     sourceSets {
         // Adds exported schema location as test app assets.
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("$projectDir/schemas")
     }
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -91,14 +91,9 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
 
-            // Keep using until AGP 9.0 then research proguard rules to retain debug info for stack traces
-            postprocessing {
-                isRemoveUnusedCode = true
-                isObfuscate = false
-                isOptimizeCode = true
-                isRemoveUnusedResources = true
-                proguardFiles("proguard-rules.pro")
-            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles("proguard-rules.pro")
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -131,13 +126,14 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.06.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.06.01")
 
-    api(composeBom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    androidTestApi(composeBom)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
@@ -188,7 +184,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.8.4")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
     androidTestImplementation("androidx.room:room-testing:2.8.4")
 
@@ -209,15 +204,15 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit")
-    androidTestImplementation("androidx.test.espresso:espresso-core")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     testImplementation("org.mockito:mockito-core:5.23.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
 
     implementation("androidx.browser:browser:1.10.0")
 
-    implementation("androidx.profileinstaller:profileinstaller")
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     baselineProfile(project(":benchmarks"))
 
     implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")

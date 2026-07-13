@@ -1,17 +1,16 @@
-@file:Suppress("UnstableApiUsage")
 import com.android.build.api.dsl.ManagedVirtualDevice
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.test")
-    id("org.jetbrains.kotlin.android")
     id("androidx.baselineprofile")
 }
 
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget("17")
-        freeCompilerArgs = listOf("-Xjvm-default=all-compatibility", "-opt-in=kotlin.RequiresOptIn")
+        jvmDefault.set(JvmDefaultMode.ENABLE)
     }
 }
 
@@ -30,6 +29,10 @@ android {
         targetSdk =  36
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // The :app module declares a "version" flavor dimension (fdroid/gplay).
+        // The test module must pick one so Gradle can resolve the :app variant.
+        missingDimensionStrategy("version", "fdroid")
     }
 
     targetProjectPath = ":app"
@@ -65,7 +68,7 @@ baselineProfile {
 dependencies {
     implementation("androidx.test.ext:junit:1.3.0")
     implementation("androidx.test.espresso:espresso-core:3.7.0")
-    implementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    implementation("androidx.test.uiautomator:uiautomator:2.4.0")
     implementation("androidx.benchmark:benchmark-macro-junit4:1.4.1")
 }
 
