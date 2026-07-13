@@ -136,6 +136,12 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
+    // Adaptive layouts
+    implementation("androidx.compose.material3.adaptive:adaptive:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.2.0")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     // Freedroidwarn

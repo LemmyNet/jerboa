@@ -118,8 +118,8 @@ object PostViewReturn {
     ExperimentalComposeUiApi::class,
 )
 @Composable
-fun PostScreen(
-    id: Either<PostId, CommentId>,
+fun PostPane(
+    postOrCommentId: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
@@ -136,12 +136,19 @@ fun PostScreen(
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    onClickBack: () -> Unit,
 ) {
-    Log.d("jerboa", "got to post screen")
+    Log.d("jerboa", "got to post pane")
 
     val resources = LocalResources.current
 
-    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id))
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(postOrCommentId))
+
+    // Some hacky code required to update the screen for tablet view
+    // Necessary because the viewmodel initializes only once.
+    if (postViewModel.id !== postOrCommentId) {
+        postViewModel.reInitializeWithNewId(postOrCommentId)
+    }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, postViewModel::updatePost)
@@ -224,7 +231,7 @@ fun PostScreen(
                     navigationIcon = {
                         IconButton(
                             modifier = Modifier.testTag("jerboa:back"),
-                            onClick = appState::navigateUp,
+                            onClick = onClickBack,
                         ) {
                             Icon(
                                 Icons.AutoMirrored.Outlined.ArrowBack,
@@ -266,7 +273,7 @@ fun PostScreen(
                 },
             ) {
                 MainPostScreenBody(
-                    id = id,
+                    id = postOrCommentId,
                     postViewModel = postViewModel,
                     siteViewModel = siteViewModel,
                     accountViewModel = accountViewModel,
