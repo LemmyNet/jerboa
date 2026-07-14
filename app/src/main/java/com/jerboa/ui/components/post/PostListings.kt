@@ -35,7 +35,9 @@ import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.selectedItemContainerColor
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
@@ -47,7 +49,8 @@ import it.vercruysse.lemmyapi.datatypes.PostView
 fun PostListings(
     posts: List<PostView>,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    myUserInfo: MyUserInfo?,
+    localSite: LocalSite,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -59,7 +62,7 @@ fun PostListings(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (personView: PersonView) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
@@ -72,8 +75,6 @@ fun PostListings(
     listState: LazyListState,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
-    enableDownVotes: Boolean,
-    showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: BlurNSFW,
@@ -82,7 +83,6 @@ fun PostListings(
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
@@ -117,7 +117,8 @@ fun PostListings(
                 PostListing(
                     postView = postView,
                     admins = admins,
-                    moderators = moderators,
+                    myUserInfo = myUserInfo,
+                    localSite = localSite,
                     useCustomTabs = useCustomTabs,
                     usePrivateTabs = usePrivateTabs,
                     onUpvoteClick = onUpvoteClick,

@@ -68,7 +68,6 @@ import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
-import com.jerboa.feat.VoteType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
 import com.jerboa.showAvatar
@@ -100,6 +99,7 @@ import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.enums.VoteAction
 
 @Composable
 fun CommentNodeHeader(
@@ -261,7 +261,7 @@ fun LazyListScope.commentNodeItem(
             remember {
                 mutableStateOf(
                     InstantScores(
-                        myVote = commentView.comment_actions?.like_score ?: 0,
+                        myVote = commentView.comment_actions?.vote,
                         score = commentView.comment.score,
                         upvotes = commentView.comment.upvotes,
                         downvotes = commentView.comment.downvotes,
@@ -278,13 +278,13 @@ fun LazyListScope.commentNodeItem(
                 when (it) {
                     SwipeToActionType.Upvote -> {
                         instantScores =
-                            instantScores.update(VoteType.Upvote)
+                            instantScores.update(VoteAction.UpVote)
                         onUpvoteClick(commentView)
                     }
 
                     SwipeToActionType.Downvote -> {
                         instantScores =
-                            instantScores.update(VoteType.Downvote)
+                            instantScores.update(VoteAction.DownVote)
                         onDownvoteClick(commentView)
                     }
 
@@ -374,12 +374,12 @@ fun LazyListScope.commentNodeItem(
                                         instantScores = instantScores,
                                         onUpvoteClick = {
                                             instantScores =
-                                                instantScores.update(VoteType.Upvote)
+                                                instantScores.update(VoteAction.UpVote)
                                             onUpvoteClick(commentView)
                                         },
                                         onDownvoteClick = {
                                             instantScores =
-                                                instantScores.update(VoteType.Downvote)
+                                                instantScores.update(VoteAction.DownVote)
                                             onDownvoteClick(commentView)
                                         },
                                         onViewSourceClick = {
@@ -824,7 +824,7 @@ fun CommentFooterLine(
             )
             VoteGeneric(
                 instantScores = instantScores,
-                voteType = VoteType.Upvote,
+                voteAction = VoteAction.UpVote,
                 localSite = localSite,
                 myUserInfo = myUserInfo,
                 voteContentType = PostOrCommentType.Comment,
@@ -834,7 +834,7 @@ fun CommentFooterLine(
             )
                 VoteGeneric(
                     instantScores = instantScores,
-                    voteType = VoteType.Downvote,
+                    voteAction = VoteAction.DownVote,
                     localSite = localSite,
                     myUserInfo = myUserInfo,
                     voteContentType = PostOrCommentType.Comment,

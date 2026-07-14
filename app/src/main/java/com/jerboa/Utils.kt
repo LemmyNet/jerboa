@@ -1518,11 +1518,15 @@ fun futureDaysToUnixTime(days: Long?): Long? =
         Instant.now().plus(it, ChronoUnit.DAYS).epochSecond
     }
 
-fun MyUserInfo?.showAvatar(): Boolean =
-    this
+fun MyUserInfo?.showAvatar(
+    lowBandwidthMode: Boolean,
+): Boolean {
+    val showAvatar = this
         ?.local_user_view
         ?.local_user
         ?.show_avatars ?: true
+    return showAvatar && !lowBandwidthMode
+}
 
 fun MyUserInfo?.moderatedCommunities(): List<CommunityId>? =
     this

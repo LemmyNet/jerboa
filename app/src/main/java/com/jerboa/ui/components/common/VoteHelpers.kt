@@ -20,11 +20,11 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
-import com.jerboa.feat.VoteType
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.enums.FederationMode
+import it.vercruysse.lemmyapi.enums.VoteAction
 import it.vercruysse.lemmyapi.enums.VoteShow
 
 @Composable
@@ -33,7 +33,7 @@ fun VoteGeneric(
     myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     voteContentType: PostOrCommentType,
-    voteType: VoteType,
+    voteAction: VoteAction,
     /**
      * The creator ID is necessary for hiding downvotes to yourself
      */
@@ -41,9 +41,9 @@ fun VoteGeneric(
     onVoteClick: () -> Unit,
     account: Account,
 ) {
-    val iconAndColor = iconAndColor(voteType, instantScores)
+    val iconAndColor = iconAndColor(voteAction, instantScores)
 
-    val contentDescription = buildContentDescription(voteType, instantScores)
+    val contentDescription = buildContentDescription(voteAction, instantScores)
 
     data class VoteData(
         val votes: Long,
@@ -51,8 +51,8 @@ fun VoteGeneric(
         val show: Boolean,
     )
 
-    val voteData = when (voteType) {
-        VoteType.Upvote -> {
+    val voteData = when (voteAction) {
+        VoteAction.UpVote -> {
             VoteData(
                 instantScores.upvotes,
                 enableUpvotes(localSite, voteContentType),
@@ -60,15 +60,17 @@ fun VoteGeneric(
             )
         }
 
-        VoteType.Downvote -> {
+        VoteAction.DownVote -> {
             VoteData(
                 instantScores.downvotes,
                 enableDownvotes(localSite, voteContentType),
                 showDownvotes(myUserInfo, localSite, voteContentType, creatorId) && instantScores.downvotes != 0L,
             )
         }
+        VoteAction.NoVote -> {null}
     }
 
+    if (voteData != null) {
     val voteStr = if (voteData.show) {
         voteData.votes.toString()
     } else {
@@ -85,6 +87,8 @@ fun VoteGeneric(
             account = account,
         )
     }
+    }
+
 }
 
 @Composable
@@ -95,7 +99,7 @@ fun VoteGenericPreview() {
         myUserInfo = sampleMyUserInfo,
         localSite = sampleLocalSite,
         voteContentType = PostOrCommentType.Post,
-        voteType = VoteType.Upvote,
+        voteAction = VoteAction.UpVote,
         onVoteClick = { },
         creatorId = 0,
         account = AnonAccount,
@@ -196,43 +200,45 @@ fun UpvotePercentagePreview() {
 
 @Composable
 private fun buildContentDescription(
-    type: VoteType,
+    voteAction: VoteAction,
     instantScores: InstantScores,
-): String =
-    if (type == VoteType.Upvote) {
-        if (instantScores.myVote == 1) {
-            stringResource(R.string.upvoted)
-        } else {
-            stringResource(R.string.upvote)
+): String? =
+    when(voteAction) {
+        VoteAction.UpVote -> {
+            when(instantScores.myVote) {
+                VoteAction.UpVote ->
+                stringResource(R.string.upvoted)
+                else -> stringResource(R.string.upvote)
+            }
         }
-    } else {
-        if (instantScores.myVote == -1) {
-            stringResource(R.string.downvoted)
-        } else {
-            stringResource(R.string.downvote)
+        VoteAction.DownVote -> {
+            when(instantScores.myVote) {
+                VoteAction.DownVote -> stringResource(R.string.downvoted)
+                else -> stringResource(R.string.downvote)
+            }
         }
+        VoteAction.NoVote -> {null}
     }
 
 @Composable
 private fun iconAndColor(
-    type: VoteType,
+    voteAction: VoteAction,
     instantScores: InstantScores,
 ): Pair<ImageVector, Color> =
-    when (type) {
-        VoteType.Upvote -> upvoteIconAndColor(myVote = instantScores.myVote)
+    when (voteAction) {
+        VoteAction.UpVote -> upvoteIconAndColor(myVote = instantScores.myVote)
         else -> downvoteIconAndColor(myVote = instantScores.myVote)
     }
 
 @Composable
-fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
+fun upvoteIconAndColor(myVote: VoteAction?): Pair<ImageVector, Color> =
     when (myVote) {
-        1 -> {
+        VoteAction.UpVote -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 scoreColor(myVote = myVote),
             )
         }
-
         else -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.up_outline),
@@ -242,9 +248,9 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
     }
 
 @Composable
-fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
+fun downvoteIconAndColor(myVote: VoteAction?): Pair<ImageVector, Color> =
     when (myVote) {
-        -1 -> {
+        VoteAction.DownVote -> {
             Pair(
                 ImageVector.vectorResource(id = R.drawable.down_filled),
                 scoreColor(myVote = myVote),
@@ -260,9 +266,9 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
     }
 
 @Composable
-fun scoreIconAndColor(myVote: Int?): Pair<ImageVector, Color> =
+fun scoreIconAndColor(myVote: VoteAction?): Pair<ImageVector, Color> =
     when (myVote) {
-        1 -> {
+        VoteAction.UpVote -> {
             Pair(
                 Icons.Outlined.Favorite,
                 scoreColor(myVote = myVote),

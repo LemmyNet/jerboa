@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
 
                     ShowAppStartupDialogs(
                         appSettingsViewModel = appSettingsViewModel,
-                        siteViewModel = siteViewModel,
+                        myUserInfoViewModel = myUserInfoViewModel,
                     )
 
                     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -243,6 +243,7 @@ class MainActivity : AppCompatActivity() {
                                 appState = appState,
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,
+                                myUserInfoViewModel = myUserInfoViewModel,
                                 appSettingsViewModel = appSettingsViewModel,
                                 appSettings = appSettings,
                                 drawerState = drawerState,
@@ -268,6 +269,7 @@ class MainActivity : AppCompatActivity() {
                                 appSettingsViewModel = appSettingsViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
+                                myUserInfoViewModel = myUserInfoViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW.toEnum(),
@@ -314,6 +316,7 @@ class MainActivity : AppCompatActivity() {
                                 appSettingsViewModel = appSettingsViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
+                                myUserInfoViewModel = myUserInfoViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW.toEnum(),

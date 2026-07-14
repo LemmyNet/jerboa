@@ -72,6 +72,7 @@ import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.enums.SortType
+import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -459,11 +460,11 @@ fun DotSpacer(
 }
 
 @Composable
-fun scoreColor(myVote: Int?): Color =
+fun scoreColor(myVote: VoteAction?): Color =
     when (myVote) {
-        1 -> MaterialTheme.colorScheme.secondary
-        -1 -> MaterialTheme.colorScheme.error
-        else -> MaterialTheme.colorScheme.outline
+        VoteAction.UpVote -> MaterialTheme.colorScheme.secondary
+        VoteAction.DownVote -> MaterialTheme.colorScheme.error
+        else  -> MaterialTheme.colorScheme.outline
     }
 
 @Composable

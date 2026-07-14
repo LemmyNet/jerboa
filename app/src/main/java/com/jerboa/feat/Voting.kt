@@ -1,11 +1,6 @@
 package com.jerboa.feat
 
-enum class VoteType(
-    val value: Int,
-) {
-    Upvote(1),
-    Downvote(-1),
-}
+import it.vercruysse.lemmyapi.enums.VoteAction
 
 enum class PostOrCommentType {
     Post,
@@ -17,17 +12,19 @@ enum class PostOrCommentType {
  * for an API result
  */
 data class InstantScores(
-    val myVote: Int,
+    val myVote: VoteAction?,
     val score: Long,
     val upvotes: Long,
     val downvotes: Long,
 ) {
-    fun update(voteAction: VoteType): InstantScores {
+    fun update(voteAction: VoteAction): InstantScores {
         val newVote = newVote(this.myVote, voteAction)
+
         // get original (up/down)votes, add (up/down)vote if (up/down)voted
-        val upvotes = this.upvotes - (if (this.myVote == 1) 1 else 0) + (if (newVote == 1) 1 else 0)
+
+        val upvotes = this.upvotes - (if (this.myVote == VoteAction.UpVote) 1 else 0) + (if (newVote == VoteAction.UpVote) 1 else 0)
         val downvotes =
-            this.downvotes - (if (this.myVote == -1) 1 else 0) + (if (newVote == -1) 1 else 0)
+            this.downvotes - (if (this.myVote == VoteAction.DownVote) 1 else 0) + (if (newVote == VoteAction.DownVote) 1 else 0)
 
         return InstantScores(
             myVote = newVote,
@@ -39,7 +36,8 @@ data class InstantScores(
 }
 
 // Set myVote to given action unless it was already set to that action, in which case we reset to 0
+// TODO this should really be private to the vote button components
 fun newVote(
-    oldVote: Int,
-    voteAction: VoteType,
-): Int = if (voteAction.value == oldVote) 0 else voteAction.value
+    oldVote: VoteAction?,
+    voteAction: VoteAction,
+): VoteAction = if (voteAction == oldVote) VoteAction.NoVote else voteAction

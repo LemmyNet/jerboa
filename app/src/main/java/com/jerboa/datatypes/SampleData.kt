@@ -35,6 +35,7 @@ import it.vercruysse.lemmyapi.enums.ListingType
 import it.vercruysse.lemmyapi.enums.PostListingMode
 import it.vercruysse.lemmyapi.enums.RegistrationMode
 import it.vercruysse.lemmyapi.enums.SortType
+import it.vercruysse.lemmyapi.enums.VoteAction
 import it.vercruysse.lemmyapi.enums.VoteShow
 
 val samplePost =
@@ -871,7 +872,7 @@ val samplePrivateMessageReportView =
 
 val sampleInstantScores =
     InstantScores(
-        myVote = 1,
+        myVote = VoteAction.UpVote,
         score = 4,
         upvotes = 5,
         downvotes = 1,

@@ -36,7 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -44,12 +43,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostLinkType
 import com.jerboa.R
@@ -60,19 +57,17 @@ import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
+import com.jerboa.datatypes.sampleLocalSite
 import com.jerboa.datatypes.sampleMarkdownPostView
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
-import com.jerboa.feat.VoteType
-import com.jerboa.feat.amMod
-import com.jerboa.feat.canMod
-import com.jerboa.feat.default
+import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.needBlur
-import com.jerboa.feat.simulateModerators
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.rememberJerboaAppState
@@ -108,12 +103,14 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.VERTICAL_SPACING
 import com.jerboa.ui.theme.XXL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.LocalSite
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.CoroutineScope
 
 @ExperimentalLayoutApi
@@ -121,7 +118,8 @@ import kotlinx.coroutines.CoroutineScope
 fun PostListingCard(
     postView: PostView,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    myUserInfo: MyUserInfo?,
+    localSite: LocalSite,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -134,7 +132,7 @@ fun PostListingCard(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (personView: PersonView) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
@@ -146,7 +144,6 @@ fun PostListingCard(
     fullBody: Boolean,
     account: Account,
     expandedImage: Boolean,
-    enableDownVotes: Boolean,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
     useCustomTabs: Boolean,
@@ -155,7 +152,6 @@ fun PostListingCard(
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
@@ -197,7 +193,8 @@ fun PostListingCard(
         PostFooterLine(
             postView = postView,
             admins = admins,
-            moderators = moderators,
+            myUserInfo = myUserInfo,
+            localSite = localSite,
             instantScores = instantScores,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
@@ -219,11 +216,9 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showReply = showReply,
             account = account,
-            enableDownVotes = enableDownVotes,
             viewSource = viewSource,
             postActionBarMode = postActionBarMode,
             fromPostActivity = fullBody,
-            voteDisplayMode = voteDisplayMode,
             scope = appState.coroutineScope,
         )
     }
@@ -236,7 +231,8 @@ fun PreviewPostListingCard() {
     PostListingCard(
         postView = samplePostView,
         admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -258,13 +254,11 @@ fun PreviewPostListingCard() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        enableDownVotes = true,
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
@@ -282,7 +276,8 @@ fun PreviewLinkPostListing() {
     PostListingCard(
         postView = sampleLinkPostView,
         admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -304,13 +299,11 @@ fun PreviewLinkPostListing() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        enableDownVotes = true,
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
@@ -328,7 +321,8 @@ fun PreviewImagePostListingCard() {
     PostListingCard(
         postView = sampleImagePostView,
         admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -350,13 +344,11 @@ fun PreviewImagePostListingCard() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        enableDownVotes = true,
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
@@ -374,7 +366,8 @@ fun PreviewImagePostListingSmallCard() {
     PostListingCard(
         postView = sampleImagePostView,
         admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -396,13 +389,11 @@ fun PreviewImagePostListingSmallCard() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        enableDownVotes = true,
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
@@ -420,7 +411,8 @@ fun PreviewLinkNoThumbnailPostListing() {
     PostListingCard(
         postView = sampleLinkNoThumbnailPostView,
         admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         useCustomTabs = false,
         usePrivateTabs = false,
         onUpvoteClick = {},
@@ -442,13 +434,11 @@ fun PreviewLinkNoThumbnailPostListing() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        enableDownVotes = true,
         showAvatar = true,
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
@@ -463,9 +453,9 @@ fun PreviewLinkNoThumbnailPostListing() {
 fun PostFooterLine(
     postView: PostView,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    myUserInfo: MyUserInfo?,
+    localSite: LocalSite,
     instantScores: InstantScores,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onReplyClick: (postView: PostView) -> Unit,
@@ -486,42 +476,19 @@ fun PostFooterLine(
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account,
-    enableDownVotes: Boolean,
     viewSource: Boolean,
     postActionBarMode: PostActionBarMode,
     fromPostActivity: Boolean,
     scope: CoroutineScope,
 ) {
-    val ctx = LocalContext.current
     var showMoreOptions by rememberSaveable { mutableStateOf(false) }
 
     if (showMoreOptions) {
-        val fallbackModerators = remember(moderators) {
-            moderators ?: simulateModerators(
-                ctx = ctx,
-                account = account,
-                forCommunity = postView.community.id,
-            )
-        }
-
-        val amMod = remember(moderators) {
-            amMod(
-                moderators = fallbackModerators,
-                myId = account.id,
-            )
-        }
-
-        val canMod = remember(admins, moderators) {
-            canMod(
-                creatorId = postView.creator.id,
-                admins = admins,
-                moderators = fallbackModerators,
-                myId = account.id,
-            )
-        }
 
         PostOptionsDropdown(
             postView = postView,
+            admins = admins,
+            myUserInfo = myUserInfo,
             onDismissRequest = { showMoreOptions = false },
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
@@ -536,10 +503,6 @@ fun PostFooterLine(
             onFeaturePostClick = onFeaturePostClick,
             onViewVotesClick = onViewVotesClick,
             onViewSourceClick = onViewSourceClick,
-            isCreator = account.id == postView.creator.id,
-            canMod = canMod,
-            amAdmin = account.isAdmin,
-            amMod = amMod,
             viewSource = viewSource,
             showViewSource = fromPostActivity,
             scope = scope,
@@ -561,47 +524,55 @@ fun PostFooterLine(
                 .fillMaxWidth()
                 .padding(bottom = SMALL_PADDING),
     ) {
-        // Right handside shows the comments on the left side
+        // Right hand side shows the comments on the left side
         if (postActionBarMode == PostActionBarMode.RightHandShort) {
             CommentNewCountRework(
-                comments = postView.counts.comments,
-                unreadCount = postView.unread_comments,
+                comments = postView.post.comments,
+                readComments = postView.post_actions?.read_comments_amount,
                 account = account,
                 modifier = Modifier.weight(1F, true),
             )
         }
         VoteScore(
             instantScores = instantScores,
+            myUserInfo = myUserInfo,
+            localSite = localSite,
+            voteContentType = PostOrCommentType.Post,
             onVoteClick = onUpvoteClick,
-            voteDisplayMode = voteDisplayMode,
             account = account,
         )
         UpvotePercentage(
             instantScores = instantScores,
-            voteDisplayMode = voteDisplayMode,
+            myUserInfo = myUserInfo,
+            localSite = localSite,
+            voteContentType = PostOrCommentType.Post,
             account = account,
         )
         VoteGeneric(
             instantScores = instantScores,
-            type = VoteType.Upvote,
+            myUserInfo = myUserInfo,
+            localSite = localSite,
+            voteContentType = PostOrCommentType.Post,
+            voteAction = VoteAction.UpVote,
+            creatorId = postView.post.creator_id,
             onVoteClick = onUpvoteClick,
-            voteDisplayMode = voteDisplayMode,
             account = account,
         )
-        if (enableDownVotes) {
             VoteGeneric(
                 instantScores = instantScores,
-                type = VoteType.Downvote,
+                myUserInfo = myUserInfo,
+                localSite = localSite,
+                voteContentType = PostOrCommentType.Post,
+                voteAction = VoteAction.DownVote,
+                creatorId = postView.post.creator_id,
                 onVoteClick = onDownvoteClick,
-                voteDisplayMode = voteDisplayMode,
                 account = account,
             )
-        }
 
         if (postActionBarMode == PostActionBarMode.Long) {
             CommentNewCountRework(
-                comments = postView.counts.comments,
-                unreadCount = postView.unread_comments,
+                comments = postView.post.comments,
+                readComments = postView.post_actions?.read_comments_amount,
                 account = account,
                 modifier = Modifier.weight(1F, true),
             )
@@ -616,7 +587,7 @@ fun PostFooterLine(
             )
         }
         SavedButton(
-            saved = postView.saved,
+            saved = postView.post_actions?.saved_at != null,
             account = account,
             onSaveClick = { onSaveClick(postView) },
         )
@@ -638,8 +609,8 @@ fun PostFooterLine(
 
         if (postActionBarMode == PostActionBarMode.LeftHandShort) {
             CommentNewCountRework(
-                comments = postView.counts.comments,
-                unreadCount = postView.unread_comments,
+                comments = postView.post.comments,
+                readComments = postView.post_actions?.read_comments_amount,
                 account = account,
             )
         }
@@ -652,9 +623,9 @@ fun PostFooterLinePreview() {
     PostFooterLine(
         postView = samplePostView,
         admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         instantScores = sampleInstantScores,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -673,7 +644,6 @@ fun PostFooterLinePreview() {
         onPersonClick = {},
         onViewSourceClick = {},
         account = AnonAccount,
-        enableDownVotes = true,
         viewSource = false,
         postActionBarMode = PostActionBarMode.Long,
         fromPostActivity = true,
@@ -781,8 +751,8 @@ fun PostCommunityAndCreatorBlock(
             }
         }
         TimeAgo(
-            published = postView.post.published,
-            updated = postView.post.updated,
+            published = postView.post.published_at,
+            updated = postView.post.updated_at,
             modifier = centerMod,
         )
     }
@@ -1098,7 +1068,7 @@ fun PostTitleAndImageLink(
     // Title of the post
     PostName(
         post = postView.post,
-        read = postView.read,
+        read = postView.post_actions?.read_at != null,
         showIfRead = showIfRead,
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
     )
@@ -1130,7 +1100,7 @@ fun PostTitleAndVideoLink(
     // Title of the post
     PostName(
         post = postView.post,
-        read = postView.read,
+        read = postView.post_actions?.read_at != null,
         showIfRead = showIfRead,
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
     )
@@ -1171,7 +1141,7 @@ fun PostTitleAndMediaPlaceholder(
 
     PostName(
         post = postView.post,
-        read = postView.read,
+        read = postView.post_actions?.read_at != null,
         showIfRead = showIfRead,
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
     )
@@ -1225,7 +1195,7 @@ fun PostTitleAndThumbnail(
         ) {
             PostName(
                 post = postView.post,
-                read = postView.read,
+                read = postView.post_actions?.read_at != null,
                 showIfRead = showIfRead,
             )
             HostnameSimplified(postView.post.url, account)
@@ -1265,20 +1235,21 @@ fun HostnameSimplified(
 @Composable
 fun CommentNewCountRework(
     comments: Long,
-    unreadCount: Long,
+    readComments: Long?,
     account: Account,
     modifier: Modifier = Modifier,
 ) {
-    val unread =
-        if (unreadCount == 0L || comments == unreadCount) {
-            null
-        } else {
-            (if (unreadCount > 0) "+" else "") + siFormat(unreadCount)
-        }
+    val read = readComments ?: 0
+   val unreadStr = if (read >= comments || read == 0L) {
+       null
+   } else {
+       val unreadCount = comments - read
+       "+" + siFormat(unreadCount)
+   }
 
     ActionBarButtonAndBadge(
         icon = Icons.Outlined.ChatBubbleOutline,
-        iconBadgeCount = unread,
+        iconBadgeCount = unreadStr,
         contentDescription = null,
         text = siFormat(comments),
         noClick = true,

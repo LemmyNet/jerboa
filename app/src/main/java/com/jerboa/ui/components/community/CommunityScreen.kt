@@ -28,12 +28,12 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
+import com.jerboa.api.toOpt
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.feat.VoteType
 import com.jerboa.feat.changeBlurTypeInsideCommunity
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
@@ -42,6 +42,7 @@ import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
@@ -71,7 +72,8 @@ import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
-import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.enums.CommunityFollowerState
+import it.vercruysse.lemmyapi.enums.VoteAction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,6 +81,7 @@ fun CommunityScreen(
     communityArg: Either<CommunityId, String>,
     appState: JerboaAppState,
     siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     accountViewModel: AccountViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
@@ -134,7 +137,7 @@ fun CommunityScreen(
 
                     is ApiState.Success -> {
                         val communityId = communityRes.data.community_view.community.id
-                        val instance = hostName(communityRes.data.community_view.community.actor_id)
+                        val instance = hostName(communityRes.data.community_view.community.ap_id)
                         val communityName =
                             communityRes.data.community_view.community.name +
                                 if (instance != null) "@$instance" else ""
@@ -162,13 +165,13 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.blockCommunity(
                                         BlockCommunity(
                                             community_id = communityId,
-                                            block = !communityRes.data.community_view.blocked,
+                                            block = communityRes.data.community_view.community_actions?.blocked_at == null,
                                         ),
                                         ctx = ctx,
                                     )
@@ -177,14 +180,14 @@ fun CommunityScreen(
                             onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data) },
                             onClickCommunityShare = {
                                 shareLink(
-                                    communityRes.data.community_view.community.actor_id,
+                                    communityRes.data.community_view.community.ap_id,
                                     ctx,
                                     resources,
                                 )
                             },
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
-                            isBlocked = communityRes.data.community_view.blocked,
+                            isBlocked = communityRes.data.community_view.community_actions?.blocked_at != null,
                         )
                     }
 
@@ -212,23 +215,12 @@ fun CommunityScreen(
 
                     is ApiState.Holder -> {
                         val communityRes = communityViewModel.communityRes
-                        val moderators =
-                            remember(communityRes) {
-                                when (communityRes) {
-                                    is ApiState.Success -> {
-                                        communityRes.data.moderators
-                                    }
-
-                                    else -> {
-                                        null
-                                    }
-                                }
-                            }
 
                         PostListings(
                             posts = postsRes.data,
-                            admins = siteViewModel.admins(),
-                            moderators = remember(moderators) { moderators?.map { it.moderator.id } },
+                            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(),
+                            myUserInfo = myUserInfo,
+                            localSite = localSite,
                             contentAboveListings = {
                                 when (communityRes) {
                                     is ApiState.Success -> {
@@ -241,14 +233,14 @@ fun CommunityScreen(
                                                     resources,
                                                     snackbarHostState,
                                                     scope,
-                                                    siteViewModel,
+                                                    myUserInfoViewModel,
                                                     accountViewModel,
                                                 ) {
                                                     communityViewModel.followCommunity(
                                                         form =
                                                             FollowCommunity(
                                                                 community_id = cfv.community.id,
-                                                                follow = cfv.subscribed == SubscribedType.NotSubscribed,
+                                                                cfv.community_actions?.follow_state != CommunityFollowerState.Accepted
                                                             ),
                                                         onSuccess = {
                                                             siteViewModel.getSite()
@@ -270,13 +262,13 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
-                                            score = newVote(postView.my_vote, VoteType.Upvote),
+                                            vote = newVote(postView.post_actions?.vote, VoteAction.UpVote),
                                         ),
                                     )
                                 }
@@ -288,13 +280,13 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
-                                            score = newVote(postView.my_vote, VoteType.Downvote),
+                                            vote = newVote(postView.post_actions?.vote, VoteAction.DownVote),
                                         ),
                                     )
                                 }
@@ -309,13 +301,13 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.savePost(
                                         form = SavePost(
                                             post_id = postView.post.id,
-                                            save = !postView.saved,
+                                            postView.post_actions?.saved_at == null,
                                         ),
                                     )
                                 }
@@ -337,7 +329,7 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.deletePost(
@@ -355,13 +347,13 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.hidePost(
                                         HidePost(
-                                            post_ids = listOf(postView.post.id),
-                                            hide = !postView.hidden,
+                                            post_id = postView.post.id,
+                                            hide = postView.post_actions?.hidden_at == null,
                                         ),
                                         ctx,
                                     )
@@ -373,8 +365,8 @@ fun CommunityScreen(
                             onRemoveClick = { pv ->
                                 appState.toPostRemove(post = pv.post)
                             },
-                            onBanPersonClick = { p ->
-                                appState.toBanPerson(p)
+                            onBanPersonClick = { pv ->
+                                appState.toBanPerson(pv)
                             },
                             onBanFromCommunityClick = { d ->
                                 appState.toBanFromCommunity(banData = d)
@@ -386,13 +378,14 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.lockPost(
                                         LockPost(
                                             post_id = pv.post.id,
                                             locked = !pv.post.locked,
+                                            reason = TODO(),
                                         ),
                                     )
                                 }
@@ -404,7 +397,7 @@ fun CommunityScreen(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                     accountViewModel,
                                 ) {
                                     communityViewModel.featurePost(
@@ -431,8 +424,7 @@ fun CommunityScreen(
                             listState = postListState,
                             postViewMode = getPostViewMode(appSettingsViewModel),
                             showVotingArrowsInListView = showVotingArrowsInListView,
-                            enableDownVotes = siteViewModel.enableDownvotes(),
-                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                            lowBandwidthMode = lowBandwidthMode,
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW.changeBlurTypeInsideCommunity(),
@@ -440,24 +432,21 @@ fun CommunityScreen(
                             appState = appState,
                             markAsReadOnScroll = markAsReadOnScroll,
                             onMarkAsRead = { postView ->
-                                if (!account.isAnon() && !postView.read) {
+                                if (!account.isAnon() && postView.post_actions?.read_at == null) {
                                     communityViewModel.markPostAsRead(
                                         MarkPostAsRead(
-                                            post_ids = listOf(postView.post.id),
+                                            post_id = postView.post.id,
                                             read = true,
                                         ),
-                                        postView,
                                         appState,
                                     )
                                 }
                             },
                             showIfRead = true,
-                            voteDisplayMode = siteViewModel.voteDisplayMode(),
                             postActionBarMode = postActionBarMode,
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                             swipeToActionPreset = swipeToActionPreset,
                             disableVideoAutoplay = disableVideoAutoplay,
-                            lowBandwidthMode = lowBandwidthMode,
                             selectionState = SelectionVisibilityState.NoSelection,
                         )
                     }
@@ -478,7 +467,7 @@ fun CommunityScreen(
                                 resources,
                                 snackbarHostState,
                                 scope,
-                                siteViewModel,
+                                myUserInfoViewModel,
                                 accountViewModel,
                                 loginAsToast = false,
                             ) {

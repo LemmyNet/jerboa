@@ -81,6 +81,7 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
 import it.vercruysse.lemmyapi.datatypes.Tagline
+import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -297,7 +298,6 @@ fun MainPostListingsContent(
             posts = posts,
             admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(),
             // No community moderators available here
-            moderators = null,
             contentAboveListings = { tagline?.let {TaglineDisplay(it)} },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
@@ -311,7 +311,7 @@ fun MainPostListingsContent(
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(postView.post_actions?.like_score ?: 0, VoteType.Upvote),
+                            vote = newVote(postView.post_actions?.vote, VoteAction.UpVote),
                         ),
                     )
                 }
@@ -328,7 +328,7 @@ fun MainPostListingsContent(
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(postView.post_actions?.like_score ?: 0, VoteType.Downvote),
+                            vote = newVote(postView.post_actions?.vote, VoteAction.DownVote),
                         ),
                     )
                 }
@@ -415,12 +415,13 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.lockPost(
                         LockPost(
                             post_id = pv.post.id,
                             locked = !pv.post.locked,
+                            reason = TODO
                         ),
                     )
                 }
@@ -432,7 +433,7 @@ fun MainPostListingsContent(
                     resources,
                     snackbarHostState,
                     scope,
-                    siteViewModel,
+                    myUserInfoViewModel,
                 ) {
                     homeViewModel.featurePost(
                         FeaturePost(
@@ -455,7 +456,6 @@ fun MainPostListingsContent(
             listState = postListState,
             postViewMode = getPostViewMode(appSettingsViewModel),
             showVotingArrowsInListView = showVotingArrowsInListView,
-            enableDownVotes = siteViewModel.enableDownvotes(),
             showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
@@ -467,16 +467,14 @@ fun MainPostListingsContent(
                 if (!account.isAnon() && !postView.read) {
                     homeViewModel.markPostAsRead(
                         MarkPostAsRead(
-                            post_ids = listOf(postView.post.id),
+                            post_id = postView.post.id,
                             read = true,
                         ),
-                        postView,
                         appState,
                     )
                 }
             },
             showIfRead = true,
-            voteDisplayMode = siteViewModel.voteDisplayMode(),
             postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
