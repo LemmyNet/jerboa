@@ -69,7 +69,7 @@ fun PostLikesScreen(
                     }
 
                     is ApiState.Holder -> {
-                        val likes = likesRes.data.post_likes
+                        val likes = likesRes.data.items
                         ViewVotesBody(
                             likes = likes,
                             listState = listState,

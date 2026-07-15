@@ -513,4 +513,6 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="denied">Denied</string>
+    <string name="communities_from_these_instances">Communities from these instances</string>
+    <string name="users_from_these_instances">Users from these instances</string>
 </resources>
