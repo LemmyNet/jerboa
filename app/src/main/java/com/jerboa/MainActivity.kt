@@ -34,6 +34,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
 import coil.Coil
+import com.jerboa.api.toOpt
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
@@ -112,6 +113,8 @@ class MainActivity : AppCompatActivity() {
             val ctx = LocalContext.current
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
+            val myUserInfo = myUserInfoViewModel.myUserRes.toOpt()
+            val siteRes = siteViewModel.siteRes.toOpt()
 
             @Suppress("SENSELESS_COMPARISON")
             if (appSettings == null) {
@@ -333,7 +336,8 @@ class MainActivity : AppCompatActivity() {
                             CommunitySidebarScreen(
                                 appState = appState,
                                 onClickBack = appState::popBackStack,
-                                showAvatar = myUserInfoViewModel.showAvatar() && !lowBandwidthMode,
+                                myUserInfoViewModel = myUserInfoViewModel,
+                                lowBandwidthMode = lowBandwidthMode,
                             )
                         }
 
@@ -428,10 +432,9 @@ class MainActivity : AppCompatActivity() {
                             CommunityListScreen(
                                 appState = appState,
                                 selectMode = args.select,
-                                blurNSFW = appSettings.blurNSFW.toEnum(),
+                                appSettings = appSettings,
+                                myUserInfo = myUserInfo,
                                 drawerState = drawerState,
-                                followList = myUserInfoViewModel.getFollowList(),
-                                showAvatar = myUserInfoViewModel.showAvatar() && !lowBandwidthMode,
                             )
                         }
 

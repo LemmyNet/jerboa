@@ -10,7 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.api.toOpt
 import com.jerboa.hostName
+import com.jerboa.model.MyUserInfoViewModel
+import com.jerboa.showAvatar
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse
 
@@ -23,7 +26,8 @@ object CommunityViewSidebar {
 fun CommunitySidebarScreen(
     appState: JerboaAppState,
     onClickBack: () -> Unit,
-    showAvatar: Boolean,
+    myUserInfoViewModel: MyUserInfoViewModel,
+    lowBandwidthMode: Boolean,
 ) {
     Log.d("jerboa", "got to community sidebar screen")
     val communityRes = appState.getPrevReturn<GetCommunityResponse>(CommunityViewSidebar.COMMUNITY_RES)
@@ -46,7 +50,7 @@ fun CommunitySidebarScreen(
                 CommunitySidebar(
                     communityRes = communityRes,
                     onPersonClick = appState::toProfile,
-                    showAvatar = showAvatar,
+                    showAvatar = myUserInfoViewModel.myUserRes.toOpt().showAvatar(lowBandwidthMode),
                 )
             }
         },

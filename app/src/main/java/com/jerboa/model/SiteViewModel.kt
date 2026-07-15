@@ -40,6 +40,8 @@ class SiteViewModel(
             }
 
             // Makes sure that the site is fetched when the account is changed
+            // TODO instead, both the siteViewModel and myUserInfoViewModel
+            // should be moved into the accountViewModel
             accountRepository.currentAccount
                 .asFlow()
                 .map { it ?: AnonAccount }

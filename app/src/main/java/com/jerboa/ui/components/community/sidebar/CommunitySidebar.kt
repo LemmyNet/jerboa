@@ -13,6 +13,7 @@ fun CommunitySidebar(
 ) {
     val community = communityRes.community_view.community
     Sidebar(
+        name = community.name,
         title = community.title,
         content = community.sidebar,
         summary = community.summary,

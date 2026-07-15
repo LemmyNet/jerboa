@@ -20,6 +20,7 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
+// TODO get rid of a default instance, use a list of defaults and pick a random one
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val DEFAULT_VERSION = "0.19.0"
 

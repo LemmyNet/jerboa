@@ -190,6 +190,7 @@ fun LazyListScope.commentNodeItem(
     isCollapsedByParent: Boolean,
     localSite: LocalSite,
     myUserInfo: MyUserInfo?,
+    lowBandwidthMode: Boolean,
     blurNSFW: BlurNSFW,
     swipeToActionPreset: SwipeToActionPreset,
     increaseLazyListIndexTracker: () -> Unit,
@@ -326,7 +327,7 @@ fun LazyListScope.commentNodeItem(
                                 onCommunityClick = onCommunityClick,
                                 onPostClick = onPostClick,
                                 blurNSFW = blurNSFW,
-                                showAvatar = myUserInfo.showAvatar(),
+                                showAvatar = myUserInfo.showAvatar(lowBandwidthMode),
                             )
                         }
                         CommentNodeHeader(
@@ -340,7 +341,7 @@ fun LazyListScope.commentNodeItem(
                             },
                             collapsedCommentsCount = commentView.comment.child_count,
                             isExpanded = isExpanded(commentId),
-                            showAvatar = myUserInfo.showAvatar(),
+                            showAvatar = myUserInfo.showAvatar(lowBandwidthMode),
                         )
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -484,7 +485,7 @@ fun LazyListScope.commentNodeItem(
         isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
         showActionBar = showActionBar,
         enableDownVotes = enableDownVotes,
-        showAvatar = myUserInfo.showAvatar(),
+        showAvatar = myUserInfo.showAvatar(lowBandwidthMode),
         blurNSFW = blurNSFW,
         admins = admins,
         swipeToActionPreset = swipeToActionPreset,

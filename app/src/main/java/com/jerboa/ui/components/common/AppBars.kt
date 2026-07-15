@@ -508,6 +508,7 @@ fun NavbarIconAndBadge(
 
 @Composable
 fun Sidebar(
+    name: String,
     title: String?,
     banner: String?,
     icon: String?,
@@ -526,6 +527,8 @@ fun Sidebar(
     onPersonClick: (PersonId) -> Unit,
 ) {
     val listState = rememberLazyListState()
+
+    val nameOrTitle = title ?: name
 
     LazyColumn(
         state = listState,
@@ -557,12 +560,10 @@ fun Sidebar(
                 modifier = Modifier.padding(MEDIUM_PADDING),
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
-                title?.also {
                     Text(
-                        text = it,
+                        text = nameOrTitle,
                         style = MaterialTheme.typography.titleMedium,
                     )
-                }
                 summary?.also {
                     Text(
                         text = it,

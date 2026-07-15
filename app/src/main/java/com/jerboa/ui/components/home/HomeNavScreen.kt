@@ -273,12 +273,11 @@ fun HomeNavScreen(
                             composable(route = NavTab.Search.name) {
                                 CommunityListScreen(
                                     appState = appState,
-                                    selectMode = false,
                                     followList = myUserInfoViewModel.myUserRes.toOpt()?.follows ?: emptyList(),
                                     blurNSFW = appSettings.blurNSFW.toEnum(),
                                     drawerState = drawerState,
                                     showAvatar = myUserInfoViewModel.myUserRes.toOpt().showAvatar() && !lowBandwidthMode,
-                                    padding = padding,
+                                    padding = padding,,
                                 )
                             }
 

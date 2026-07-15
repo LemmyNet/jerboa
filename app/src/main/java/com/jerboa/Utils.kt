@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.core.content.getSystemService
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
@@ -51,6 +52,7 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.LowBandwidthMode
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -1519,8 +1521,13 @@ fun futureDaysToUnixTime(days: Long?): Long? =
     }
 
 fun MyUserInfo?.showAvatar(
-    lowBandwidthMode: Boolean,
+    appSettings: AppSettings,
+    ctx: Context,
 ): Boolean {
+    val connectivityManager = ctx.getSystemService<ConnectivityManager>()
+    val lowBandwidthMode =
+        appSettings.lowBandwidthMode.toEnumSafe<LowBandwidthMode>().isActive(connectivityManager)
+
     val showAvatar = this
         ?.local_user_view
         ?.local_user
