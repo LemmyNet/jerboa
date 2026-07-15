@@ -19,16 +19,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
-import com.jerboa.feat.BlurNSFW
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.CommunityListViewModel
+import com.jerboa.showAvatar
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
-import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
-import it.vercruysse.lemmyapi.datatypes.Search
+import it.vercruysse.lemmyapi.datatypes.ListCommunities
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.enums.ListingType
+import it.vercruysse.lemmyapi.enums.SortType
 import kotlinx.coroutines.launch
 
 object CommunityListReturn {
@@ -38,15 +43,17 @@ object CommunityListReturn {
 @Composable
 fun CommunityListScreen(
     appState: JerboaAppState,
+    appSettings: AppSettings,
+    myUserInfo: MyUserInfo?,
     selectMode: Boolean = false,
-    followList: List<CommunityFollowerView>,
-    blurNSFW: BlurNSFW,
     drawerState: DrawerState,
-    showAvatar: Boolean,
     padding: PaddingValues? = null,
 ) {
     Log.d("jerboa", "got to community list screen")
 
+    val ctx = LocalContext.current
+
+    val followList = myUserInfo?.follows ?: emptyList()
     val communityListViewModel: CommunityListViewModel =
         viewModel(factory = CommunityListViewModel.Companion.Factory(followList))
 
@@ -55,11 +62,11 @@ fun CommunityListScreen(
     // Upon launch from process death
     LaunchedEffect(Unit) {
         if (search.isNotEmpty()) {
-            communityListViewModel.searchCommunities(
+            communityListViewModel.listCommunities(
                 form =
-                    Search(
-                        q = search,
-                        type_ = SearchType.Communities,
+                    ListCommunities(
+                        search_term = search,
+                        type_ = ListingType.All,
                         sort = SortType.TopAll,
                     ),
             )
@@ -93,11 +100,11 @@ fun CommunityListScreen(
                     search = search,
                     onSearchChange = {
                         search = it
-                        communityListViewModel.searchCommunities(
+                        communityListViewModel.listCommunities(
                             form =
-                                Search(
-                                    q = search,
-                                    type_ = SearchType.Communities,
+                                ListCommunities(
+                                    search_term = search,
+                                    type_ = ListingType.All,
                                     sort = SortType.TopAll,
                                 ),
                         )
@@ -105,7 +112,7 @@ fun CommunityListScreen(
                 )
             },
             content = { padding ->
-                when (val communitiesRes = communityListViewModel.searchRes) {
+                when (val communitiesRes = communityListViewModel.listRes) {
                     ApiState.Empty -> {
                         ApiEmptyText()
                     }
@@ -120,7 +127,7 @@ fun CommunityListScreen(
 
                     is ApiState.Success -> {
                         CommunityListings(
-                            communities = communitiesRes.data.communities,
+                            communities = communitiesRes.data.items,
                             onClickCommunity = { cs ->
                                 if (selectMode) {
                                     appState.apply {
@@ -135,8 +142,8 @@ fun CommunityListScreen(
                                 Modifier
                                     .padding(padding)
                                     .imePadding(),
-                            blurNSFW = blurNSFW,
-                            showAvatar = showAvatar,
+                            blurNSFW =appSettings.blurNSFW.toEnumSafe(),
+                            showAvatar = myUserInfo.showAvatar(appSettings, ctx),
                         )
                     }
 
