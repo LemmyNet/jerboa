@@ -101,17 +101,8 @@ fun HomeAndPostDetailScreen(
                             appState = appState,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
                             myUserInfoViewModel = myUserInfoViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
-                            postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                            swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            appSettings = appSettings,
                             drawerState = drawerState,
                             padding = padding,
                             onPostClick = { postView ->
@@ -120,8 +111,6 @@ fun HomeAndPostDetailScreen(
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                 }
                             },
-                            disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
-                            lowBandwidthMode = lowBandwidthMode,
                             selectionState = selectionState,
                         )
                     }

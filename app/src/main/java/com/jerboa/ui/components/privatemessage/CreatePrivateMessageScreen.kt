@@ -27,12 +27,10 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
-import com.jerboa.db.entity.isAnon
-import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.common.getCurrentAccount
 import it.vercruysse.lemmyapi.datatypes.CreatePrivateMessage
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PrivateMessageResponse
 import kotlinx.coroutines.Dispatchers
@@ -43,13 +41,12 @@ import kotlinx.coroutines.withContext
 fun CreatePrivateMessageScreen(
     personId: PersonId,
     personName: String,
-    accountViewModel: AccountViewModel,
+    myUserInfo: MyUserInfo,
     onBack: () -> Unit,
 ) {
     Log.d("jerboa", "got to create private message screen")
 
     val ctx = LocalContext.current
-    val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
     var textBody by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
@@ -66,7 +63,6 @@ fun CreatePrivateMessageScreen(
                 loading = loading,
                 onBackClick = onBack,
                 onActionClick = {
-                    if (!account.isAnon()) {
                         scope.launch {
                             loading = true
 
@@ -94,7 +90,6 @@ fun CreatePrivateMessageScreen(
                             Toast.makeText(ctx, R.string.private_message_success, Toast.LENGTH_SHORT).show()
                             onBack()
                         }
-                    }
                 },
                 actionText = R.string.form_submit,
                 actionIcon = Icons.AutoMirrored.Outlined.Send,
@@ -114,7 +109,7 @@ fun CreatePrivateMessageScreen(
                 MarkdownTextField(
                     text = textBody,
                     onTextChange = { textBody = it },
-                    account = account,
+                    myUserInfo = myUserInfo,
                     placeholder = stringResource(R.string.private_message_placeholder),
                 )
             }

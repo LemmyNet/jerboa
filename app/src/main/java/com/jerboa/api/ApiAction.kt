@@ -1,5 +1,6 @@
 package com.jerboa.api
 
+// TODO how did this get added? Its a complete dupe of ApiState
 sealed class ApiAction<out T>(
     val data: T,
 ) {

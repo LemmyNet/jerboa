@@ -67,18 +67,18 @@ import androidx.core.text.isDigitsOnly
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.appendMarkdownImage
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import kotlinx.coroutines.launch
 
 @Composable
 fun MarkdownTextField(
     text: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
-    account: Account,
+    // TODO all fields and buttons should be disabled if this is null
+    myUserInfo: MyUserInfo?,
     modifier: Modifier = Modifier,
     placeholder: String = "",
     focusImmediate: Boolean = true,
@@ -86,7 +86,7 @@ fun MarkdownTextField(
 ) {
     val focusRequester = remember { FocusRequester() }
     val imageUploading = rememberSaveable { mutableStateOf(false) }
-    val launcher = imageUploadLauncher(account, onTextChange, text, imageUploading)
+    val launcher = imageUploadLauncher(onTextChange, text, imageUploading)
 
     var showCreateLink by remember { mutableStateOf(false) }
     var showPreview by remember { mutableStateOf(false) }
@@ -286,7 +286,6 @@ fun CreateLinkDialogPreview() {
 
 @Composable
 private fun imageUploadLauncher(
-    account: Account,
     onTextChange: (TextFieldValue) -> Unit,
     text: TextFieldValue,
     imageUploading: MutableState<Boolean>,
@@ -311,14 +310,12 @@ private fun imageUploadLauncher(
                 val imageIs = imageInputStreamFromUri(ctx, cUri)
                 val imageBytes = imageIs.readBytes()
                 scope.launch {
-                    if (!account.isAnon()) {
                         val res = API.getInstance().uploadImage(imageBytes)
                         imageUploading.value = false
                         res.onSuccess {
                             onTextChange(TextFieldValue(appendMarkdownImage(text.text, it.image_url)))
                         }
                     }
-                }
             }
         }
     return launcher

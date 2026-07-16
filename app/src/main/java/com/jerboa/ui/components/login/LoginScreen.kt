@@ -19,6 +19,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.LoginViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
@@ -28,6 +29,7 @@ fun LoginScreen(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
 ) {
     Log.d("jerboa", "Got to login screen")
 
@@ -61,6 +63,7 @@ fun LoginScreen(
                         resources = resources,
                         accountViewModel = accountViewModel,
                         siteViewModel = siteViewModel,
+                        myUserInfoViewModel = myUserInfoViewModel,
                         onGoHome = appState::toHome,
                     )
                 },

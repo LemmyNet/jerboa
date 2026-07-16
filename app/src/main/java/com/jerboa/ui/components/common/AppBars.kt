@@ -53,11 +53,13 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.jerboa.R
+import com.jerboa.userViewType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.data
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.datatypes.sampleUnreadCountsResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
@@ -68,9 +70,11 @@ import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import it.vercruysse.lemmyapi.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
 import it.vercruysse.lemmyapi.enums.SortType
 import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.CoroutineScope
@@ -114,20 +118,18 @@ fun SimpleTopAppBarPreview() {
 }
 
 fun NavigationSuiteScope.adaptiveNavigationBar(
+    myUserInfo: MyUserInfo?,
+    unreadCounts: UnreadCountsResponse?,
     selectedTab: NavTab,
     onSelectTab: (NavTab) -> Unit,
-    userViewType: UserViewType,
-    unreadNotificationCount: Long,
-    unreadAppCount: Long?,
-    unreadReportCount: Long?,
     showTextDescriptionsInNavbar: Boolean,
 ) {
-    for (tab in NavTab.getEntries(userViewType)) {
+    for (tab in NavTab.getEntries(myUserInfo.userViewType())) {
         val selected = tab == selectedTab
         val iconBadgeCount = when (tab) {
-            NavTab.Inbox -> unreadNotificationCount
-            NavTab.RegistrationApplications -> unreadAppCount
-            NavTab.Reports -> unreadReportCount
+            NavTab.Inbox -> unreadCounts?.notification_count
+            NavTab.RegistrationApplications -> unreadCounts?.registration_application_count
+            NavTab.Reports -> unreadCounts?.report_count
             else -> null
         }
 
@@ -169,10 +171,8 @@ fun AdaptiveNavigationBarPreview() {
             adaptiveNavigationBar(
                 selectedTab = NavTab.Home,
                 onSelectTab = {},
-                unreadNotificationCount = 30,
-                unreadAppCount = 2,
-                unreadReportCount = 8,
-                userViewType = UserViewType.AdminOnly,
+                unreadCounts = sampleUnreadCountsResponse,
+                myUserInfo = sampleMyUserInfo,
                 showTextDescriptionsInNavbar = true,
             )
         },
@@ -187,10 +187,8 @@ fun AdaptiveNavigationBarNoDescriptionsPreview() {
             adaptiveNavigationBar(
                 selectedTab = NavTab.Home,
                 onSelectTab = {},
-                unreadNotificationCount = 30,
-                unreadAppCount = 2,
-                unreadReportCount = 8,
-                userViewType = UserViewType.AdminOnly,
+                unreadCounts = sampleUnreadCountsResponse,
+                myUserInfo = sampleMyUserInfo,
                 showTextDescriptionsInNavbar = false,
             )
         },

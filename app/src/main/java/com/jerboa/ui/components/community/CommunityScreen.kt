@@ -218,7 +218,7 @@ fun CommunityScreen(
 
                         PostListings(
                             posts = postsRes.data,
-                            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(),
+                            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(), TODO
                             myUserInfo = myUserInfo,
                             localSite = localSite,
                             contentAboveListings = {

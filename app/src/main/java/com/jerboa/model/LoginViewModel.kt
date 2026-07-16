@@ -31,6 +31,7 @@ class LoginViewModel : ViewModel() {
         form: Login,
         onGoHome: () -> Unit,
         accountViewModel: AccountViewModel,
+        siteViewModel: SiteViewModel,
         myUserInfoViewModel: MyUserInfoViewModel,
         ctx: Context,
         resources: Resources,
@@ -117,6 +118,10 @@ class LoginViewModel : ViewModel() {
                         accountViewModel.insert(account)
                         API.setLemmyInstance(tempInstance)
                         loading = false
+
+                        // Now re-fetch the site
+                        siteViewModel.getSite()
+
                         onGoHome()
                     }
 

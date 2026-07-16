@@ -41,12 +41,12 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toOpt
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
@@ -73,9 +73,11 @@ import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.datatypes.DeletePost
 import it.vercruysse.lemmyapi.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
 import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -90,7 +92,7 @@ fun HomePane(
     appState: JerboaAppState,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel,
+    siteRes: GetSiteResponse,
     myUserInfoViewModel: MyUserInfoViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
@@ -129,20 +131,6 @@ fun HomePane(
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
 
-    LaunchedEffect(account) {
-        if (!account.isAnon() && !account.isReady()) {
-            account.doIfReadyElseDisplayInfo(
-                appState,
-                ctx,
-                resources,
-                snackbarHostState,
-                scope,
-                myUserInfoViewModel,
-                accountViewModel,
-            ) {}
-        }
-    }
-
     val baseModifier =
         Modifier
             .padding(padding)
@@ -175,8 +163,8 @@ fun HomePane(
             Box(modifier = Modifier.padding(innerPadding)) {
                 MainPostListingsContent(
                     homeViewModel = homeViewModel,
-                    siteViewModel = siteViewModel,
-                    myUserInfoViewModel = myUserInfoViewModel,
+                    siteRes = siteRes,
+                    myUserInfo = myUserInfo,
                     appSettingsViewModel = appSettingsViewModel,
                     account = account,
                     appState = appState,
@@ -230,23 +218,16 @@ fun HomePane(
 @Composable
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
-    siteViewModel: SiteViewModel,
-    myUserInfoViewModel: MyUserInfoViewModel,
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
     account: Account,
     appState: JerboaAppState,
     postListState: LazyListState,
-    appSettingsViewModel: AppSettingsViewModel,
-    showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreviews: Boolean,
     snackbarHostState: SnackbarHostState,
-    markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
     onPostClick: (PostView) -> Unit,
     selectionState: SelectionVisibilityState<PostId>,
 ) {
@@ -254,22 +235,7 @@ fun MainPostListingsContent(
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
 
-    var tagline: Tagline? = null
-    when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading -> {
-            LoadingBar()
-        }
-
-        is ApiState.Failure -> {
-            ApiErrorText(siteRes.msg)
-        }
-
-        is ApiState.Success -> {
-            tagline = siteRes.data.tagline
-        }
-
-        else -> {}
-    }
+    val tagline = siteRes.tagline
 
     ReportDrawn()
 
@@ -296,60 +262,33 @@ fun MainPostListingsContent(
 
         PostListings(
             posts = posts,
-            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(),
+            siteRes = siteRes,
             // No community moderators available here
             contentAboveListings = { tagline?.let {TaglineDisplay(it)} },
             onUpvoteClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
                             vote = newVote(postView.post_actions?.vote, VoteAction.UpVote),
                         ),
                     )
-                }
             },
             onDownvoteClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
                             vote = newVote(postView.post_actions?.vote, VoteAction.DownVote),
                         ),
                     )
-                }
             },
             onPostClick = onPostClick,
             onSaveClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.savePost(
                         SavePost(
                             post_id = postView.post.id,
                             save = postView.post_actions?.saved_at == null,
                         ),
                     )
-                }
             },
             onReplyClick = { pv ->
                 appState.toCommentReply(
@@ -362,31 +301,14 @@ fun MainPostListingsContent(
                 )
             },
             onDeletePostClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.deletePost(
                         DeletePost(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
                         ),
                     )
-                }
             },
             onHidePostClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.hidePost(
                         HidePost(
                             post_id = postView.post.id,
@@ -394,7 +316,6 @@ fun MainPostListingsContent(
                         ),
                         ctx,
                     )
-                }
             },
             onReportClick = { postView ->
                 appState.toPostReport(id = postView.post.id)
@@ -409,14 +330,6 @@ fun MainPostListingsContent(
                 appState.toBanFromCommunity(banData = d)
             },
             onLockPostClick = { pv ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.lockPost(
                         LockPost(
                             post_id = pv.post.id,
@@ -424,17 +337,8 @@ fun MainPostListingsContent(
                             reason = TODO
                         ),
                     )
-                }
             },
             onFeaturePostClick = { data ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    myUserInfoViewModel,
-                ) {
                     homeViewModel.featurePost(
                         FeaturePost(
                             post_id = data.post.id,
@@ -442,7 +346,6 @@ fun MainPostListingsContent(
                             feature_type = data.type,
                         ),
                     )
-                }
             },
             onViewPostVotesClick = appState::toPostLikes,
             onCommunityClick = { community ->
@@ -456,7 +359,6 @@ fun MainPostListingsContent(
             listState = postListState,
             postViewMode = getPostViewMode(appSettingsViewModel),
             showVotingArrowsInListView = showVotingArrowsInListView,
-            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,

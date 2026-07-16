@@ -56,11 +56,11 @@ import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.getCommentParentId
@@ -69,6 +69,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
+import com.jerboa.nowBoolean
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -99,14 +100,16 @@ import it.vercruysse.lemmyapi.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.datatypes.DeletePost
 import it.vercruysse.lemmyapi.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SaveComment
 import it.vercruysse.lemmyapi.datatypes.SavePost
-import it.vercruysse.lemmyapi.dto.CommentSortType
+import it.vercruysse.lemmyapi.enums.CommentSortType
 
 object PostViewReturn {
     const val POST_VIEW = "post-view::return(post-view)"
@@ -120,22 +123,11 @@ object PostViewReturn {
 @Composable
 fun PostPane(
     postOrCommentId: Either<PostId, CommentId>,
-    siteViewModel: SiteViewModel,
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    showCollapsedCommentContent: Boolean,
-    showActionBarByDefault: Boolean,
-    showVotingArrowsInListView: Boolean,
-    showParentCommentNavigationButtons: Boolean,
-    navigateParentCommentsWithVolumeButtons: Boolean,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreview: Boolean,
-    postActionBarMode: PostActionBarMode,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
     onClickBack: () -> Unit,
 ) {
     Log.d("jerboa", "got to post pane")
@@ -190,7 +182,7 @@ fun PostPane(
                 .focusRequester(focusRequester)
                 .focusable()
                 .onKeyEvent { keyEvent ->
-                    if (navigateParentCommentsWithVolumeButtons) {
+                    if (appSettings.navigateParentCommentsWithVolumeButtons) {
                         when (keyEvent.key) {
                             Key.VolumeUp -> {
                                 scrollToPreviousParentComment(scope, postViewModel.parentListStateIndexes, listState)
@@ -211,7 +203,7 @@ fun PostPane(
                     }
                 },
         bottomBar = {
-            if (showParentCommentNavigationButtons) {
+            if (appSettings.showParentCommentNavigationButtons) {
                 CommentNavigationBottomAppBar(
                     scope,
                     postViewModel.parentListStateIndexes,
@@ -275,22 +267,13 @@ fun PostPane(
                 MainPostScreenBody(
                     id = postOrCommentId,
                     postViewModel = postViewModel,
-                    siteViewModel = siteViewModel,
+                    siteRes = siteRes,
+                    appSettings = appSettings,
+                    myUserInfo = myUserInfo,
                     accountViewModel = accountViewModel,
                     appState = appState,
                     listState = listState,
                     snackbarHostState = snackbarHostState,
-                    useCustomTabs = useCustomTabs,
-                    usePrivateTabs = usePrivateTabs,
-                    showCollapsedCommentContent = showCollapsedCommentContent,
-                    showActionBarByDefault = showActionBarByDefault,
-                    showVotingArrowsInListView = showVotingArrowsInListView,
-                    blurNSFW = blurNSFW,
-                    showPostLinkPreview = showPostLinkPreview,
-                    postActionBarMode = postActionBarMode,
-                    swipeToActionPreset = swipeToActionPreset,
-                    disableVideoAutoplay = disableVideoAutoplay,
-                    lowBandwidthMode = lowBandwidthMode,
                 )
             }
         },
@@ -302,22 +285,13 @@ fun PostPane(
 fun MainPostScreenBody(
     id: Either<PostId, CommentId>,
     postViewModel: PostViewModel,
-    siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
     listState: LazyListState,
     snackbarHostState: SnackbarHostState,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    showCollapsedCommentContent: Boolean,
-    showActionBarByDefault: Boolean,
-    showVotingArrowsInListView: Boolean,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreview: Boolean,
-    postActionBarMode: PostActionBarMode,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
+    siteRes: GetSiteResponse,
+    appSettings: AppSettings,
+    myUserInfo: MyUserInfo?,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -341,10 +315,10 @@ fun MainPostScreenBody(
             val postView = postRes.data.post_view
             val moderators = remember(postRes) { postRes.data.moderators.map { it.moderator.id } }
 
-            if (!account.isAnon()) {
+            if (myUserInfo != null) {
                 appState.addReturn(
                     PostViewReturn.POST_VIEW,
-                    postView.copy(read = true),
+                    postView.copy(post_actions = postView.post_actions?.copy(read_at = nowBoolean(true))),
                 )
             }
             LazyColumn(
@@ -354,43 +328,22 @@ fun MainPostScreenBody(
                 item(key = "${postView.post.id}_listing", "post_listing") {
                     PostListing(
                         postView = postView,
-                        admins = siteViewModel.admins(),
-                        moderators = moderators,
+                        siteRes = siteRes,
                         onUpvoteClick = { pv ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.likePost(
                                     CreatePostLike(
                                         post_id = pv.post.id,
                                         score = newVote(pv.my_vote, VoteType.Upvote),
                                     ),
                                 )
-                            }
                         },
                         onDownvoteClick = { pv ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.likePost(
                                     CreatePostLike(
                                         post_id = pv.post.id,
                                         score = newVote(pv.my_vote, VoteType.Downvote),
                                     ),
                                 )
-                            }
                         },
                         onReplyClick = { pv ->
                             appState.toCommentReply(
@@ -399,22 +352,12 @@ fun MainPostScreenBody(
                         },
                         onPostClick = {},
                         onSaveClick = { pv ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.savePost(
                                     SavePost(
                                         post_id = pv.post.id,
                                         save = !pv.saved,
                                     ),
                                 )
-                            }
                         },
                         onCommunityClick = { community ->
                             appState.toCommunity(id = community.id)
@@ -425,33 +368,14 @@ fun MainPostScreenBody(
                             )
                         },
                         onDeletePostClick = { pv ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.deletePost(
                                     DeletePost(
                                         post_id = pv.post.id,
                                         deleted = !pv.post.deleted,
                                     ),
                                 )
-                            }
                         },
                         onHidePostClick = { pv ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.hidePost(
                                     HidePost(
                                         post_ids = listOf(pv.post.id),
@@ -459,7 +383,6 @@ fun MainPostScreenBody(
                                     ),
                                     ctx,
                                 )
-                            }
                         },
                         onReportClick = { pv ->
                             appState.toPostReport(id = pv.post.id)
@@ -474,33 +397,14 @@ fun MainPostScreenBody(
                             appState.toBanFromCommunity(banData = d)
                         },
                         onLockPostClick = { pv ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.lockPost(
                                     LockPost(
                                         post_id = pv.post.id,
                                         locked = !pv.post.locked,
                                     ),
                                 )
-                            }
                         },
                         onFeaturePostClick = { data ->
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                resources,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                                accountViewModel,
-                            ) {
                                 postViewModel.featurePost(
                                     FeaturePost(
                                         post_id = data.post.id,
@@ -508,7 +412,6 @@ fun MainPostScreenBody(
                                         feature_type = data.type,
                                     ),
                                 )
-                            }
                         },
                         onViewVotesClick = appState::toPostLikes,
                         onPersonClick = appState::toProfile,
@@ -517,20 +420,8 @@ fun MainPostScreenBody(
                         fullBody = true,
                         account = account,
                         postViewMode = PostViewMode.SmallCard,
-                        enableDownVotes = siteViewModel.enableDownvotes(),
-                        showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
-                        showVotingArrowsInListView = showVotingArrowsInListView,
-                        useCustomTabs = useCustomTabs,
-                        usePrivateTabs = usePrivateTabs,
-                        blurNSFW = blurNSFW,
                         appState = appState,
-                        showPostLinkPreview = showPostLinkPreview,
                         showIfRead = false,
-                        voteDisplayMode = siteViewModel.voteDisplayMode(),
-                        postActionBarMode = postActionBarMode,
-                        swipeToActionPreset = swipeToActionPreset,
-                        disableVideoAutoplay = disableVideoAutoplay,
-                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 

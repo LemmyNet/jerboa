@@ -1,5 +1,8 @@
 package com.jerboa.db.entity
 
+import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.getSystemService
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -27,6 +30,8 @@ import com.jerboa.db.DEFAULT_THEME
 import com.jerboa.db.DEFAULT_THEME_COLOR
 import com.jerboa.db.DEFAULT_USE_CUSTOM_TABS
 import com.jerboa.db.DEFAULT_USE_PRIVATE_TABS
+import com.jerboa.feat.LowBandwidthMode
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.theme.DEFAULT_FONT_SIZE
 
 @Entity
@@ -159,3 +164,8 @@ data class AppSettings(
     )
     val lowBandwidthMode: Int,
 )
+
+fun AppSettings.lowBandwidthMode(ctx: Context): Boolean {
+    val connectivityManager = ctx.getSystemService<ConnectivityManager>()
+    return this.lowBandwidthMode.toEnumSafe<LowBandwidthMode>().isActive(connectivityManager)
+}

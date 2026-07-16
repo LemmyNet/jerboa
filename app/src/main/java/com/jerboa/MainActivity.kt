@@ -121,10 +121,6 @@ class MainActivity : AppCompatActivity() {
                 triggerRebirth(ctx)
             }
 
-            val connectivityManager = ctx.getSystemService<ConnectivityManager>()
-            val lowBandwidthMode =
-                appSettings.lowBandwidthMode.toEnum<LowBandwidthMode>().isActive(connectivityManager)
-
             if (appSettings.autoPlayGifs) {
                 Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
             } else {
@@ -167,11 +163,10 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     MarkdownHelper.init(
-                        appState,
-                        appSettings.useCustomTabs,
-                        appSettings.usePrivateTabs,
-                        lowBandwidthMode,
-                        object : BetterLinkMovementMethod.OnLinkLongClickListener {
+                        appState = appState,
+                        appSettings = appSettings,
+                        ctx = ctx,
+                        onLongClick = object : BetterLinkMovementMethod.OnLinkLongClickListener {
                             override fun onLongClick(
                                 textView: TextView,
                                 url: String,
@@ -183,16 +178,15 @@ class MainActivity : AppCompatActivity() {
                     )
 
                     LinkDropDownMenu(
-                        appState.linkDropdownExpanded.value,
-                        appState::hideLinkPopup,
-                        appState,
-                        appSettings.useCustomTabs,
-                        appSettings.usePrivateTabs,
+                        link = appState.linkDropdownExpanded.value,
+                        onDismissRequest = appState::hideLinkPopup,
+                        appState = appState,
+                        appSettings = appSettings,
                     )
 
                     ShowAppStartupDialogs(
                         appSettingsViewModel = appSettingsViewModel,
-                        myUserInfoViewModel = myUserInfoViewModel,
+                        myUserInfo=  myUserInfo,
                     )
 
                     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -238,6 +232,7 @@ class MainActivity : AppCompatActivity() {
                                 appState = appState,
                                 accountViewModel = accountViewModel,
                                 siteViewModel = siteViewModel,
+                                myUserInfoViewModel = myUserInfoViewModel,
                             )
                         }
 
@@ -549,26 +544,17 @@ class MainActivity : AppCompatActivity() {
                                 appSettings.postNavigationGestureMode.toEnumSafe(),
                                 appState::navigateUp,
                             ) {
-                                PostPane(
-                                    postOrCommentId = Either.Left(args.id),
-                                    accountViewModel = accountViewModel,
-                                    appState = appState,
-                                    showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                                    showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                                    showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                    showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                                    navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                                    siteViewModel = siteViewModel,
-                                    useCustomTabs = appSettings.useCustomTabs,
-                                    usePrivateTabs = appSettings.usePrivateTabs,
-                                    blurNSFW = appSettings.blurNSFW.toEnum(),
-                                    showPostLinkPreview = appSettings.showPostLinkPreviews,
-                                    postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                                    swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                                    disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
-                                    lowBandwidthMode = lowBandwidthMode,
-                                    onClickBack = appState::popBackStack,
-                                )
+                                if (siteRes != null) {
+                                    PostPane(
+                                        postOrCommentId = Either.Left(args.id),
+                                        accountViewModel = accountViewModel,
+                                        appState = appState,
+                                        appSettings = appSettings,
+                                        siteRes = siteRes,
+                                        myUserInfo = myUserInfo,
+                                        onClickBack = appState::popBackStack,
+                                    )
+                                }
                             }
                         }
 
@@ -824,7 +810,7 @@ class MainActivity : AppCompatActivity() {
 
                         composable(route = Route.BLOCK_VIEW) {
                             BlocksScreen(
-                                siteViewModel = siteViewModel,
+                                myUserInfoViewModel = myUserInfoViewModel,
                                 onBack = appState::popBackStack,
                             )
                         }
@@ -883,12 +869,14 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             val args = Route.CreatePrivateMessageArgs(it)
 
-                            CreatePrivateMessageScreen(
-                                args.personId,
-                                args.personName,
-                                accountViewModel,
-                                appState::popBackStack,
-                            )
+                            if (myUserInfo != null) {
+                                CreatePrivateMessageScreen(
+                                    args.personId,
+                                    args.personName,
+                                    myUserInfo = myUserInfo,
+                                    onBack = appState::popBackStack,
+                                )
+                            }
                         }
                     }
                 }

@@ -15,13 +15,12 @@ import androidx.compose.ui.platform.LocalUriHandler
 import com.jerboa.BuildConfig
 import com.jerboa.DONATE_LINK
 import com.jerboa.api.API
-import com.jerboa.api.toOpt
 import com.jerboa.getVersionCode
 import com.jerboa.model.AppSettingsViewModel
-import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.shouldShowDonation
 import com.jerboa.ui.components.common.DonationNotificationDialog
 import com.jerboa.ui.components.common.ShowChangelog
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -29,7 +28,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ShowAppStartupDialogs(
     appSettingsViewModel: AppSettingsViewModel,
-    myUserInfoViewModel: MyUserInfoViewModel,
+    myUserInfo: MyUserInfo?,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -43,7 +42,7 @@ fun ShowAppStartupDialogs(
 
     // Check which dialogs need to be shown
     val changelogNeedsToShow = shouldShowChangelog(lastViewedVersion, currentVersionCode)
-    val donationNeedsToShow = myUserInfoViewModel.myUserRes.toOpt().shouldShowDonation()
+    val donationNeedsToShow = myUserInfo.shouldShowDonation()
 
     // Determine which dialog to show
     LaunchedEffect(changelogNeedsToShow, donationNeedsToShow) {

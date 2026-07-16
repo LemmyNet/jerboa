@@ -22,9 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,15 +44,9 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.toOpt
 import com.jerboa.datatypes.UserViewType
-import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.db.entity.userViewType
-import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
-import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
-import com.jerboa.model.MyUserInfoViewModel
-import com.jerboa.model.SiteViewModel
 import com.jerboa.showAvatar
 import com.jerboa.toBool
 import com.jerboa.toEnum
@@ -67,6 +59,9 @@ import com.jerboa.ui.components.inbox.InboxScreen
 import com.jerboa.ui.components.person.PersonProfileScreen
 import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsScreen
 import com.jerboa.ui.components.reports.ReportsScreen
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -107,7 +102,7 @@ enum class NavTab(
         Icons.Outlined.AppRegistration,
         Icons.Filled.AppRegistration,
         R.string.bottomBar_registrations,
-        userViewType = UserViewType.AdminOnly,
+        userViewType = UserViewType.Admin,
         needsLogin = true,
     ),
     Reports(
@@ -115,7 +110,7 @@ enum class NavTab(
         Icons.Outlined.Flag,
         Icons.Filled.Flag,
         R.string.bottomBar_reports,
-        userViewType = UserViewType.AdminOrMod,
+        userViewType = UserViewType.Mod,
         needsLogin = true,
     ),
     Saved(
@@ -139,9 +134,10 @@ enum class NavTab(
     companion object {
         fun getEntries(userViewType: UserViewType) =
             when (userViewType) {
+                UserViewType.NotLoggedIn -> emptyList()
                 UserViewType.Normal -> NavTab.entries.filter { it.userViewType == UserViewType.Normal }
-                UserViewType.AdminOrMod -> NavTab.entries.filter { it.userViewType != UserViewType.AdminOnly }
-                UserViewType.AdminOnly -> NavTab.entries
+                UserViewType.Mod -> NavTab.entries.filter { it.userViewType != UserViewType.Admin }
+                UserViewType.Admin -> NavTab.entries
             }
     }
 }
@@ -151,26 +147,21 @@ enum class NavTab(
 )
 @Composable
 fun HomeNavScreen(
-    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel,
-    myUserInfoViewModel: MyUserInfoViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
+    appState: JerboaAppState,
     appSettings: AppSettings,
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
+    unreadCounts: UnreadCountsResponse?,
     drawerState: DrawerState,
-    lowBandwidthMode: Boolean,
 ) {
-    val acc by accountViewModel.currentAccount.observeAsState(GuardAccount)
-    val account by remember {
-        derivedStateOf { acc ?: AnonAccount }
-    }
     val ctx = LocalContext.current
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 
     val bottomNavController = rememberNavController()
-    val snackbarHostState = remember(account) { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
     var selectedTab by rememberSaveable { mutableStateOf(NavTab.Home) }
 
     val onInnerSelectTab = { tab: NavTab ->
@@ -191,19 +182,9 @@ fun HomeNavScreen(
     }
 
     val onSelectTab: (NavTab) -> Unit = { tab: NavTab ->
-        if (tab.needsLogin) {
-            account.doIfReadyElseDisplayInfo(
-                appState,
-                ctx,
-                resources,
-                snackbarHostState,
-                scope,
-                myUserInfoViewModel,
-                accountViewModel,
-                loginAsToast = false,
-            ) {
+        // TODO the tab should be greyed instead
+        if (tab.needsLogin && myUserInfo != null) {
                 onInnerSelectTab(tab)
-            }
         } else {
             onInnerSelectTab(tab)
         }
@@ -216,18 +197,17 @@ fun HomeNavScreen(
             ModalDrawerSheet(
                 content = {
                     MainDrawer(
-                        myUserInfoViewModel = myUserInfoViewModel,
+                        myUserInfo = myUserInfo,
+                        unreadCounts = unreadCounts,
+                        appSettings = appSettings,
                         accountViewModel = accountViewModel,
                         homeViewModel = homeViewModel,
                         scope = scope,
                         drawerState = drawerState,
                         onSelectTab = onSelectTab,
-                        blurNSFW = appSettings.blurNSFW.toEnum(),
-                        showBottomNav = appSettings.showBottomNav,
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
                         onClickLogin = appState::toLogin,
-                        userViewType = account.userViewType(),
                     )
                 },
             )
@@ -236,13 +216,11 @@ fun HomeNavScreen(
         content = {
             NavigationSuiteScaffold(
                 navigationSuiteItems = {
-                    if (appSettings.showBottomNav && acc !== GuardAccount) {
+                    if (appSettings.showBottomNav) {
                         adaptiveNavigationBar(
                             selectedTab = selectedTab,
-                            userViewType = account.userViewType(),
-                            unreadNotificationCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.notification_count ?: 0,
-                            unreadAppCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.registration_application_count,
-                            unreadReportCount = myUserInfoViewModel.unreadCountsRes.toOpt()?.report_count,
+                            myUserInfo = myUserInfo,
+                            unreadCounts = unreadCounts,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
                             onSelectTab = onSelectTab,
                         )

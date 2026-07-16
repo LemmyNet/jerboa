@@ -43,16 +43,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
-import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.samplePerson
+import com.jerboa.datatypes.sampleUnreadCountsResponse
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
-import com.jerboa.feat.BlurNSFW
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -64,19 +66,17 @@ import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
+import com.jerboa.userViewType
 import it.vercruysse.lemmyapi.datatypes.Community
-import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
 import it.vercruysse.lemmyapi.enums.ListingType
 
 @Composable
 fun Drawer(
     myUserInfo: MyUserInfo?,
-    follows: List<CommunityFollowerView>,
-    unreadNotificationCount: Long,
-    unreadAppCount: Long?,
-    unreadReportCount: Long?,
+    unreadCounts: UnreadCountsResponse?,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -86,11 +86,9 @@ fun Drawer(
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
     isOpen: Boolean,
-    blurNSFW: BlurNSFW,
-    showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
-    userViewType: UserViewType,
+    appSettings: AppSettings,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -106,11 +104,9 @@ fun Drawer(
     // Drawer items
     DrawerContent(
         accountViewModel = accountViewModel,
-        follows = follows,
-        unreadCount = unreadNotificationCount,
-        unreadAppCount = unreadAppCount,
-        unreadReportCount = unreadReportCount,
+        appSettings = appSettings,
         myUserInfo = myUserInfo,
+        unreadCounts = unreadCounts,
         showAccountAddMode = showAccountAddMode,
         onAddAccount = onAddAccount,
         onSwitchAccountClick = onSwitchAccountClick,
@@ -118,19 +114,18 @@ fun Drawer(
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
         onClickSettings = onClickSettings,
-        blurNSFW = blurNSFW,
-        showBottomNav = showBottomNav,
         closeDrawer = closeDrawer,
         onSelectTab = onSelectTab,
         onSwitchAnon = onSwitchAnon,
-        userViewType = userViewType,
     )
 }
 
 @Composable
 fun DrawerContent(
+    myUserInfo: MyUserInfo?,
+    unreadCounts: UnreadCountsResponse?,
+    appSettings: AppSettings,
     showAccountAddMode: Boolean,
-    follows: List<CommunityFollowerView>,
     onAddAccount: () -> Unit,
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -138,17 +133,11 @@ fun DrawerContent(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
-    myUserInfo: MyUserInfo?,
-    unreadCount: Long,
-    unreadAppCount: Long?,
-    unreadReportCount: Long?,
-    blurNSFW: BlurNSFW,
-    showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
     onSwitchAnon: () -> Unit,
-    userViewType: UserViewType,
 ) {
+
     AnimatedVisibility(
         visible = showAccountAddMode,
         enter = expandVertically(),
@@ -167,38 +156,32 @@ fun DrawerContent(
     HorizontalDivider()
     DrawerItemsMain(
         myUserInfo = myUserInfo,
-        follows = follows,
+        unreadCounts = unreadCounts,
+        appSettings = appSettings,
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
-        unreadCount = unreadCount,
-        unreadAppCount = unreadAppCount,
-        unreadReportCount = unreadReportCount,
         onClickSettings = onClickSettings,
-        blurNSFW = blurNSFW,
-        showBottomNav = showBottomNav,
         onSelectTab = onSelectTab,
         closeDrawer = closeDrawer,
-        userViewType = userViewType,
     )
 }
 
 @Composable
 fun DrawerItemsMain(
     myUserInfo: MyUserInfo?,
-    follows: List<CommunityFollowerView>,
+    appSettings: AppSettings,
+    unreadCounts: UnreadCountsResponse?,
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    unreadCount: Long,
-    unreadAppCount: Long?,
-    unreadReportCount: Long?,
-    blurNSFW: BlurNSFW,
-    showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
-    userViewType: UserViewType,
 ) {
     val listState = rememberLazyListState()
+
+    val follows = myUserInfo?.follows
+        ?.sortedBy { (it.community.title ?: it.community.name).lowercase() }
+        .orEmpty()
 
     LazyColumn(
         state = listState,
@@ -239,8 +222,8 @@ fun DrawerItemsMain(
             HorizontalDivider()
         }
 
-        if (!showBottomNav) {
-            items(NavTab.getEntries(userViewType)) {
+        if (!appSettings.showBottomNav) {
+            items(NavTab.getEntries(myUserInfo.userViewType())) {
                 IconAndTextDrawerItem(
                     text = stringResource(it.textId),
                     icon = it.iconOutlined,
@@ -249,9 +232,9 @@ fun DrawerItemsMain(
                         closeDrawer()
                     },
                     iconBadgeCount = when (it) {
-                        NavTab.Inbox -> unreadCount
-                        NavTab.RegistrationApplications -> unreadAppCount
-                        NavTab.Reports -> unreadReportCount
+                        NavTab.Inbox -> unreadCounts?.notification_count
+                        NavTab.RegistrationApplications -> unreadCounts?.registration_application_count
+                        NavTab.Reports -> unreadCounts?.report_count
                         else -> null
                     },
                     contentDescription = stringResource(id = it.contentDescriptionId),
@@ -293,7 +276,7 @@ fun DrawerItemsMain(
                     onClick = onCommunityClick,
                     showDefaultIcon = true,
                     showAvatar = true,
-                    blurNSFW = blurNSFW,
+                    blurNSFW = appSettings.blurNSFW.toEnumSafe(),
                 )
             }
         }
@@ -305,18 +288,13 @@ fun DrawerItemsMain(
 fun DrawerItemsMainPreview() {
     DrawerItemsMain(
         myUserInfo = null,
-        follows = emptyList(),
+        appSettings = APP_SETTINGS_DEFAULT,
+        unreadCounts = sampleUnreadCountsResponse,
+        onClickSettings = {},
         onClickListingType = {},
         onCommunityClick = {},
-        onClickSettings = {},
-        unreadCount = 2,
-        unreadReportCount = 5,
-        unreadAppCount = null,
-        blurNSFW = BlurNSFW.NSFW,
-        showBottomNav = false,
         closeDrawer = {},
         onSelectTab = {},
-        userViewType = UserViewType.Normal,
     )
 }
 

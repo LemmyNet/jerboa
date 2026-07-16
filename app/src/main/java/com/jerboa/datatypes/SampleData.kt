@@ -27,6 +27,7 @@ import it.vercruysse.lemmyapi.datatypes.RegistrationApplication
 import it.vercruysse.lemmyapi.datatypes.RegistrationApplicationView
 import it.vercruysse.lemmyapi.datatypes.Site
 import it.vercruysse.lemmyapi.datatypes.SiteView
+import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
 import it.vercruysse.lemmyapi.enums.CommentSortType
 import it.vercruysse.lemmyapi.enums.CommunityVisibility
 import it.vercruysse.lemmyapi.enums.FederationMode
@@ -877,3 +878,10 @@ val sampleInstantScores =
         upvotes = 5,
         downvotes = 1,
     )
+
+val sampleUnreadCountsResponse = UnreadCountsResponse(
+    notification_count = 2,
+    report_count = 5,
+    pending_follow_count = null,
+    registration_application_count = null,
+)

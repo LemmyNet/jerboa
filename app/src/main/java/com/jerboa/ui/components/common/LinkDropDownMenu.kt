@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.PostLinkType
 import com.jerboa.R
+import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.copyImageToClipboard
 import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.feat.shareLink
@@ -37,8 +39,7 @@ fun LinkDropDownMenu(
     link: String?,
     onDismissRequest: () -> Unit,
     appState: JerboaAppState,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    appSettings: AppSettings,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -65,7 +66,7 @@ fun LinkDropDownMenu(
                 onClick = {
                     onDismissRequest()
                     if (mediaType == PostLinkType.Link) {
-                        appState.openLink(link, useCustomTabs, usePrivateTabs)
+                        appState.openLink(link, appSettings.useCustomTabs, appSettings.usePrivateTabs)
                     } else {
                         appState.openMediaViewer(link, mediaType)
                     }
@@ -76,7 +77,7 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.OpenInBrowser,
                 onClick = {
                     onDismissRequest()
-                    appState.openLinkRaw(link, useCustomTabs, usePrivateTabs)
+                    appState.openLinkRaw(link, appSettings.useCustomTabs, appSettings.usePrivateTabs)
                 },
             )
 
@@ -182,7 +183,6 @@ fun Test() {
         "linkDropdownExpanded.value",
         {},
         rememberJerboaAppState(),
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        appSettings = APP_SETTINGS_DEFAULT,
     )
 }

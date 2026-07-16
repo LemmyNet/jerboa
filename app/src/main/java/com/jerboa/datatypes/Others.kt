@@ -197,6 +197,7 @@ data class PostFeatureData(
  */
 enum class UserViewType {
     Normal,
-    AdminOnly,
-    AdminOrMod,
+    Admin,
+    Mod,
+    NotLoggedIn,
 }
