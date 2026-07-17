@@ -80,6 +80,7 @@ import com.jerboa.ui.components.common.UpvotePercentage
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.common.VoteScore
 import com.jerboa.ui.components.common.enableDownvotes
+import com.jerboa.ui.components.common.enableUpvotes
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.theme.BORDER_WIDTH
@@ -88,10 +89,21 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
+import it.vercruysse.lemmyapi.datatypes.BanFromCommunity
+import it.vercruysse.lemmyapi.datatypes.BanPerson
+import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.CommunityId
+import it.vercruysse.lemmyapi.datatypes.CreateComment
+import it.vercruysse.lemmyapi.datatypes.CreateCommentLike
+import it.vercruysse.lemmyapi.datatypes.CreateCommentReport
+import it.vercruysse.lemmyapi.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.datatypes.DistinguishComment
+import it.vercruysse.lemmyapi.datatypes.EditComment
+import it.vercruysse.lemmyapi.datatypes.GetComments
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -99,17 +111,18 @@ import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.RemoveComment
+import it.vercruysse.lemmyapi.datatypes.SaveComment
 import it.vercruysse.lemmyapi.enums.VoteAction
 
 @Composable
 fun CommentNodeHeader(
     commentView: CommentView,
-    onPersonClick: (personId: PersonId) -> Unit,
-    collapsedCommentsCount: Long,
     isExpanded: Boolean,
+    showAvatar: Boolean,
+    onPersonClick: (personId: PersonId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    showAvatar: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -119,7 +132,7 @@ fun CommentNodeHeader(
         onPersonClick = onPersonClick,
         isPostCreator = isPostCreator(commentView),
         isCommunityBanned = commentView.creator_banned_from_community,
-        collapsedCommentsCount = collapsedCommentsCount,
+        collapsedCommentsCount = commentView.comment.child_count,
         isExpanded = isExpanded,
         onClick = onClick,
         onLongCLick = onLongClick,
@@ -137,7 +150,6 @@ fun CommentNodeHeaderPreview() {
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
-        collapsedCommentsCount = 5,
         isExpanded = false,
         showAvatar = true,
     )
@@ -186,46 +198,42 @@ fun LazyListScope.commentNodeItem(
     isFlat: Boolean,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean,
-    account: Account, // TODO why is account necessary?
     isCollapsedByParent: Boolean,
     localSite: LocalSite,
     myUserInfo: MyUserInfo?,
-    lowBandwidthMode: Boolean,
-    blurNSFW: BlurNSFW,
-    swipeToActionPreset: SwipeToActionPreset,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
-    isExpanded: (commentId: CommentId) -> Boolean,
-    toggleExpanded: (commentId: CommentId) -> Unit,
-    toggleActionBar: (commentId: CommentId) -> Unit,
-    onUpvoteClick: (commentView: CommentView) -> Unit,
-    onDownvoteClick: (commentView: CommentView) -> Unit,
-    onReplyClick: (commentView: CommentView) -> Unit,
-    onSaveClick: (commentView: CommentView) -> Unit,
-    onMarkAsReadClick: (commentView: CommentView) -> Unit,
-    onCommentClick: (commentView: CommentView) -> Unit,
-    onEditCommentClick: (commentView: CommentView) -> Unit,
-    onDeleteCommentClick: (commentView: CommentView) -> Unit,
-    onPersonClick: (personId: PersonId) -> Unit,
+    isExpanded: (CommentId) -> Boolean,
+    toggleExpanded: (CommentId) -> Unit,
+    toggleActionBar: (CommentId) -> Unit,
+    onVoteClick: (CreateCommentLike) -> Unit,
+    onReplyClick: (CreateComment) -> Unit,
+    onSaveClick: (SaveComment) -> Unit,
+    onMarkAsReadClick: (commentId: CommentId, read: Boolean) -> Unit,
+    onCommentClick: (CommentId) -> Unit,
+    onEditCommentClick: (EditComment) -> Unit,
+    onDeleteCommentClick: (DeleteComment) -> Unit,
+    onPersonClick: (PersonId) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
-    onHeaderClick: (commentView: CommentView) -> Unit,
-    onHeaderLongClick: (commentView: CommentView) -> Unit,
-    onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: PostId) -> Unit,
-    onReportClick: (commentView: CommentView) -> Unit,
-    onRemoveClick: (commentView: CommentView) -> Unit,
-    onDistinguishClick: (commentView: CommentView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
-    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
-    onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: Person) -> Unit,
-    onFetchChildrenClick: (commentView: CommentView) -> Unit,
-    showActionBar: (commentId: CommentId) -> Boolean,
+    onHeaderClick: (CommentId) -> Unit,
+    onHeaderLongClick: (CommentId) -> Unit,
+    onCommunityClick: (CommunityId) -> Unit,
+    onPostClick: (PostId) -> Unit,
+    onReportClick: (CreateCommentReport) -> Unit,
+    onRemoveClick: (RemoveComment) -> Unit,
+    onDistinguishClick: (DistinguishComment) -> Unit,
+    onBanPersonClick: (BanPerson) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunity) -> Unit,
+    onCommentLinkClick: (CommentId) -> Unit,
+    onBlockCreatorClick: (BlockPerson) -> Unit,
+    onFetchChildrenClick: (GetComments) -> Unit,
+    showActionBar: (CommentId) -> Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
 
     val enableDownVotes = enableDownvotes(localSite, PostOrCommentType.Comment)
+    val enableUpvotes = enableUpvotes(localSite, PostOrCommentType.Comment)
 
     val offset = calculateCommentOffset(node.depth) // The ones with a border on
     val offset2 =
@@ -273,9 +281,9 @@ fun LazyListScope.commentNodeItem(
         val swipeState = rememberSwipeActionState(
             swipeToActionPreset = swipeToActionPreset,
             enableDownVotes = enableDownVotes,
+            enableUpVotes = enableUpvotes,
             rememberKey = commentView,
         ) {
-            if (account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
                 when (it) {
                     SwipeToActionType.Upvote -> {
                         instantScores =
@@ -297,7 +305,6 @@ fun LazyListScope.commentNodeItem(
                         onSaveClick(commentView)
                     }
                 }
-            }
         }
         val swipeableContent: @Composable RowScope.() -> Unit = {
             AnimatedVisibility(
@@ -451,6 +458,9 @@ fun LazyListScope.commentNodeItem(
 
     commentNodeItems(
         nodes = node.children.toList(),
+        admins = admins,
+        localSite = localSite,
+        myUserInfo = myUserInfo,
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
@@ -487,10 +497,7 @@ fun LazyListScope.commentNodeItem(
         enableDownVotes = enableDownVotes,
         showAvatar = myUserInfo.showAvatar(lowBandwidthMode),
         blurNSFW = blurNSFW,
-        admins = admins,
-        swipeToActionPreset = swipeToActionPreset,
-        localSite = localSite,
-        myUserInfo = myUserInfo,
+        swipeToActionPreset = swipeToActionPreset,,,
     )
 }
 
@@ -599,6 +606,8 @@ fun LazyListScope.missingCommentNodeItem(
     commentNodeItems(
         nodes = node.children.toList(),
         admins = admins,
+        localSite = localSite,
+        myUserInfo = myUserInfo,
         increaseLazyListIndexTracker = increaseLazyListIndexTracker,
         addToParentIndexes = addToParentIndexes,
         isFlat = isFlat,
@@ -635,9 +644,7 @@ fun LazyListScope.missingCommentNodeItem(
         enableDownVotes = enableDownVotes,
         showAvatar = showAvatar,
         blurNSFW = blurNSFW,
-        swipeToActionPreset = swipeToActionPreset,
-        localSite = localSite,
-        myUserInfo = myUserInfo,
+        swipeToActionPreset = swipeToActionPreset,,,
     )
 }
 

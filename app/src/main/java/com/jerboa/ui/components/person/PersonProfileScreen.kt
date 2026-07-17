@@ -503,7 +503,7 @@ fun UserTabs(
                                                     score =
                                                         newVote(
                                                             pv.my_vote,
-                                                            VoteType.Upvote,
+                                                            VoteAction.UpVote,
                                                         ),
                                                 ),
                                             )
@@ -523,7 +523,7 @@ fun UserTabs(
                                                     post_id = pv.post.id,
                                                     score = newVote(
                                                         pv.my_vote,
-                                                        VoteType.Downvote,
+                                                        VoteAction.DownVote,
                                                     ),
                                                 ),
                                             )
@@ -771,7 +771,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Upvote),
+                                                    score = newVote(cv.my_vote, VoteAction.UpVote),
                                                 ),
                                             )
                                         }
@@ -788,7 +788,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Downvote),
+                                                    score = newVote(cv.my_vote, VoteAction.DownVote),
                                                 ),
                                             )
                                         }

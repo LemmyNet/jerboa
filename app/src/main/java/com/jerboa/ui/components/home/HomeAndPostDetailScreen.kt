@@ -19,6 +19,7 @@ import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,15 +29,12 @@ import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.SelectionVisibilityState
-import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
-import com.jerboa.model.MyUserInfoViewModel
-import com.jerboa.model.SiteViewModel
-import com.jerboa.toBool
-import com.jerboa.toEnum
 import com.jerboa.ui.components.post.PostPane
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PostId
 import kotlinx.coroutines.launch
 
@@ -53,13 +51,10 @@ fun HomeAndPostDetailScreen(
     appState: JerboaAppState,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel,
-    myUserInfoViewModel: MyUserInfoViewModel,
-    // TODO why are these duped, just use one
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
     appSettingsViewModel: AppSettingsViewModel,
-    appSettings: AppSettings,
     drawerState: DrawerState,
-    lowBandwidthMode: Boolean,
     padding: PaddingValues,
 ) {
     val scope = rememberCoroutineScope()
@@ -72,6 +67,8 @@ fun HomeAndPostDetailScreen(
             navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
     val isDetailVisible =
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
+
+    val appSettings = appSettingsViewModel.appSettings.observeAsState()
 
     BackHandler(enabled = navigator.canNavigateBack()) {
         scope.launch {
@@ -101,8 +98,9 @@ fun HomeAndPostDetailScreen(
                             appState = appState,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
-                            myUserInfoViewModel = myUserInfoViewModel,
-                            appSettings = appSettings,
+                            myUserInfo = myUserInfo,
+                            appSettingsViewModel = appSettingsViewModel,
+                            siteRes = siteRes,
                             drawerState = drawerState,
                             padding = padding,
                             onPostClick = { postView ->
@@ -122,20 +120,7 @@ fun HomeAndPostDetailScreen(
                                 postOrCommentId = Either.Left(it),
                                 accountViewModel = accountViewModel,
                                 appState = appState,
-                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                                siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW.toEnum(),
-                                showPostLinkPreview = appSettings.showPostLinkPreviews,
-                                postActionBarMode = appSettings.postActionBarMode.toEnum(),
-                                swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
-                                disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
-                                lowBandwidthMode = lowBandwidthMode,
+                                siteRes = siteRes,
                                 onClickBack = {
                                     scope.launch {
                                         selectedPostId = null

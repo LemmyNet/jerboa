@@ -46,11 +46,11 @@ import com.jerboa.api.toOpt
 import com.jerboa.datatypes.UserViewType
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.showAvatar
 import com.jerboa.toBool
 import com.jerboa.toEnum
-import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.adaptiveNavigationBar
 import com.jerboa.ui.components.community.list.CommunityListScreen
@@ -149,7 +149,7 @@ enum class NavTab(
 fun HomeNavScreen(
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
-    appSettings: AppSettings,
+    appSettingsViewModel: AppSettingsViewModel,
     siteRes: GetSiteResponse,
     myUserInfo: MyUserInfo?,
     unreadCounts: UnreadCountsResponse?,
@@ -237,13 +237,11 @@ fun HomeNavScreen(
                             composable(route = NavTab.Home.name) {
                                 HomeAndPostDetailScreen(
                                     appState = appState,
-                                    appSettings = appSettings,
+                                    appSettingsViewModel = appSettingsViewModel,
                                     homeViewModel = homeViewModel,
                                     accountViewModel = accountViewModel,
-                                    siteViewModel = siteViewModel,
-                                    appSettingsViewModel = appSettingsViewModel,
+                                    siteRes = siteRes,
                                     drawerState = drawerState,
-                                    lowBandwidthMode = lowBandwidthMode,
                                     padding = padding,
                                 )
                             }

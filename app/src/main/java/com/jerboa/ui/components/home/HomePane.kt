@@ -23,7 +23,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -38,13 +37,8 @@ import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
-import com.jerboa.api.toOpt
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.AppSettings
-import com.jerboa.db.entity.isAnon
-import com.jerboa.db.entity.isReady
-import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -54,14 +48,11 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.ReplyItem
-import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
-import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -82,7 +73,6 @@ import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
-import it.vercruysse.lemmyapi.datatypes.Tagline
 import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.launch
 
@@ -93,22 +83,12 @@ fun HomePane(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteRes: GetSiteResponse,
-    myUserInfoViewModel: MyUserInfoViewModel,
+    myUserInfo: MyUserInfo?,
     appSettingsViewModel: AppSettingsViewModel,
-    showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
     drawerState: DrawerState,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreviews: Boolean,
-    markAsReadOnScroll: Boolean,
-    postActionBarMode: PostActionBarMode,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
     padding: PaddingValues,
-    onPostClick: (PostView) -> Unit,
     selectionState: SelectionVisibilityState<PostId>,
+    onPostClick: (PostView) -> Unit,
 ) {
     Log.d("jerboa", "got to home pane")
 
@@ -169,17 +149,10 @@ fun HomePane(
                     account = account,
                     appState = appState,
                     postListState = postListState,
-                    showVotingArrowsInListView = showVotingArrowsInListView,
-                    useCustomTabs = useCustomTabs,
-                    usePrivateTabs = usePrivateTabs,
-                    blurNSFW = blurNSFW,
-                    showPostLinkPreviews = showPostLinkPreviews,
-                    markAsReadOnScroll = markAsReadOnScroll,
                     snackbarHostState = snackbarHostState,
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
-                    lowBandwidthMode = lowBandwidthMode,
                     onPostClick = onPostClick,
                     selectionState = selectionState,
                 )
@@ -220,7 +193,7 @@ fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
     siteRes: GetSiteResponse,
     myUserInfo: MyUserInfo?,
-    appSettings: AppSettings,
+    appSettingsViewModel: AppSettingsViewModel,
     account: Account,
     appState: JerboaAppState,
     postListState: LazyListState,
@@ -358,15 +331,9 @@ fun MainPostListingsContent(
             account = account,
             listState = postListState,
             postViewMode = getPostViewMode(appSettingsViewModel),
-            showVotingArrowsInListView = showVotingArrowsInListView,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
-            showPostLinkPreviews = showPostLinkPreviews,
             appState = appState,
-            markAsReadOnScroll = markAsReadOnScroll,
             onMarkAsRead = { postView ->
-                if (!account.isAnon() && !postView.read) {
+                if (postView.post_actions?.read_at != null) {
                     homeViewModel.markPostAsRead(
                         MarkPostAsRead(
                             post_id = postView.post.id,
@@ -381,7 +348,6 @@ fun MainPostListingsContent(
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
             disableVideoAutoplay = disableVideoAutoplay,
-            lowBandwidthMode = lowBandwidthMode,
             selectionState = selectionState,
         )
     }

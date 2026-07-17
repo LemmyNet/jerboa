@@ -35,10 +35,10 @@ import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.selectedItemContainerColor
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
-import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
@@ -89,6 +89,7 @@ fun PostListings(
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
     selectionState: SelectionVisibilityState<PostId>,
+    siteRes: GetSiteResponse,
 ) {
     LazyColumn(
         state = listState,

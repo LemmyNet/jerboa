@@ -175,6 +175,7 @@ fun getLocalizedUnreadOrAllName(
 
 /**
  * A container to store extra community ban info
+ * TODO you should be able to get rid of this
  */
 @Serializable
 data class BanFromCommunityData(

@@ -218,7 +218,8 @@ fun CommunityScreen(
 
                         PostListings(
                             posts = postsRes.data,
-                            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(), TODO
+                            admins = siteViewModel.siteRes.toOpt()?.admins ?: emptyList(),
+                            TODO
                             myUserInfo = myUserInfo,
                             localSite = localSite,
                             contentAboveListings = {
@@ -424,7 +425,6 @@ fun CommunityScreen(
                             listState = postListState,
                             postViewMode = getPostViewMode(appSettingsViewModel),
                             showVotingArrowsInListView = showVotingArrowsInListView,
-                            lowBandwidthMode = lowBandwidthMode,
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW.changeBlurTypeInsideCommunity(),
@@ -447,7 +447,8 @@ fun CommunityScreen(
                             showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                             swipeToActionPreset = swipeToActionPreset,
                             disableVideoAutoplay = disableVideoAutoplay,
-                            selectionState = SelectionVisibilityState.NoSelection,
+                            lowBandwidthMode = lowBandwidthMode,
+                            selectionState = SelectionVisibilityState.NoSelection,,
                         )
                     }
 

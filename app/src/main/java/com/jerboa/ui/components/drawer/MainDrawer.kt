@@ -55,7 +55,7 @@ fun MainDrawer(
             }
         },
         onSwitchAnon = {
-            if (!account.isAnon()) {
+            if (myUserInfo != null) {
                 accountViewModel.removeCurrent(true).invokeOnCompletion {
                     onSelectTab(NavTab.Home)
                     closeDrawer(scope, drawerState)

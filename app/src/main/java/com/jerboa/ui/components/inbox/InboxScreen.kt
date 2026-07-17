@@ -334,7 +334,7 @@ fun InboxTabs(
                                                     notificationViewModel.likeComment(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Upvote),
+                                                            score = newVote(cr.my_vote, VoteAction.UpVote),
                                                         ),
                                                     )
                                                 }
@@ -351,7 +351,7 @@ fun InboxTabs(
                                                     notificationViewModel.likeComment(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
-                                                            score = newVote(cr.my_vote, VoteType.Downvote),
+                                                            score = newVote(cr.my_vote, VoteAction.DownVote),
                                                         ),
                                                     )
                                                 }
@@ -504,7 +504,7 @@ fun InboxTabs(
                                                     notificationViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Upvote),
+                                                            score = newVote(pm.my_vote, VoteAction.UpVote),
                                                         ),
                                                     )
                                                 }
@@ -521,7 +521,7 @@ fun InboxTabs(
                                                     notificationViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
-                                                            score = newVote(pm.my_vote, VoteType.Downvote),
+                                                            score = newVote(pm.my_vote, VoteAction.DownVote),
                                                         ),
                                                     )
                                                 }

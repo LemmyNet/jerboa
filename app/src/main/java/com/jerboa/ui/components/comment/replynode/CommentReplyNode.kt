@@ -144,7 +144,7 @@ fun CommentReplyNodeInboxFooterLine(
             VoteGeneric(
                 instantScores = instantScores,
                 voteDisplayMode = voteDisplayMode,
-                type = VoteType.Upvote,
+                type = VoteAction.UpVote,
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
@@ -152,7 +152,7 @@ fun CommentReplyNodeInboxFooterLine(
                 VoteGeneric(
                     instantScores = instantScores,
                     voteDisplayMode = voteDisplayMode,
-                    type = VoteType.Downvote,
+                    type = VoteAction.DownVote,
                     onVoteClick = onDownvoteClick,
                     account = account,
                 )
@@ -313,12 +313,12 @@ fun CommentReplyNodeInbox(
                         commentReplyView = commentReplyView,
                         onUpvoteClick = {
                             instantScores =
-                                instantScores.update(VoteType.Upvote)
+                                instantScores.update(VoteAction.UpVote)
                             onUpvoteClick(commentReplyView)
                         },
                         onDownvoteClick = {
                             instantScores =
-                                instantScores.update(VoteType.Downvote)
+                                instantScores.update(VoteAction.DownVote)
                             onDownvoteClick(commentReplyView)
                         },
                         onPersonClick = onPersonClick,

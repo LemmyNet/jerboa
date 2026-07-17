@@ -145,6 +145,7 @@ fun SwipeToAction(
 @Composable
 fun rememberSwipeActionState(
     swipeToActionPreset: SwipeToActionPreset,
+    enableUpVotes: Boolean,
     enableDownVotes: Boolean,
     rememberKey: Any? = Unit,
     onAction: (action: SwipeToActionType) -> Unit,
@@ -155,18 +156,28 @@ fun rememberSwipeActionState(
      */
     val density = LocalDensity.current
 
-    val leftActionsRanges =
-        remember(swipeToActionPreset, enableDownVotes) {
+    fun enableWithVotes(type: SwipeToActionType): Boolean {
+        return when (type) {
+            SwipeToActionType.Upvote -> enableUpVotes
+            SwipeToActionType.Downvote -> enableDownVotes
+            else -> {
+                true
+            }
+        }
+    }
+
+        val leftActionsRanges =
+        remember(swipeToActionPreset) {
             SwipeToActionType.getActionToRangeList(
                 swipeToActionPreset.leftActions
-                    .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
+                    .filter {enableWithVotes(it)}
             )
         }
     val rightActionsRanges =
-        remember(swipeToActionPreset, enableDownVotes) {
+        remember(swipeToActionPreset) {
             SwipeToActionType.getActionToRangeList(
                 swipeToActionPreset.rightActions
-                    .filter { !(it == SwipeToActionType.Downvote && !enableDownVotes) },
+                    .filter {enableWithVotes(it)}
             )
         }
 
@@ -208,3 +219,4 @@ fun rememberSwipeActionState(
     progressState.floatValue = dismissState.progress
     return dismissState
 }
+

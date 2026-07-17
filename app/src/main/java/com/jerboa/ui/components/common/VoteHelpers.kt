@@ -318,7 +318,7 @@ fun enableDownvotes(
         PostOrCommentType.Comment -> localSite.comment_downvotes !== FederationMode.Disable
     }
 
-private fun enableUpvotes(
+fun enableUpvotes(
     localSite: LocalSite,
     type: PostOrCommentType,
 ): Boolean =
