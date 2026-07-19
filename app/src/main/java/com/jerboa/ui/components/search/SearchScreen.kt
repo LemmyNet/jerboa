@@ -139,7 +139,6 @@ fun SearchScreen(
             snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
             content = { padding ->
 
-                // TODO: put in body
                 Column(
                     Modifier
                         .padding(padding)

@@ -3,6 +3,7 @@ package com.jerboa.ui.components.search
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -18,6 +19,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -96,6 +98,8 @@ fun TopBarSearchField(
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     TextField(
         value = search,
         onValueChange = onSearchChange,
@@ -128,6 +132,9 @@ fun TopBarSearchField(
                 disabledIndicatorColor = Color.Transparent,
             ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = { focusManager.clearFocus() },
+        ),
     )
 }
 
