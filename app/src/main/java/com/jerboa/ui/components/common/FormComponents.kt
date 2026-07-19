@@ -78,27 +78,18 @@ fun SortOptionsSelectorField(
 ) {
     var expandedSort by rememberSaveable { mutableStateOf(false) }
 
-    Box {
+    ExposedDropdownMenuBox(
+        expanded = expandedSort,
+        onExpandedChange = { expandedSort = it },
+    ) {
         OutlinedTextField(
+            modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
             value = stringResource(currentSort.data.shortForm),
+            onValueChange = {},
             label = { Text(stringResource(R.string.selectSort)) },
-            // TODO: enabled disable required for SortOptions dropdown?
-            enabled = false,
             readOnly = true,
             singleLine = true,
-            onValueChange = {},
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSort) },
-            modifier = Modifier.clickable { expandedSort = true },
-            // Needed bc of enabled = false
-            colors =
-                OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledBorderColor = MaterialTheme.colorScheme.outline,
-                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedSort) },
         )
         SortOptionsDropdown(
             expanded = expandedSort,
