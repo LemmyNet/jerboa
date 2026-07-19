@@ -12,7 +12,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.getLocalizedListingTypeName
 import com.jerboa.ui.components.common.ReadOnlyDropdown
