@@ -43,7 +43,7 @@ import kotlinx.coroutines.withContext
 
 class SearchListViewModel(
     communities: List<CommunityFollowerView>,
-    // TODO add mode selector
+    initialSearchType: SearchType,
 ) : ViewModel() {
     private var fetchSearchJob: Job? = null
     var q by mutableStateOf("")
@@ -51,7 +51,7 @@ class SearchListViewModel(
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    var currentSearchType by mutableStateOf(SearchType.All)
+    var currentSearchType by mutableStateOf(initialSearchType)
     var currentListing by mutableStateOf(ListingType.All)
     var currentSort by mutableStateOf(SortType.TopAll)
 
@@ -260,12 +260,13 @@ class SearchListViewModel(
     companion object {
         class Factory(
             private val followedCommunities: List<CommunityFollowerView>,
+            private val initialSearchType: SearchType,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T = SearchListViewModel(followedCommunities) as T
+            ): T = SearchListViewModel(followedCommunities, initialSearchType) as T
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.jerboa
 
 import android.os.Parcelable
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -38,6 +37,7 @@ import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
+import it.vercruysse.lemmyapi.dto.SearchType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -203,9 +203,8 @@ class JerboaAppState(
         navController.navigate(Route.CommentLikesArgs.makeRoute(id = "$commentId"))
     }
 
-    // TODO: rename
-    fun toCommunityList(select: Boolean = Route.CommunityListArgs.SELECT_DEFAULT) {
-        navController.navigate(Route.CommunityListArgs.makeRoute(select = "$select"))
+    fun toSearch(searchType: SearchType = SearchType.All) {
+        navController.navigate(Route.SearchArgs.makeRoute(searchType = searchType.name))
     }
 
     fun popBackStack(): Boolean = navController.popBackStack()

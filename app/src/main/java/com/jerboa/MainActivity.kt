@@ -87,6 +87,7 @@ import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
 import com.jerboa.ui.components.viewvotes.post.PostLikesScreen
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import it.vercruysse.lemmyapi.dto.SearchType
 import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 class MainActivity : AppCompatActivity() {
@@ -406,21 +407,23 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    // TODO: update route naming?
                     composable(
-                        route = Route.COMMUNITY_LIST,
+                        route = Route.SEARCH,
                         arguments =
                             listOf(
-                                navArgument(Route.CommunityListArgs.SELECT) {
-                                    defaultValue = Route.CommunityListArgs.SELECT_DEFAULT
-                                    type = Route.CommunityListArgs.SELECT_TYPE
+                                navArgument(Route.SearchArgs.SEARCH_TYPE) {
+                                    defaultValue = Route.SearchArgs.SEARCH_TYPE_DEFAULT
+                                    type = Route.SearchArgs.SEARCH_TYPE_NAV_TYPE
                                 },
                             ),
                     ) {
-                        val args = Route.CommunityListArgs(it)
+                        val args = Route.SearchArgs(it)
+                        val requestedSearchType =
+                            SearchType.entries.firstOrNull { searchType -> searchType.name == args.searchType }
+                                ?: SearchType.All
                         SearchScreen(
                             appState = appState,
-                            selectCommunityMode = args.select,
+                            searchTypeMode = requestedSearchType,
                             appSettings = appSettings,
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),

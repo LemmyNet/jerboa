@@ -33,22 +33,24 @@ fun <T> ReadOnlyDropdown(
     setState: ((T) -> Unit),
     stringTransform: (T) -> String,
     label: String,
+    enabled: Boolean = true,
 ) {
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = setExpanded,
+        onExpandedChange = { if (enabled) setExpanded(it) },
     ) {
         OutlinedTextField(
             modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
             value = stringTransform(state),
             onValueChange = {},
             label = { Text(label) },
+            enabled = enabled,
             readOnly = true,
             singleLine = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
         )
         ExposedDropdownMenu(
-            expanded = expanded,
+            expanded = expanded && enabled,
             onDismissRequest = { setExpanded(false) },
         ) {
             states.forEach { selectionOption ->

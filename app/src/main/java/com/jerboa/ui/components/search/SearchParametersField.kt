@@ -30,6 +30,7 @@ fun SearchParametersField(
     setCurrentSort: (SortType) -> Unit,
     currentSearchType: SearchType,
     setCurrentSearchType: (SearchType) -> Unit,
+    searchTypeEnabled: Boolean,
     currentListing: ListingType,
     setCurrentListing: (ListingType) -> Unit,
 ) {
@@ -55,6 +56,7 @@ fun SearchParametersField(
             setState = setCurrentSearchType,
             label = stringResource(R.string.search_in),
             stringTransform = { it.name },
+            enabled = searchTypeEnabled,
         )
         ReadOnlyDropdown(
             expanded = expandedListing,

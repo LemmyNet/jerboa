@@ -45,6 +45,7 @@ import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.CreatePost
 import it.vercruysse.lemmyapi.datatypes.GetSiteMetadata
 import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.dto.SearchType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -250,7 +251,7 @@ fun CreatePostScreen(
                     communitySelector = {
                         PostCommunitySelector(
                             community = selectedCommunity,
-                            onClickCommunityList = { appState.toCommunityList(select = true) },
+                            onClickCommunitySearch = { appState.toSearch(searchType = SearchType.Communities) },
                         )
                     },
                     error = when (val res = createPostViewModel.createPostRes) {

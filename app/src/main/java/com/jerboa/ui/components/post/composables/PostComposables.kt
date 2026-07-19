@@ -205,7 +205,7 @@ fun CreateEditPostBody(
 @Composable
 fun PostCommunitySelector(
     community: Community?,
-    onClickCommunityList: () -> Unit,
+    onClickCommunitySearch: () -> Unit,
 ) {
     Box {
         community?.also {
@@ -255,7 +255,7 @@ fun PostCommunitySelector(
                     .height(60.dp)
                     .fillMaxWidth()
                     .clickable {
-                        onClickCommunityList()
+                        onClickCommunitySearch()
                     },
         )
     }
@@ -288,7 +288,7 @@ fun CreatePostBodyPreview() {
         communitySelector = {
             PostCommunitySelector(
                 community = sampleCommunity,
-                onClickCommunityList = {},
+                onClickCommunitySearch = {},
             )
         },
         error = null,
@@ -323,7 +323,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         communitySelector = {
             PostCommunitySelector(
                 community = null,
-                onClickCommunityList = {},
+                onClickCommunitySearch = {},
             )
         },
         error = null,

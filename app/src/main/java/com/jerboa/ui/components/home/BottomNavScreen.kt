@@ -63,6 +63,7 @@ import com.jerboa.ui.components.person.PersonProfileScreen
 import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsScreen
 import com.jerboa.ui.components.reports.ReportsScreen
 import com.jerboa.ui.components.search.SearchScreen
+import it.vercruysse.lemmyapi.dto.SearchType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -274,7 +275,7 @@ fun BottomNavScreen(
                     composable(route = NavTab.Search.name) {
                         SearchScreen(
                             appState = appState,
-                            selectCommunityMode = false,
+                            searchTypeMode = SearchType.All,
                             followList = siteViewModel.getFollowList(),
                             appSettings = appSettings,
                             drawerState = drawerState,

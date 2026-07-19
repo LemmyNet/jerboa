@@ -22,8 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +43,6 @@ import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
-import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SearchListViewModel
@@ -56,11 +53,9 @@ import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.post.PostListing
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.CommunityFollowerView
@@ -74,16 +69,20 @@ import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
 import it.vercruysse.lemmyapi.datatypes.SaveComment
 import it.vercruysse.lemmyapi.datatypes.SavePost
+import it.vercruysse.lemmyapi.dto.SearchType
 import kotlinx.coroutines.launch
 
 object SearchListReturn {
     const val COMMUNITY = "search-list::return(community)"
+    const val PERSON_VIEW = "search-list::return(person-view)"
+    const val POST_VIEW = "search-list::return(post-view)"
+    const val COMMENT_VIEW = "search-list::return(comment-view)"
 }
 
 @Composable
 fun SearchScreen(
     appState: JerboaAppState,
-    selectCommunityMode: Boolean = false,
+    searchTypeMode: SearchType,
     followList: List<CommunityFollowerView>,
     appSettings: AppSettings,
     drawerState: DrawerState,
@@ -99,10 +98,15 @@ fun SearchScreen(
     val account = getCurrentAccount(accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val selectionMode =
+        searchTypeMode == SearchType.Communities ||
+            searchTypeMode == SearchType.Users ||
+            searchTypeMode == SearchType.Posts ||
+            searchTypeMode == SearchType.Comments
 
     var showSearchOptions by rememberSaveable { mutableStateOf(false) }
     val searchListViewModel: SearchListViewModel =
-        viewModel(factory = SearchListViewModel.Companion.Factory(followList))
+        viewModel(factory = SearchListViewModel.Companion.Factory(followList, searchTypeMode))
 
     val baseModifier = if (padding == null) {
         Modifier
@@ -161,6 +165,7 @@ fun SearchScreen(
                                     searchListViewModel.currentSearchType = it
                                     searchListViewModel.updateSearch()
                                 },
+                                searchTypeEnabled = !selectionMode,
                                 currentListing = searchListViewModel.currentListing,
                                 setCurrentListing = {
                                     searchListViewModel.currentListing = it
@@ -216,13 +221,20 @@ fun SearchScreen(
                                 searchPersonListings(
                                     personViews = searchRes.data.users,
                                     onPersonClick = { personView ->
-                                        appState.toProfile(id = personView.person.id)
+                                        if (searchTypeMode == SearchType.Users) {
+                                            appState.apply {
+                                                addReturn(SearchListReturn.PERSON_VIEW, personView)
+                                                navigateUp()
+                                            }
+                                        } else {
+                                            appState.toProfile(id = personView.person.id)
+                                        }
                                     },
                                 )
                                 searchCommunityListings(
                                     communities = searchRes.data.communities,
                                     onClickCommunity = { cs ->
-                                        if (selectCommunityMode) {
+                                        if (searchTypeMode == SearchType.Communities) {
                                             appState.apply {
                                                 addReturn(SearchListReturn.COMMUNITY, cs)
                                                 navigateUp()
@@ -244,7 +256,14 @@ fun SearchScreen(
                                     toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                     onCommentClick = { cv ->
-                                        appState.toComment(id = cv.comment.id)
+                                        if (searchTypeMode == SearchType.Comments) {
+                                            appState.apply {
+                                                addReturn(SearchListReturn.COMMENT_VIEW, cv)
+                                                navigateUp()
+                                            }
+                                        } else {
+                                            appState.toComment(id = cv.comment.id)
+                                        }
                                     },
                                     onUpvoteClick = { cv ->
                                         account.doIfReadyElseDisplayInfo(
@@ -465,7 +484,14 @@ fun SearchScreen(
                                             )
                                         },
                                         onPostClick = {
-                                            appState.toPost(id = it.post.id)
+                                            if (searchTypeMode == SearchType.Posts) {
+                                                appState.apply {
+                                                    addReturn(SearchListReturn.POST_VIEW, it)
+                                                    navigateUp()
+                                                }
+                                            } else {
+                                                appState.toPost(id = it.post.id)
+                                            }
                                         },
                                         onSaveClick = { pv ->
                                             account.doIfReadyElseDisplayInfo(
