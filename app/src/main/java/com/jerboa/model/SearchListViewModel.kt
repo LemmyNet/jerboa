@@ -1,7 +1,6 @@
 package com.jerboa.model
 
 import android.content.Context
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +59,12 @@ class SearchListViewModel(
 
     var page by mutableLongStateOf(1)
 
+    init {
+        if (currentSearchType == SearchType.Communities || currentSearchType == SearchType.All) {
+            setCommunityListFromFollowed(communities)
+        }
+    }
+
     fun updatePost(postView: PostView) {
         when (val existing = searchRes) {
             is ApiState.Success -> {
@@ -90,15 +95,14 @@ class SearchListViewModel(
         }
     }
 
-    init {
-
-        if (currentSearchType == SearchType.Communities || currentSearchType == SearchType.All) {
-            setCommunityListFromFollowed(communities)
-        }
-    }
-
     fun updateSearch() {
         fetchSearchJob?.cancel()
+        if (q.isBlank()) {
+            this.page = 1
+            showingFollowedSuggestions = false
+            searchRes = ApiState.Empty
+            return
+        }
         fetchSearchJob =
             viewModelScope.launch {
                 delay(DEBOUNCE_DELAY)
@@ -111,13 +115,11 @@ class SearchListViewModel(
         updateSearch()
     }
 
-    private fun search() {
+    private suspend fun search() {
         this.page = 1
-        viewModelScope.launch {
-            showingFollowedSuggestions = false
-            searchRes = ApiState.Loading
-            searchRes = API.getInstance().search(getForm()).toApiState()
-        }
+        showingFollowedSuggestions = false
+        searchRes = ApiState.Loading
+        searchRes = API.getInstance().search(getForm()).toApiState()
     }
 
     private fun getForm(): Search =
