@@ -51,6 +51,9 @@ class SearchListViewModel(
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
+    var showingFollowedSuggestions by mutableStateOf(false)
+        private set
+
     var currentSearchType by mutableStateOf(initialSearchType)
     var currentListing by mutableStateOf(ListingType.All)
     var currentSort by mutableStateOf(SortType.TopAll)
@@ -90,7 +93,6 @@ class SearchListViewModel(
     init {
 
         if (currentSearchType == SearchType.Communities || currentSearchType == SearchType.All) {
-            // TODO: fix this so that it doesnt trigger reached end and wipes it immediately
             setCommunityListFromFollowed(communities)
         }
     }
@@ -112,6 +114,7 @@ class SearchListViewModel(
     private fun search() {
         this.page = 1
         viewModelScope.launch {
+            showingFollowedSuggestions = false
             searchRes = ApiState.Loading
             searchRes = API.getInstance().search(getForm()).toApiState()
         }
@@ -127,6 +130,8 @@ class SearchListViewModel(
         )
 
     private fun setCommunityListFromFollowed(myFollows: List<CommunityFollowerView>) {
+        showingFollowedSuggestions = true
+
         // A hack to convert communityFollowerView into CommunityView
         val followsIntoCommunityViews =
             myFollows.map { cfv ->
@@ -164,6 +169,8 @@ class SearchListViewModel(
     }
 
     fun searchNextPage() {
+        if (showingFollowedSuggestions) return
+
         viewModelScope.launch {
             val oldRes = searchRes
             searchRes = when (oldRes) {

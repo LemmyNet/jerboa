@@ -186,9 +186,11 @@ fun SearchScreen(
                             val listState = rememberLazyListState()
                             val showAppendingRetry = searchListViewModel.searchRes is ApiState.AppendingFailure
 
-                            TriggerWhenReachingEnd(listState, showAppendingRetry) {
-                                Log.d("SearchScreen", "Reached end of list, loading next page")
-                                searchListViewModel.searchNextPage()
+                            if (!searchListViewModel.showingFollowedSuggestions) {
+                                TriggerWhenReachingEnd(listState, showAppendingRetry) {
+                                    Log.d("SearchScreen", "Reached end of list, loading next page")
+                                    searchListViewModel.searchNextPage()
+                                }
                             }
 
                             val nodes by remember { mutableStateOf(commentsToFlatNodes(searchRes.data.comments)) }
