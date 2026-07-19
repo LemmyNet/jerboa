@@ -15,9 +15,10 @@ import com.jerboa.api.ApiState
 fun ApiErrorText(
     msg: Throwable,
     paddingValues: PaddingValues = PaddingValues(),
+    onErrorBackground: Boolean = false,
 ) {
     msg.message?.also {
-        ApiErrorText(it, paddingValues = paddingValues)
+        ApiErrorText(it, paddingValues = paddingValues, onErrorBackground = onErrorBackground)
     }
 }
 
@@ -26,11 +27,12 @@ fun ApiErrorText(
     msg: String,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(),
+    onErrorBackground: Boolean = false,
 ) {
     Text(
         text = msg,
         modifier = modifier.padding(paddingValues),
-        color = MaterialTheme.colorScheme.onError,
+        color = if (onErrorBackground) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onError,
     )
 }
 

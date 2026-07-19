@@ -54,7 +54,6 @@ import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityScreen
-import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
 import com.jerboa.ui.components.home.BottomNavScreen
 import com.jerboa.ui.components.home.ShowAppStartupDialogs
@@ -75,6 +74,7 @@ import com.jerboa.ui.components.remove.post.PostRemoveScreen
 import com.jerboa.ui.components.report.comment.CreateCommentReportScreen
 import com.jerboa.ui.components.report.post.CreatePostReportScreen
 import com.jerboa.ui.components.reports.ReportsScreen
+import com.jerboa.ui.components.search.SearchScreen
 import com.jerboa.ui.components.settings.SettingsScreen
 import com.jerboa.ui.components.settings.about.AboutScreen
 import com.jerboa.ui.components.settings.account.AccountSettingsScreen
@@ -406,6 +406,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
+                    // TODO: update route naming?
                     composable(
                         route = Route.COMMUNITY_LIST,
                         arguments =
@@ -417,13 +418,15 @@ class MainActivity : AppCompatActivity() {
                             ),
                     ) {
                         val args = Route.CommunityListArgs(it)
-                        CommunityListScreen(
+                        SearchScreen(
                             appState = appState,
-                            selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
+                            selectCommunityMode = args.select,
+                            appSettings = appSettings,
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
-                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 

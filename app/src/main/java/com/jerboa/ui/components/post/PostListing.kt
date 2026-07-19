@@ -74,7 +74,6 @@ import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 
-@ExperimentalLayoutApi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListing(

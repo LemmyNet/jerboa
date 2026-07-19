@@ -132,6 +132,7 @@ fun CommunityLinkLarger(
     showDefaultIcon: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
+    usersPerMonth: Long? = null,
 ) {
     CommunityLink(
         community = community,
@@ -148,6 +149,7 @@ fun CommunityLinkLarger(
         showDefaultIcon = showDefaultIcon,
         blurNSFW = blurNSFW,
         showAvatar = showAvatar,
+        usersPerMonth = usersPerMonth,
     )
 }
 

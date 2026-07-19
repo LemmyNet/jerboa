@@ -116,7 +116,6 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
 
-@ExperimentalLayoutApi
 @Composable
 fun PostListingCard(
     postView: PostView,
@@ -681,7 +680,6 @@ fun PostFooterLinePreview() {
     )
 }
 
-@ExperimentalLayoutApi
 @Composable
 fun PostCommunityAndCreatorBlock(
     postView: PostView,
@@ -788,7 +786,6 @@ fun PostCommunityAndCreatorBlock(
     }
 }
 
-@ExperimentalLayoutApi
 @Preview
 @Composable
 fun PostCommunityAndCreatorPreview() {
@@ -820,7 +817,6 @@ fun CommunityIcon(
     }
 }
 
-@ExperimentalLayoutApi
 @Composable
 fun PostTitleAttributionBody(
     postView: PostView,
@@ -1015,7 +1011,6 @@ fun SavedButton(
     )
 }
 
-@ExperimentalLayoutApi
 @Composable
 fun PostTitleBlock(
     postView: PostView,

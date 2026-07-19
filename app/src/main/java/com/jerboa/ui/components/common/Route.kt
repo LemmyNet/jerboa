@@ -105,6 +105,7 @@ object Route {
         }
     }
 
+    // TODO: rename and allow selecting User, Community, Post, Comment
     class CommunityListArgs(
         val select: Boolean,
     ) {

@@ -203,6 +203,7 @@ class JerboaAppState(
         navController.navigate(Route.CommentLikesArgs.makeRoute(id = "$commentId"))
     }
 
+    // TODO: rename
     fun toCommunityList(select: Boolean = Route.CommunityListArgs.SELECT_DEFAULT) {
         navController.navigate(Route.CommunityListArgs.makeRoute(select = "$select"))
     }

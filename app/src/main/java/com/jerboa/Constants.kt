@@ -1,8 +1,9 @@
 package com.jerboa
 
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.milliseconds
 
-const val DEBOUNCE_DELAY = 1000L
+val DEBOUNCE_DELAY = 1000.milliseconds
 const val MAX_POST_TITLE_LENGTH = 200
 
 /**
