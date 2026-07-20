@@ -451,7 +451,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                             } else {
                                 @Suppress("DEPRECATION")
-                                activity?.intent?.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                                activity?.intent?.getParcelableExtra(Intent.EXTRA_STREAM)
                             }
                         // url and body will be empty everytime except when there is EXTRA TEXT in the intent
                         var url = ""

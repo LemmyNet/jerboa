@@ -106,9 +106,7 @@ fun BlocksScreen(
                         } ?: ApiEmptyText()
                     }
 
-                    else -> {
-                        Unit
-                    }
+                    else -> {}
                 }
             }
         },
@@ -193,9 +191,7 @@ fun BlockList(userInfo: MyUserInfo) {
                         }
                     }
 
-                    else -> {
-                        Unit
-                    }
+                    else -> {}
                 }
             }
         }
