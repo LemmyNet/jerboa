@@ -191,7 +191,7 @@ fun BlockList(userInfo: MyUserInfo) {
                         }
                     }
 
-                    else -> { }
+                    else -> {}
                 }
             }
         }
