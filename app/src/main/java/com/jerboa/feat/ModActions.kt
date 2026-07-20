@@ -1,52 +1,51 @@
 package com.jerboa.feat
 
-import android.content.Context
-import com.jerboa.MainActivity
-import com.jerboa.db.entity.Account
-import com.jerboa.findActivity
-import it.vercruysse.lemmyapi.datatypes.CommunityId
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 /**
- * Determines whether someone can moderate an item. Uses a hierarchy of admins then mods.
+ * Determines whether someone can admin an item. Uses a hierarchy of admins from the API.
  */
-fun canMod(
+fun canAdmin(
     creatorId: PersonId,
+    myUserInfo: MyUserInfo?,
     admins: List<PersonView>?,
-    moderators: List<PersonId>?,
-    myId: PersonId,
+    onSelf: Boolean = false,
+ ): Boolean {
+    val myId = myUserInfo?.local_user_view?.local_user?.person_id
+
+    return myId?.let { myId ->
+        if (onSelf && creatorId != myId) {
+            false
+        } else {
+            // You can only do actions on admins created after you
+            val firstId = admins?.find { pv -> pv.person.id == creatorId || pv.person.id == myId }?.person?.id
+
+            // IE you should come before them
+            val amFirst = firstId == myId
+            amFirst
+        }
+    } ?: run {
+        false
+    }
+ }
+
+fun canModOrAdmin(
+    canMod: Boolean,
+    creatorId: PersonId,
+    myUserInfo: MyUserInfo?,
+    admins: List<PersonView>?,
     onSelf: Boolean = false,
 ): Boolean {
-    // You can do moderator actions only on the mods added after you.
-    val adminIds = admins?.map { a -> a.person.id }.orEmpty()
-    val modIds = moderators.orEmpty()
-
-    val adminsThenMods = adminIds.toMutableList()
-    adminsThenMods.addAll(modIds)
-
-    val myIndex = adminsThenMods.indexOf(myId)
-    return if (myIndex == -1) {
-        false
-    } else {
-        // onSelf +1 on mod actions not for yourself, IE ban, remove, etc
-        val subList = adminsThenMods.subList(0, myIndex.plus(if (onSelf) 0 else 1))
-
-        !subList.contains(creatorId)
-    }
+    return canMod || canAdmin(creatorId, myUserInfo, admins, onSelf)
 }
 
-fun futureDaysToUnixTime(days: Long?): Long? =
-    days?.let {
-        Instant.now().plus(it, ChronoUnit.DAYS).epochSecond
-    }
 
-fun amMod(
-    moderators: List<PersonId>?,
-    myId: PersonId,
-): Boolean = moderators?.contains(myId) ?: false
+// fun amMod(
+//    moderators: List<PersonId>?,
+//    myId: PersonId,
+// ): Boolean = moderators?.contains(myId) ?: false
 
 /**
  * In screens with posts from different communities we don't have access to moderators of those communities
@@ -54,18 +53,19 @@ fun amMod(
  *
  * So this is QoL were we simulate the mods of the community
  * It is not completely accurate as it doesn't take into account the hierarchy of mods
+ * TODO can probably get rid because of canMod
  */
-fun simulateModerators(
-    ctx: Context,
-    account: Account,
-    forCommunity: CommunityId,
-): List<PersonId> {
-    if (account.isMod) {
-        val siteVM = (ctx.findActivity() as MainActivity).siteViewModel
-        val canModerate = siteVM.moderatedCommunities().orEmpty().contains(forCommunity)
-        if (canModerate) {
-            return listOf(account.id)
-        }
-    }
-    return emptyList()
-}
+// fun simulateModerators(
+//    ctx: Context,
+//    account: Account,
+//    forCommunity: CommunityId,
+// ): List<PersonId> {
+//    if (account.isMod) {
+//        val siteVM = (ctx.findActivity() as MainActivity).siteViewModel
+//        val canModerate = siteVM.moderatedCommunities().orEmpty().contains(forCommunity)
+//        if (canModerate) {
+//            return listOf(account.id)
+//        }
+//    }
+//    return emptyList()
+// }

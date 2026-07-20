@@ -6,10 +6,9 @@ import android.widget.Toast
 import com.jerboa.R
 import com.jerboa.api.API
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.BlockCommunityResponse
-import it.vercruysse.lemmyapi.datatypes.BlockInstanceResponse
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.datatypes.BlockPersonResponse
+import it.vercruysse.lemmyapi.datatypes.CommunityResponse
+import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,14 +43,15 @@ fun blockPerson(
 }
 
 fun showBlockInstanceToast(
-    blockInstanceResp: Result<BlockInstanceResponse>,
+    blockInstanceResp: Result<Unit>,
     instance: String,
+    blocked: Boolean,
     ctx: Context,
 ) {
     blockInstanceResp
         .onSuccess {
             makeSuccessfulBlockMessage(
-                it.blocked,
+                blocked,
                 instance,
                 ctx,
             )
@@ -67,13 +67,13 @@ fun showBlockInstanceToast(
 }
 
 fun showBlockPersonToast(
-    blockPersonRes: Result<BlockPersonResponse>,
+    blockPersonRes: Result<PersonResponse>,
     ctx: Context,
 ) {
     blockPersonRes
         .onSuccess {
             makeSuccessfulBlockMessage(
-                it.blocked,
+                it.person_view.person_actions?.blocked_at != null,
                 it.person_view.person.name,
                 ctx,
             )
@@ -89,13 +89,13 @@ fun showBlockPersonToast(
 }
 
 fun showBlockCommunityToast(
-    blockCommunityRes: Result<BlockCommunityResponse>,
+    blockCommunityRes: Result<CommunityResponse>,
     ctx: Context,
 ) {
     blockCommunityRes
         .onSuccess {
             makeSuccessfulBlockMessage(
-                it.blocked,
+                it.community_view.community_actions?.blocked_at != null,
                 it.community_view.community.name,
                 ctx,
             )

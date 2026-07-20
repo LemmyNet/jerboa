@@ -1,5 +1,4 @@
 package com.jerboa.feat
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.net.ConnectivityManager
@@ -20,13 +19,13 @@ import com.jerboa.db.entity.isReady
 import com.jerboa.isCurrentlyConnected
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
-import com.jerboa.model.SiteViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.apiErrorToast
 import it.vercruysse.lemmyapi.LemmyApiBaseController
 import it.vercruysse.lemmyapi.datatypes.GetPersonDetails
 import it.vercruysse.lemmyapi.datatypes.GetPersonDetailsResponse
-import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.exception.LemmyBadRequestException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -131,7 +130,7 @@ suspend fun checkIfAccountIsDeleted(
                     .equals(account.name, true) &&
                 !body.person_view.person.deleted
             ) {
-                Pair(CheckState.Passed, ApiState.Success<GetPersonDetailsResponse>(body))
+                Pair(CheckState.Passed, ApiState.Success(body))
             } else {
                 Pair(CheckState.Failed, null)
             }
@@ -144,8 +143,8 @@ suspend fun checkIfAccountIsDeleted(
 }
 
 fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState =
-    if (userRes.person_view.person.banned) {
-        CheckState.FailedMsg(userRes.person_view.person.ban_expires ?: "TIME_NOT_SPECIFIED")
+    if (userRes.person_view.banned) {
+        CheckState.FailedMsg(userRes.person_view.ban_expires_at ?: "TIME_NOT_SPECIFIED")
     } else {
         CheckState.Passed
     }
@@ -166,28 +165,28 @@ suspend fun checkIfJWTValid(api: LemmyApiBaseController): CheckState {
     }
 }
 
-suspend fun checkIfSiteRetrievalSucceeded(
-    siteViewModel: SiteViewModel,
+suspend fun checkIfMyUserRetrievalSucceeded(
+    myUserInfoViewModel: MyUserInfoViewModel,
     account: Account,
-): Pair<CheckState, ApiState.Success<GetSiteResponse>?> =
-    when (val res = siteViewModel.siteRes) {
+): Pair<CheckState, ApiState.Success<MyUserInfo>?> =
+    when (val res = myUserInfoViewModel.myUserRes) {
         is ApiState.Success -> {
             // Contains information for the wrong person
-            if (res.data.my_user
-                    ?.local_user_view
-                    ?.local_user
-                    ?.person_id == account.id
+            if (res.data
+                    .local_user_view
+                    .local_user
+                    .person_id == account.id
             ) {
                 Pair(CheckState.Passed, res)
             } else {
-                siteViewModel.siteRes = ApiState.Empty
-                checkIfSiteRetrievalSucceeded(siteViewModel, account)
+                myUserInfoViewModel.myUserRes = ApiState.Empty
+                checkIfMyUserRetrievalSucceeded(myUserInfoViewModel, account)
             }
         }
 
         else -> {
-            siteViewModel.getSite().join()
-            when (val res2 = siteViewModel.siteRes) {
+            myUserInfoViewModel.getMyUser().join()
+            when (val res2 = myUserInfoViewModel.myUserRes) {
                 is ApiState.Success -> Pair(CheckState.Passed, res2)
                 else -> Pair(CheckState.Failed, null)
             }
@@ -216,7 +215,7 @@ sealed class CheckState {
 
 suspend fun Account.checkAccountVerification(
     ctx: Context,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     accountViewModel: AccountViewModel,
 ): Pair<AccountVerificationState, CheckState> {
     Log.d("verification", "Verification started")
@@ -267,8 +266,8 @@ suspend fun Account.checkAccountVerification(
                 }
 
                 AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> {
-                    checkIfSiteRetrievalSucceeded(
-                        siteViewModel,
+                    checkIfMyUserRetrievalSucceeded(
+                        myUserInfoViewModel,
                         this,
                     ).first
                 }
@@ -418,7 +417,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
     ctx: Context,
     resources: Resources,
     snackbarHostState: SnackbarHostState,
-    siteViewModel: SiteViewModel? = null,
+    myUserInfoViewModel: MyUserInfoViewModel? = null,
     accountViewModel: AccountViewModel? = null,
     loginAsToast: Boolean = true,
 ): Boolean {
@@ -429,10 +428,10 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
             return false
         } else {
             lockAccount.add(this)
-            val siteVM = siteViewModel ?: (ctx as MainActivity).siteViewModel
+            val myUserInfoVM = myUserInfoViewModel ?: (ctx as MainActivity).myUserInfoViewModel
             val accountVM = accountViewModel ?: (ctx as MainActivity).accountViewModel
 
-            checkAccountVerification(ctx, siteVM, accountVM).let {
+            checkAccountVerification(ctx, myUserInfoVM, accountVM).let {
                 lockAccount.remove(this)
 
                 it.showSnackbarForVerificationInfo(
@@ -467,7 +466,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                                 ctx,
                                 resources,
                                 snackbarHostState,
-                                siteVM,
+                                myUserInfoVM,
                                 accountVM,
                                 loginAsToast,
                             )
@@ -488,7 +487,7 @@ fun Account.doIfReadyElseDisplayInfo(
     resources: Resources,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
-    siteViewModel: SiteViewModel? = null,
+    myUserInfoViewModel: MyUserInfoViewModel? = null,
     accountViewModel: AccountViewModel? = null,
     loginAsToast: Boolean = true,
     doAction: (Account) -> Unit,
@@ -499,7 +498,7 @@ fun Account.doIfReadyElseDisplayInfo(
                 ctx,
                 resources,
                 snackbarHostState,
-                siteViewModel,
+                myUserInfoViewModel,
                 accountViewModel,
                 loginAsToast,
             )

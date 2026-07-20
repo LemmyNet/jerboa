@@ -1,5 +1,7 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleLinkPostView
@@ -29,10 +32,13 @@ import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
-import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.components.common.selectedItemContainerColor
+import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
-import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
@@ -43,7 +49,8 @@ import it.vercruysse.lemmyapi.datatypes.PostView
 fun PostListings(
     posts: List<PostView>,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    myUserInfo: MyUserInfo?,
+    localSite: LocalSite,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -55,7 +62,7 @@ fun PostListings(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (personView: PersonView) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
@@ -68,8 +75,6 @@ fun PostListings(
     listState: LazyListState,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
-    enableDownVotes: Boolean,
-    showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: BlurNSFW,
@@ -78,12 +83,13 @@ fun PostListings(
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    selectionState: SelectionVisibilityState<PostId>,
+    siteRes: GetSiteResponse,
 ) {
     LazyColumn(
         state = listState,
@@ -99,60 +105,72 @@ fun PostListings(
             items = posts,
             contentType = { _, _ -> "Post" },
         ) { index, postView ->
-            PostListing(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onHidePostClick = onHidePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onViewVotesClick = onViewPostVotesClick,
-                onPersonClick = onPersonClick,
-                showCommunityName = showCommunityName,
-                fullBody = false,
-                account = account,
-                postViewMode = postViewMode,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                blurNSFW = blurNSFW,
-                appState = appState,
-                showPostLinkPreview = showPostLinkPreviews,
-                showIfRead = showIfRead,
-                voteDisplayMode = voteDisplayMode,
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-                disableVideoAutoplay = disableVideoAutoplay,
-                lowBandwidthMode = lowBandwidthMode,
-            ).let {
-                if (!postView.read && markAsReadOnScroll) {
-                    DisposableEffect(key1 = postView.post.id) {
-                        onDispose {
-                            if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
-                                onMarkAsRead(postView)
+
+            val selected = when (selectionState) {
+                is SelectionVisibilityState.ShowSelection -> selectionState.selectedItem == postView.post.id
+                SelectionVisibilityState.NoSelection -> false
+            }
+
+            Column(
+                modifier = Modifier
+                    .background(selectedItemContainerColor(selected)),
+            ) {
+                PostListing(
+                    postView = postView,
+                    admins = admins,
+                    myUserInfo = myUserInfo,
+                    localSite = localSite,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    onReplyClick = onReplyClick,
+                    onPostClick = onPostClick,
+                    onSaveClick = onSaveClick,
+                    onCommunityClick = onCommunityClick,
+                    onEditPostClick = onEditPostClick,
+                    onDeletePostClick = onDeletePostClick,
+                    onHidePostClick = onHidePostClick,
+                    onReportClick = onReportClick,
+                    onRemoveClick = onRemoveClick,
+                    onBanPersonClick = onBanPersonClick,
+                    onBanFromCommunityClick = onBanFromCommunityClick,
+                    onLockPostClick = onLockPostClick,
+                    onFeaturePostClick = onFeaturePostClick,
+                    onViewVotesClick = onViewPostVotesClick,
+                    onPersonClick = onPersonClick,
+                    showCommunityName = showCommunityName,
+                    fullBody = false,
+                    account = account,
+                    postViewMode = postViewMode,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = enableDownVotes,
+                    showAvatar = showAvatar,
+                    blurNSFW = blurNSFW,
+                    appState = appState,
+                    showPostLinkPreview = showPostLinkPreviews,
+                    showIfRead = showIfRead,
+                    voteDisplayMode = voteDisplayMode,
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                    disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
+                ).let {
+                    if (!postView.read && markAsReadOnScroll) {
+                        DisposableEffect(key1 = postView.post.id) {
+                            onDispose {
+                                if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
+                                    onMarkAsRead(postView)
+                                }
                             }
                         }
                     }
                 }
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = MEDIUM_PADDING),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                )
             }
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = SMALL_PADDING),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-            )
         }
 
         if (showPostAppendRetry) {
@@ -210,5 +228,6 @@ fun PreviewPostListings() {
         onReplyClick = {},
         disableVideoAutoplay = false,
         lowBandwidthMode = false,
+        selectionState = SelectionVisibilityState.NoSelection,
     )
 }

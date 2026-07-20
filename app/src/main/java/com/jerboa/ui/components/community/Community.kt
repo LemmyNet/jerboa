@@ -56,8 +56,8 @@ import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.CommunityView
-import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.enums.CommunityFollowerState
+import it.vercruysse.lemmyapi.enums.SortType
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
@@ -96,7 +96,7 @@ fun CommunityTopSection(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = communityView.community.title,
+                    text = communityView.community.title ?: communityView.community.name,
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
@@ -105,15 +105,15 @@ fun CommunityTopSection(
                     text =
                         stringResource(
                             R.string.community_users_month,
-                            communityView.counts.users_active_month,
+                            communityView.community.users_active_month,
                         ),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.outline,
                 )
             }
             Row {
-                when (communityView.subscribed) {
-                    SubscribedType.Subscribed -> {
+                when (communityView.community_actions?.follow_state) {
+                    CommunityFollowerState.Accepted -> {
                         OutlinedButton(
                             onClick = { onClickFollowCommunity(communityView) },
                         ) {
@@ -129,19 +129,26 @@ fun CommunityTopSection(
                         }
                     }
 
-                    SubscribedType.NotSubscribed -> {
-                        Button(
-                            onClick = { onClickFollowCommunity(communityView) },
-                        ) {
-                            Text(stringResource(R.string.community_subscribe))
-                        }
-                    }
-
-                    SubscribedType.Pending -> {
+                    CommunityFollowerState.Pending -> {
                         Button(
                             onClick = { onClickFollowCommunity(communityView) },
                         ) {
                             Text(stringResource(R.string.community_pending))
+                        }
+                    }
+
+                    CommunityFollowerState.Denied -> {
+                        Text(
+                            stringResource(R.string.denied),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+
+                    null, CommunityFollowerState.ApprovalRequired -> {
+                        Button(
+                            onClick = { onClickFollowCommunity(communityView) },
+                        ) {
+                            Text(stringResource(R.string.community_subscribe))
                         }
                     }
                 }
@@ -272,7 +279,7 @@ fun CommunityMoreDropdown(
             text = { Text(text = stringResource(R.string.home_post_view_mode)) },
             leadingIcon = { Icon(Icons.Outlined.ViewAgenda, contentDescription = null) },
             children = {
-                PostViewMode.entries.map {
+                PostViewMode.entries.forEach {
                     DropdownMenuItem(
                         text = { Text(text = stringResource(it.resId)) },
                         onClick = {

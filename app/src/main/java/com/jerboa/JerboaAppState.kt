@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.model.ReplyItem
 import com.jerboa.state.VideoAppState
@@ -34,6 +35,7 @@ import it.vercruysse.lemmyapi.datatypes.CommunityId
 import it.vercruysse.lemmyapi.datatypes.GetCommunityResponse
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -95,8 +97,8 @@ class JerboaAppState(
         navController.navigate(Route.COMMENT_REMOVE)
     }
 
-    fun toBanPerson(person: Person) {
-        sendReturnForwards(BanPersonReturn.PERSON_SEND, person)
+    fun toBanPerson(banData: BanData) {
+        sendReturnForwards(BanPersonReturn.BAN_DATA_SEND, banData)
         navController.navigate(Route.BAN_PERSON)
     }
 

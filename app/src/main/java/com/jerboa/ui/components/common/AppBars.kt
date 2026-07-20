@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.common
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -26,8 +25,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,7 +38,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
@@ -54,11 +53,13 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.jerboa.R
+import com.jerboa.userViewType
 import com.jerboa.api.ApiState
-import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.data
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.datatypes.sampleUnreadCountsResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
@@ -69,10 +70,13 @@ import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import it.vercruysse.lemmyapi.datatypes.CommunityModeratorView
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
-import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
+import it.vercruysse.lemmyapi.enums.SortType
+import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,26 +87,26 @@ fun SimpleTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    TopAppBar(
-        scrollBehavior = scrollBehavior,
-        title = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                modifier = Modifier.customMarquee(),
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.topAppBar_back),
+        TopAppBar(
+            scrollBehavior = scrollBehavior,
+            title = {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    modifier = Modifier.customMarquee(),
                 )
-            }
-        },
-        actions = actions,
-    )
+            },
+            navigationIcon = {
+                IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
+                    Icon(
+                        Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.topAppBar_back),
+                    )
+                }
+            },
+            actions = actions,
+        )
 }
 
 @Preview
@@ -113,99 +117,81 @@ fun SimpleTopAppBarPreview() {
     }
 }
 
-@Composable
-fun BottomAppBarAll(
+fun NavigationSuiteScope.adaptiveNavigationBar(
+    myUserInfo: MyUserInfo?,
+    unreadCounts: UnreadCountsResponse?,
     selectedTab: NavTab,
-    onSelect: (NavTab) -> Unit,
-    userViewType: UserViewType,
-    unreadCounts: Long,
-    unreadAppCount: Long?,
-    unreadReportCount: Long?,
+    onSelectTab: (NavTab) -> Unit,
     showTextDescriptionsInNavbar: Boolean,
 ) {
-    // Check for preview mode
-    if (LocalContext.current is Activity) {
-        val window = (LocalContext.current as Activity).window
-        val colorScheme = MaterialTheme.colorScheme
-
-        DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceContainer.toArgb()
-
-            onDispose {
-                window.navigationBarColor = colorScheme.background.toArgb()
-            }
+    for (tab in NavTab.getEntries(myUserInfo.userViewType())) {
+        val selected = tab == selectedTab
+        val iconBadgeCount = when (tab) {
+            NavTab.Inbox -> unreadCounts?.notification_count
+            NavTab.RegistrationApplications -> unreadCounts?.registration_application_count
+            NavTab.Reports -> unreadCounts?.report_count
+            else -> null
         }
-    }
-    // If descriptions are hidden, make the bar shorter
-    val modifier = if (showTextDescriptionsInNavbar) Modifier else Modifier.navigationBarsPadding().height(56.dp)
-    NavigationBar(
-        modifier = modifier,
-    ) {
-        for (tab in NavTab.getEntries(userViewType)) {
-            val selected = tab == selectedTab
-            val iconBadgeCount = when (tab) {
-                NavTab.Inbox -> unreadCounts
-                NavTab.RegistrationApplications -> unreadAppCount
-                NavTab.Reports -> unreadReportCount
-                else -> null
-            }
 
-            NavigationBarItem(
-                icon = {
-                    NavbarIconAndBadge(
-                        iconBadgeCount = iconBadgeCount,
-                        icon =
-                            if (selected) {
-                                tab.iconFilled
-                            } else {
-                                tab.iconOutlined
-                            },
-                        contentDescription = stringResource(tab.contentDescriptionId),
+        item(
+            icon = {
+                NavbarIconAndBadge(
+                    iconBadgeCount = iconBadgeCount,
+                    icon =
+                        if (selected) {
+                            tab.iconFilled
+                        } else {
+                            tab.iconOutlined
+                        },
+                    contentDescription = stringResource(tab.contentDescriptionId),
+                )
+            },
+            label = {
+                if (showTextDescriptionsInNavbar) {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        fontSize = TextUnit(10f, TextUnitType.Sp),
+                        text = stringResource(tab.textId),
                     )
-                },
-                label = {
-                    if (showTextDescriptionsInNavbar) {
-                        Text(
-                            textAlign = TextAlign.Center,
-                            fontSize = TextUnit(10f, TextUnitType.Sp),
-                            text = stringResource(tab.textId),
-                        )
-                    }
-                },
-                selected = selected,
-                onClick = {
-                    onSelect(tab)
-                },
-            )
-        }
+                }
+            },
+            selected = selected,
+            onClick = {
+                onSelectTab(tab)
+            },
+        )
     }
 }
 
 @Preview
 @Composable
-fun BottomAppBarAllPreview() {
-    BottomAppBarAll(
-        selectedTab = NavTab.Home,
-        onSelect = {},
-        unreadCounts = 30,
-        unreadAppCount = 2,
-        unreadReportCount = 8,
-        userViewType = UserViewType.AdminOnly,
-        showTextDescriptionsInNavbar = true,
+fun AdaptiveNavigationBarPreview() {
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            adaptiveNavigationBar(
+                selectedTab = NavTab.Home,
+                onSelectTab = {},
+                unreadCounts = sampleUnreadCountsResponse,
+                myUserInfo = sampleMyUserInfo,
+                showTextDescriptionsInNavbar = true,
+            )
+        },
     )
 }
 
 @Preview
 @Composable
-fun BottomAppBarAllNoDescriptionsPreview() {
-    BottomAppBarAll(
-        selectedTab = NavTab.Home,
-        onSelect = {},
-        unreadCounts = 30,
-        unreadAppCount = null,
-        unreadReportCount = null,
-        userViewType = UserViewType.Normal,
-        showTextDescriptionsInNavbar = false,
+fun AdaptiveNavigationBarNoDescriptionsPreview() {
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            adaptiveNavigationBar(
+                selectedTab = NavTab.Home,
+                onSelectTab = {},
+                unreadCounts = sampleUnreadCountsResponse,
+                myUserInfo = sampleMyUserInfo,
+                showTextDescriptionsInNavbar = false,
+            )
+        },
     )
 }
 
@@ -249,15 +235,15 @@ fun CommentOrPostNodeHeader(
     published: String,
     updated: String?,
     deleted: Boolean,
-    onPersonClick: (personId: PersonId) -> Unit,
     isPostCreator: Boolean,
     isDistinguished: Boolean,
     isCommunityBanned: Boolean,
-    onClick: () -> Unit,
-    onLongCLick: () -> Unit,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
-    showAvatar: Boolean,
+    myUserInfo: MyUserInfo?,
+    onPersonClick: (personId: PersonId) -> Unit,
+    onClick: () -> Unit,
+    onLongCLick: () -> Unit,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -327,8 +313,8 @@ fun CommentOrPostNodeHeader(
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
         creator = samplePerson,
-        published = samplePost.published,
-        updated = samplePost.updated,
+        published = samplePost.published_at,
+        updated = samplePost.updated_at,
         deleted = false,
         onPersonClick = {},
         isPostCreator = true,
@@ -350,18 +336,15 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.outline,
     noClick: Boolean = false,
-    account: Account,
-    requiresAccount: Boolean = true,
+    myUserInfo: MyUserInfo?,
+    requiresLogin: Boolean = true,
 ) {
-    val ctx = LocalContext.current
-    val resources = LocalResources.current
-
     val barMod =
         if (noClick) {
             modifier
         } else {
             modifier.clickable(onClick = {
-                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
+                if (!requiresLogin || myUserInfo != null) {
                     onClick()
                 }
             })
@@ -472,11 +455,11 @@ fun DotSpacer(
 }
 
 @Composable
-fun scoreColor(myVote: Int?): Color =
+fun scoreColor(myVote: VoteAction?): Color =
     when (myVote) {
-        1 -> MaterialTheme.colorScheme.secondary
-        -1 -> MaterialTheme.colorScheme.error
-        else -> MaterialTheme.colorScheme.outline
+        VoteAction.UpVote -> MaterialTheme.colorScheme.secondary
+        VoteAction.DownVote -> MaterialTheme.colorScheme.error
+        else  -> MaterialTheme.colorScheme.outline
     }
 
 @Composable
@@ -520,10 +503,12 @@ fun NavbarIconAndBadge(
 
 @Composable
 fun Sidebar(
+    name: String,
     title: String?,
     banner: String?,
     icon: String?,
     content: String?,
+    summary: String?,
     published: String,
     postCount: Long,
     commentCount: Long,
@@ -537,6 +522,8 @@ fun Sidebar(
     onPersonClick: (PersonId) -> Unit,
 ) {
     val listState = rememberLazyListState()
+
+    val nameOrTitle = title ?: name
 
     LazyColumn(
         state = listState,
@@ -568,10 +555,14 @@ fun Sidebar(
                 modifier = Modifier.padding(MEDIUM_PADDING),
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
-                title?.also {
+                    Text(
+                        text = nameOrTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                summary?.also {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 TimeAgo(
@@ -769,7 +760,7 @@ fun JerboaLoadingBar(apiState: ApiState<*>) {
 }
 
 /**
- * A simple top bar with a action that defaults to save
+ * A simple top bar with an action that defaults to save
  *
  */
 @OptIn(ExperimentalMaterial3Api::class)

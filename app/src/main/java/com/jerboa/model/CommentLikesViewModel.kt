@@ -12,31 +12,41 @@ import com.jerboa.VIEW_VOTES_LIMIT
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.api.toOpt
+import com.jerboa.feed.PaginationController
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.ListCommentLikes
-import it.vercruysse.lemmyapi.datatypes.ListCommentLikesResponse
+import it.vercruysse.lemmyapi.datatypes.PagedResponse
+import it.vercruysse.lemmyapi.datatypes.VoteView
 import kotlinx.coroutines.launch
 
 class CommentLikesViewModel(
     val id: CommentId,
 ) : ViewModel() {
-    var likesRes: ApiState<ListCommentLikesResponse> by mutableStateOf(ApiState.Empty)
+    var likesRes: ApiState<PagedResponse<VoteView>> by mutableStateOf(ApiState.Empty)
         private set
-    private var page by mutableLongStateOf(1)
+    private val pageController = PaginationController()
 
     init {
         getLikes()
     }
 
     fun resetPage() {
-        page = 1
+        pageController.reset()
     }
 
-    fun getLikes(state: ApiState<ListCommentLikesResponse> = ApiState.Loading) {
+    fun getLikes(state: ApiState<PagedResponse<VoteView>> = ApiState.Loading) {
         viewModelScope.launch {
             likesRes = state
             likesRes = API.getInstance().listCommentLikes(getForm()).toApiState()
+        }
+        when (val res = likesRes) {
+            is ApiState.Success -> {
+                pageController.nextPage(res.data.next_page)
+            }
+
+            else -> {}
         }
     }
 
@@ -44,7 +54,8 @@ class CommentLikesViewModel(
         ListCommentLikes(
             comment_id = id,
             limit = VIEW_VOTES_LIMIT,
-            page = page,
+            page = pageController.page,
+            page_cursor = pageController.pageCursor,
         )
 
     fun appendLikes() {
@@ -55,7 +66,6 @@ class CommentLikesViewModel(
                 else -> return@launch
             }
 
-            page += 1
             val newRes = API.getInstance().listCommentLikes(getForm()).toApiState()
 
             likesRes =
@@ -63,11 +73,11 @@ class CommentLikesViewModel(
                     is ApiState.Success -> {
                         val appended =
                             getDeduplicateMerge(
-                                oldRes.data.comment_likes,
-                                newRes.data.comment_likes,
+                                oldRes.data.items,
+                                newRes.data.items,
                             ) { it.creator.id }
 
-                        ApiState.Success(oldRes.data.copy(comment_likes = appended))
+                        ApiState.Success(oldRes.data.copy(items = appended))
                     }
 
                     else -> {

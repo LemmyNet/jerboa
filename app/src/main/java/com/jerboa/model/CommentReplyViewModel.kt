@@ -11,11 +11,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.ui.components.common.apiErrorToast
-import it.vercruysse.lemmyapi.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.datatypes.CommentResponse
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.CreateComment
-import it.vercruysse.lemmyapi.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -30,16 +28,6 @@ sealed class ReplyItem {
     @Serializable
     class CommentItem(
         val item: CommentView,
-    ) : ReplyItem()
-
-    @Serializable
-    class CommentReplyItem(
-        val item: CommentReplyView,
-    ) : ReplyItem()
-
-    @Serializable
-    class MentionReplyItem(
-        val item: PersonMentionView,
     ) : ReplyItem()
 }
 
@@ -60,20 +48,6 @@ class CommentReplyViewModel : ViewModel() {
                 }
 
                 is ReplyItem.CommentItem -> {
-                    Pair(
-                        reply.item.post.id,
-                        reply.item.comment.id,
-                    )
-                }
-
-                is ReplyItem.CommentReplyItem -> {
-                    Pair(
-                        reply.item.post.id,
-                        reply.item.comment.id,
-                    )
-                }
-
-                is ReplyItem.MentionReplyItem -> {
                     Pair(
                         reply.item.post.id,
                         reply.item.comment.id,

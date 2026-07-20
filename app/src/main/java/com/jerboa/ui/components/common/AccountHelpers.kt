@@ -27,6 +27,10 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
     return acc
 }
 
+/**
+ * A special case of toEnumSafe, where the int still exists in the DB.
+ * TODO move this
+ */
 fun getPostViewMode(appSettingsViewModel: AppSettingsViewModel): PostViewMode =
     getEnumFromIntSetting<PostViewMode>(appSettingsViewModel.appSettings) {
         it.postViewMode

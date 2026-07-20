@@ -48,6 +48,7 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 private var fetchSiteMetadataJob: Job? = null
 
@@ -112,7 +113,7 @@ fun CreatePostScreen(
             fetchSiteMetadataJob?.cancel()
             fetchSiteMetadataJob =
                 scope.launch {
-                    delay(DEBOUNCE_DELAY)
+                    delay(DEBOUNCE_DELAY.milliseconds)
                     if (Patterns.WEB_URL.matcher(initialUrl).matches()) {
                         createPostViewModel.getSiteMetadata(GetSiteMetadata(initialUrl))
                     }
@@ -121,7 +122,7 @@ fun CreatePostScreen(
     }
 
     val (suggestedTitle, suggestedTitleLoading) =
-        // If its a torrent magnet link, use the dn param to extract the torrent title
+        // If it's a torrent magnet link, use the dn param to extract the torrent title
         if (url.startsWith("magnet")) {
             val query = Uri.parse(url).query
             // Unfortunately you have to use a fake http uri, otherwise getQueryParameter throws a non-hierarchical error.
@@ -207,7 +208,7 @@ fun CreatePostScreen(
                         fetchSiteMetadataJob?.cancel()
                         fetchSiteMetadataJob =
                             scope.launch {
-                                delay(DEBOUNCE_DELAY)
+                                delay(DEBOUNCE_DELAY.milliseconds)
                                 if (Patterns.WEB_URL.matcher(url).matches()) {
                                     createPostViewModel.getSiteMetadata(GetSiteMetadata(url.padUrlWithHttps()))
                                 }
@@ -218,10 +219,14 @@ fun CreatePostScreen(
                     onImagePicked = { uri ->
                         if (!account.isAnon() && uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
+                            val imageBytes = imageIs.readBytes()
                             scope.launch {
                                 isUploadingImage = true
-                                url = API.uploadPictrsImage(imageIs, ctx)
+                                val res = API.getInstance().uploadImage(imageBytes)
                                 isUploadingImage = false
+                                res.onSuccess {
+                                    url = it.image_url
+                                }
                             }
                         }
                     },
@@ -234,10 +239,12 @@ fun CreatePostScreen(
                     onCustomThumbnailImagePicked = { uri ->
                         if (!account.isAnon() && uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
+                            val imageBytes = imageIs.readBytes()
                             scope.launch {
                                 isUploadingCustomThumbnailImage = true
-                                customThumbnail = API.uploadPictrsImage(imageIs, ctx)
+                                val res = API.getInstance().uploadImage(imageBytes)
                                 isUploadingCustomThumbnailImage = false
+                                res.onSuccess { customThumbnail = it.image_url }
                             }
                         }
                     },

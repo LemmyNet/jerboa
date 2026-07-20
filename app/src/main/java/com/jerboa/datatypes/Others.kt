@@ -1,6 +1,5 @@
 package com.jerboa.datatypes
 
-import android.content.Context
 import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -20,10 +19,10 @@ import com.jerboa.ui.components.person.UserTab
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.Post
-import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.dto.PostFeatureType
-import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.enums.CommentSortType
+import it.vercruysse.lemmyapi.enums.ListingType
+import it.vercruysse.lemmyapi.enums.PostFeatureType
+import it.vercruysse.lemmyapi.enums.SortType
 import kotlinx.serialization.Serializable
 
 data class CommentSortData(
@@ -144,6 +143,7 @@ fun getLocalizedListingTypeName(
         ListingType.Local -> resources.getString(R.string.home_local)
         ListingType.Subscribed -> resources.getString(R.string.home_subscribed)
         ListingType.ModeratorView -> resources.getString(R.string.home_moderator_view)
+        ListingType.Suggested -> resources.getString(R.string.home_suggested)
     }
 
 /**
@@ -175,11 +175,22 @@ fun getLocalizedUnreadOrAllName(
 
 /**
  * A container to store extra community ban info
+ * TODO you should be able to get rid of this
  */
 @Serializable
 data class BanFromCommunityData(
     val person: Person,
     val community: Community,
+    val banned: Boolean,
+)
+
+/**
+ * A container to store extra ban data
+ * TODO you should be able to get rid of this
+ */
+@Serializable
+data class BanData(
+    val person: Person,
     val banned: Boolean,
 )
 
@@ -197,6 +208,7 @@ data class PostFeatureData(
  */
 enum class UserViewType {
     Normal,
-    AdminOnly,
-    AdminOrMod,
+    Admin,
+    Mod,
+    NotLoggedIn,
 }

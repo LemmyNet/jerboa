@@ -27,6 +27,8 @@ import androidx.core.content.res.ResourcesCompat
 import coil.imageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
+import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.lowBandwidthMode
 import com.jerboa.util.markwon.BetterLinkMovementMethod
 import com.jerboa.util.markwon.ForceHttpsPlugin
 import com.jerboa.util.markwon.LinkOnlyImagesPlugin
@@ -98,12 +100,12 @@ object MarkdownHelper {
 
     fun init(
         appState: JerboaAppState,
-        useCustomTabs: Boolean,
-        usePrivateTabs: Boolean,
-        lowBandwidthMode: Boolean,
+        appSettings: AppSettings,
+        ctx: Context,
         onLongClick: BetterLinkMovementMethod.OnLinkLongClickListener,
     ) {
         val context = appState.navController.context
+        val lowBandwidthMode = appSettings.lowBandwidthMode(ctx)
         val loader = context.imageLoader
         val imagesPlugin = if (lowBandwidthMode) {
             // Render `![alt](url)` as a plain clickable link — no network load.
@@ -147,7 +149,11 @@ object MarkdownHelper {
                                 // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
                                 // Now it doesn't anymore and we have to do it manually
                                 view.cancelPendingInputEvents()
-                                appState.openLink(link, useCustomTabs, usePrivateTabs)
+                                appState.openLink(
+                                    url = link,
+                                    useCustomTabs = appSettings.useCustomTabs,
+                                    usePrivateTabs = appSettings.usePrivateTabs
+                                )
                             }
                         }
                     },

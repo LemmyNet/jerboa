@@ -17,7 +17,6 @@ import it.vercruysse.lemmyapi.datatypes.CommentReportView
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.ResolveCommentReport
-import it.vercruysse.lemmyapi.dto.SubscribedType
 
 @Composable
 fun CommentReportItem(
@@ -31,23 +30,25 @@ fun CommentReportItem(
     // not the current state.
     val origComment = commentReportView.comment.copy(
         content = commentReportView.comment_report.original_comment_text,
-        published = commentReportView.comment_report.published,
+        published_at = commentReportView.comment_report.published_at,
     )
 
     val commentView = CommentView(
         comment = origComment,
         post = commentReportView.post,
         creator = commentReportView.comment_creator,
-        creator_banned_from_community = commentReportView.creator_banned_from_community,
-        my_vote = commentReportView.my_vote,
-        subscribed = SubscribedType.NotSubscribed,
         community = commentReportView.community,
-        counts = commentReportView.counts,
-        creator_blocked = false,
-        creator_is_admin = false,
-        creator_is_moderator = false,
-        saved = false,
-        banned_from_community = false,
+        community_actions = commentReportView.community_actions,
+        comment_actions = commentReportView.comment_actions,
+        person_actions = commentReportView.person_actions,
+        creator_banned = commentReportView.creator_banned,
+        creator_banned_from_community = commentReportView.creator_banned_from_community,
+        creator_ban_expires_at = commentReportView.creator_ban_expires_at,
+        creator_community_ban_expires_at = commentReportView.creator_community_ban_expires_at,
+        creator_is_admin = commentReportView.creator_is_admin,
+        creator_is_moderator = commentReportView.creator_is_moderator,
+        tags = emptyList(),
+        can_mod = true,
     )
 
     Column(

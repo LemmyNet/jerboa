@@ -23,6 +23,7 @@ import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.VoteView
+import it.vercruysse.lemmyapi.enums.VoteAction
 
 @Composable
 fun ViewVotesBody(
@@ -44,7 +45,7 @@ fun ViewVotesBody(
             key = { like -> like.creator.id },
             contentType = { "like" },
         ) { like ->
-            val voteInfo = buildVoteInfo(vote = like.score)
+            val voteInfo = buildVoteInfo(vote = like.vote)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -75,9 +76,9 @@ private data class VoteInfo(
 )
 
 @Composable
-private fun buildVoteInfo(vote: Long): VoteInfo =
+private fun buildVoteInfo(vote: VoteAction): VoteInfo =
     when (vote) {
-        1L -> {
+        VoteAction.UpVote -> {
             VoteInfo(
                 ImageVector.vectorResource(id = R.drawable.up_filled),
                 MaterialTheme.colorScheme.secondary,

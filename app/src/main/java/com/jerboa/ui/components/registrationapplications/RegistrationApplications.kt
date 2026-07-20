@@ -39,7 +39,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -56,8 +55,8 @@ import com.jerboa.datatypes.samplePendingRegistrationApplicationView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.RegistrationApplicationsViewModel
-import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.DualHeaderTitle
@@ -148,7 +147,7 @@ fun RegistrationApplicationsHeaderTitle(
 fun RegistrationApplications(
     appState: JerboaAppState,
     registrationApplicationsViewModel: RegistrationApplicationsViewModel,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     ctx: Context,
     resources: Resources,
     account: Account,
@@ -166,7 +165,7 @@ fun RegistrationApplications(
             resources,
             snackbarHostState,
             scope,
-            siteViewModel,
+            myUserInfoViewModel,
         ) {
             registrationApplicationsViewModel.appendApplications()
         }
@@ -183,14 +182,14 @@ fun RegistrationApplications(
                 resources,
                 snackbarHostState,
                 scope,
-                siteViewModel,
+                myUserInfoViewModel,
             ) {
                 registrationApplicationsViewModel.resetPage()
                 registrationApplicationsViewModel.listApplications(
                     registrationApplicationsViewModel.getFormApplications(),
                     ApiState.Refreshing,
                 )
-                siteViewModel.fetchUnreadAppCount()
+                myUserInfoViewModel.fetchUnreadCounts()
             }
         },
     ) {
@@ -205,8 +204,8 @@ fun RegistrationApplications(
                 ApiErrorText(appsRes.msg)
             }
 
-            is ApiState.Holder -> {
-                val apps = appsRes.data.registration_applications
+            is ApiState.Success -> {
+                val apps = appsRes.data.items
                 LazyColumn(
                     state = listState,
                     modifier =
@@ -229,7 +228,7 @@ fun RegistrationApplications(
                                     resources,
                                     snackbarHostState,
                                     scope,
-                                    siteViewModel,
+                                    myUserInfoViewModel,
                                 ) {
                                     registrationApplicationsViewModel.approveOrDenyApplication(
                                         form,
@@ -239,7 +238,7 @@ fun RegistrationApplications(
                             onPersonClick = { personId ->
                                 appState.toProfile(id = personId)
                             },
-                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                            showAvatar = myUserInfoViewModel.showAvatar() && !lowBandwidthMode,
                             account = account,
                         )
                     }
@@ -298,7 +297,7 @@ fun RegistrationApplicationItem(
             }
 
             TimeAgo(
-                published = app.published,
+                published = app.published_at,
             )
         }
 

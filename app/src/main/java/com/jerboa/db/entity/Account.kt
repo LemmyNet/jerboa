@@ -13,6 +13,7 @@ data class Account(
     @ColumnInfo(name = "instance") val instance: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "jwt") val jwt: String,
+    // TODO everything below here should be deleted, and should be retrieved from MyUserInfo
     @ColumnInfo(
         name = "default_listing_type",
         defaultValue = "0",
@@ -47,15 +48,7 @@ val AnonAccount =
         isMod = false,
     )
 
-fun Account.isAnon(): Boolean = this.id == -1L
+// TODO this should be removed. MyUserInfo != null should replace it
+//fun Account.isAnon(): Boolean = this.id == -1L
 
 fun Account.isReady(): Boolean = this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
-
-fun Account.userViewType(): UserViewType =
-    if (isAdmin) {
-        UserViewType.AdminOnly
-    } else if (isMod) {
-        UserViewType.AdminOrMod
-    } else {
-        UserViewType.Normal
-    }

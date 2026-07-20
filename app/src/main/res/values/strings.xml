@@ -125,6 +125,7 @@
     <string name="home_site_info">Site info</string>
     <string name="home_subscribed">Subscribed</string>
     <string name="home_moderator_view">Moderator view</string>
+    <string name="home_suggested">Suggested</string>
     <string name="home_subscriptions">Subscriptions</string>
     <string name="home_switch_to">Switch to %1$s@%2$s</string>
     <string name="inbox_filter">Filter</string>
@@ -460,7 +461,9 @@
     <string name="creator">Creator</string>
     <string name="message">Message</string>
     <string name="report_person">Report %1$s</string>
-    <string name="block_person">Block %1$s</string>
+    <string name="block_x">Block %1$s</string>
+    <string name="block_x_users">Block %1$s users</string>
+    <string name="block_x_communities">Block %1$s communities</string>
     <string name="undistinguish_comment">Undistinguish comment</string>
     <string name="distinguish_comment">Distinguish comment</string>
     <string name="site_info_name">%1$s info</string>
@@ -509,4 +512,7 @@
     <string name="unmute">Unmute</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="denied">Denied</string>
+    <string name="communities_from_these_instances">Communities from these instances</string>
+    <string name="users_from_these_instances">Users from these instances</string>
 </resources>

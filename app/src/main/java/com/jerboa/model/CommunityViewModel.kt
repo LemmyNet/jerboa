@@ -16,7 +16,6 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feat.showBlockCommunityToast
 import com.jerboa.jerboaApplication
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.BlockCommunityResponse
 import it.vercruysse.lemmyapi.datatypes.CommunityId
 import it.vercruysse.lemmyapi.datatypes.CommunityResponse
 import it.vercruysse.lemmyapi.datatypes.FollowCommunity
@@ -33,7 +32,7 @@ class CommunityViewModel(
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<CommunityResponse> by mutableStateOf(ApiState.Empty)
     private var communityId: CommunityId? by mutableStateOf(null)
     private var communityName: String? by mutableStateOf(null)
 

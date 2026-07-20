@@ -100,8 +100,8 @@ fun dateStringToPretty(
 @Composable
 fun TimeAgoPreview() {
     TimeAgo(
-        published = samplePerson.published,
-        updated = samplePerson.updated,
+        published = samplePerson.published_at,
+        updated = samplePerson.updated_at,
     )
 }
 

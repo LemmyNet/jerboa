@@ -23,7 +23,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -36,29 +35,24 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.isAnon
-import com.jerboa.db.entity.isReady
-import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.model.ReplyItem
-import com.jerboa.model.SiteViewModel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
 import com.jerboa.ui.components.ban.BanPersonReturn
-import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -70,37 +64,33 @@ import com.jerboa.ui.components.remove.post.PostRemoveReturn
 import it.vercruysse.lemmyapi.datatypes.CreatePostLike
 import it.vercruysse.lemmyapi.datatypes.DeletePost
 import it.vercruysse.lemmyapi.datatypes.FeaturePost
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
 import it.vercruysse.lemmyapi.datatypes.MarkPostAsRead
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonView
+import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SavePost
-import it.vercruysse.lemmyapi.datatypes.Tagline
+import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun HomeScreen(
+fun HomePane(
     appState: JerboaAppState,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel,
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
     appSettingsViewModel: AppSettingsViewModel,
-    showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
     drawerState: DrawerState,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreviews: Boolean,
-    markAsReadOnScroll: Boolean,
-    postActionBarMode: PostActionBarMode,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
     padding: PaddingValues,
+    selectionState: SelectionVisibilityState<PostId>,
+    onPostClick: (PostView) -> Unit,
 ) {
-    Log.d("jerboa", "got to home screen")
+    Log.d("jerboa", "got to home pane")
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
@@ -120,20 +110,6 @@ fun HomeScreen(
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
-
-    LaunchedEffect(account) {
-        if (!account.isAnon() && !account.isReady()) {
-            account.doIfReadyElseDisplayInfo(
-                appState,
-                ctx,
-                resources,
-                snackbarHostState,
-                scope,
-                siteViewModel,
-                accountViewModel,
-            ) {}
-        }
-    }
 
     val baseModifier =
         Modifier
@@ -167,22 +143,18 @@ fun HomeScreen(
             Box(modifier = Modifier.padding(innerPadding)) {
                 MainPostListingsContent(
                     homeViewModel = homeViewModel,
-                    siteViewModel = siteViewModel,
+                    siteRes = siteRes,
+                    myUserInfo = myUserInfo,
                     appSettingsViewModel = appSettingsViewModel,
                     account = account,
                     appState = appState,
                     postListState = postListState,
-                    showVotingArrowsInListView = showVotingArrowsInListView,
-                    useCustomTabs = useCustomTabs,
-                    usePrivateTabs = usePrivateTabs,
-                    blurNSFW = blurNSFW,
-                    showPostLinkPreviews = showPostLinkPreviews,
-                    markAsReadOnScroll = markAsReadOnScroll,
                     snackbarHostState = snackbarHostState,
                     postActionBarMode = postActionBarMode,
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
-                    lowBandwidthMode = lowBandwidthMode,
+                    onPostClick = onPostClick,
+                    selectionState = selectionState,
                 )
             }
         },
@@ -196,7 +168,7 @@ fun HomeScreen(
                         resources,
                         snackbarHostState,
                         scope,
-                        siteViewModel,
+                        myUserInfoViewModel,
                         accountViewModel,
                         loginAsToast = false,
                     ) {
@@ -219,43 +191,24 @@ fun HomeScreen(
 @Composable
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
-    siteViewModel: SiteViewModel,
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
+    appSettingsViewModel: AppSettingsViewModel,
     account: Account,
     appState: JerboaAppState,
     postListState: LazyListState,
-    appSettingsViewModel: AppSettingsViewModel,
-    showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreviews: Boolean,
     snackbarHostState: SnackbarHostState,
-    markAsReadOnScroll: Boolean,
     postActionBarMode: PostActionBarMode,
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
+    onPostClick: (PostView) -> Unit,
+    selectionState: SelectionVisibilityState<PostId>,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
 
-    var taglines: List<Tagline>? = null
-    when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading -> {
-            LoadingBar()
-        }
-
-        is ApiState.Failure -> {
-            ApiErrorText(siteRes.msg)
-        }
-
-        is ApiState.Success -> {
-            taglines = siteRes.data.taglines
-        }
-
-        else -> {}
-    }
+    val tagline = siteRes.tagline
 
     ReportDrawn()
 
@@ -282,63 +235,33 @@ fun MainPostListingsContent(
 
         PostListings(
             posts = posts,
-            admins = siteViewModel.admins(),
+            siteRes = siteRes,
             // No community moderators available here
-            moderators = null,
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
+            contentAboveListings = { tagline?.let {TaglineDisplay(it)} },
             onUpvoteClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(postView.my_vote, VoteType.Upvote),
+                            vote = newVote(postView.post_actions?.vote, VoteAction.UpVote),
                         ),
                     )
-                }
             },
             onDownvoteClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(postView.my_vote, VoteType.Downvote),
+                            vote = newVote(postView.post_actions?.vote, VoteAction.DownVote),
                         ),
                     )
-                }
             },
-            onPostClick = { postView ->
-                appState.toPost(id = postView.post.id)
-            },
+            onPostClick = onPostClick,
             onSaveClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.savePost(
                         SavePost(
                             post_id = postView.post.id,
-                            save = !postView.saved,
+                            save = postView.post_actions?.saved_at == null,
                         ),
                     )
-                }
             },
             onReplyClick = { pv ->
                 appState.toCommentReply(
@@ -351,39 +274,21 @@ fun MainPostListingsContent(
                 )
             },
             onDeletePostClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.deletePost(
                         DeletePost(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
                         ),
                     )
-                }
             },
             onHidePostClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.hidePost(
                         HidePost(
-                            post_ids = listOf(postView.post.id),
-                            hide = !postView.hidden,
+                            post_id = postView.post.id,
+                            hide = postView.post_actions?.hidden_at == null,
                         ),
                         ctx,
                     )
-                }
             },
             onReportClick = { postView ->
                 appState.toPostReport(id = postView.post.id)
@@ -398,31 +303,15 @@ fun MainPostListingsContent(
                 appState.toBanFromCommunity(banData = d)
             },
             onLockPostClick = { pv ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.lockPost(
                         LockPost(
                             post_id = pv.post.id,
                             locked = !pv.post.locked,
+                            reason = TODO
                         ),
                     )
-                }
             },
             onFeaturePostClick = { data ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    resources,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
                     homeViewModel.featurePost(
                         FeaturePost(
                             post_id = data.post.id,
@@ -430,7 +319,6 @@ fun MainPostListingsContent(
                             feature_type = data.type,
                         ),
                     )
-                }
             },
             onViewPostVotesClick = appState::toPostLikes,
             onCommunityClick = { community ->
@@ -443,34 +331,24 @@ fun MainPostListingsContent(
             account = account,
             listState = postListState,
             postViewMode = getPostViewMode(appSettingsViewModel),
-            showVotingArrowsInListView = showVotingArrowsInListView,
-            enableDownVotes = siteViewModel.enableDownvotes(),
-            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
-            showPostLinkPreviews = showPostLinkPreviews,
             appState = appState,
-            markAsReadOnScroll = markAsReadOnScroll,
             onMarkAsRead = { postView ->
-                if (!account.isAnon() && !postView.read) {
+                if (postView.post_actions?.read_at != null) {
                     homeViewModel.markPostAsRead(
                         MarkPostAsRead(
-                            post_ids = listOf(postView.post.id),
+                            post_id = postView.post.id,
                             read = true,
                         ),
-                        postView,
                         appState,
                     )
                 }
             },
             showIfRead = true,
-            voteDisplayMode = siteViewModel.voteDisplayMode(),
             postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
             swipeToActionPreset = swipeToActionPreset,
             disableVideoAutoplay = disableVideoAutoplay,
-            lowBandwidthMode = lowBandwidthMode,
+            selectionState = selectionState,
         )
     }
 }

@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
+import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.datatypes.BanFromCommunityData
@@ -502,7 +503,7 @@ fun UserTabs(
                                                     score =
                                                         newVote(
                                                             pv.my_vote,
-                                                            VoteType.Upvote,
+                                                            VoteAction.UpVote,
                                                         ),
                                                 ),
                                             )
@@ -522,7 +523,7 @@ fun UserTabs(
                                                     post_id = pv.post.id,
                                                     score = newVote(
                                                         pv.my_vote,
-                                                        VoteType.Downvote,
+                                                        VoteAction.DownVote,
                                                     ),
                                                 ),
                                             )
@@ -666,7 +667,7 @@ fun UserTabs(
                                         if (!account.isAnon() && !it.read) {
                                             personProfileViewModel.markPostAsRead(
                                                 MarkPostAsRead(
-                                                    post_ids = listOf(it.post.id),
+                                                    post_id = it.post.id,
                                                     read = true,
                                                 ),
                                                 it,
@@ -681,6 +682,7 @@ fun UserTabs(
                                     swipeToActionPreset = swipeToActionPreset,
                                     disableVideoAutoplay = disableVideoAutoplay,
                                     lowBandwidthMode = lowBandwidthMode,
+                                    selectionState = SelectionVisibilityState.NoSelection,
                                 )
                             }
 
@@ -769,7 +771,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Upvote),
+                                                    score = newVote(cv.my_vote, VoteAction.UpVote),
                                                 ),
                                             )
                                         }
@@ -786,7 +788,7 @@ fun UserTabs(
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
-                                                    score = newVote(cv.my_vote, VoteType.Downvote),
+                                                    score = newVote(cv.my_vote, VoteAction.DownVote),
                                                 ),
                                             )
                                         }

@@ -18,32 +18,29 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import com.jerboa.db.entity.isAnon
-import com.jerboa.model.AccountViewModel
+import com.jerboa.datatypes.BanData
 import com.jerboa.model.BanPersonViewModel
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.ActionTopBar
-import com.jerboa.ui.components.common.getCurrentAccount
-import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 
 object BanPersonReturn {
-    const val PERSON_VIEW = "ban-person::return(person-view)"
-    const val PERSON_SEND = "ban-person::send(person-view)"
+    const val BAN_DATA_VIEW = "ban-person::return(ban-data-view)"
+    const val BAN_DATA_SEND = "ban-person::send(ban-data-view)"
 }
 
 @Composable
 fun BanPersonScreen(
     appState: JerboaAppState,
-    accountViewModel: AccountViewModel,
+    myUserInfo: MyUserInfo?,
 ) {
     Log.d("jerboa", "got to ban person screen")
 
     val ctx = LocalContext.current
     val resources = LocalResources.current
-    val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val banPersonViewModel: BanPersonViewModel = viewModel()
-    val person = appState.getPrevReturn<Person>(key = BanPersonReturn.PERSON_SEND)
+    val banData = appState.getPrevReturn<BanData>(key = BanPersonReturn.BAN_DATA_SEND)
 
     var removeData by rememberSaveable { mutableStateOf(false) }
     var permaBan by rememberSaveable { mutableStateOf(false) }
@@ -62,9 +59,10 @@ fun BanPersonScreen(
         }
 
     val focusManager = LocalFocusManager.current
-    val title = stringResource(if (person.banned) R.string.unban_person else R.string.ban_person, personNameShown(person, true))
+    val title =
+        stringResource(if (banData.banned) R.string.unban_person else R.string.ban_person, personNameShown(banData.person, true))
 
-    val isBan = !person.banned
+    val isBan = !banData.banned
 
     // Make sure the form is valid only if permaban is checked or expireDays is not null
     val isValid = !isBan or permaBan or (expireDays !== null)
@@ -76,11 +74,11 @@ fun BanPersonScreen(
                 title = title,
                 loading = loading,
                 onActionClick = {
-                    if (!account.isAnon()) {
+                    if (myUserInfo != null) {
                         banPersonViewModel.banOrUnbanPerson(
-                            personId = person.id,
+                            personId = banData.person.id,
                             ban = isBan,
-                            removeData = if (isBan) removeData else false,
+                            removeOrRestoreData = if (isBan) removeData else false,
                             expireDays = if (!isBan or permaBan) null else expireDays,
                             reason = reason.text,
                             ctx = ctx,
@@ -88,7 +86,7 @@ fun BanPersonScreen(
                             focusManager = focusManager,
                         ) { personView ->
                             appState.apply {
-                                addReturn(BanPersonReturn.PERSON_VIEW, personView)
+                                addReturn(BanPersonReturn.BAN_DATA_VIEW, personView)
                                 navigateUp()
                             }
                         }
@@ -117,7 +115,7 @@ fun BanPersonScreen(
                 removeData = removeData,
                 onRemoveDataChange = { removeData = it },
                 isValid = isValid,
-                account = account,
+                myUserInfo = myUserInfo,
                 padding = padding,
             )
         },

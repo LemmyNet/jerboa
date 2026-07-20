@@ -1,8 +1,6 @@
 package com.jerboa.ui.components.settings.block
 
-import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -47,14 +44,12 @@ import com.jerboa.R
 import com.jerboa.api.ApiAction
 import com.jerboa.api.ApiState
 import com.jerboa.model.BlockViewModel
-import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.ApiEmptyText
+import com.jerboa.model.MyUserInfoViewModel
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.components.common.JerboaLoadingBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.common.Title
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import kotlinx.coroutines.launch
@@ -62,25 +57,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BlocksScreen(
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
     onBack: () -> Unit,
 ) {
+    val blockViewModel: BlockViewModel = viewModel()
+
     val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(Unit) {
-        Log.d("BlocksScreen", "Refreshing site")
-        when (val res = siteViewModel.siteRes) {
-            is ApiState.Success -> {
-                siteViewModel.getSite(ApiState.Appending(res.data))
-            }
-
-            is ApiState.Loading, is ApiState.Appending -> {}
-
-            else -> {
-                siteViewModel.getSite()
-            }
-        }
-    }
 
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
@@ -90,24 +72,23 @@ fun BlocksScreen(
         content = { padding ->
             PullToRefreshBox(
                 modifier = Modifier.padding(padding),
-                isRefreshing = siteViewModel.siteRes is ApiState.Loading,
-                onRefresh = { siteViewModel.getSite() },
+                isRefreshing = myUserInfoViewModel.myUserRes is ApiState.Loading,
+                onRefresh = { myUserInfoViewModel.getMyUser() },
             ) {
-                JerboaLoadingBar(siteViewModel.siteRes)
+                JerboaLoadingBar(myUserInfoViewModel.myUserRes)
 
-                when (val res = siteViewModel.siteRes) {
+                when (val res = myUserInfoViewModel.myUserRes) {
                     is ApiState.Failure -> {
                         ApiErrorText(res.msg)
                     }
 
-                    is ApiState.Holder -> {
-                        res.data.my_user?.let {
-                            BlockList(it)
-                        } ?: ApiEmptyText()
+                    is ApiState.Success -> {
+                        BlockList(
+                            blockViewModel = blockViewModel,
+                            myUserInfo = res.data
+                        )
                     }
-
                     else -> {
-                        Unit
                     }
                 }
             }
@@ -118,34 +99,31 @@ fun BlocksScreen(
 enum class BlocksTab(
     @param:StringRes val label: Int,
 ) {
-    Instances(R.string.instances),
+    InstanceCommunities(R.string.communities_from_these_instances),
+    InstancePersons(R.string.users_from_these_instances),
     Communities(R.string.communities),
     Users(R.string.users),
 }
 
 @Composable
-fun BlockList(userInfo: MyUserInfo) {
+fun BlockList(
+    blockViewModel: BlockViewModel,
+    myUserInfo: MyUserInfo
+) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
-    val viewModel: BlockViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val tabTitles = BlocksTab.entries.map { resources.getString(it.label) }
     val pagerState = rememberPagerState { tabTitles.size }
 
-    LaunchedEffect(userInfo) {
-        viewModel.initData(userInfo)
-    }
+    LaunchedEffect(myUserInfo) { blockViewModel.initData(myUserInfo) }
 
     Column {
         TabRow(selectedTabIndex = pagerState.currentPage) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
+                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                     text = { Text(text = title) },
                 )
             }
@@ -157,44 +135,55 @@ fun BlockList(userInfo: MyUserInfo) {
         ) { tabIndex ->
             LazyColumn(contentPadding = PaddingValues(MEDIUM_PADDING, 0.dp)) {
                 when (tabIndex) {
-                    BlocksTab.Instances.ordinal -> {
+                    BlocksTab.InstanceCommunities.ordinal -> {
                         itemsWithEmpty(
-                            items = viewModel.instanceBlocks.value,
-                            key = { "I${it.data.id}" },
+                            items = blockViewModel.instanceCommunitiesBlocks.value,
+                            key = { "IC${it.data.id}" },
                             emptyText = R.string.you_have_no_blocked_instances,
                         ) {
                             ItemBlockView(it.data.domain, null, it) {
-                                viewModel.unBlockInstance(it.data, ctx)
+                                blockViewModel.unBlockInstanceCommunities(it.data, ctx)
+                            }
+                        }
+                    }
+
+                    BlocksTab.InstancePersons.ordinal -> {
+                        itemsWithEmpty(
+                            items = blockViewModel.instancePersonsBlocks.value,
+                            key = { "IP${it.data.id}" },
+                            emptyText = R.string.you_have_no_blocked_instances,
+                        ) {
+                            ItemBlockView(it.data.domain, null, it) {
+                                blockViewModel.unBlockInstancePersons(it.data, ctx)
                             }
                         }
                     }
 
                     BlocksTab.Communities.ordinal -> {
                         itemsWithEmpty(
-                            items = viewModel.communityBlocks.value,
+                            items = blockViewModel.communityBlocks.value,
                             key = { "C${it.data.id}" },
                             emptyText = R.string.you_have_no_blocked_communities,
                         ) {
-                            ItemBlockView(it.data.name, it.data.actor_id, it) {
-                                viewModel.unBlockCommunity(it.data, ctx)
+                            ItemBlockView(it.data.name, it.data.ap_id, it) {
+                                blockViewModel.unBlockCommunity(it.data, ctx)
                             }
                         }
                     }
 
                     BlocksTab.Users.ordinal -> {
                         itemsWithEmpty(
-                            items = viewModel.personBlocks.value,
+                            items = blockViewModel.personBlocks.value,
                             key = { "U${it.data.id}" },
                             emptyText = R.string.you_have_no_blocked_users,
                         ) {
-                            ItemBlockView(it.data.name, it.data.actor_id, it) {
-                                viewModel.unBlockPerson(it.data, ctx)
+                            ItemBlockView(it.data.name, it.data.ap_id, it) {
+                                blockViewModel.unBlockPerson(it.data, ctx)
                             }
                         }
                     }
 
                     else -> {
-                        Unit
                     }
                 }
             }
@@ -215,9 +204,7 @@ inline fun <T> LazyListScope.itemsWithEmpty(
             Box(
                 modifier = Modifier.fillParentMaxSize(),
                 contentAlignment = Alignment.Center,
-            ) {
-                Text(stringResource(emptyText))
-            }
+            ) { Text(stringResource(emptyText)) }
         }
     } else {
         items(
@@ -243,7 +230,7 @@ fun ItemBlockView(
     ) {
         ItemAndInstanceTitle(
             title = name,
-            actorId = actor,
+            apId = actor,
             local = false,
             onClick = null,
         )
@@ -253,36 +240,26 @@ fun ItemBlockView(
             enabled = action !is ApiAction.Loading,
         ) {
             when (action) {
-                is ApiAction.Loading -> CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                is ApiAction.Loading -> {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary)
+                }
 
-                is ApiAction.Failed -> Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = stringResource(id = R.string.retry),
-                    tint = MaterialTheme.colorScheme.error,
-                )
+                is ApiAction.Failed -> {
+                    Icon(
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = stringResource(id = R.string.retry),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
 
-                is ApiAction.Ok -> Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(id = R.string.unblock),
-                    tint = MaterialTheme.colorScheme.secondary,
-                )
+                is ApiAction.Ok -> {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.unblock),
+                        tint = MaterialTheme.colorScheme.secondary,
+                    )
+                }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-fun LazyListScope.blockListHeader(
-    @StringRes resId: Int,
-) {
-    stickyHeader(
-        contentType = "blockHeader",
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.background,
-        ) {
-            Title(stringResource(id = resId))
         }
     }
 }

@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import com.jerboa.R
-import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.CheckboxField
 import com.jerboa.ui.components.common.ExpiresField
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 
 @Composable
 fun BanPersonBody(
@@ -29,7 +29,7 @@ fun BanPersonBody(
     removeData: Boolean,
     onRemoveDataChange: (Boolean) -> Unit,
     isValid: Boolean,
-    account: Account,
+    myUserInfo: MyUserInfo?,
     padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
@@ -46,7 +46,7 @@ fun BanPersonBody(
         MarkdownTextField(
             text = reason,
             onTextChange = onReasonChange,
-            account = account,
+            myUserInfo = myUserInfo,
             placeholder = stringResource(R.string.type_your_reason),
         )
 

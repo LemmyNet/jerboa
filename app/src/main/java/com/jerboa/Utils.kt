@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -49,9 +48,11 @@ import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.jerboa.api.API
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.datatypes.UserViewType
 import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.lowBandwidthMode
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -67,9 +68,13 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.time.Clock
 
 // / This should be done in a UI wrapper
 fun toastException(
@@ -146,7 +151,7 @@ fun buildCommentsTree(
 
     val depthOffset =
         if (isCommentView && firstComment != null) {
-            getCommentIdDepthFromPath(firstComment.path, rootCommentId!!)
+            getCommentIdDepthFromPath(firstComment.path, rootCommentId)
         } else {
             0
         }
@@ -384,6 +389,8 @@ fun formatDuration(
     }
 }
 
+fun nowBoolean(bool: Boolean): String? = if (bool) Clock.System.now().toString() else null
+
 fun prettyTimeShortener(timeString: String): String =
     if (prettyTime.locale.language == "en") {
         if (timeString.isEmpty()) {
@@ -454,7 +461,7 @@ fun personNameShown(
         if (person.local) {
             name
         } else {
-            "$name@${hostName(person.actor_id)}"
+            "$name@${hostName(person.ap_id)}"
         }
     }
 }
@@ -464,15 +471,15 @@ fun personNameShown(
  */
 fun communityNameShown(community: Community): String =
     if (community.local) {
-        community.title
+        community.title ?: community.name
     } else {
-        "${community.title}@${hostName(community.actor_id)}"
+        "${community.title}@${hostName(community.ap_id)}"
     }
 
 fun hostName(url: String): String? =
     try {
         URL(url).host
-    } catch (e: MalformedURLException) {
+    } catch (_: MalformedURLException) {
         null
     }
 
@@ -869,142 +876,183 @@ fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
     updated: PrivateMessageView,
 ): List<PrivateMessageView> {
-    val foundIndex =
-        messages.indexOfFirst {
-            it.private_message.id == updated.private_message.id
+    val newMessages = messages.toMutableList()
+    newMessages.replaceAll {
+        if (it.private_message.id == updated.private_message.id) {
+            updated
+        } else {
+            it
         }
-    return if (foundIndex != -1) {
-        val mutable = messages.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        messages
     }
+    return newMessages
 }
 
 fun findAndUpdateApplication(
     applications: List<RegistrationApplicationView>,
     updatedApplication: RegistrationApplicationView,
 ): List<RegistrationApplicationView> {
-    val foundIndex =
-        applications.indexOfFirst {
-            it.registration_application.id == updatedApplication.registration_application.id
+    val newApplications = applications.toMutableList()
+    newApplications.replaceAll {
+        if (it.registration_application.id == updatedApplication.registration_application.id) {
+            updatedApplication
+        } else {
+            it
         }
-    return if (foundIndex != -1) {
-        val mutable = applications.toMutableList()
-        mutable[foundIndex] = updatedApplication
-        mutable.toList()
-    } else {
-        applications
     }
+    return newApplications
 }
 
 fun findAndUpdatePostReport(
-    reports: List<PostReportView>,
+    reports: List<ReportCombinedView>,
     updatedReport: PostReportView,
-): List<PostReportView> {
-    val foundIndex =
-        reports.indexOfFirst {
-            it.post_report.id == updatedReport.post_report.id
+): List<ReportCombinedView> {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
+        when (it) {
+            is PostReportView -> {
+                if (it.post_report.id == updatedReport.post_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
     }
+    return newReports
 }
 
 fun findAndUpdateCommentReport(
-    reports: List<CommentReportView>,
+    reports: List<ReportCombinedView>,
     updatedReport: CommentReportView,
-): List<CommentReportView> {
-    val foundIndex =
-        reports.indexOfFirst {
-            it.comment_report.id == updatedReport.comment_report.id
+): List<ReportCombinedView> {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
+        when (it) {
+            is CommentReportView -> {
+                if (it.comment_report.id == updatedReport.comment_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
     }
+    return newReports
 }
 
 fun findAndUpdatePrivateMessageReport(
-    reports: List<PrivateMessageReportView>,
+    reports: List<ReportCombinedView>,
     updatedReport: PrivateMessageReportView,
-): List<PrivateMessageReportView> {
-    val foundIndex =
-        reports.indexOfFirst {
-            it.private_message_report.id == updatedReport.private_message_report.id
+): List<ReportCombinedView> {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
+        when (it) {
+            is PrivateMessageReportView -> {
+                if (it.private_message_report.id == updatedReport.private_message_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = reports.toMutableList()
-        mutable[foundIndex] = updatedReport
-        mutable.toList()
-    } else {
-        reports
     }
+    return newReports
 }
 
-fun findAndUpdatePersonMention(
-    mentions: List<PersonMentionView>,
-    updatedCommentView: CommentView,
-): List<PersonMentionView> {
-    val foundIndex =
-        mentions.indexOfFirst {
-            it.person_mention.comment_id == updatedCommentView.comment.id
-        }
-    return if (foundIndex != -1) {
-        val mutable = mentions.toMutableList()
-        mutable[foundIndex] =
-            mentions[foundIndex].copy(
-                my_vote = updatedCommentView.my_vote,
-                counts = updatedCommentView.counts,
-                saved = updatedCommentView.saved,
-                comment = updatedCommentView.comment,
-            )
-        mutable.toList()
-    } else {
-        mentions
-    }
-}
+fun findAndUpdateCommunityReport(
+    reports: List<ReportCombinedView>,
+    updatedReport: CommunityReportView,
+): List<ReportCombinedView> {
+    val newReports = reports.toMutableList()
+    newReports.replaceAll {
+        when (it) {
+            is CommunityReportView -> {
+                if (it.community_report.id == updatedReport.community_report.id) {
+                    updatedReport
+                } else {
+                    it
+                }
+            }
 
-fun findAndUpdateMention(
-    mentions: List<PersonMentionView>,
-    updated: PersonMentionView,
-): List<PersonMentionView> {
-    val foundIndex =
-        mentions.indexOfFirst {
-            it.person_mention.id == updated.person_mention.id
+            else -> {
+                it
+            }
         }
-    return if (foundIndex != -1) {
-        val mutable = mentions.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        mentions
     }
+    return newReports
 }
 
 fun findAndUpdateComment(
     comments: List<CommentView>,
     updated: CommentView,
 ): List<CommentView> {
-    val foundIndex =
-        comments.indexOfFirst {
-            it.comment.id == updated.comment.id
+    val newComments = comments.toMutableList()
+    newComments.replaceAll {
+        if (it.comment.id == updated.comment.id) {
+            updated
+        } else {
+            it
         }
-    return if (foundIndex != -1) {
-        val mutable = comments.toMutableList()
-        mutable[foundIndex] = updated
-        mutable.toList()
-    } else {
-        comments
     }
+    return newComments
+}
+
+fun findAndUpdateCommentInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    updated: CommentView,
+): List<PostCommentCombinedView> {
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
+        when (it) {
+            is CommentView -> {
+                if (it.comment.id == updated.comment.id) {
+                    updated
+                } else {
+                    it
+                }
+            }
+
+            is PostView -> {
+                it
+            }
+        }
+    }
+    return newItems
+}
+
+fun findAndUpdateCommentInNotificationView(
+    items: List<NotificationView>,
+    updated: CommentView,
+): List<NotificationView> {
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
+        when (val data = it.data) {
+            is CommentView -> {
+                if (data.comment.id == updated.comment.id) {
+                    it.copy(data = updated)
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
+            }
+        }
+    }
+    return newItems
 }
 
 fun findAndUpdatePostCreator(
@@ -1022,14 +1070,43 @@ fun findAndUpdatePostCreator(
     return newPosts
 }
 
+fun findAndUpdateCreatorInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    person: Person,
+): List<PostCommentCombinedView> {
+    val newItems = items.toMutableList()
+
+    newItems.replaceAll {
+        when (it) {
+            is CommentView -> {
+                if (it.creator.id == person.id) {
+                    it.copy(creator = person)
+                } else {
+                    it
+                }
+            }
+
+            is PostView -> {
+                if (it.creator.id == person.id) {
+                    it.copy(creator = person)
+                } else {
+                    it
+                }
+            }
+        }
+    }
+    return newItems
+}
+
 fun findAndUpdatePostHidden(
     posts: List<PostView>,
     form: HidePost,
 ): List<PostView> {
     val newPosts = posts.toMutableList()
     newPosts.replaceAll {
-        if (form.post_ids.contains(it.post.id)) {
-            it.copy(hidden = form.hide)
+        if (form.post_id == it.post.id) {
+            val newPostActions = it.post_actions?.copy(hidden_at = nowBoolean(form.hide))
+            it.copy(post_actions = newPostActions)
         } else {
             it
         }
@@ -1050,6 +1127,33 @@ fun findAndUpdatePostCreatorBannedFromCommunity(
         }
     }
     return newPosts
+}
+
+fun findAndUpdateCreatorBannedFromCommunityInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    banData: BanFromCommunityData,
+): List<PostCommentCombinedView> {
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
+        when (it) {
+            is CommentView -> {
+                if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+                    it.copy(creator_banned_from_community = banData.banned)
+                } else {
+                    it
+                }
+            }
+
+            is PostView -> {
+                if (it.creator.id == banData.person.id && it.community.id == banData.community.id) {
+                    it.copy(creator_banned_from_community = banData.banned)
+                } else {
+                    it
+                }
+            }
+        }
+    }
+    return newItems
 }
 
 fun findAndUpdateCommentCreator(
@@ -1082,29 +1186,6 @@ fun findAndUpdateCommentCreatorBannedFromCommunity(
     return newComments
 }
 
-fun findAndUpdateCommentReply(
-    replies: List<CommentReplyView>,
-    updatedCommentView: CommentView,
-): List<CommentReplyView> {
-    val foundIndex =
-        replies.indexOfFirst {
-            it.comment_reply.comment_id == updatedCommentView.comment.id
-        }
-    return if (foundIndex != -1) {
-        val mutable = replies.toMutableList()
-        mutable[foundIndex] =
-            replies[foundIndex].copy(
-                my_vote = updatedCommentView.my_vote,
-                counts = updatedCommentView.counts,
-                saved = updatedCommentView.saved,
-                comment = updatedCommentView.comment,
-            )
-        mutable.toList()
-    } else {
-        replies
-    }
-}
-
 fun calculateCommentOffset(
     depth: Int,
     padding: Dp = SMALL_PADDING,
@@ -1119,17 +1200,38 @@ fun findAndUpdatePost(
     posts: List<PostView>,
     updatedPostView: PostView,
 ): List<PostView> {
-    val foundIndex =
-        posts.indexOfFirst {
-            it.post.id == updatedPostView.post.id
+    val newPosts = posts.toMutableList()
+    newPosts.replaceAll {
+        if (it.post.id == updatedPostView.post.id) {
+            updatedPostView
+        } else {
+            it
         }
-    return if (foundIndex != -1) {
-        val mutable = posts.toMutableList()
-        mutable[foundIndex] = updatedPostView
-        mutable.toList()
-    } else {
-        posts
     }
+    return newPosts
+}
+
+fun findAndUpdatePostInPostCommentCombined(
+    items: List<PostCommentCombinedView>,
+    updatedPostView: PostView,
+): List<PostCommentCombinedView> {
+    val newItems = items.toMutableList()
+    newItems.replaceAll {
+        when (it) {
+            is PostView -> {
+                if (it.post.id == updatedPostView.post.id) {
+                    updatedPostView
+                } else {
+                    it
+                }
+            }
+
+            else -> {
+                it
+            }
+        }
+    }
+    return newItems
 }
 
 fun scrollToNextParentComment(
@@ -1246,8 +1348,8 @@ inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
 fun matchLoginErrorMsgToStringRes(
     resources: Resources,
     e: Throwable,
-): String {
-    return when (e.message) {
+): String =
+    when (e.message) {
         "incorrect_login" -> {
             resources.getString(R.string.login_view_model_incorrect_login)
         }
@@ -1273,7 +1375,7 @@ fun matchLoginErrorMsgToStringRes(
         }
 
         else -> {
-            return if (e.message?.contains("timeout") == true) {
+            if (e.message?.contains("timeout") == true) {
                 resources.getString(R.string.login_view_model_timeout)
             } else {
                 Log.d("login", "failed", e)
@@ -1281,7 +1383,6 @@ fun matchLoginErrorMsgToStringRes(
             }
         }
     }
-}
 
 fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
     this
@@ -1319,10 +1420,8 @@ fun <I, O> ComponentActivity.registerActivityResultLauncher(
 fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
-    return if (snapshot != null) {
-        snapshot.data.toFile().inputStream()
-    } else {
-        API.httpClient
+    return snapshot?.data?.toFile()?.inputStream()
+        ?: API.httpClient
             .newCall(
                 Request
                     .Builder()
@@ -1330,8 +1429,7 @@ fun Context.getInputStream(url: String): InputStream {
                     .build(),
             ).execute()
             .body
-            ?.byteStream() ?: throw IOException("Failed to get input stream")
-    }
+            .byteStream()
 }
 
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
@@ -1375,11 +1473,6 @@ fun <T> getDeduplicateMerge(
     getId: (T) -> PostId,
 ): List<T> = appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
 
-fun mergePosts(
-    old: List<PostView>,
-    new: List<PostView>,
-): List<PostView> = appendData(old, getDeduplicatedList(old, new) { it.post.id })
-
 /**
  * This function rewrites HTTP URLs to HTTPS
  */
@@ -1413,3 +1506,65 @@ fun Context.getVersionCode(): Int =
     }
 
 fun Int.toBool() = this > 0
+
+sealed interface SelectionVisibilityState<out Item> {
+    object NoSelection : SelectionVisibilityState<Nothing>
+
+    data class ShowSelection<Item>(
+        val selectedItem: Item,
+    ) : SelectionVisibilityState<Item>
+}
+
+fun futureDaysToUnixTime(days: Long?): Long? =
+    days?.let {
+        Instant.now().plus(it, ChronoUnit.DAYS).epochSecond
+    }
+
+fun MyUserInfo?.showAvatar(
+    appSettings: AppSettings,
+    ctx: Context,
+): Boolean {
+    val showAvatar = this
+        ?.local_user_view
+        ?.local_user
+        ?.show_avatars ?: true
+    return showAvatar && !appSettings.lowBandwidthMode(ctx)
+}
+
+fun MyUserInfo?.moderatedCommunities(): List<CommunityId>? =
+    this
+        ?.moderates
+        ?.map { it.community.id }
+
+fun MyUserInfo?.shouldShowDonation(): Boolean {
+    val lastDonationNotification = this
+        ?.local_user_view
+        ?.local_user
+        ?.last_donation_notification_at
+        ?: return false
+
+    return try {
+        val lastDonationTime = OffsetDateTime.parse(lastDonationNotification)
+        val oneYearAgo = OffsetDateTime.now().minusYears(1)
+        lastDonationTime.isBefore(oneYearAgo)
+    } catch (e: Exception) {
+        Log.e("MyUserInfoViewModel", "Failed to parse donation time", e)
+        false
+    }
+}
+
+fun MyUserInfo?.amAdmin(): Boolean {
+    return this?.local_user_view?.local_user?.admin ?: false
+}
+
+fun MyUserInfo?.userViewType(): UserViewType {
+    if (this?.local_user_view?.local_user?.admin == true) {
+        UserViewType.Admin
+    } else if (this?.moderates?.isNotEmpty() == true) {
+        UserViewType.Mod
+    } else if (this != null){
+        UserViewType.Normal
+    } else {
+        UserViewType.NotLoggedIn
+    }
+}

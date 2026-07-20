@@ -57,7 +57,7 @@ fun TextBadge(
 fun ItemAndInstanceTitle(
     modifier: Modifier = Modifier,
     title: String,
-    actorId: String?,
+    apId: String?,
     local: Boolean,
     onClick: (() -> Unit)?,
     itemColor: Color = MaterialTheme.colorScheme.primary,
@@ -66,8 +66,8 @@ fun ItemAndInstanceTitle(
     instanceStyle: TextStyle = MaterialTheme.typography.labelSmall,
 ) {
     val text = remember(title, local, itemColor) {
-        val serverStr = if (!local && actorId != null) {
-            "@${hostName(actorId)}"
+        val serverStr = if (!local && apId != null) {
+            "@${hostName(apId)}"
         } else {
             null
         }
@@ -112,7 +112,7 @@ fun ItemAndInstanceTitle(
 fun ItemInstanceAndTitlePreview() {
     ItemAndInstanceTitle(
         title = "lemmydev",
-        actorId = "https://lemmy.ml/u/lemmydev",
+        apId = "https://lemmy.ml/u/lemmydev",
         local = false,
         onClick = {},
     )

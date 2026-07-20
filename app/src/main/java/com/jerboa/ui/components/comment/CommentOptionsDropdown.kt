@@ -22,9 +22,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
+import com.jerboa.amAdmin
 import com.jerboa.api.API
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getContent
+import com.jerboa.feat.canModOrAdmin
 import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.ui.components.common.BanFromCommunityPopupMenuItem
 import com.jerboa.ui.components.common.BanPersonPopupMenuItem
@@ -32,32 +35,43 @@ import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.datatypes.DistinguishComment
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonView
 
 @Composable
 fun CommentOptionsDropdown(
     commentView: CommentView,
+    admins: List<PersonView>,
+    myUserInfo: MyUserInfo?,
     onDismissRequest: () -> Unit,
     onCommentLinkClick: (CommentView) -> Unit,
     onPersonClick: (PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
     onEditCommentClick: (CommentView) -> Unit,
-    onDeleteCommentClick: (CommentView) -> Unit,
+    onDeleteCommentClick: (DeleteComment) -> Unit,
     onBlockCreatorClick: (Person) -> Unit,
-    onReportClick: (CommentView) -> Unit,
+    onReportClick: (CommentId) -> Unit,
     onRemoveClick: (CommentView) -> Unit,
-    onDistinguishClick: (CommentView) -> Unit,
+    onDistinguishClick: (DistinguishComment) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
-    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
-    isCreator: Boolean,
-    canMod: Boolean,
-    amMod: Boolean,
-    amAdmin: Boolean,
+    onBanPersonClick: (BanData) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunityData) -> Unit,
     viewSource: Boolean,
 ) {
     val ctx = LocalContext.current
+    val commentId = commentView.comment.id
+
+    val isCreator = commentView.comment.creator_id == myUserInfo?.local_user_view?.local_user?.person_id
+    val canModOrAdmin = canModOrAdmin(
+        canMod = commentView.can_mod,
+        creatorId = commentView.comment.creator_id,
+        myUserInfo = myUserInfo,
+        admins = admins,
+    )
 
     CascadeCenteredDropdownMenu(
         expanded = true,
@@ -131,13 +145,19 @@ fun CommentOptionsDropdown(
                 },
             )
 
+            val deleteForm =
+                DeleteComment(
+                    comment_id = commentId,
+                    deleted = !commentView.comment.deleted,
+                )
             if (commentView.comment.deleted) {
+
                 PopupMenuItem(
                     text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
-                        onDeleteCommentClick(commentView)
+                        onDeleteCommentClick(deleteForm)
                     },
                 )
             } else {
@@ -146,13 +166,13 @@ fun CommentOptionsDropdown(
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()
-                        onDeleteCommentClick(commentView)
+                        onDeleteCommentClick(deleteForm)
                     },
                 )
             }
         } else {
             PopupMenuItem(
-                text = stringResource(R.string.block_person, commentView.creator.name),
+                text = stringResource(R.string.block_x, commentView.creator.name),
                 icon = Icons.Outlined.Block,
                 onClick = {
                     onDismissRequest()
@@ -164,18 +184,17 @@ fun CommentOptionsDropdown(
                 icon = Icons.Outlined.Flag,
                 onClick = {
                     onDismissRequest()
-                    onReportClick(commentView)
+                    onReportClick(commentId)
                 },
             )
         }
 
         // The moderation subfield
-        if (amMod || amAdmin) {
+        if (canModOrAdmin) {
             PopupMenuItem(
                 text = stringResource(R.string.moderation),
                 icon = Icons.Outlined.Shield,
             ) {
-                if (canMod) {
                     HorizontalDivider()
                     val (removeText, removeIcon) =
                         if (commentView.comment.removed) {
@@ -192,8 +211,15 @@ fun CommentOptionsDropdown(
                             onRemoveClick(commentView)
                         },
                     )
-                    if (amAdmin) {
-                        BanPersonPopupMenuItem(commentView.creator, onDismissRequest, onBanPersonClick)
+                    if (myUserInfo.amAdmin()) {
+                        BanPersonPopupMenuItem(
+                            banData = BanData(
+                                person = commentView.creator,
+                                banned = commentView.creator_banned,
+                            ),
+                            onDismissRequest = onDismissRequest,
+                            onBanPersonClick = onBanPersonClick
+                        )
                     }
 
                     // Only show ban from community button if its a local community
@@ -208,7 +234,6 @@ fun CommentOptionsDropdown(
                             onBanFromCommunityClick,
                         )
                     }
-                }
 
                 // Are an admin or mod, and also the comment creator
                 if (isCreator) {
@@ -229,18 +254,19 @@ fun CommentOptionsDropdown(
                     )
                 }
 
-                // You can do these actions on mods above you
-                if (amAdmin && API.getInstanceOrNull()?.FF?.listAdminVotes() == true) {
-                    PopupMenuItem(
-                        text = stringResource(R.string.view_votes),
-                        icon = ImageVector.vectorResource(R.drawable.up_filled),
-                        onClick = {
-                            onDismissRequest()
-                            onViewVotesClick(commentView.comment.id)
-                        },
-                    )
-                }
             }
         }
+        // You can do these actions on mods above you
+        if (myUserInfo.amAdmin() && API.getInstanceOrNull()?.FF?.listAdminVotes() == true) {
+            PopupMenuItem(
+                text = stringResource(R.string.view_votes),
+                icon = ImageVector.vectorResource(R.drawable.up_filled),
+                onClick = {
+                    onDismissRequest()
+                    onViewVotesClick(commentView.comment.id)
+                },
+            )
+        }
+
     }
 }

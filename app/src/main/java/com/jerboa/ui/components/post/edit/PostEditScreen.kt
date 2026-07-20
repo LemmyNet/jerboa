@@ -122,10 +122,15 @@ fun PostEditScreen(
                 onImagePicked = { uri ->
                     if (!account.isAnon()) {
                         val imageIs = imageInputStreamFromUri(ctx, uri)
+                        val imageBytes = imageIs.readBytes()
                         scope.launch {
                             isUploadingImage = true
-                            url = API.uploadPictrsImage(imageIs, ctx)
+                            val res = API.getInstance().uploadImage(imageBytes)
                             isUploadingImage = false
+                            res.onSuccess {
+                                url = it.image_url
+                            }
+
                         }
                     }
                 },
@@ -139,10 +144,15 @@ fun PostEditScreen(
                 onCustomThumbnailImagePicked = { uri ->
                     if (!account.isAnon() && uri != Uri.EMPTY) {
                         val imageIs = imageInputStreamFromUri(ctx, uri)
+                        val imageBytes = imageIs.readBytes()
+
                         scope.launch {
                             isUploadingCustomThumbnailImage = true
-                            customThumbnail = API.uploadPictrsImage(imageIs, ctx)
+                            val res = API.getInstance().uploadImage(imageBytes)
                             isUploadingCustomThumbnailImage = false
+                            res.onSuccess {
+                                customThumbnail =it.image_url
+                            }
                         }
                     }
                 },

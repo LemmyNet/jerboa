@@ -28,13 +28,14 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.datatypes.sampleInstantScores
+import com.jerboa.datatypes.sampleLocalSite
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
-import com.jerboa.feat.VoteType
-import com.jerboa.feat.default
+import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.needBlur
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
@@ -45,19 +46,25 @@ import com.jerboa.ui.components.common.NsfwBadge
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.common.scoreColor
+import com.jerboa.ui.components.common.scoreOrPctStr
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.LocalSite
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
+import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.enums.VoteAction
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListingList(
     postView: PostView,
     instantScores: InstantScores,
+    myUserInfo: MyUserInfo?,
+    localSite: LocalSite,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onPostClick: (postView: PostView) -> Unit,
@@ -69,8 +76,6 @@ fun PostListingList(
     blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    enableDownVotes: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     lowBandwidthMode: Boolean,
 ) {
     Column(
@@ -91,11 +96,12 @@ fun PostListingList(
             if (showVotingArrowsInListView) {
                 PostVotingTile(
                     instantScores = instantScores,
+                    myUserInfo = myUserInfo,
+                    localSite = localSite,
+                    creatorId = postView.post.creator_id,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     account = account,
-                    enableDownVotes = enableDownVotes,
-                    voteDisplayMode = voteDisplayMode,
                 )
             }
             Column(
@@ -105,7 +111,8 @@ fun PostListingList(
                         .clickable { onPostClick(postView) },
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                PostName(post = postView.post, read = postView.read, showIfRead = showIfRead)
+                PostName(
+                    post = postView.post, read = postView.post_actions?.read_at != null, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
                 ) {
@@ -148,8 +155,8 @@ fun PostListingList(
                         }
                     }
                     TimeAgo(
-                        published = postView.post.published,
-                        updated = postView.post.updated,
+                        published = postView.post.published_at,
+                        updated = postView.post.updated_at,
                         modifier = centerMod,
                     )
                 }
@@ -169,14 +176,14 @@ fun PostListingList(
                         text =
                             stringResource(
                                 R.string.post_listing_comments_count,
-                                postView.counts.comments,
+                                postView.post.comments,
                             ),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.outline,
                     )
                     CommentNewCount(
-                        comments = postView.counts.comments,
-                        unreadCount = postView.unread_comments,
+                        comments = postView.post.comments,
+                        readComments = postView.post_actions?.read_comments_amount,
                         style = MaterialTheme.typography.labelMedium,
                     )
                     NsfwBadge(visible = nsfwCheck(postView))
@@ -200,6 +207,8 @@ fun PostListingList(
 fun PostListingListPreview() {
     PostListingList(
         postView = samplePostView,
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         instantScores = sampleInstantScores,
         onUpvoteClick = {},
         onDownvoteClick = {},
@@ -211,8 +220,6 @@ fun PostListingListPreview() {
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showIfRead = true,
-        enableDownVotes = false,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         lowBandwidthMode = false,
     )
 }
@@ -223,6 +230,8 @@ fun PostListingListWithThumbPreview() {
     PostListingList(
         postView = samplePostView,
         instantScores = sampleInstantScores,
+        myUserInfo = sampleMyUserInfo,
+        localSite = sampleLocalSite,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -233,8 +242,6 @@ fun PostListingListWithThumbPreview() {
         blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
         showIfRead = true,
-        enableDownVotes = false,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
         lowBandwidthMode = false,
     )
 }
@@ -242,16 +249,17 @@ fun PostListingListWithThumbPreview() {
 @Composable
 fun CommentNewCount(
     comments: Long,
-    unreadCount: Long,
+    readComments: Long?,
     style: TextStyle = MaterialTheme.typography.labelSmall.copy(fontStyle = FontStyle.Italic),
     spacing: Dp = 0.dp,
 ) {
-    val unread =
-        if (unreadCount == 0L || comments == unreadCount) {
-            null
-        } else {
-            unreadCount
-        }
+    val read = readComments ?: 0
+    val unread = if (read >= comments || read == 0L) {
+        null
+    } else {
+        comments - read
+    }
+
     if (unread != null) {
         Spacer(Modifier.padding(horizontal = spacing))
 
@@ -266,11 +274,12 @@ fun CommentNewCount(
 @Composable
 fun PostVotingTile(
     instantScores: InstantScores,
+    myUserInfo: MyUserInfo?,
+    localSite: LocalSite,
+    creatorId: PersonId,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     account: Account,
-    enableDownVotes: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -282,14 +291,22 @@ fun PostVotingTile(
     ) {
         VoteGeneric(
             instantScores = instantScores,
-            voteDisplayMode = voteDisplayMode,
-            type = VoteType.Upvote,
+            myUserInfo = myUserInfo,
+            localSite = localSite,
+            voteAction = VoteAction.UpVote,
+            voteContentType = PostOrCommentType.Post,
+            creatorId = creatorId,
             onVoteClick = onUpvoteClick,
             account = account,
-            hideScores = true,
+            // TODO what is hide scores for?
+//            hideScores = true,
         )
 
-        val scoreOrPctStr = instantScores.scoreOrPctStr(voteDisplayMode)
+        val scoreOrPctStr = instantScores.scoreOrPctStr(
+            myUserInfo = myUserInfo,
+            localSite = localSite,
+            type = PostOrCommentType.Post,
+        )
 
         Text(
             text = scoreOrPctStr ?: "",
@@ -299,7 +316,6 @@ fun PostVotingTile(
             modifier = Modifier.alpha(if (scoreOrPctStr != null) 1f else 0f),
         )
 
-        if (enableDownVotes) {
             // invisible Text below aligns width of PostVotingTiles
             Text(
                 text = "00000",
@@ -308,12 +324,15 @@ fun PostVotingTile(
             )
             VoteGeneric(
                 instantScores = instantScores,
-                voteDisplayMode = voteDisplayMode,
-                type = VoteType.Downvote,
+                myUserInfo = myUserInfo,
+                localSite = localSite,
+                voteAction = VoteAction.DownVote,
+                voteContentType = PostOrCommentType.Post,
+                creatorId = creatorId,
                 onVoteClick = onDownvoteClick,
                 account = account,
-                hideScores = true,
+                // TODO
+//                hideScores = true,
             )
-        }
     }
 }

@@ -44,13 +44,14 @@ import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
-import com.jerboa.feat.VoteType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.EmbeddedDataLoader
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
@@ -65,24 +66,32 @@ import com.jerboa.ui.theme.Shapes
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.jerboaColorScheme
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.ImageDetails
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
-import it.vercruysse.lemmyapi.datatypes.Person
+import it.vercruysse.lemmyapi.datatypes.LocalSite
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.enums.VoteAction
 
 @ExperimentalLayoutApi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListing(
     postView: PostView,
-    admins: List<PersonView>,
-    moderators: List<PersonId>?,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    siteRes: GetSiteResponse,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
+    showReply: Boolean = false,
+    showCommunityName: Boolean = true,
+    fullBody: Boolean,
+    account: Account,
+    postViewMode: PostViewMode,
+    appState: JerboaAppState,
+    showIfRead: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
@@ -94,29 +103,12 @@ fun PostListing(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (personView: PersonView) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     onViewVotesClick: (PostId) -> Unit,
-    showReply: Boolean = false,
-    showCommunityName: Boolean = true,
-    fullBody: Boolean,
-    account: Account,
-    postViewMode: PostViewMode,
-    showVotingArrowsInListView: Boolean,
-    enableDownVotes: Boolean,
-    showAvatar: Boolean,
-    blurNSFW: BlurNSFW,
-    appState: JerboaAppState,
-    showPostLinkPreview: Boolean,
-    showIfRead: Boolean,
-    voteDisplayMode: LocalUserVoteDisplayMode,
-    postActionBarMode: PostActionBarMode,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -124,24 +116,24 @@ fun PostListing(
     var instantScores by remember {
         mutableStateOf(
             InstantScores(
-                myVote = postView.my_vote,
-                score = postView.counts.score,
-                upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes,
+                myVote = postView.post_actions?.vote,
+                score = postView.post.score,
+                upvotes = postView.post.upvotes,
+                downvotes = postView.post.downvotes,
             ),
         )
     }
 
     val upvoteClick = remember(postView, instantScores) {
         {
-            instantScores = instantScores.update(VoteType.Upvote)
+            instantScores = instantScores.update(VoteAction.UpVote)
             onUpvoteClick(postView)
         }
     }
 
     val downvoteClick = remember(postView, instantScores) {
         {
-            instantScores = instantScores.update(VoteType.Downvote)
+            instantScores = instantScores.update(VoteAction.DownVote)
             onDownvoteClick(postView)
         }
     }
@@ -162,7 +154,7 @@ fun PostListing(
     }
 
     val swipeState = rememberSwipeActionState(
-        swipeToActionPreset = swipeToActionPreset,
+        swipeToActionPreset = appSettings.swipeToActionPreset.toEnumSafe(),
         enableDownVotes = enableDownVotes,
         onAction = swipeAction,
         rememberKey = postView,
@@ -175,7 +167,8 @@ fun PostListing(
                     PostListingCard(
                         postView = postView,
                         admins = admins,
-                        moderators = moderators,
+                        myUserInfo = myUserInfo,
+                        localSite = localSite,
                         instantScores = instantScores,
                         onUpvoteClick = upvoteClick,
                         onDownvoteClick = downvoteClick,
@@ -203,7 +196,6 @@ fun PostListing(
                         fullBody = fullBody,
                         account = account,
                         expandedImage = true,
-                        enableDownVotes = enableDownVotes,
                         showAvatar = showAvatar,
                         useCustomTabs = useCustomTabs,
                         usePrivateTabs = usePrivateTabs,
@@ -211,7 +203,6 @@ fun PostListing(
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showIfRead = showIfRead,
-                        voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
                         lowBandwidthMode = lowBandwidthMode,
@@ -222,7 +213,8 @@ fun PostListing(
                     PostListingCard(
                         postView = postView,
                         admins = admins,
-                        moderators = moderators,
+                        myUserInfo = myUserInfo,
+                        localSite = localSite,
                         instantScores = instantScores,
                         onUpvoteClick = upvoteClick,
                         onDownvoteClick = downvoteClick,
@@ -250,7 +242,6 @@ fun PostListing(
                         fullBody = fullBody,
                         account = account,
                         expandedImage = false,
-                        enableDownVotes = enableDownVotes,
                         showAvatar = showAvatar,
                         useCustomTabs = useCustomTabs,
                         usePrivateTabs = usePrivateTabs,
@@ -258,7 +249,6 @@ fun PostListing(
                         showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showIfRead = showIfRead,
-                        voteDisplayMode = voteDisplayMode,
                         postActionBarMode = postActionBarMode,
                         disableVideoAutoplay = disableVideoAutoplay,
                         lowBandwidthMode = lowBandwidthMode,
@@ -269,6 +259,8 @@ fun PostListing(
                     PostListingList(
                         postView = postView,
                         instantScores = instantScores,
+                        myUserInfo = myUserInfo,
+                        localSite = localSite,
                         onUpvoteClick = upvoteClick,
                         onDownvoteClick = downvoteClick,
                         onPostClick = onPostClick,
@@ -280,8 +272,6 @@ fun PostListing(
                         blurNSFW = blurNSFW,
                         appState = appState,
                         showIfRead = showIfRead,
-                        enableDownVotes = enableDownVotes,
-                        voteDisplayMode = voteDisplayMode,
                         lowBandwidthMode = lowBandwidthMode,
                     )
                 }
@@ -466,7 +456,7 @@ fun MetadataCard(post: Post) {
                         }
                     }
                     post.embed_description?.let {
-                        // This is actually html, but markdown can render it
+                        // This is actually HTML, but markdown can render it
                         MyMarkdownText(
                             markdown = it,
                             onClick = {},

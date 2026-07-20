@@ -87,7 +87,7 @@ fun CommunityListings(
             contentType = { "communitylink" },
         ) { item ->
             // A hack for the community follower views that were coerced into community views without counts
-            if (item.counts.users_active_month == 0L) {
+            if (item.community.users_active_month == 0L) {
                 CommunityLinkLarger(
                     community = item.community,
                     onClick = onClickCommunity,

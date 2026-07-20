@@ -30,12 +30,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.PostLinkType
 import com.jerboa.R
+import com.jerboa.amAdmin
 import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.feat.blockCommunity
 import com.jerboa.feat.blockPerson
+import com.jerboa.feat.canModOrAdmin
 import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.feat.getInstanceFromCommunityUrl
 import com.jerboa.feat.shareLink
@@ -47,14 +49,17 @@ import com.jerboa.ui.components.common.BanPersonPopupMenuItem
 import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
-import it.vercruysse.lemmyapi.datatypes.BlockInstance
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
+import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
-import it.vercruysse.lemmyapi.dto.PostFeatureType
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstanceCommunitiesParams
+import it.vercruysse.lemmyapi.datatypes.UserBlockInstancePersonsParams
+import it.vercruysse.lemmyapi.enums.PostFeatureType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,6 +68,8 @@ import kotlinx.coroutines.withContext
 @Composable
 fun PostOptionsDropdown(
     postView: PostView,
+    admins: List<PersonView>,
+    myUserInfo: MyUserInfo?,
     onDismissRequest: () -> Unit,
     onCommunityClick: (Community) -> Unit,
     onPersonClick: (PersonId) -> Unit,
@@ -77,10 +84,6 @@ fun PostOptionsDropdown(
     onFeaturePostClick: (PostFeatureData) -> Unit,
     onViewVotesClick: (PostId) -> Unit,
     onViewSourceClick: () -> Unit,
-    isCreator: Boolean,
-    canMod: Boolean,
-    amMod: Boolean,
-    amAdmin: Boolean,
     viewSource: Boolean,
     showViewSource: Boolean,
     scope: CoroutineScope,
@@ -89,6 +92,14 @@ fun PostOptionsDropdown(
     val resources = LocalResources.current
     val api = getInstanceOrNull()
     val (featureIcon, unFeatureIcon) = Pair(Icons.Outlined.PushPin, Icons.Outlined.CancelPresentation)
+
+    val isCreator = postView.post.creator_id == myUserInfo?.local_user_view?.local_user?.person_id
+    val canModOrAdmin = canModOrAdmin(
+        canMod = postView.can_mod,
+        creatorId = postView.post.creator_id,
+        myUserInfo = myUserInfo,
+        admins = admins,
+    )
 
     CascadeCenteredDropdownMenu(
         expanded = true,
@@ -260,7 +271,7 @@ fun PostOptionsDropdown(
 
         // Hide / unhide post
         if (api != null && api.FF.hidePost()) {
-            if (postView.hidden) {
+            if (postView.post_actions?.hidden_at != null) {
                 PopupMenuItem(
                     text = stringResource(R.string.unhide_post),
                     icon = Icons.Outlined.Visibility,
@@ -370,22 +381,41 @@ fun PostOptionsDropdown(
                 )
 
                 if (api != null && api.FF.instanceBlock()) {
-                    val instance = getInstanceFromCommunityUrl(postView.community.actor_id)
+                    val instance = getInstanceFromCommunityUrl(postView.community.ap_id)
                     PopupMenuItem(
-                        text = stringResource(R.string.block_person, instance),
+                        text = stringResource(R.string.block_x_users, instance),
                         icon = Icons.Outlined.Block,
                         onClick = {
                             onDismissRequest()
                             scope.launch(Dispatchers.IO) {
                                 val resp =
-                                    api.blockInstance(
-                                        BlockInstance(
+                                    api.userBlockInstancePersons(
+                                        UserBlockInstancePersonsParams(
                                             postView.community.instance_id,
                                             true,
                                         ),
                                     )
                                 withContext(Dispatchers.Main) {
-                                    showBlockInstanceToast(resp, instance, ctx)
+                                    showBlockInstanceToast(resp, instance, blocked = true, ctx)
+                                }
+                            }
+                        },
+                    )
+                    PopupMenuItem(
+                        text = stringResource(R.string.block_x_communities, instance),
+                        icon = Icons.Outlined.Block,
+                        onClick = {
+                            onDismissRequest()
+                            scope.launch(Dispatchers.IO) {
+                                val resp =
+                                    api.userBlockInstanceCommunities(
+                                        UserBlockInstanceCommunitiesParams(
+                                            postView.community.instance_id,
+                                            true,
+                                        ),
+                                    )
+                                withContext(Dispatchers.Main) {
+                                    showBlockInstanceToast(resp, instance, blocked = true, ctx)
                                 }
                             }
                         },
@@ -404,13 +434,12 @@ fun PostOptionsDropdown(
         }
 
         // The moderation subfield
-        if (amMod || amAdmin) {
+        if (canModOrAdmin) {
             PopupMenuItem(
                 text = stringResource(R.string.moderation),
                 icon = Icons.Outlined.Shield,
             ) {
                 // Moddable items limited to mods below you
-                if (canMod) {
                     val (removeText, removeIcon) =
                         if (postView.post.removed) {
                             Pair(stringResource(R.string.restore_post), Icons.Outlined.Restore)
@@ -426,11 +455,16 @@ fun PostOptionsDropdown(
                             onRemoveClick(postView)
                         },
                     )
-                    if (amAdmin) {
-                        BanPersonPopupMenuItem(postView.creator, onDismissRequest, onBanPersonClick)
+                    if (myUserInfo.amAdmin()) {
+                        BanPersonPopupMenuItem(
+                            person = postView.creator,
+                            banned = postView.creator_banned,
+                            onDismissRequest = onDismissRequest,
+                            onBanPersonClick = onBanPersonClick,
+                        )
                     }
 
-                    // Only show ban from community button if its a local community
+                    // Only show ban from community button if it's a local community
                     if (postView.community.local) {
                         BanFromCommunityPopupMenuItem(
                             BanFromCommunityData(
@@ -442,21 +476,7 @@ fun PostOptionsDropdown(
                             onBanFromCommunityClick,
                         )
                     }
-                }
 
-                // You can do these actions on mods above you
-
-                // These are all amMod || amAdmin
-                if (amAdmin && getInstanceOrNull()?.FF?.listAdminVotes() == true) {
-                    PopupMenuItem(
-                        text = stringResource(R.string.view_votes),
-                        icon = ImageVector.vectorResource(R.drawable.up_filled),
-                        onClick = {
-                            onDismissRequest()
-                            onViewVotesClick(postView.post.id)
-                        },
-                    )
-                }
 
                 val (lockText, lockIcon) =
                     if (postView.post.locked) {
@@ -496,7 +516,7 @@ fun PostOptionsDropdown(
                     },
                 )
 
-                if (amAdmin) {
+                if (myUserInfo.amAdmin()) {
                     val (featureInLocalText, featureLocalIconUsed) =
                         if (postView.post.featured_local) {
                             Pair(stringResource(R.string.unfeature_in_local), unFeatureIcon)
@@ -520,6 +540,19 @@ fun PostOptionsDropdown(
                     )
                 }
             }
+            // You can do these actions on mods above you
+            // These are all amMod || amAdmin
+            if (myUserInfo.amAdmin() && getInstanceOrNull()?.FF?.listAdminVotes() == true) {
+                PopupMenuItem(
+                    text = stringResource(R.string.view_votes),
+                    icon = ImageVector.vectorResource(R.drawable.up_filled),
+                    onClick = {
+                        onDismissRequest()
+                        onViewVotesClick(postView.post.id)
+                    },
+                )
+            }
+
         }
     }
 }

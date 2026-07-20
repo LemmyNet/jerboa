@@ -1,6 +1,5 @@
 package com.jerboa.model
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.util.Log
@@ -33,6 +32,7 @@ class LoginViewModel : ViewModel() {
         onGoHome: () -> Unit,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
+        myUserInfoViewModel: MyUserInfoViewModel,
         ctx: Context,
         resources: Resources,
     ) {
@@ -74,19 +74,19 @@ class LoginViewModel : ViewModel() {
                 return@launch
             }
 
-            // Fetch the site to get your name and id
-            siteViewModel.siteRes = tempInstance.getSite().toApiState()
+            // Fetch your user to get your name and id
+            myUserInfoViewModel.myUserRes = tempInstance.getMyUser().toApiState()
 
             try {
-                when (val siteRes = siteViewModel.siteRes) {
+                when (val muiRes = myUserInfoViewModel.myUserRes) {
                     is ApiState.Failure -> {
-                        val txt = siteRes.msg.message ?: "FAILURE: NO MESSAGE, probably that version not supported"
+                        val txt = muiRes.msg.message ?: "FAILURE: NO MESSAGE, probably that version not supported"
                         Toast.makeText(ctx, txt, Toast.LENGTH_SHORT).show()
                         throw Exception(txt)
                     }
 
                     is ApiState.Success -> {
-                        val mui = siteRes.data.my_user!!
+                        val mui = muiRes.data
                         val luv = mui.local_user_view
 
                         if (accountViewModel.allAccounts.value?.any {
@@ -108,7 +108,7 @@ class LoginViewModel : ViewModel() {
                                 instance = instance,
                                 jwt = tempInstance.auth!!,
                                 defaultListingType = luv.local_user.default_listing_type.ordinal,
-                                defaultSortType = luv.local_user.default_sort_type.ordinal,
+                                defaultSortType = luv.local_user.default_post_sort_type.ordinal,
                                 verificationState = 0,
                                 isAdmin = luv.local_user.admin,
                                 isMod = mui.moderates.isNotEmpty(),
@@ -118,6 +118,10 @@ class LoginViewModel : ViewModel() {
                         accountViewModel.insert(account)
                         API.setLemmyInstance(tempInstance)
                         loading = false
+
+                        // Now re-fetch the site
+                        siteViewModel.getSite()
+
                         onGoHome()
                     }
 

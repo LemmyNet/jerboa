@@ -2,26 +2,20 @@ package com.jerboa.datatypes
 
 import com.jerboa.feat.InstantScores
 import it.vercruysse.lemmyapi.datatypes.Comment
-import it.vercruysse.lemmyapi.datatypes.CommentAggregates
-import it.vercruysse.lemmyapi.datatypes.CommentReply
-import it.vercruysse.lemmyapi.datatypes.CommentReplyView
 import it.vercruysse.lemmyapi.datatypes.CommentReport
 import it.vercruysse.lemmyapi.datatypes.CommentReportView
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
-import it.vercruysse.lemmyapi.datatypes.CommunityAggregates
 import it.vercruysse.lemmyapi.datatypes.CommunityView
 import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.LocalSiteRateLimit
 import it.vercruysse.lemmyapi.datatypes.LocalUser
+import it.vercruysse.lemmyapi.datatypes.LocalUserView
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
-import it.vercruysse.lemmyapi.datatypes.PersonAggregates
-import it.vercruysse.lemmyapi.datatypes.PersonMention
-import it.vercruysse.lemmyapi.datatypes.PersonMentionView
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
-import it.vercruysse.lemmyapi.datatypes.PostAggregates
 import it.vercruysse.lemmyapi.datatypes.PostReport
 import it.vercruysse.lemmyapi.datatypes.PostReportView
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -32,14 +26,18 @@ import it.vercruysse.lemmyapi.datatypes.PrivateMessageView
 import it.vercruysse.lemmyapi.datatypes.RegistrationApplication
 import it.vercruysse.lemmyapi.datatypes.RegistrationApplicationView
 import it.vercruysse.lemmyapi.datatypes.Site
-import it.vercruysse.lemmyapi.datatypes.SiteAggregates
 import it.vercruysse.lemmyapi.datatypes.SiteView
-import it.vercruysse.lemmyapi.dto.CommunityVisibility
-import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.dto.PostListingMode
-import it.vercruysse.lemmyapi.dto.RegistrationMode
-import it.vercruysse.lemmyapi.dto.SortType
-import it.vercruysse.lemmyapi.dto.SubscribedType
+import it.vercruysse.lemmyapi.datatypes.UnreadCountsResponse
+import it.vercruysse.lemmyapi.enums.CommentSortType
+import it.vercruysse.lemmyapi.enums.CommunityVisibility
+import it.vercruysse.lemmyapi.enums.FederationMode
+import it.vercruysse.lemmyapi.enums.ImageMode
+import it.vercruysse.lemmyapi.enums.ListingType
+import it.vercruysse.lemmyapi.enums.PostListingMode
+import it.vercruysse.lemmyapi.enums.RegistrationMode
+import it.vercruysse.lemmyapi.enums.SortType
+import it.vercruysse.lemmyapi.enums.VoteAction
+import it.vercruysse.lemmyapi.enums.VoteShow
 
 val samplePost =
     Post(
@@ -51,8 +49,8 @@ val samplePost =
         community_id = 14681,
         removed = false,
         locked = false,
-        published = "2022-01-01T09:53:46.904077Z",
-        updated = null,
+        published_at = "2022-01-01T09:53:46.904077Z",
+        updated_at = null,
         deleted = false,
         nsfw = false,
         featured_local = false,
@@ -64,6 +62,19 @@ val samplePost =
         language_id = 0,
         ap_id = "https://lemmy.ml/post/135129",
         local = true,
+        url_content_type = null,
+        alt_text = null,
+        scheduled_publish_time_at = null,
+        newest_comment_time_at = null,
+        comments = 0,
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        embed_video_width = null,
+        embed_video_height = null,
     )
 
 val sampleLinkPost =
@@ -76,8 +87,8 @@ val sampleLinkPost =
         community_id = 14681,
         removed = false,
         locked = true,
-        published = "2022-01-01T09:53:46.904077Z",
-        updated = null,
+        published_at = "2022-01-01T09:53:46.904077Z",
+        updated_at = null,
         deleted = false,
         nsfw = false,
         featured_local = false,
@@ -89,6 +100,19 @@ val sampleLinkPost =
         ap_id = "https://lemmy.ml/post/135129",
         local = true,
         language_id = 0,
+        url_content_type = null,
+        alt_text = null,
+        scheduled_publish_time_at = null,
+        newest_comment_time_at = null,
+        comments = 0,
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        embed_video_width = null,
+        embed_video_height = null,
     )
 
 val sampleLinkNoThumbnailPost =
@@ -101,8 +125,8 @@ val sampleLinkNoThumbnailPost =
         community_id = 14681,
         removed = false,
         locked = false,
-        published = "2022-01-01T09:53:46.904077Z",
-        updated = null,
+        published_at = "2022-01-01T09:53:46.904077Z",
+        updated_at = null,
         deleted = false,
         nsfw = false,
         featured_local = false,
@@ -114,6 +138,19 @@ val sampleLinkNoThumbnailPost =
         ap_id = "https://lemmy.ml/post/135129",
         local = true,
         language_id = 0,
+        url_content_type = null,
+        alt_text = null,
+        scheduled_publish_time_at = null,
+        newest_comment_time_at = null,
+        comments = 0,
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        embed_video_width = null,
+        embed_video_height = null,
     )
 
 val sampleImagePost =
@@ -126,8 +163,8 @@ val sampleImagePost =
         community_id = 14681,
         removed = false,
         locked = false,
-        published = "2022-01-01T09:53:46.904077Z",
-        updated = null,
+        published_at = "2022-01-01T09:53:46.904077Z",
+        updated_at = null,
         deleted = false,
         nsfw = false,
         featured_local = false,
@@ -139,6 +176,19 @@ val sampleImagePost =
         ap_id = "https://lemmy.ml/post/135129",
         local = true,
         language_id = 0,
+        url_content_type = null,
+        alt_text = null,
+        scheduled_publish_time_at = null,
+        newest_comment_time_at = null,
+        comments = 0,
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        embed_video_width = null,
+        embed_video_height = null,
     )
 
 val sampleMarkdownPost =
@@ -151,8 +201,8 @@ val sampleMarkdownPost =
         community_id = 14681,
         removed = false,
         locked = false,
-        published = "2022-01-01T09:53:46.904077Z",
-        updated = null,
+        published_at = "2022-01-01T09:53:46.904077Z",
+        updated_at = null,
         deleted = false,
         nsfw = false,
         featured_local = false,
@@ -164,6 +214,19 @@ val sampleMarkdownPost =
         language_id = 0,
         ap_id = "https://lemmy.ml/post/135129",
         local = true,
+        url_content_type = null,
+        alt_text = null,
+        scheduled_publish_time_at = null,
+        newest_comment_time_at = null,
+        comments = 0,
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        embed_video_width = null,
+        embed_video_height = null,
     )
 
 val samplePerson =
@@ -172,10 +235,9 @@ val samplePerson =
         name = "homeless",
         display_name = "No longer Homeless",
         avatar = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
-        banned = false,
-        published = "2021-08-08T01:47:44.437708Z",
-        updated = "2021-10-11T07:14:53.548707Z",
-        actor_id = "https://lemmy.ml/u/homeless",
+        published_at = "2021-08-08T01:47:44.437708Z",
+        updated_at = "2021-10-11T07:14:53.548707Z",
+        ap_id = "https://lemmy.ml/u/homeless",
         bio =
             "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
                 "that I have in here. But I'm not sure blah blah blah\n\nI have " +
@@ -185,8 +247,10 @@ val samplePerson =
         deleted = false,
         matrix_user_id = null,
         bot_account = false,
-        ban_expires = null,
         instance_id = 0,
+        post_count = 28,
+        comment_count = 98,
+        last_refreshed_at = "2021-08-08T01:47:44.437708Z",
     )
 
 val samplePerson2 =
@@ -195,18 +259,19 @@ val samplePerson2 =
         name = "gary_host_laptop",
         display_name = null,
         avatar = "https://lemmy.ml/pictrs/image/kykidJ1ssM.jpg",
-        banned = false,
-        published = "2021-08-08T01:47:44.437708Z",
-        updated = "2021-10-11T07:14:53.548707Z",
-        actor_id = "https://lemmy.ml/u/homeless",
+        published_at = "2021-08-08T01:47:44.437708Z",
+        updated_at = "2021-10-11T07:14:53.548707Z",
+        ap_id = "https://lemmy.ml/u/homeless",
         bio = null,
         local = false,
         banner = null,
         deleted = false,
         matrix_user_id = null,
         bot_account = false,
-        ban_expires = null,
         instance_id = 0,
+        post_count = 0,
+        comment_count = 0,
+        last_refreshed_at = "2021-08-08T01:47:44.437708Z",
     )
 
 val samplePerson3 =
@@ -214,18 +279,19 @@ val samplePerson3 =
         id = 33478,
         name = "witch_power",
         display_name = null,
-        banned = false,
-        published = "2021-08-08T01:47:44.437708Z",
-        updated = "2021-10-11T07:14:53.548707Z",
-        actor_id = "https://lemmy.ml/u/witch_power",
+        published_at = "2021-08-08T01:47:44.437708Z",
+        updated_at = "2021-10-11T07:14:53.548707Z",
+        ap_id = "https://lemmy.ml/u/witch_power",
         bio = null,
         local = true,
         banner = null,
         deleted = false,
         matrix_user_id = null,
         bot_account = false,
-        ban_expires = null,
         instance_id = 0,
+        post_count = 0,
+        comment_count = 0,
+        last_refreshed_at = "2021-08-08T01:47:44.437708Z",
     )
 
 val sampleLocalUser = LocalUser(
@@ -233,27 +299,55 @@ val sampleLocalUser = LocalUser(
     person_id = 82,
     show_nsfw = false,
     theme = "none",
-    default_sort_type = SortType.Active,
+    default_post_sort_type = SortType.Active,
     default_listing_type = ListingType.Local,
     interface_language = "en",
     show_avatars = false,
     send_notifications_to_email = false,
-    show_scores = false,
     show_bot_accounts = false,
     show_read_posts = false,
     email_verified = false,
     accepted_application = false,
     open_links_in_new_tab = false,
     blur_nsfw = false,
-    auto_expand = false,
     infinite_scroll_enabled = false,
     admin = false,
     post_listing_mode = PostListingMode.List,
     totp_2fa_enabled = false,
-    enable_keyboard_navigation = false,
-    enable_animated_images = false,
     collapse_bot_comments = false,
-    last_donation_notification = "2019-04-30T13:28:35.965035Z",
+    last_donation_notification_at = "2019-04-30T13:28:35.965035Z",
+    email = null,
+    animated_images_enabled = false,
+    private_messages_enabled = false,
+    default_comment_sort_type = CommentSortType.Hot,
+    auto_mark_fetched_posts_as_read = false,
+    hide_posts_with_media = false,
+    show_media = true,
+    default_post_time_range_seconds = null,
+    show_score = true,
+    show_upvotes = true,
+    show_downvotes = VoteShow.Show,
+    show_upvote_percentage = true,
+    show_person_votes = true,
+    default_items_per_page = 20,
+)
+
+val sampleLocalUserView = LocalUserView(
+    local_user = sampleLocalUser,
+    person = samplePerson,
+    banned = false,
+)
+
+val sampleMyUserInfo = MyUserInfo(
+    local_user_view = sampleLocalUserView,
+    follows = emptyList(),
+    moderates = emptyList(),
+    multi_community_follows = emptyList(),
+    community_blocks = emptyList(),
+    instance_communities_blocks = emptyList(),
+    instance_persons_blocks = emptyList(),
+    person_blocks = emptyList(),
+    discussion_languages = emptyList(),
 )
 
 val sampleCommunity =
@@ -261,34 +355,35 @@ val sampleCommunity =
         id = 14681,
         name = "socialism",
         title = "Socialism",
-        description = "This is the r/socialism community",
+        sidebar = "This is the r/socialism community",
         removed = false,
-        published = "2019-04-30T13:28:35.965035Z",
-        updated = "2021-01-25T16:27:15.804739Z",
+        published_at = "2019-04-30T13:28:35.965035Z",
+        updated_at = "2021-01-25T16:27:15.804739Z",
         deleted = false,
         nsfw = false,
-        actor_id = "https://lemmy.ml/c/socialism",
+        ap_id = "https://lemmy.ml/c/socialism",
         local = true,
         icon = "https://lemmy.ml/pictrs/image/QtiqDmp9XY.png",
         banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg",
         instance_id = 0,
-        hidden = false,
         posting_restricted_to_mods = false,
         visibility = CommunityVisibility.Public,
+        last_refreshed_at = "2021-01-25T16:27:15.804739Z",
+        summary = null,
+        subscribers = 52,
+        subscribers_local = 21,
+        posts = 82,
+        comments = 987,
+        users_active_day = 28,
+        users_active_week = 98,
+        users_active_month = 82,
+        users_active_half_year = 91,
+        report_count = 0,
+        unresolved_report_count = 0,
+        local_removed = false,
     )
 
 val sampleCommunityFederated = sampleCommunity.copy(local = false)
-
-val samplePostAggregates =
-    PostAggregates(
-        post_id = 135129,
-        comments = 4,
-        score = 5,
-        upvotes = 8,
-        downvotes = 3,
-        published = "2022-01-02T04:02:44.592929Z",
-        newest_comment_time = "2022-01-02T04:02:44.592929Z",
-    )
 
 val samplePostView =
     PostView(
@@ -298,15 +393,15 @@ val samplePostView =
         creator_banned_from_community = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        counts = samplePostAggregates,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        read = false,
-        creator_blocked = false,
-        unread_comments = 1,
-        my_vote = 0,
-        banned_from_community = false,
-        hidden = false,
+        image_details = null,
+        community_actions = null,
+        person_actions = null,
+        post_actions = null,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
+        creator_ban_expires_at = null,
+        creator_community_ban_expires_at = null,
     )
 
 val sampleLinkPostView =
@@ -317,15 +412,15 @@ val sampleLinkPostView =
         creator_banned_from_community = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        counts = samplePostAggregates,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        read = false,
-        creator_blocked = false,
-        unread_comments = 1,
-        my_vote = 0,
-        banned_from_community = false,
-        hidden = false,
+        image_details = null,
+        community_actions = null,
+        person_actions = null,
+        post_actions = null,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
+        creator_ban_expires_at = null,
+        creator_community_ban_expires_at = null,
     )
 
 val sampleLinkNoThumbnailPostView =
@@ -336,15 +431,15 @@ val sampleLinkNoThumbnailPostView =
         creator_banned_from_community = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        counts = samplePostAggregates,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        read = false,
-        creator_blocked = false,
-        unread_comments = 1,
-        my_vote = 0,
-        banned_from_community = false,
-        hidden = false,
+        image_details = null,
+        community_actions = null,
+        person_actions = null,
+        post_actions = null,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
+        creator_ban_expires_at = null,
+        creator_community_ban_expires_at = null,
     )
 
 val sampleImagePostView =
@@ -355,15 +450,15 @@ val sampleImagePostView =
         creator_banned_from_community = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        counts = samplePostAggregates,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        read = false,
-        creator_blocked = false,
-        unread_comments = 1,
-        my_vote = 0,
-        banned_from_community = false,
-        hidden = false,
+        image_details = null,
+        community_actions = null,
+        person_actions = null,
+        post_actions = null,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
+        creator_ban_expires_at = null,
+        creator_community_ban_expires_at = null,
     )
 
 val sampleMarkdownPostView =
@@ -374,15 +469,15 @@ val sampleMarkdownPostView =
         creator_banned_from_community = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        counts = samplePostAggregates,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        read = false,
-        creator_blocked = false,
-        unread_comments = 1,
-        my_vote = 0,
-        banned_from_community = false,
-        hidden = false,
+        image_details = null,
+        community_actions = null,
+        person_actions = null,
+        post_actions = null,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
+        creator_ban_expires_at = null,
+        creator_community_ban_expires_at = null,
     )
 
 val sampleComment =
@@ -396,14 +491,22 @@ val sampleComment =
                 "work" +
                 ".\n\nIts kind of a long comment\n\nbut I don't want...",
         removed = false,
-        published = "2022-01-07T03:12:26.398434Z",
-        updated = "2022-01-07T03:15:37.360888Z",
+        published_at = "2022-01-07T03:12:26.398434Z",
+        updated_at = "2022-01-07T03:15:37.360888Z",
         deleted = false,
         ap_id = "https://midwest.social/comment/24621",
         local = false,
         distinguished = false,
         language_id = 0,
         path = "0.1",
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        child_count = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        locked = false,
     )
 
 val sampleReplyComment =
@@ -414,13 +517,21 @@ val sampleReplyComment =
         path = "0.1.2",
         content = "This is a reply comment.\n\n# This is a header\n\n- list one\n\n- list two",
         removed = false,
-        published = "2022-01-07T04:12:26.398434Z",
-        updated = "2022-01-07T03:15:37.360888Z",
+        published_at = "2022-01-07T04:12:26.398434Z",
+        updated_at = "2022-01-07T03:15:37.360888Z",
         deleted = false,
         ap_id = "https://midwest.social/comment/24622",
         local = false,
         distinguished = false,
         language_id = 0,
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
+        child_count = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        locked = false,
     )
 
 val sampleSecondReplyComment =
@@ -431,23 +542,21 @@ val sampleSecondReplyComment =
         path = "0.1.2.3",
         content = "This is a sub-reply comment, mmmmk",
         removed = false,
-        published = "2022-01-07T04:12:26.398434Z",
-        updated = "2022-01-07T03:15:37.360888Z",
+        published_at = "2022-01-07T04:12:26.398434Z",
+        updated_at = "2022-01-07T03:15:37.360888Z",
         deleted = false,
         ap_id = "https://midwest.social/comment/24622",
         local = false,
         distinguished = false,
         language_id = 0,
-    )
-
-val sampleCommentAggregates =
-    CommentAggregates(
-        comment_id = 24,
-        score = 8,
-        upvotes = 12,
-        downvotes = 4,
-        published = "2022-01-02T04:02:44.592929Z",
+        score = 0,
+        upvotes = 0,
+        downvotes = 0,
         child_count = 0,
+        report_count = 0,
+        unresolved_report_count = 0,
+        federation_pending = false,
+        locked = false,
     )
 
 val sampleCommentView =
@@ -456,14 +565,12 @@ val sampleCommentView =
         creator = samplePerson,
         post = samplePost,
         community = sampleCommunity,
-        counts = sampleCommentAggregates,
         creator_banned_from_community = false,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        banned_from_community = false,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
     )
 
 val sampleSecondReplyCommentView =
@@ -472,14 +579,12 @@ val sampleSecondReplyCommentView =
         creator = samplePerson,
         post = samplePost,
         community = sampleCommunity,
-        counts = sampleCommentAggregates,
         creator_banned_from_community = false,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        banned_from_community = false,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
     )
 
 val sampleReplyCommentView =
@@ -488,105 +593,26 @@ val sampleReplyCommentView =
         creator = samplePerson2,
         post = samplePost,
         community = sampleCommunity,
-        counts = sampleCommentAggregates,
         creator_banned_from_community = false,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        creator_blocked = false,
         creator_is_moderator = false,
         creator_is_admin = false,
-        banned_from_community = false,
-    )
-
-val sampleCommentReply =
-    CommentReply(
-        id = 30,
-        recipient_id = 20,
-        comment_id = 42,
-        read = false,
-        published = "2022-01-01T09:53:46.904077Z",
-    )
-
-val samplePersonMention =
-    PersonMention(
-        id = 30,
-        recipient_id = 20,
-        comment_id = 42,
-        read = false,
-        published = "2022-01-01T09:53:46.904077Z",
-    )
-
-val sampleCommentReplyView =
-    CommentReplyView(
-        comment_reply = sampleCommentReply,
-        comment = sampleReplyComment,
-        creator = samplePerson2,
-        recipient = samplePerson,
-        post = samplePost,
-        community = sampleCommunity,
-        counts = sampleCommentAggregates,
-        creator_banned_from_community = false,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        creator_blocked = false,
-        creator_is_moderator = false,
-        creator_is_admin = false,
-        banned_from_community = false,
-    )
-
-val samplePersonMentionView =
-    PersonMentionView(
-        person_mention = samplePersonMention,
-        comment = sampleReplyComment,
-        creator = samplePerson2,
-        recipient = samplePerson,
-        post = samplePost,
-        community = sampleCommunity,
-        counts = sampleCommentAggregates,
-        creator_banned_from_community = false,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
-        creator_blocked = false,
-        creator_is_moderator = false,
-        creator_is_admin = false,
-        banned_from_community = false,
-    )
-
-val sampleCommunityAggregates =
-    CommunityAggregates(
-        published = "2022-01-02T04:02:44.592929Z",
-        community_id = 834,
-        subscribers = 52,
-        subscribers_local = 21,
-        posts = 82,
-        comments = 987,
-        users_active_day = 28,
-        users_active_week = 98,
-        users_active_month = 82,
-        users_active_half_year = 91,
+        tags = emptyList(),
+        can_mod = false,
+        creator_banned = false,
     )
 
 val sampleCommunityView =
     CommunityView(
         community = sampleCommunity,
-        subscribed = SubscribedType.NotSubscribed,
-        blocked = false,
-        counts = sampleCommunityAggregates,
-        banned_from_community = false,
-    )
-
-val samplePersonAggregates =
-    PersonAggregates(
-        person_id = 54,
-        post_count = 28,
-        comment_count = 98,
+        can_mod = false,
+        tags = emptyList(),
     )
 
 val samplePersonView =
     PersonView(
         person = samplePerson,
-        counts = samplePersonAggregates,
         is_admin = false,
+        banned = false,
     )
 
 val samplePrivateMessage =
@@ -597,10 +623,12 @@ val samplePrivateMessage =
         content = "A message from *me* to **you**",
         deleted = false,
         read = false,
-        published = "2022-01-07T04:12:26.398434Z",
-        updated = "2022-01-07T03:15:37.360888Z",
+        published_at = "2022-01-07T04:12:26.398434Z",
+        updated_at = "2022-01-07T03:15:37.360888Z",
         ap_id = "https://midwest.social/comment/24622",
         local = false,
+        removed = false,
+        deleted_by_recipient = false,
     )
 
 val samplePrivateMessageView =
@@ -615,12 +643,12 @@ val sampleSite =
         id = 23,
         name = "Lemmy.ml",
         sidebar = "# Hello!\n\n**This is** lemmy's sidebar",
-        description = "A general purpose instance for lemmy",
-        published = "2022-01-07T04:12:26.398434Z",
-        updated = "2022-01-07T03:15:37.360888Z",
+        summary = "A general purpose instance for lemmy",
+        published_at = "2022-01-07T04:12:26.398434Z",
+        updated_at = "2022-01-07T03:15:37.360888Z",
         icon = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
         banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg",
-        actor_id = "https://lemmy.ml",
+        ap_id = "https://lemmy.ml",
         inbox_url = "https://lemmy.ml",
         last_refreshed_at = "2023-01-01",
         instance_id = 0,
@@ -628,85 +656,92 @@ val sampleSite =
 
 val sampleLocalSite =
     LocalSite(
-        enable_downvotes = true,
         registration_mode = RegistrationMode.Open,
-        enable_nsfw = true,
         community_creation_admin_only = true,
-        require_email_verification = false,
         application_question = null,
         private_instance = false,
-        actor_name_max_length = 30,
         application_email_admins = false,
-        captcha_difficulty = "easy",
-        captcha_enabled = false,
         default_post_listing_type = ListingType.All,
         default_theme = "main",
         federation_enabled = true,
         id = 1,
         legal_information = null,
-        published = "2023-01-01",
+        published_at = "2023-01-01",
         site_setup = true,
         site_id = 1,
         slur_filter_regex = null,
-        updated = null,
-        hide_modlog_mod_names = true,
         federation_signed_fetch = false,
         reports_email_admins = false,
-        default_sort_type = SortType.Active,
+        default_post_sort_type = SortType.Active,
         default_post_listing_mode = PostListingMode.Card,
+        email_verification_required = false,
+        default_comment_sort_type = CommentSortType.Hot,
+        oauth_registration = false,
+        post_upvotes = FederationMode.All,
+        post_downvotes = FederationMode.All,
+        comment_upvotes = FederationMode.All,
+        comment_downvotes = FederationMode.All,
+        nsfw_content_disallowed = false,
+        users = 22,
+        posts = 67,
+        comments = 322,
+        communities = 6,
+        users_active_day = 3,
+        users_active_week = 6,
+        users_active_month = 9,
+        users_active_half_year = 12,
+        email_notifications_disabled = false,
+        default_items_per_page = 20,
+        image_mode = ImageMode.ProxyAllImages,
+        image_upload_timeout_seconds = 180,
+        image_max_thumbnail_size = 256,
+        image_max_avatar_size = 256,
+        image_max_banner_size = 1024,
+        image_max_upload_size = 5096,
+        image_allow_video_uploads = true,
+        image_upload_disabled = false,
+        max_invites_per_user_allowed = 15,
     )
 
-val sampleSiteAggregates =
-    SiteAggregates(
-        site_id = 84,
-        users = 8092,
-        posts = 888929,
-        comments = 9882,
-        communities = 89,
-        users_active_day = 21,
-        users_active_week = 82,
-        users_active_month = 208,
-        users_active_half_year = 689,
-    )
-
-val local_site_rate_limit =
+val sampleLocalSiteRateLimit =
     LocalSiteRateLimit(
         local_site_id = 2,
-        message = 2,
-        message_per_second = 2,
-        post = 2,
-        post_per_second = 2,
-        register = 2,
-        register_per_second = 2,
-        image = 2,
-        image_per_second = 2,
-        comment = 2,
-        comment_per_second = 2,
-        search = 2,
-        search_per_second = 2,
-        import_user_settings = 2,
-        import_user_settings_per_second = 2,
-        published = "2022-01-01T09:53:46.904077",
+        message_max_requests = 2,
+        message_interval_seconds = 2,
+        post_max_requests = 2,
+        post_interval_seconds = 2,
+        register_max_requests = 2,
+        register_interval_seconds = 2,
+        image_max_requests = 2,
+        image_interval_seconds = 2,
+        comment_max_requests = 2,
+        comment_interval_seconds = 2,
+        search_max_requests = 2,
+        search_interval_seconds = 2,
+        import_user_settings_max_requests = 2,
+        import_user_settings_interval_seconds = 2,
+        published_at = "2022-01-01T09:53:46.904077",
     )
 
 val sampleSiteView =
     SiteView(
         site = sampleSite,
-        counts = sampleSiteAggregates,
         local_site = sampleLocalSite,
-        local_site_rate_limit = local_site_rate_limit,
+        local_site_rate_limit = sampleLocalSiteRateLimit,
+        instance = null,
     )
 
 val sampleGetSiteRes = GetSiteResponse(
     site_view = sampleSiteView,
     admins = listOf(samplePersonView),
-    my_user = null,
     all_languages = emptyList(),
-    custom_emojis = emptyList(),
-    taglines = emptyList(),
     discussion_languages = emptyList(),
     version = "0.0.1",
     blocked_urls = emptyList(),
+    oauth_providers = emptyList(),
+    admin_oauth_providers = emptyList(),
+    active_plugins = emptyList(),
+    captcha_enabled = false,
 )
 
 val samplePendingRegistrationApplication =
@@ -714,7 +749,7 @@ val samplePendingRegistrationApplication =
         id = 23,
         local_user_id = 28,
         answer = "**Please** let me in",
-        published = "2022-01-01T09:53:46.904077",
+        published_at = "2022-01-01T09:53:46.904077",
     )
 
 val samplePendingRegistrationApplicationView =
@@ -729,7 +764,7 @@ val sampleApprovedRegistrationApplication =
         id = 24,
         local_user_id = 29,
         answer = "**Please** let me in",
-        published = "2022-01-01T09:53:46.904077",
+        published_at = "2022-01-01T09:53:46.904077",
         admin_id = samplePerson2.id,
     )
 
@@ -746,7 +781,7 @@ val sampleDeniedRegistrationApplication =
         id = 24,
         local_user_id = 29,
         answer = "**Please** let me in",
-        published = "2022-01-01T09:53:46.904077",
+        published_at = "2022-01-01T09:53:46.904077",
         admin_id = samplePerson2.id,
         deny_reason = "I'm not letting you in, sorry.",
     )
@@ -765,10 +800,11 @@ val samplePostReport =
         id = 89,
         original_post_name = samplePost.name,
         post_id = samplePost.id,
-        published = samplePost.published,
+        published_at = samplePost.published_at,
         reason = "This post is *peak* **cringe**",
         resolved = true,
         resolver_id = samplePerson3.id,
+        violates_instance_rules = false,
     )
 
 val samplePostReportView =
@@ -779,16 +815,10 @@ val samplePostReportView =
         post = samplePost,
         post_report = samplePostReport,
         community = sampleCommunity,
-        counts = samplePostAggregates,
         creator_banned_from_community = false,
-        hidden = false,
-        read = false,
         creator_is_admin = false,
-        subscribed = SubscribedType.NotSubscribed,
         creator_is_moderator = false,
-        saved = false,
-        creator_blocked = false,
-        unread_comments = 1,
+        creator_banned = false,
     )
 
 val sampleCommentReport =
@@ -797,7 +827,7 @@ val sampleCommentReport =
         id = 89,
         original_comment_text = sampleComment.content,
         comment_id = sampleComment.id,
-        published = sampleComment.published,
+        published_at = sampleComment.published_at,
         reason = "This is a bad comment, remove it plz.",
         resolved = true,
         resolver_id = samplePerson3.id,
@@ -812,13 +842,10 @@ val sampleCommentReportView =
         comment = sampleComment,
         comment_report = sampleCommentReport,
         community = sampleCommunity,
-        counts = sampleCommentAggregates,
         creator_banned_from_community = false,
-        subscribed = SubscribedType.NotSubscribed,
-        saved = false,
         creator_is_admin = false,
         creator_is_moderator = false,
-        creator_blocked = false,
+        creator_banned = false,
     )
 
 val samplePrivateMessageReport =
@@ -827,7 +854,7 @@ val samplePrivateMessageReport =
         id = 89,
         original_pm_text = samplePrivateMessage.content,
         private_message_id = samplePrivateMessage.id,
-        published = sampleComment.published,
+        published_at = sampleComment.published_at,
         reason = "This PM is from a spammer",
         resolved = true,
         resolver_id = samplePerson3.id,
@@ -840,12 +867,21 @@ val samplePrivateMessageReportView =
         private_message_creator = samplePerson,
         creator = samplePerson2,
         resolver = samplePerson3,
+        creator_is_admin = false,
+        creator_banned = false,
     )
 
 val sampleInstantScores =
     InstantScores(
-        myVote = samplePostView.my_vote,
-        score = samplePostView.counts.score,
-        upvotes = samplePostView.counts.upvotes,
-        downvotes = samplePostView.counts.downvotes,
+        myVote = VoteAction.UpVote,
+        score = 4,
+        upvotes = 5,
+        downvotes = 1,
     )
+
+val sampleUnreadCountsResponse = UnreadCountsResponse(
+    notification_count = 2,
+    report_count = 5,
+    pending_follow_count = null,
+    registration_application_count = null,
+)

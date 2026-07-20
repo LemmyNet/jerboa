@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -23,7 +22,6 @@ import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdateCommentCreator
 import com.jerboa.findAndUpdateCommentCreatorBannedFromCommunity
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
-import it.vercruysse.lemmyapi.datatypes.BlockPersonResponse
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentResponse
 import it.vercruysse.lemmyapi.datatypes.CommentView
@@ -34,28 +32,29 @@ import it.vercruysse.lemmyapi.datatypes.DeletePost
 import it.vercruysse.lemmyapi.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.datatypes.FeaturePost
 import it.vercruysse.lemmyapi.datatypes.GetComments
-import it.vercruysse.lemmyapi.datatypes.GetCommentsResponse
 import it.vercruysse.lemmyapi.datatypes.GetPost
 import it.vercruysse.lemmyapi.datatypes.GetPostResponse
 import it.vercruysse.lemmyapi.datatypes.HidePost
 import it.vercruysse.lemmyapi.datatypes.LockPost
+import it.vercruysse.lemmyapi.datatypes.PagedResponse
+import it.vercruysse.lemmyapi.datatypes.PersonResponse
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostResponse
 import it.vercruysse.lemmyapi.datatypes.PostView
 import it.vercruysse.lemmyapi.datatypes.SaveComment
 import it.vercruysse.lemmyapi.datatypes.SavePost
-import it.vercruysse.lemmyapi.dto.CommentSortType
-import it.vercruysse.lemmyapi.dto.ListingType
+import it.vercruysse.lemmyapi.enums.CommentSortType
+import it.vercruysse.lemmyapi.enums.ListingType
 import kotlinx.coroutines.launch
 
 class PostViewModel(
-    val id: Either<PostId, CommentId>,
+    var id: Either<PostId, CommentId>,
 ) : ViewModel() {
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    var commentsRes: ApiState<GetCommentsResponse> by mutableStateOf(ApiState.Empty)
+    var commentsRes: ApiState<PagedResponse<CommentView>> by mutableStateOf(ApiState.Empty)
         private set
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
@@ -68,16 +67,21 @@ class PostViewModel(
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var hidePostRes: ApiState<(Unit)> by mutableStateOf(ApiState.Empty)
+    private var hidePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var lockPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var featurePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var blockPersonRes: ApiState<PersonResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<CommentId>()
     val commentsWithToggledActionBar = mutableStateListOf<CommentId>()
     val parentListStateIndexes = mutableListOf<Int>()
 
     init {
+        this.getData()
+    }
+
+    fun reInitializeWithNewId(id: Either<PostId, CommentId>) {
+        this.id = id
         this.getData()
     }
 
@@ -169,12 +173,12 @@ class PostViewModel(
                     // Remove the first comment, since it is a parent
                     // Actually since a bug in 18.3 that is no longer a guarantee
                     // see https://github.com/LemmyNet/lemmy/issues/3767
-                    val newComments = moreComments.data.comments.toMutableList()
+                    val newComments = moreComments.data.items.toMutableList()
                     newComments.removeIf { it.comment.id == commentView.comment.id }
 
-                    val appended = appendData(existing.data.comments, newComments.toList())
+                    val appended = appendData(existing.data.items, newComments.toList())
 
-                    commentsRes = ApiState.Success(existing.data.copy(comments = appended))
+                    commentsRes = ApiState.Success(existing.data.copy(items = appended))
                 }
 
                 else -> {}
@@ -293,9 +297,9 @@ class PostViewModel(
             hidePostRes = ApiState.Loading
             hidePostRes = API.getInstance().hidePost(form).toApiState()
             val msg = if (form.hide) R.string.post_hidden else R.string.post_unhidden
-            when (hidePostRes) {
+            when (val res = hidePostRes) {
                 is ApiState.Success -> {
-                    updatePostHidden(form.hide)
+                    updatePost(res.data.post_view)
                     Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 }
 
@@ -349,11 +353,11 @@ class PostViewModel(
             is ApiState.Success -> {
                 val newComments =
                     findAndUpdateComment(
-                        existing.data.comments,
+                        existing.data.items,
                         commentView,
                     )
                 val newRes =
-                    ApiState.Success(existing.data.copy(comments = newComments))
+                    ApiState.Success(existing.data.copy(items = newComments))
                 commentsRes = newRes
             }
 
@@ -364,10 +368,10 @@ class PostViewModel(
     fun appendComment(commentView: CommentView) {
         when (val existing = commentsRes) {
             is ApiState.Success -> {
-                val mutable = existing.data.comments.toMutableList()
+                val mutable = existing.data.items.toMutableList()
                 mutable.add(commentView)
                 val newRes =
-                    ApiState.Success(existing.data.copy(comments = mutable.toList()))
+                    ApiState.Success(existing.data.copy(items = mutable.toList()))
                 commentsRes = newRes
             }
 
@@ -379,18 +383,6 @@ class PostViewModel(
         when (val existing = postRes) {
             is ApiState.Success -> {
                 val newRes = ApiState.Success(existing.data.copy(post_view = postView))
-                postRes = newRes
-            }
-
-            else -> {}
-        }
-    }
-
-    fun updatePostHidden(hidden: Boolean) {
-        when (val existing = postRes) {
-            is ApiState.Success -> {
-                val newPostView = existing.data.post_view.copy(hidden = hidden)
-                val newRes = ApiState.Success(existing.data.copy(post_view = newPostView))
                 postRes = newRes
             }
 
@@ -419,8 +411,8 @@ class PostViewModel(
         // Also do all the comments
         when (val existing = commentsRes) {
             is ApiState.Success -> {
-                val comments = findAndUpdateCommentCreator(existing.data.comments, personView.person)
-                val newRes = ApiState.Success(existing.data.copy(comments = comments))
+                val comments = findAndUpdateCommentCreator(existing.data.items, personView.person)
+                val newRes = ApiState.Success(existing.data.copy(items = comments))
                 commentsRes = newRes
             }
 
@@ -449,8 +441,8 @@ class PostViewModel(
         // Also do all the comments
         when (val existing = commentsRes) {
             is ApiState.Success -> {
-                val comments = findAndUpdateCommentCreatorBannedFromCommunity(existing.data.comments, banData)
-                val newRes = ApiState.Success(existing.data.copy(comments = comments))
+                val comments = findAndUpdateCommentCreatorBannedFromCommunity(existing.data.items, banData)
+                val newRes = ApiState.Success(existing.data.copy(items = comments))
                 commentsRes = newRes
             }
 

@@ -11,14 +11,18 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
+import it.vercruysse.lemmyapi.datatypes.LocalSite
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
@@ -28,7 +32,8 @@ import it.vercruysse.lemmyapi.datatypes.PostId
 fun CommentNodes(
     nodes: List<CommentNodeData>,
     admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    localSite: LocalSite,
+    myUserInfo: MyUserInfo?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -66,14 +71,14 @@ fun CommentNodes(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: BlurNSFW,
-    voteDisplayMode: LocalUserVoteDisplayMode,
     swipeToActionPreset: SwipeToActionPreset,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
             nodes = nodes,
             admins = admins,
-            moderators = moderators,
+            localSite = localSite,
+            myUserInfo = myUserInfo,
             increaseLazyListIndexTracker = increaseLazyListIndexTracker,
             addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
@@ -110,8 +115,7 @@ fun CommentNodes(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-            voteDisplayMode = voteDisplayMode,
-            swipeToActionPreset = swipeToActionPreset,
+            swipeToActionPreset = swipeToActionPreset,,,
         )
         item {
             Spacer(modifier = Modifier.height(100.dp))
@@ -121,27 +125,28 @@ fun CommentNodes(
 
 fun LazyListScope.commentNodeItems(
     nodes: List<CommentNodeData>,
-    admins: List<PersonView>,
-    moderators: List<PersonId>?,
+    siteRes: GetSiteResponse,
+    appSettings: AppSettings,
+    myUserInfo: MyUserInfo?,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
-    isExpanded: (commentId: CommentId) -> Boolean,
-    toggleExpanded: (commentId: CommentId) -> Unit,
-    toggleActionBar: (commentId: CommentId) -> Unit,
+    isExpanded: (CommentId) -> Boolean,
+    toggleExpanded: (CommentId) -> Unit,
+    toggleActionBar: (CommentId) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
     onSaveClick: (commentView: CommentView) -> Unit,
-    onMarkAsReadClick: (commentView: CommentView) -> Unit,
-    onCommentClick: (commentView: CommentView) -> Unit,
+    onMarkAsReadClick: (commentId: CommentId, read: Boolean) -> Unit,
+    onCommentClick: (CommentId) -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
     onDistinguishClick: (commentView: CommentView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
-    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
+    onBanPersonClick: (BanData) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
@@ -156,11 +161,6 @@ fun LazyListScope.commentNodeItems(
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: CommentId) -> Boolean,
-    enableDownVotes: Boolean,
-    showAvatar: Boolean,
-    blurNSFW: BlurNSFW,
-    voteDisplayMode: LocalUserVoteDisplayMode,
-    swipeToActionPreset: SwipeToActionPreset,
 ) {
     nodes.forEach { node ->
         when (node) {
@@ -168,7 +168,6 @@ fun LazyListScope.commentNodeItems(
                 commentNodeItem(
                     node = node,
                     admins = admins,
-                    moderators = moderators,
                     increaseLazyListIndexTracker = increaseLazyListIndexTracker,
                     addToParentIndexes = addToParentIndexes,
                     isFlat = isFlat,
@@ -202,11 +201,10 @@ fun LazyListScope.commentNodeItems(
                     showCollapsedCommentContent = showCollapsedCommentContent,
                     isCollapsedByParent = isCollapsedByParent,
                     showActionBar = showActionBar,
-                    enableDownVotes = enableDownVotes,
-                    showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
-                    voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    localSite = localSite,
+                    myUserInfo = myUserInfo,
                 )
             }
 
@@ -214,7 +212,6 @@ fun LazyListScope.commentNodeItems(
                 missingCommentNodeItem(
                     node = node,
                     admins = admins,
-                    moderators = moderators,
                     increaseLazyListIndexTracker = increaseLazyListIndexTracker,
                     addToParentIndexes = addToParentIndexes,
                     isFlat = isFlat,
@@ -251,8 +248,9 @@ fun LazyListScope.commentNodeItems(
                     enableDownVotes = enableDownVotes,
                     showAvatar = showAvatar,
                     blurNSFW = blurNSFW,
-                    voteDisplayMode = voteDisplayMode,
                     swipeToActionPreset = swipeToActionPreset,
+                    localSite = localSite,
+                    myUserInfo = myUserInfo,
                 )
             }
         }

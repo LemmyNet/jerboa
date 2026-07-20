@@ -1,7 +1,6 @@
 package com.jerboa.model
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -12,31 +11,40 @@ import com.jerboa.VIEW_VOTES_LIMIT
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
+import com.jerboa.feed.PaginationController
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.ListPostLikes
-import it.vercruysse.lemmyapi.datatypes.ListPostLikesResponse
+import it.vercruysse.lemmyapi.datatypes.PagedResponse
 import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.datatypes.VoteView
 import kotlinx.coroutines.launch
 
 class PostLikesViewModel(
     val id: PostId,
 ) : ViewModel() {
-    var likesRes: ApiState<ListPostLikesResponse> by mutableStateOf(ApiState.Empty)
+    var likesRes: ApiState<PagedResponse<VoteView>> by mutableStateOf(ApiState.Empty)
         private set
-    private var page by mutableLongStateOf(1)
+    private val pageController = PaginationController()
 
     init {
         getLikes()
     }
 
     fun resetPage() {
-        page = 1
+        pageController.reset()
     }
 
-    fun getLikes(state: ApiState<ListPostLikesResponse> = ApiState.Loading) {
+    fun getLikes(state: ApiState<PagedResponse<VoteView>> = ApiState.Loading) {
         viewModelScope.launch {
             likesRes = state
             likesRes = API.getInstance().listPostLikes(getForm()).toApiState()
+        }
+        when (val res = likesRes) {
+            is ApiState.Success -> {
+                pageController.nextPage(res.data.next_page)
+            }
+
+            else -> {}
         }
     }
 
@@ -44,7 +52,8 @@ class PostLikesViewModel(
         ListPostLikes(
             post_id = id,
             limit = VIEW_VOTES_LIMIT,
-            page = page,
+            page = pageController.page,
+            page_cursor = pageController.pageCursor,
         )
 
     fun appendLikes() {
@@ -55,7 +64,6 @@ class PostLikesViewModel(
                 else -> return@launch
             }
 
-            page += 1
             val newRes = API.getInstance().listPostLikes(getForm()).toApiState()
 
             likesRes =
@@ -63,11 +71,11 @@ class PostLikesViewModel(
                     is ApiState.Success -> {
                         val appended =
                             getDeduplicateMerge(
-                                oldRes.data.post_likes,
-                                newRes.data.post_likes,
+                                oldRes.data.items,
+                                newRes.data.items,
                             ) { it.creator.id }
 
-                        ApiState.Success(oldRes.data.copy(post_likes = appended))
+                        ApiState.Success(oldRes.data.copy(items = appended))
                     }
 
                     else -> {

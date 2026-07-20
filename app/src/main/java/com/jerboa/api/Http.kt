@@ -1,17 +1,14 @@
 package com.jerboa.api
 
-import android.content.Context
 import android.net.TrafficStats
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
-import com.jerboa.toastException
 import io.ktor.client.plugins.UserAgent
 import io.ktor.client.plugins.logging.*
 import io.ktor.http.HttpHeaders
 import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.LemmyApiBaseController
-import it.vercruysse.lemmyapi.pictrs.datatypes.UploadImage
 import it.vercruysse.lemmyapi.setDefaultClientConfig
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +16,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
+// TODO get rid of a default instance, use a list of defaults and pick a random one
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val DEFAULT_VERSION = "0.19.0"
 
@@ -179,30 +176,6 @@ object API {
         } catch (_: MalformedURLException) {
             return false
         }
-    }
-
-    suspend fun uploadPictrsImage(
-        imageIs: InputStream,
-        ctx: Context,
-    ): String {
-        Log.d("jerboa", "Uploading image....")
-        val resp = getInstance().uploadImage(UploadImage(listOf(imageIs.readBytes())))
-        Log.d("jerboa", "Uploading done.")
-
-        return resp.fold(
-            onSuccess = {
-                if (it.files.isEmpty()) {
-                    toastException(ctx, Exception("Upload image failed"))
-                    return ""
-                } else {
-                    it.files[0].url.orEmpty()
-                }
-            },
-            onFailure = {
-                toastException(ctx, it as? Exception ?: Exception("Unknown error"))
-                ""
-            },
-        )
     }
 
     fun apiFailureHandled() {

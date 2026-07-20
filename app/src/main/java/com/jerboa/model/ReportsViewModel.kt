@@ -1,7 +1,6 @@
 package com.jerboa.model
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -13,28 +12,21 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feed.PaginationController
 import com.jerboa.findAndUpdateCommentReport
+import com.jerboa.findAndUpdateCommunityReport
 import com.jerboa.findAndUpdatePostReport
 import com.jerboa.findAndUpdatePrivateMessageReport
 import com.jerboa.getDeduplicateMerge
 import it.vercruysse.lemmyapi.datatypes.*
+import it.vercruysse.lemmyapi.enums.ReportType
 import kotlinx.coroutines.launch
 
 class ReportsViewModel(
     account: Account,
-    siteViewModel: SiteViewModel,
+    myUserInfoViewModel: MyUserInfoViewModel,
 ) : ViewModel() {
-    var postReportsRes: ApiState<ListPostReportsResponse> by mutableStateOf(
-        ApiState.Empty,
-    )
-        private set
-
-    var commentReportsRes: ApiState<ListCommentReportsResponse> by mutableStateOf(
-        ApiState.Empty,
-    )
-        private set
-
-    var messageReportsRes: ApiState<ListPrivateMessageReportsResponse> by mutableStateOf(
+    var reportsRes: ApiState<PagedResponse<ReportCombinedView>> by mutableStateOf(
         ApiState.Empty,
     )
         private set
@@ -51,171 +43,83 @@ class ReportsViewModel(
         ApiState.Empty,
     )
 
-    private var pagePostReports by mutableLongStateOf(1)
-    private var pageCommentReports by mutableLongStateOf(1)
-    private var pageMessageReports by mutableLongStateOf(1)
+    private var resolveCommunityReportRes: ApiState<CommunityReportResponse> by mutableStateOf(
+        ApiState.Empty,
+    )
+
+    private val pageController = PaginationController()
 
     var unresolvedOnly by mutableStateOf(true)
         private set
 
-    fun resetPagePostReports() {
-        pagePostReports = 1
-    }
+    var reportType by mutableStateOf(ReportType.All)
+        private set
 
-    fun resetPageCommentReports() {
-        pageCommentReports = 1
-    }
-
-    fun resetPageMessageReports() {
-        pageMessageReports = 1
+    fun resetPage() {
+        pageController.reset()
     }
 
     fun updateUnresolvedOnly(unresolvedOnly: Boolean) {
         this.unresolvedOnly = unresolvedOnly
     }
 
-    fun resetPages() {
-        resetPagePostReports()
-        resetPageCommentReports()
-        resetPageMessageReports()
-    }
-
-    fun getFormPostReports(): ListPostReports =
-        ListPostReports(
+    fun getFormReports(): ListReports =
+        ListReports(
             unresolved_only = unresolvedOnly,
-            page = pagePostReports,
+            type_ = reportType,
+            page = pageController.page,
+            page_cursor = pageController.pageCursor,
         )
 
-    fun getFormCommentReports(): ListCommentReports =
-        ListCommentReports(
-            unresolved_only = unresolvedOnly,
-            page = pageCommentReports,
-        )
-
-    fun getFormMessageReports(): ListPrivateMessageReports =
-        ListPrivateMessageReports(
-            unresolved_only = unresolvedOnly,
-            page = pageMessageReports,
-        )
-
-    fun listPostReports(
-        form: ListPostReports,
-        state: ApiState<ListPostReportsResponse> = ApiState.Loading,
+    fun listReports(
+        form: ListReports,
+        state: ApiState<PagedResponse<ReportCombinedView>> = ApiState.Loading,
     ) {
         viewModelScope.launch {
-            postReportsRes = state
-            postReportsRes = API.getInstance().listPostReports(form).toApiState()
+            reportsRes = state
+            reportsRes = API.getInstance().listReports(form).toApiState()
+        }
+
+        when (val res = reportsRes) {
+            is ApiState.Success -> {
+                pageController.nextPage(res.data.next_page)
+            }
+
+            else -> {}
         }
     }
 
-    fun appendPostReports() {
+    fun appendReports() {
         viewModelScope.launch {
-            val oldRes = postReportsRes
+            val oldRes = reportsRes
             when (oldRes) {
-                is ApiState.Success -> postReportsRes = ApiState.Appending(oldRes.data)
+                is ApiState.Success -> reportsRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
-            pagePostReports += 1
-            val newRes = API.getInstance().listPostReports(getFormPostReports()).toApiState()
+            val newRes = API.getInstance().listReports(getFormReports()).toApiState()
 
-            postReportsRes =
+            reportsRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        val mergedReplies =
+                        val mergedItems =
                             getDeduplicateMerge(
-                                oldRes.data.post_reports,
-                                newRes.data.post_reports,
-                            ) { it.post_report.id }
+                                oldRes.data.items,
+                                newRes.data.items,
+                            ) {
+                                when (it) {
+                                    is CommentReportView -> it.comment_report.id
+                                    is CommunityReportView -> it.community_report.id
+                                    is PostReportView -> it.post_report.id
+                                    is PrivateMessageReportView -> it.private_message_report.id
+                                }
+                            }
 
-                        ApiState.Success(oldRes.data.copy(post_reports = mergedReplies))
+                        ApiState.Success(oldRes.data.copy(items = mergedItems))
                     }
 
                     else -> {
-                        pagePostReports -= 1
-                        oldRes
-                    }
-                }
-        }
-    }
-
-    fun listCommentReports(
-        form: ListCommentReports,
-        state: ApiState<ListCommentReportsResponse> = ApiState.Loading,
-    ) {
-        viewModelScope.launch {
-            commentReportsRes = state
-            commentReportsRes = API.getInstance().listCommentReports(form).toApiState()
-        }
-    }
-
-    fun appendCommentReports() {
-        viewModelScope.launch {
-            val oldRes = commentReportsRes
-            when (oldRes) {
-                is ApiState.Success -> commentReportsRes = ApiState.Appending(oldRes.data)
-                else -> return@launch
-            }
-
-            pageCommentReports += 1
-            val newRes = API.getInstance().listCommentReports(getFormCommentReports()).toApiState()
-
-            commentReportsRes =
-                when (newRes) {
-                    is ApiState.Success -> {
-                        val mergedReplies =
-                            getDeduplicateMerge(
-                                oldRes.data.comment_reports,
-                                newRes.data.comment_reports,
-                            ) { it.comment_report.id }
-
-                        ApiState.Success(oldRes.data.copy(comment_reports = mergedReplies))
-                    }
-
-                    else -> {
-                        pageCommentReports -= 1
-                        oldRes
-                    }
-                }
-        }
-    }
-
-    fun listMessageReports(
-        form: ListPrivateMessageReports,
-        state: ApiState<ListPrivateMessageReportsResponse> = ApiState.Loading,
-    ) {
-        viewModelScope.launch {
-            messageReportsRes = state
-            messageReportsRes = API.getInstance().listPrivateMessageReports(form).toApiState()
-        }
-    }
-
-    fun appendMessageReports() {
-        viewModelScope.launch {
-            val oldRes = messageReportsRes
-            when (oldRes) {
-                is ApiState.Success -> messageReportsRes = ApiState.Appending(oldRes.data)
-                else -> return@launch
-            }
-
-            pageMessageReports += 1
-            val newRes = API.getInstance().listPrivateMessageReports(getFormMessageReports()).toApiState()
-
-            messageReportsRes =
-                when (newRes) {
-                    is ApiState.Success -> {
-                        val mergedReplies =
-                            getDeduplicateMerge(
-                                oldRes.data.private_message_reports,
-                                newRes.data.private_message_reports,
-                            ) { it.private_message_report.id }
-
-                        ApiState.Success(oldRes.data.copy(private_message_reports = mergedReplies))
-                    }
-
-                    else -> {
-                        pageMessageReports -= 1
-                        oldRes
+                        ApiState.AppendingFailure(oldRes.data)
                     }
                 }
         }
@@ -228,15 +132,15 @@ class ReportsViewModel(
 
             when (val resolveRes = resolvePostReportRes) {
                 is ApiState.Success -> {
-                    when (val existing = postReportsRes) {
+                    when (val existing = reportsRes) {
                         is ApiState.Success -> {
                             val newReports =
                                 findAndUpdatePostReport(
-                                    existing.data.post_reports,
+                                    existing.data.items,
                                     resolveRes.data.post_report_view,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(post_reports = newReports))
-                            postReportsRes = newRes
+                            val newRes = ApiState.Success(existing.data.copy(items = newReports))
+                            reportsRes = newRes
                         }
 
                         else -> {}
@@ -255,15 +159,15 @@ class ReportsViewModel(
 
             when (val resolveRes = resolveCommentReportRes) {
                 is ApiState.Success -> {
-                    when (val existing = commentReportsRes) {
+                    when (val existing = reportsRes) {
                         is ApiState.Success -> {
                             val newReports =
                                 findAndUpdateCommentReport(
-                                    existing.data.comment_reports,
+                                    existing.data.items,
                                     resolveRes.data.comment_report_view,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(comment_reports = newReports))
-                            commentReportsRes = newRes
+                            val newRes = ApiState.Success(existing.data.copy(items = newReports))
+                            reportsRes = newRes
                         }
 
                         else -> {}
@@ -282,15 +186,42 @@ class ReportsViewModel(
 
             when (val resolveRes = resolveMessageReportRes) {
                 is ApiState.Success -> {
-                    when (val existing = messageReportsRes) {
+                    when (val existing = reportsRes) {
                         is ApiState.Success -> {
                             val newReports =
                                 findAndUpdatePrivateMessageReport(
-                                    existing.data.private_message_reports,
+                                    existing.data.items,
                                     resolveRes.data.private_message_report_view,
                                 )
-                            val newRes = ApiState.Success(existing.data.copy(private_message_reports = newReports))
-                            messageReportsRes = newRes
+                            val newRes = ApiState.Success(existing.data.copy(items = newReports))
+                            reportsRes = newRes
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun resolveCommunityReport(form: ResolveCommunityReport) {
+        viewModelScope.launch {
+            resolveCommunityReportRes = ApiState.Loading
+            resolveCommunityReportRes = API.getInstance().resolveCommunityReport(form).toApiState()
+
+            when (val resolveRes = resolveCommunityReportRes) {
+                is ApiState.Success -> {
+                    when (val existing = reportsRes) {
+                        is ApiState.Success -> {
+                            val newReports =
+                                findAndUpdateCommunityReport(
+                                    existing.data.items,
+                                    resolveRes.data.community_report_view,
+                                )
+                            val newRes = ApiState.Success(existing.data.copy(items = newReports))
+                            reportsRes = newRes
                         }
 
                         else -> {}
@@ -304,30 +235,22 @@ class ReportsViewModel(
 
     init {
         if (!account.isAnon()) {
-            this.resetPages()
-            this.listPostReports(
-                this.getFormPostReports(),
-            )
-            this.listCommentReports(
-                this.getFormCommentReports(),
-            )
-            this.listMessageReports(
-                this.getFormMessageReports(),
-            )
-            siteViewModel.fetchUnreadReportCount()
+            pageController.reset()
+            listReports(getFormReports())
+            myUserInfoViewModel.fetchUnreadCounts()
         }
     }
 
     companion object {
         class Factory(
             private val account: Account,
-            private val siteViewModel: SiteViewModel,
+            private val myUserInfoViewModel: MyUserInfoViewModel,
         ) : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
-            ): T = ReportsViewModel(account, siteViewModel) as T
+            ): T = ReportsViewModel(account, myUserInfoViewModel) as T
         }
     }
 }

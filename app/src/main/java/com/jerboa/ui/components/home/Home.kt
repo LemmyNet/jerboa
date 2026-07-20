@@ -33,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -49,8 +48,8 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
 import it.vercruysse.lemmyapi.datatypes.Tagline
-import it.vercruysse.lemmyapi.dto.ListingType
-import it.vercruysse.lemmyapi.dto.SortType
+import it.vercruysse.lemmyapi.enums.ListingType
+import it.vercruysse.lemmyapi.enums.SortType
 import me.saket.cascade.CascadeDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -200,7 +199,7 @@ fun HomeMoreDropdown(
             text = { Text(text = stringResource(R.string.home_post_view_mode)) },
             leadingIcon = { Icon(Icons.Outlined.ViewAgenda, contentDescription = null) },
             children = {
-                PostViewMode.entries.map {
+                PostViewMode.entries.forEach {
                     DropdownMenuItem(
                         text = { Text(text = stringResource(it.resId)) },
                         onClick = {
@@ -265,9 +264,7 @@ fun ListingTypeOptionsDropDown(
 }
 
 @Composable
-fun Taglines(taglines: List<Tagline>) {
-    if (taglines.isNotEmpty()) {
-        val tagline by remember { mutableStateOf(taglines.random()) }
+fun TaglineDisplay(tagline: Tagline) {
         Column(
             Modifier.padding(LARGE_PADDING),
         ) {
@@ -276,5 +273,4 @@ fun Taglines(taglines: List<Tagline>) {
                 onClick = {},
             )
         }
-    }
 }
