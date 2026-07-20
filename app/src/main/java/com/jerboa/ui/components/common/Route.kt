@@ -6,6 +6,7 @@ import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommunityId
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.dto.SearchType
 
 object Route {
     object Graph {
@@ -24,7 +25,7 @@ object Route {
     val PROFILE_FROM_ID = ProfileFromIdArgs.route
     val PROFILE_FROM_URL = ProfileFromUrlArgs.route
 
-    val COMMUNITY_LIST = CommunityListArgs.route
+    val SEARCH = SearchArgs.route
 
     const val CREATE_POST = "createPost"
 
@@ -105,20 +106,20 @@ object Route {
         }
     }
 
-    class CommunityListArgs(
-        val select: Boolean,
+    class SearchArgs(
+        val searchType: String,
     ) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(navBackStackEntry.arguments?.getBoolean(SELECT)!!)
+            this(navBackStackEntry.arguments?.getString(SEARCH_TYPE) ?: SEARCH_TYPE_DEFAULT)
 
         companion object {
-            const val SELECT = "select"
-            const val SELECT_DEFAULT = false
-            val SELECT_TYPE = NavType.BoolType
+            const val SEARCH_TYPE = "type"
+            val SEARCH_TYPE_DEFAULT = SearchType.All.name
+            val SEARCH_TYPE_NAV_TYPE = NavType.StringType
 
-            fun makeRoute(select: String) = "communityList?select=$select"
+            fun makeRoute(searchType: String) = "search?type=$searchType"
 
-            internal val route by lazy { makeRoute(select = "{$SELECT}") }
+            internal val route by lazy { makeRoute(searchType = "{$SEARCH_TYPE}") }
         }
     }
 

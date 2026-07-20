@@ -54,7 +54,6 @@ import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.community.CommunityScreen
-import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarScreen
 import com.jerboa.ui.components.home.BottomNavScreen
 import com.jerboa.ui.components.home.ShowAppStartupDialogs
@@ -75,6 +74,7 @@ import com.jerboa.ui.components.remove.post.PostRemoveScreen
 import com.jerboa.ui.components.report.comment.CreateCommentReportScreen
 import com.jerboa.ui.components.report.post.CreatePostReportScreen
 import com.jerboa.ui.components.reports.ReportsScreen
+import com.jerboa.ui.components.search.SearchScreen
 import com.jerboa.ui.components.settings.SettingsScreen
 import com.jerboa.ui.components.settings.about.AboutScreen
 import com.jerboa.ui.components.settings.account.AccountSettingsScreen
@@ -87,6 +87,7 @@ import com.jerboa.ui.components.viewvotes.comment.CommentLikesScreen
 import com.jerboa.ui.components.viewvotes.post.PostLikesScreen
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import it.vercruysse.lemmyapi.dto.SearchType
 import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 class MainActivity : AppCompatActivity() {
@@ -407,23 +408,28 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
-                        route = Route.COMMUNITY_LIST,
+                        route = Route.SEARCH,
                         arguments =
                             listOf(
-                                navArgument(Route.CommunityListArgs.SELECT) {
-                                    defaultValue = Route.CommunityListArgs.SELECT_DEFAULT
-                                    type = Route.CommunityListArgs.SELECT_TYPE
+                                navArgument(Route.SearchArgs.SEARCH_TYPE) {
+                                    defaultValue = Route.SearchArgs.SEARCH_TYPE_DEFAULT
+                                    type = Route.SearchArgs.SEARCH_TYPE_NAV_TYPE
                                 },
                             ),
                     ) {
-                        val args = Route.CommunityListArgs(it)
-                        CommunityListScreen(
+                        val args = Route.SearchArgs(it)
+                        val requestedSearchType =
+                            SearchType.entries.firstOrNull { searchType -> searchType.name == args.searchType }
+                                ?: SearchType.All
+                        SearchScreen(
                             appState = appState,
-                            selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
+                            searchTypeMode = requestedSearchType,
+                            appSettings = appSettings,
                             drawerState = drawerState,
                             followList = siteViewModel.getFollowList(),
-                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                         )
                     }
 

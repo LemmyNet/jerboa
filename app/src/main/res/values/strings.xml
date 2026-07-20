@@ -509,4 +509,6 @@
     <string name="unmute">Unmute</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="search_in">Search in</string>
+    <string name="limit_to">Limit to</string>
 </resources>

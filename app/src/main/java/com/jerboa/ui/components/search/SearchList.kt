@@ -1,13 +1,14 @@
-package com.jerboa.ui.components.community.list
+package com.jerboa.ui.components.search
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -18,40 +19,37 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.feat.BlurNSFW
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
-import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 import it.vercruysse.lemmyapi.datatypes.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommunityListHeader(
+fun SearchListHeader(
     openDrawer: () -> Unit,
     search: String,
     onSearchChange: (search: String) -> Unit,
+    showSearchOptions: Boolean,
+    setShowSearchOptions: (Boolean) -> Unit,
 ) {
     TopAppBar(
         title = {
-            CommunityTopBarSearchView(
+            TopBarSearchField(
                 search = search,
                 onSearchChange = onSearchChange,
             )
         },
         actions = {
-            // TODO: disabled until ever implemented
             IconButton(
-                enabled = false,
-                onClick = {
-                },
+                onClick = { setShowSearchOptions(!showSearchOptions) },
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.MoreVert,
+                    imageVector = if (showSearchOptions) Icons.Outlined.ExpandMore else Icons.Outlined.ExpandLess,
                     contentDescription = stringResource(R.string.moreOptions),
                 )
             }
@@ -67,64 +65,41 @@ fun CommunityListHeader(
     )
 }
 
-@Composable
-fun CommunityListings(
+fun LazyListScope.searchCommunityListings(
     communities: List<CommunityView>,
     onClickCommunity: (community: Community) -> Unit,
-    modifier: Modifier = Modifier,
     blurNSFW: BlurNSFW,
     showAvatar: Boolean,
 ) {
-    val listState = rememberLazyListState()
-
-    LazyColumn(
-        state = listState,
-        modifier = modifier.simpleVerticalScrollbar(listState),
-    ) {
-        items(
-            communities,
-            key = { it.community.id },
-            contentType = { "communitylink" },
-        ) { item ->
+    items(
+        communities,
+        contentType = { "communitylink" },
+    ) { item ->
+        CommunityLinkLarger(
+            community = item.community,
+            onClick = onClickCommunity,
+            showDefaultIcon = true,
+            blurNSFW = blurNSFW,
+            showAvatar = showAvatar,
             // A hack for the community follower views that were coerced into community views without counts
-            if (item.counts.users_active_month == 0L) {
-                CommunityLinkLarger(
-                    community = item.community,
-                    onClick = onClickCommunity,
-                    showDefaultIcon = true,
-                    showAvatar = showAvatar,
-                    blurNSFW = blurNSFW,
-                )
-            } else {
-                CommunityLinkLargerWithUserCount(
-                    communityView = item,
-                    onClick = onClickCommunity,
-                    showDefaultIcon = true,
-                    showAvatar = showAvatar,
-                    blurNSFW = blurNSFW,
-                )
-            }
-        }
+            usersPerMonth =
+                if (item.counts.users_active_month == 0L) {
+                    null
+                } else {
+                    item.counts.users_active_month
+                },
+        )
+        HorizontalDivider()
     }
 }
 
-@Preview
 @Composable
-fun CommunityListingsPreview() {
-    val communities = listOf(sampleCommunityView, sampleCommunityView)
-    CommunityListings(
-        communities = communities,
-        onClickCommunity = {},
-        blurNSFW = BlurNSFW.NSFW,
-        showAvatar = true,
-    )
-}
-
-@Composable
-fun CommunityTopBarSearchView(
+fun TopBarSearchField(
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     TextField(
         value = search,
         onValueChange = onSearchChange,
@@ -132,9 +107,7 @@ fun CommunityTopBarSearchView(
         placeholder = {
             Text(stringResource(R.string.community_list_search))
         },
-        modifier =
-            Modifier
-                .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         trailingIcon = {
             if (search.isNotEmpty()) {
                 IconButton(
@@ -159,13 +132,16 @@ fun CommunityTopBarSearchView(
                 disabledIndicatorColor = Color.Transparent,
             ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = { focusManager.clearFocus() },
+        ),
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SearchViewPreview() {
-    CommunityTopBarSearchView(
+    TopBarSearchField(
         search = "",
         onSearchChange = {},
     )

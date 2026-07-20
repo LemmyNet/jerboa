@@ -36,15 +36,16 @@ import com.jerboa.padUrlWithHttps
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
+import com.jerboa.ui.components.search.SearchListReturn
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.CreatePost
 import it.vercruysse.lemmyapi.datatypes.GetSiteMetadata
 import it.vercruysse.lemmyapi.datatypes.PostId
+import it.vercruysse.lemmyapi.dto.SearchType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,7 +84,7 @@ fun CreatePostScreen(
     }
 
     // On return from the community picker
-    appState.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
+    appState.ConsumeReturn<Community>(SearchListReturn.COMMUNITY) { community ->
         selectedCommunity = community
     }
 
@@ -250,7 +251,7 @@ fun CreatePostScreen(
                     communitySelector = {
                         PostCommunitySelector(
                             community = selectedCommunity,
-                            onClickCommunityList = { appState.toCommunityList(select = true) },
+                            onClickCommunitySearch = { appState.toSearch(searchType = SearchType.Communities) },
                         )
                     },
                     error = when (val res = createPostViewModel.createPostRes) {

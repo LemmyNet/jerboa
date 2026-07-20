@@ -57,12 +57,13 @@ import com.jerboa.toEnum
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.GuardAccount
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.community.list.CommunityListScreen
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxScreen
 import com.jerboa.ui.components.person.PersonProfileScreen
 import com.jerboa.ui.components.registrationapplications.RegistrationApplicationsScreen
 import com.jerboa.ui.components.reports.ReportsScreen
+import com.jerboa.ui.components.search.SearchScreen
+import it.vercruysse.lemmyapi.dto.SearchType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -272,13 +273,15 @@ fun BottomNavScreen(
                     }
 
                     composable(route = NavTab.Search.name) {
-                        CommunityListScreen(
+                        SearchScreen(
                             appState = appState,
-                            selectMode = false,
+                            searchTypeMode = SearchType.All,
                             followList = siteViewModel.getFollowList(),
-                            blurNSFW = appSettings.blurNSFW.toEnum(),
+                            appSettings = appSettings,
                             drawerState = drawerState,
-                            showAvatar = siteViewModel.showAvatar() && !lowBandwidthMode,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            lowBandwidthMode = lowBandwidthMode,
                             padding = padding,
                         )
                     }

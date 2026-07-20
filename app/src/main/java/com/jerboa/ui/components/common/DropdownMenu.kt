@@ -32,6 +32,7 @@ import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.api.API
 import com.jerboa.datatypes.data
+import com.jerboa.ui.theme.CASCADE_DEFAULT_MENU_WIDTH
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.ui.theme.Shapes
@@ -50,10 +51,12 @@ fun SortOptionsDropdown(
     onDismissRequest: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
+    fixedWidth: Dp = CASCADE_DEFAULT_MENU_WIDTH,
 ) {
     CascadeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
+        fixedWidth = fixedWidth,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
         getSupportedEntries<SortType>(API.version).filter { !isTopSort(it) }.forEach {
