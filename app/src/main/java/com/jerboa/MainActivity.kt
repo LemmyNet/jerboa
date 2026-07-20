@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity() {
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
-                            enableInfiniteScroll = appSettings.enableInfiniteScroll
+                            enableInfiniteScroll = accountViewModel.currentAccount.value?.infiniteScrollEnabled ?: true
                         )
                     }
 
@@ -319,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
-                            enableInfiniteScroll = appSettings.enableInfiniteScroll
+                            enableInfiniteScroll = accountViewModel.currentAccount.value?.infiniteScrollEnabled ?: true
                         )
                     }
 
@@ -364,7 +364,7 @@ class MainActivity : AppCompatActivity() {
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
-                            enableInfiniteScroll = appSettings.enableInfiniteScroll
+                            enableInfiniteScroll = accountViewModel.currentAccount.value?.infiniteScrollEnabled ?: true
                         )
                     }
 
@@ -406,7 +406,7 @@ class MainActivity : AppCompatActivity() {
                             swipeToActionPreset = appSettings.swipeToActionPreset.toEnum(),
                             disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                             lowBandwidthMode = lowBandwidthMode,
-                            enableInfiniteScroll = appSettings.enableInfiniteScroll
+                            enableInfiniteScroll = accountViewModel.currentAccount.value?.infiniteScrollEnabled ?: true
                         )
                     }
 

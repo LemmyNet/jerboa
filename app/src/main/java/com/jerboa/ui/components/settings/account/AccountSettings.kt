@@ -145,6 +145,7 @@ fun SettingsForm(
     val supportedListingTypes = remember { getSupportedEntries<ListingType>(API.version) }
     val defaultListingTypeState = remember { mutableStateOf(ListingType.entries[luv?.local_user?.default_listing_type?.ordinal ?: 0]) }
 
+    val infiniteScrollEnabled = remember { mutableStateOf(luv?.local_user?.infinite_scroll_enabled ?: true) }
     val showNsfwState = remember { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     val showAvatarsState = remember { mutableStateOf(luv?.local_user?.show_avatars ?: false) }
     val showScoresStateLegacy = remember { mutableStateOf(luv?.local_user?.show_scores ?: true) }
@@ -166,6 +167,7 @@ fun SettingsForm(
             banner = banner,
             matrix_user_id = matrixUserId,
             interface_language = interfaceLang,
+            infinite_scroll_enabled = infiniteScrollEnabled.value,
             bot_account = botAccountState.value,
             default_sort_type = supportedSortTypes[defaultSortTypeState.value.ordinal],
             send_notifications_to_email = sendNotificationsToEmailState.value,
@@ -288,6 +290,12 @@ fun SettingsForm(
                 },
             )
 
+            SwitchPreference(
+                state = infiniteScrollEnabled,
+                title = {
+                    Text(text = stringResource(R.string.look_and_feel_enable_infinite_scroll))
+                },
+            )
             SwitchPreference(
                 state = showNsfwState,
                 title = {

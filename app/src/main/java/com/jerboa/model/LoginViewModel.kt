@@ -111,6 +111,7 @@ class LoginViewModel : ViewModel() {
                                 defaultSortType = luv.local_user.default_sort_type.ordinal,
                                 verificationState = 0,
                                 isAdmin = luv.local_user.admin,
+                                infiniteScrollEnabled = luv.local_user.infinite_scroll_enabled,
                                 isMod = mui.moderates.isNotEmpty(),
                             )
 

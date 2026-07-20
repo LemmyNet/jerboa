@@ -579,7 +579,7 @@ val MIGRATION_35_36 =
     object : Migration(35, 36) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(
-                "ALTER TABLE AppSettings ADD COLUMN enable_infinite_scroll INTEGER NOT NULL DEFAULT 1",
+                "ALTER TABLE Account ADD COLUMN infinite_scroll_enabled INTEGER NOT NULL DEFAULT 1",
             )
         }
     }

@@ -7,7 +7,6 @@ import com.jerboa.db.DEFAULT_AUTO_PLAY_GIFS
 import com.jerboa.db.DEFAULT_BACK_CONFIRMATION_MODE
 import com.jerboa.db.DEFAULT_BLUR_NSFW
 import com.jerboa.db.DEFAULT_DISABLE_AUTO_PLAY
-import com.jerboa.db.DEFAULT_ENABLE_IFINITE_SCROLL
 import com.jerboa.db.DEFAULT_LAST_VERSION_CODE_VIEWED
 import com.jerboa.db.DEFAULT_LOW_BANDWIDTH_MODE
 import com.jerboa.db.DEFAULT_MARK_AS_READ_ON_SCROLL
@@ -59,11 +58,6 @@ data class AppSettings(
         defaultValue = DEFAULT_SHOW_BOTTOM_NAV.toString(),
     )
     val showBottomNav: Boolean,
-    @ColumnInfo(
-        name = "enable_infinite_scroll",
-        defaultValue = DEFAULT_ENABLE_IFINITE_SCROLL.toString(),
-    )
-    val enableInfiniteScroll: Boolean,
     @ColumnInfo(
         name = "post_navigation_gesture_mode",
         defaultValue = DEFAULT_POST_NAVIGATION_GESTURE_MODE.toString(),

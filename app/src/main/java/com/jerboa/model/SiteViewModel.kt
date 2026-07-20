@@ -107,6 +107,7 @@ class SiteViewModel(
                         if (currAcc != null) {
                             val newAccount =
                                 currAcc.copy(
+                                    infiniteScrollEnabled = localUser.infinite_scroll_enabled,
                                     defaultListingType = localUser.default_listing_type.ordinal,
                                     defaultSortType = localUser.default_sort_type.ordinal,
                                     isAdmin = localUser.admin,
