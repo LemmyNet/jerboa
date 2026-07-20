@@ -59,7 +59,6 @@
     <string name="community_joined">Csatlakozva</string>
     <string name="community_list_search">Keresés…</string>
     <string name="community_pending">Folyamatban</string>
-    <string name="community_sortBy">Rendezési elv</string>
     <string name="community_subscribe">Feliratkozás</string>
     <string name="community_users_month">%1$s felhasználó / hónap</string>
     <string name="crash_logs">Hibanapló</string>

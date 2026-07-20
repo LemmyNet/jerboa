@@ -72,7 +72,6 @@
     <string name="community_link_users_month">%1$s korisnika / mjesec</string>
     <string name="community_list_search">Pretraži…</string>
     <string name="community_pending">Na čekanju</string>
-    <string name="community_sortBy">Sortiraj</string>
     <string name="community_subscribe">Pretplati se</string>
     <string name="crash_logs">Dnevnici grešaka</string>
     <string name="crash_logs_all_deleted">Svi dnevnici grešaka su obrisani</string>
