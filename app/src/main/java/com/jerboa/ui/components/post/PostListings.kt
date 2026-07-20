@@ -2,6 +2,7 @@ package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -9,13 +10,18 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.sampleLinkPostView
@@ -27,9 +33,11 @@ import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
+import com.jerboa.ui.components.common.PaginationButton
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.XL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -41,7 +49,7 @@ import it.vercruysse.lemmyapi.datatypes.PostView
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListings(
-    posts: List<PostView>,
+    posts: List<PostView>?,
     admins: List<PersonView>,
     moderators: List<PersonId>?,
     contentAboveListings: @Composable () -> Unit = {},
@@ -63,12 +71,16 @@ fun PostListings(
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     loadMorePosts: () -> Unit,
+    onNextPage: () -> Unit,
+    onPreviousPage: () -> Unit,
+    currentPage: Long,
     account: Account,
     showCommunityName: Boolean = true,
     listState: LazyListState,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
+    enableInfiniteScroll: Boolean,
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -85,6 +97,11 @@ fun PostListings(
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
 ) {
+
+    LaunchedEffect(posts) {
+        if (!enableInfiniteScroll) listState.scrollToItem(index = 0)
+    }
+
     LazyColumn(
         state = listState,
         modifier = Modifier
@@ -94,78 +111,100 @@ fun PostListings(
         item(contentType = "aboveContent") {
             contentAboveListings()
         }
-        // List of items
-        itemsIndexed(
-            items = posts,
-            contentType = { _, _ -> "Post" },
-        ) { index, postView ->
-            PostListing(
-                postView = postView,
-                admins = admins,
-                moderators = moderators,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onReplyClick = onReplyClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onHidePostClick = onHidePostClick,
-                onReportClick = onReportClick,
-                onRemoveClick = onRemoveClick,
-                onBanPersonClick = onBanPersonClick,
-                onBanFromCommunityClick = onBanFromCommunityClick,
-                onLockPostClick = onLockPostClick,
-                onFeaturePostClick = onFeaturePostClick,
-                onViewVotesClick = onViewPostVotesClick,
-                onPersonClick = onPersonClick,
-                showCommunityName = showCommunityName,
-                fullBody = false,
-                account = account,
-                postViewMode = postViewMode,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                blurNSFW = blurNSFW,
-                appState = appState,
-                showPostLinkPreview = showPostLinkPreviews,
-                showIfRead = showIfRead,
-                voteDisplayMode = voteDisplayMode,
-                postActionBarMode = postActionBarMode,
-                swipeToActionPreset = swipeToActionPreset,
-                disableVideoAutoplay = disableVideoAutoplay,
-                lowBandwidthMode = lowBandwidthMode,
-            ).let {
-                if (!postView.read && markAsReadOnScroll) {
-                    DisposableEffect(key1 = postView.post.id) {
-                        onDispose {
-                            if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
-                                onMarkAsRead(postView)
+
+        if (posts?.isEmpty() == true && !enableInfiniteScroll) {
+            item(contentType = "no_more_posts") {
+                Text(
+                    modifier = Modifier.padding(vertical = XL_PADDING).fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = stringResource(R.string.no_more_posts),
+                )
+            }
+        } else if (posts != null) {
+            // List of items
+            itemsIndexed(
+                items = posts,
+                contentType = { _, _ -> "Post" },
+            ) { index, postView ->
+                PostListing(
+                    postView = postView,
+                    admins = admins,
+                    moderators = moderators,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    onReplyClick = onReplyClick,
+                    onPostClick = onPostClick,
+                    onSaveClick = onSaveClick,
+                    onCommunityClick = onCommunityClick,
+                    onEditPostClick = onEditPostClick,
+                    onDeletePostClick = onDeletePostClick,
+                    onHidePostClick = onHidePostClick,
+                    onReportClick = onReportClick,
+                    onRemoveClick = onRemoveClick,
+                    onBanPersonClick = onBanPersonClick,
+                    onBanFromCommunityClick = onBanFromCommunityClick,
+                    onLockPostClick = onLockPostClick,
+                    onFeaturePostClick = onFeaturePostClick,
+                    onViewVotesClick = onViewPostVotesClick,
+                    onPersonClick = onPersonClick,
+                    showCommunityName = showCommunityName,
+                    fullBody = false,
+                    account = account,
+                    postViewMode = postViewMode,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = enableDownVotes,
+                    showAvatar = showAvatar,
+                    blurNSFW = blurNSFW,
+                    appState = appState,
+                    showPostLinkPreview = showPostLinkPreviews,
+                    showIfRead = showIfRead,
+                    voteDisplayMode = voteDisplayMode,
+                    postActionBarMode = postActionBarMode,
+                    swipeToActionPreset = swipeToActionPreset,
+                    disableVideoAutoplay = disableVideoAutoplay,
+                    lowBandwidthMode = lowBandwidthMode,
+                ).let {
+                    if (!postView.read && markAsReadOnScroll) {
+                        DisposableEffect(key1 = postView.post.id) {
+                            onDispose {
+                                if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
+                                    onMarkAsRead(postView)
+                                }
                             }
                         }
                     }
                 }
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = SMALL_PADDING),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                )
             }
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = SMALL_PADDING),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-            )
         }
 
-        if (showPostAppendRetry) {
+        if (enableInfiniteScroll && showPostAppendRetry) {
             item(contentType = "retry_posts") {
                 RetryLoadingPosts(loadMorePosts)
             }
         }
+
+        if (!enableInfiniteScroll && posts != null) {
+            item(contentType = "pagination_buttons") {
+                PaginationButton(
+                    currentPage = currentPage,
+                    onNext = onNextPage,
+                    onNextEnabled = posts.isNotEmpty(),
+                    onPrevious = onPreviousPage
+                )
+            }
+        }
     }
 
-    TriggerWhenReachingEnd(listState, showPostAppendRetry, loadMorePosts)
+    if (enableInfiniteScroll) TriggerWhenReachingEnd(listState, showPostAppendRetry, loadMorePosts)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewPostListings() {
     PostListings(
@@ -210,5 +249,9 @@ fun PreviewPostListings() {
         onReplyClick = {},
         disableVideoAutoplay = false,
         lowBandwidthMode = false,
+        enableInfiniteScroll = false,
+        onNextPage = { },
+        onPreviousPage = { },
+        currentPage = 1
     )
 }

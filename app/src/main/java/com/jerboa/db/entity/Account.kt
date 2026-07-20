@@ -24,6 +24,11 @@ data class Account(
     )
     val defaultSortType: Int,
     @ColumnInfo(
+        name = "infinite_scroll_enabled",
+        defaultValue = "1"
+    )
+    val infiniteScrollEnabled: Boolean,
+    @ColumnInfo(
         name = "verification_state",
         defaultValue = "0",
     )
@@ -43,6 +48,7 @@ val AnonAccount =
         defaultListingType = 1,
         defaultSortType = 0,
         verificationState = 0,
+        infiniteScrollEnabled = true,
         isAdmin = false,
         isMod = false,
     )

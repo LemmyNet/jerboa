@@ -575,6 +575,15 @@ val MIGRATION_34_35 =
         }
     }
 
+val MIGRATION_35_36 =
+    object : Migration(35, 36) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE Account ADD COLUMN infinite_scroll_enabled INTEGER NOT NULL DEFAULT 1",
+            )
+        }
+    }
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST =
     arrayOf(
@@ -612,4 +621,5 @@ val MIGRATIONS_LIST =
         MIGRATION_32_33,
         MIGRATION_33_34,
         MIGRATION_34_35,
+        MIGRATION_35_36
     )

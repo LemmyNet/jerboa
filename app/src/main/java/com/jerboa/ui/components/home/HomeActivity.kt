@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.util.Log
 import androidx.activity.compose.ReportDrawn
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,8 +25,13 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -47,6 +53,7 @@ import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.newVote
+import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
@@ -99,6 +106,7 @@ fun HomeScreen(
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
     padding: PaddingValues,
+    enableInfiniteScroll: Boolean
 ) {
     Log.d("jerboa", "got to home screen")
 
@@ -115,11 +123,24 @@ fun HomeScreen(
     // Forget snackbars of previous accounts
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
+    val hideFab by remember(enableInfiniteScroll) {
+        derivedStateOf { postListState.isScrolledToEnd() && !enableInfiniteScroll }
+    }
+    var currentEnableInfiniteScroll by rememberSaveable { mutableStateOf(enableInfiniteScroll) }
+
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
+
+    LaunchedEffect(enableInfiniteScroll) {
+        if (currentEnableInfiniteScroll != enableInfiniteScroll) {
+            currentEnableInfiniteScroll = enableInfiniteScroll
+            postListState.scrollToItem(0)
+            homeViewModel.resetPosts()
+        }
+    }
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -183,33 +204,36 @@ fun HomeScreen(
                     swipeToActionPreset = swipeToActionPreset,
                     disableVideoAutoplay = disableVideoAutoplay,
                     lowBandwidthMode = lowBandwidthMode,
+                    enableInfiniteScroll = enableInfiniteScroll
                 )
             }
         },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        resources,
-                        snackbarHostState,
-                        scope,
-                        siteViewModel,
-                        accountViewModel,
-                        loginAsToast = false,
-                    ) {
-                        appState.toCreatePost(
-                            community = null,
-                        )
-                    }
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = stringResource(R.string.floating_createPost),
-                )
+            AnimatedVisibility(visible = !hideFab) {
+                FloatingActionButton(
+                    onClick = {
+                        account.doIfReadyElseDisplayInfo(
+                            appState,
+                            ctx,
+                            resources,
+                            snackbarHostState,
+                            scope,
+                            siteViewModel,
+                            accountViewModel,
+                            loginAsToast = false,
+                        ) {
+                            appState.toCreatePost(
+                                community = null,
+                            )
+                        }
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = stringResource(R.string.floating_createPost),
+                    )
+                }
             }
         },
     )
@@ -235,6 +259,7 @@ fun MainPostListingsContent(
     swipeToActionPreset: SwipeToActionPreset,
     disableVideoAutoplay: Boolean,
     lowBandwidthMode: Boolean,
+    enableInfiniteScroll: Boolean
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -265,7 +290,7 @@ fun MainPostListingsContent(
     ) {
         JerboaLoadingBar(homeViewModel.postsRes)
 
-        val posts: List<PostView> = when (val postsRes = homeViewModel.postsRes) {
+        val posts: List<PostView>? = when (val postsRes = homeViewModel.postsRes) {
             is ApiState.Failure -> {
                 apiErrorToast(ctx, postsRes.msg)
                 listOf()
@@ -276,7 +301,7 @@ fun MainPostListingsContent(
             }
 
             else -> {
-                listOf()
+                null
             }
         }
 
@@ -471,6 +496,10 @@ fun MainPostListingsContent(
             swipeToActionPreset = swipeToActionPreset,
             disableVideoAutoplay = disableVideoAutoplay,
             lowBandwidthMode = lowBandwidthMode,
+            enableInfiniteScroll = enableInfiniteScroll,
+            onPreviousPage = homeViewModel::previousPage,
+            onNextPage = homeViewModel::nextPage,
+            currentPage = homeViewModel.currentPage,
         )
     }
 }
