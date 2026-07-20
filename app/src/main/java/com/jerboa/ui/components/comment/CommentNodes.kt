@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
@@ -144,8 +145,8 @@ fun LazyListScope.commentNodeItems(
     onReportClick: (commentView: CommentView) -> Unit,
     onRemoveClick: (commentView: CommentView) -> Unit,
     onDistinguishClick: (commentView: CommentView) -> Unit,
-    onBanPersonClick: (personView: PersonView) -> Unit,
-    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
+    onBanPersonClick: (BanData) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,

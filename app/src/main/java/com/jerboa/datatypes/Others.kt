@@ -185,6 +185,16 @@ data class BanFromCommunityData(
 )
 
 /**
+ * A container to store extra ban data
+ * TODO you should be able to get rid of this
+ */
+@Serializable
+data class BanData(
+    val person: Person,
+    val banned: Boolean,
+)
+
+/**
  * A container to store extra post feature info
  */
 data class PostFeatureData(

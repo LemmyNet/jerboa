@@ -65,15 +65,15 @@ fun PersonNameFederatedPreview() {
 @Composable
 fun PersonProfileLink(
     person: Person,
-    onClick: (personId: PersonId) -> Unit,
-    modifier: Modifier = Modifier,
+    isBanned: Boolean,
     clickable: Boolean = true,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isDistinguished: Boolean = false,
-    isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
     showAvatar: Boolean,
+    onClick: (personId: PersonId) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -101,7 +101,7 @@ fun PersonProfileLink(
                     tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
-            if (isCommunityBanned || person.banned) {
+            if (isBanned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,
                     contentDescription = stringResource(R.string.person_iconBanned),

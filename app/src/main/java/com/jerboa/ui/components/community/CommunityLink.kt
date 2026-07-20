@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,8 +25,13 @@ import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityFederated
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.datatypes.sampleMyUserInfo
+import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.needBlur
+import com.jerboa.showAvatar
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.ItemAndInstanceTitle
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
@@ -36,7 +42,9 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.CommunityId
 import it.vercruysse.lemmyapi.datatypes.CommunityView
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 
 @Composable
 fun CommunityName(
@@ -79,18 +87,21 @@ fun CommunityLink(
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.labelMedium,
-    onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
-    showAvatar: Boolean,
-    blurNSFW: BlurNSFW,
+    appSettings: AppSettings,
+    myUserInfo: MyUserInfo?,
+    onClick: (CommunityId) -> Unit,
 ) {
+    val ctx = LocalContext.current
+    val showAvatar = myUserInfo.showAvatar(appSettings, ctx)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier =
             if (clickable) {
-                Modifier.clickable { onClick(community) }.then(modifier)
+                Modifier.clickable { onClick(community.id) }.then(modifier)
             } else {
                 modifier
             },
@@ -102,7 +113,7 @@ fun CommunityLink(
                     contentDescription = null,
                     size = size,
                     thumbnailSize = thumbnailSize,
-                    blur = blurNSFW.needBlur(community.nsfw),
+                    blur = appSettings.blurNSFW.toEnumSafe<BlurNSFW>().needBlur(community.nsfw),
                 )
             } ?: run {
                 if (showDefaultIcon) {
@@ -128,10 +139,10 @@ fun CommunityLink(
 @Composable
 fun CommunityLinkLarger(
     community: Community,
-    onClick: (community: Community) -> Unit,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
     showDefaultIcon: Boolean,
-    showAvatar: Boolean,
-    blurNSFW: BlurNSFW,
+    onClick: (CommunityId) -> Unit,
 ) {
     CommunityLink(
         community = community,
@@ -146,18 +157,18 @@ fun CommunityLinkLarger(
                 .fillMaxWidth(),
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
-        blurNSFW = blurNSFW,
-        showAvatar = showAvatar,
+        myUserInfo = myUserInfo,
+        appSettings = appSettings,
     )
 }
 
 @Composable
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
-    onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    showAvatar: Boolean,
-    blurNSFW: BlurNSFW,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
+    onClick: (CommunityId) -> Unit,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -173,8 +184,8 @@ fun CommunityLinkLargerWithUserCount(
         style = MaterialTheme.typography.titleMedium,
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
-        blurNSFW = blurNSFW,
-        showAvatar = showAvatar,
+        myUserInfo = myUserInfo,
+        appSettings = appSettings,
     )
 }
 
@@ -185,8 +196,8 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
+        myUserInfo = sampleMyUserInfo,
+        appSettings = APP_SETTINGS_DEFAULT,
     )
 }
 
@@ -197,7 +208,7 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
+        myUserInfo = sampleMyUserInfo,
+        appSettings = APP_SETTINGS_DEFAULT,
     )
 }

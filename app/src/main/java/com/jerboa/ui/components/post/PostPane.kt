@@ -584,7 +584,7 @@ fun MainPostScreenBody(
                             account = account,
                             isCollapsedByParent = false,
                             showActionBar = { commentId ->
-                                showActionBarByDefault xor
+                                appSettings.showCommentActionBarByDefault xor
                                         commentsWithToggledActionBar.contains(
                                             commentId,
                                         )

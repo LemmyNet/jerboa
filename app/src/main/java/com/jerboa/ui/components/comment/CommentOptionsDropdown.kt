@@ -24,6 +24,7 @@ import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
 import com.jerboa.amAdmin
 import com.jerboa.api.API
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getContent
 import com.jerboa.feat.canModOrAdmin
@@ -34,6 +35,8 @@ import com.jerboa.ui.components.common.PopupMenuItem
 import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
+import it.vercruysse.lemmyapi.datatypes.DeleteComment
+import it.vercruysse.lemmyapi.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
@@ -49,17 +52,18 @@ fun CommentOptionsDropdown(
     onPersonClick: (PersonId) -> Unit,
     onViewSourceClick: () -> Unit,
     onEditCommentClick: (CommentView) -> Unit,
-    onDeleteCommentClick: (CommentView) -> Unit,
+    onDeleteCommentClick: (DeleteComment) -> Unit,
     onBlockCreatorClick: (Person) -> Unit,
-    onReportClick: (CommentView) -> Unit,
+    onReportClick: (CommentId) -> Unit,
     onRemoveClick: (CommentView) -> Unit,
-    onDistinguishClick: (CommentView) -> Unit,
+    onDistinguishClick: (DistinguishComment) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
-    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
+    onBanPersonClick: (BanData) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunityData) -> Unit,
     viewSource: Boolean,
 ) {
     val ctx = LocalContext.current
+    val commentId = commentView.comment.id
 
     val isCreator = commentView.comment.creator_id == myUserInfo?.local_user_view?.local_user?.person_id
     val canModOrAdmin = canModOrAdmin(
@@ -141,13 +145,19 @@ fun CommentOptionsDropdown(
                 },
             )
 
+            val deleteForm =
+                DeleteComment(
+                    comment_id = commentId,
+                    deleted = !commentView.comment.deleted,
+                )
             if (commentView.comment.deleted) {
+
                 PopupMenuItem(
                     text = stringResource(R.string.restore),
                     icon = Icons.Outlined.Restore,
                     onClick = {
                         onDismissRequest()
-                        onDeleteCommentClick(commentView)
+                        onDeleteCommentClick(deleteForm)
                     },
                 )
             } else {
@@ -156,7 +166,7 @@ fun CommentOptionsDropdown(
                     icon = Icons.Outlined.Delete,
                     onClick = {
                         onDismissRequest()
-                        onDeleteCommentClick(commentView)
+                        onDeleteCommentClick(deleteForm)
                     },
                 )
             }
@@ -174,7 +184,7 @@ fun CommentOptionsDropdown(
                 icon = Icons.Outlined.Flag,
                 onClick = {
                     onDismissRequest()
-                    onReportClick(commentView)
+                    onReportClick(commentId)
                 },
             )
         }
@@ -203,8 +213,10 @@ fun CommentOptionsDropdown(
                     )
                     if (myUserInfo.amAdmin()) {
                         BanPersonPopupMenuItem(
-                            person = commentView.creator,
-                            banned = commentView.creator_banned,
+                            banData = BanData(
+                                person = commentView.creator,
+                                banned = commentView.creator_banned,
+                            ),
                             onDismissRequest = onDismissRequest,
                             onBanPersonClick = onBanPersonClick
                         )

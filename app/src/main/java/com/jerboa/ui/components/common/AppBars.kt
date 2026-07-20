@@ -235,15 +235,15 @@ fun CommentOrPostNodeHeader(
     published: String,
     updated: String?,
     deleted: Boolean,
-    onPersonClick: (personId: PersonId) -> Unit,
     isPostCreator: Boolean,
     isDistinguished: Boolean,
     isCommunityBanned: Boolean,
-    onClick: () -> Unit,
-    onLongCLick: () -> Unit,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
-    showAvatar: Boolean,
+    myUserInfo: MyUserInfo?,
+    onPersonClick: (personId: PersonId) -> Unit,
+    onClick: () -> Unit,
+    onLongCLick: () -> Unit,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -336,18 +336,15 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.outline,
     noClick: Boolean = false,
-    account: Account,
-    requiresAccount: Boolean = true,
+    myUserInfo: MyUserInfo?,
+    requiresLogin: Boolean = true,
 ) {
-    val ctx = LocalContext.current
-    val resources = LocalResources.current
-
     val barMod =
         if (noClick) {
             modifier
         } else {
             modifier.clickable(onClick = {
-                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
+                if (!requiresLogin || myUserInfo != null) {
                     onClick()
                 }
             })

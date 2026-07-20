@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.model.ReplyItem
 import com.jerboa.state.VideoAppState
@@ -96,8 +97,8 @@ class JerboaAppState(
         navController.navigate(Route.COMMENT_REMOVE)
     }
 
-    fun toBanPerson(personView: PersonView) {
-        sendReturnForwards(BanPersonReturn.PERSON_SEND, personView)
+    fun toBanPerson(banData: BanData) {
+        sendReturnForwards(BanPersonReturn.BAN_DATA_SEND, banData)
         navController.navigate(Route.BAN_PERSON)
     }
 

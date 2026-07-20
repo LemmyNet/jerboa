@@ -52,6 +52,7 @@ import com.jerboa.R
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getContent
 import com.jerboa.datatypes.sampleCommentView
@@ -61,8 +62,10 @@ import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
@@ -71,6 +74,7 @@ import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
 import com.jerboa.showAvatar
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.MarkdownHelper
@@ -104,6 +108,7 @@ import it.vercruysse.lemmyapi.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.datatypes.DistinguishComment
 import it.vercruysse.lemmyapi.datatypes.EditComment
 import it.vercruysse.lemmyapi.datatypes.GetComments
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -119,10 +124,10 @@ import it.vercruysse.lemmyapi.enums.VoteAction
 fun CommentNodeHeader(
     commentView: CommentView,
     isExpanded: Boolean,
-    showAvatar: Boolean,
     onPersonClick: (personId: PersonId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    myUserInfo: MyUserInfo?,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -136,7 +141,7 @@ fun CommentNodeHeader(
         isExpanded = isExpanded,
         onClick = onClick,
         onLongCLick = onLongClick,
-        showAvatar = showAvatar,
+        myUserInfo = myUserInfo,
         isDistinguished = commentView.comment.distinguished,
         isNsfw = false,
     )
@@ -151,7 +156,7 @@ fun CommentNodeHeaderPreview() {
         onClick = {},
         onLongClick = {},
         isExpanded = false,
-        showAvatar = true,
+        myUserInfo = sampleMyUserInfo,
     )
 }
 
@@ -194,24 +199,24 @@ fun CommentBodyPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.commentNodeItem(
     node: CommentNode,
-    admins: List<PersonView>,
     isFlat: Boolean,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean,
     isCollapsedByParent: Boolean,
-    localSite: LocalSite,
+    siteRes: GetSiteResponse,
     myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isExpanded: (CommentId) -> Boolean,
     toggleExpanded: (CommentId) -> Unit,
     toggleActionBar: (CommentId) -> Unit,
     onVoteClick: (CreateCommentLike) -> Unit,
-    onReplyClick: (CreateComment) -> Unit,
+    onReplyClick: (CommentView) -> Unit,
     onSaveClick: (SaveComment) -> Unit,
     onMarkAsReadClick: (commentId: CommentId, read: Boolean) -> Unit,
     onCommentClick: (CommentId) -> Unit,
-    onEditCommentClick: (EditComment) -> Unit,
+    onEditCommentClick: (CommentView) -> Unit,
     onDeleteCommentClick: (DeleteComment) -> Unit,
     onPersonClick: (PersonId) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
@@ -219,11 +224,11 @@ fun LazyListScope.commentNodeItem(
     onHeaderLongClick: (CommentId) -> Unit,
     onCommunityClick: (CommunityId) -> Unit,
     onPostClick: (PostId) -> Unit,
-    onReportClick: (CreateCommentReport) -> Unit,
-    onRemoveClick: (RemoveComment) -> Unit,
+    onReportClick: (CommentId) -> Unit,
+    onRemoveClick: (CommentView) -> Unit,
     onDistinguishClick: (DistinguishComment) -> Unit,
-    onBanPersonClick: (BanPerson) -> Unit,
-    onBanFromCommunityClick: (BanFromCommunity) -> Unit,
+    onBanPersonClick: (PersonView) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunityData) -> Unit,
     onCommentLinkClick: (CommentId) -> Unit,
     onBlockCreatorClick: (BlockPerson) -> Unit,
     onFetchChildrenClick: (GetComments) -> Unit,
@@ -232,6 +237,7 @@ fun LazyListScope.commentNodeItem(
     val commentView = node.commentView
     val commentId = commentView.comment.id
 
+    val localSite = siteRes.site_view.local_site
     val enableDownVotes = enableDownvotes(localSite, PostOrCommentType.Comment)
     val enableUpvotes = enableUpvotes(localSite, PostOrCommentType.Comment)
 
@@ -279,22 +285,34 @@ fun LazyListScope.commentNodeItem(
             }
 
         val swipeState = rememberSwipeActionState(
-            swipeToActionPreset = swipeToActionPreset,
+            swipeToActionPreset = appSettings.swipeToActionPreset.toEnumSafe(),
             enableDownVotes = enableDownVotes,
             enableUpVotes = enableUpvotes,
             rememberKey = commentView,
         ) {
                 when (it) {
                     SwipeToActionType.Upvote -> {
+                        val voteAction = VoteAction.UpVote
                         instantScores =
-                            instantScores.update(VoteAction.UpVote)
-                        onUpvoteClick(commentView)
+                            instantScores.update(voteAction)
+                        onVoteClick(
+                            CreateCommentLike(
+                                comment_id = commentId,
+                                vote = voteAction,
+                            )
+                        )
                     }
 
                     SwipeToActionType.Downvote -> {
+                        val voteAction = VoteAction.DownVote
                         instantScores =
-                            instantScores.update(VoteAction.DownVote)
-                        onDownvoteClick(commentView)
+                            instantScores.update(voteAction)
+                        onVoteClick(
+                            CreateCommentLike(
+                                comment_id = commentId,
+                                vote = voteAction,
+                            )
+                        )
                     }
 
                     SwipeToActionType.Reply -> {
@@ -302,7 +320,12 @@ fun LazyListScope.commentNodeItem(
                     }
 
                     SwipeToActionType.Save -> {
-                        onSaveClick(commentView)
+                        onSaveClick(
+                            SaveComment(
+                                comment_id = commentId,
+                                save = commentView.comment_actions?.saved_at != null,
+                            )
+                        )
                     }
                 }
         }
@@ -333,22 +356,21 @@ fun LazyListScope.commentNodeItem(
                                 community = commentView.community,
                                 onCommunityClick = onCommunityClick,
                                 onPostClick = onPostClick,
-                                blurNSFW = blurNSFW,
-                                showAvatar = myUserInfo.showAvatar(lowBandwidthMode),
+                                myUserInfo = myUserInfo,
+                                appSettings = appSettings,
                             )
                         }
                         CommentNodeHeader(
                             commentView = commentView,
                             onPersonClick = onPersonClick,
                             onClick = {
-                                onHeaderClick(commentView)
+                                onHeaderClick(commentId)
                             },
                             onLongClick = {
-                                onHeaderLongClick(commentView)
+                                onHeaderLongClick(commentId)
                             },
-                            collapsedCommentsCount = commentView.comment.child_count,
                             isExpanded = isExpanded(commentId),
-                            showAvatar = myUserInfo.showAvatar(lowBandwidthMode),
+                            myUserInfo = myUserInfo,
                         )
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -359,7 +381,7 @@ fun LazyListScope.commentNodeItem(
                                 CommentBody(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
-                                    onClick = { onCommentClick(commentView) },
+                                    onClick = { onCommentClick(commentId) },
                                     onLongClick = { v ->
                                         if (v is TextView) {
                                             // Also triggers for long click on links, so we check if link was hit
@@ -378,17 +400,12 @@ fun LazyListScope.commentNodeItem(
                                 ) {
                                     CommentFooterLine(
                                         commentView = commentView,
-                                        admins = admins,
+                                        admins = siteRes.admins,
                                         instantScores = instantScores,
-                                        onUpvoteClick = {
+                                        onVoteClick = {
                                             instantScores =
-                                                instantScores.update(VoteAction.UpVote)
-                                            onUpvoteClick(commentView)
-                                        },
-                                        onDownvoteClick = {
-                                            instantScores =
-                                                instantScores.update(VoteAction.DownVote)
-                                            onDownvoteClick(commentView)
+                                                instantScores.update(it.vote)
+                                            onVoteClick(it)
                                         },
                                         onViewSourceClick = {
                                             viewSource = !viewSource
@@ -408,7 +425,7 @@ fun LazyListScope.commentNodeItem(
                                         onBlockCreatorClick = onBlockCreatorClick,
                                         onClick = if (isFlat) {
                                             {
-                                                onCommentClick(commentView)
+                                                onCommentClick(commentId)
                                             }
                                         } else {
                                             {
@@ -418,7 +435,6 @@ fun LazyListScope.commentNodeItem(
                                         onLongClick = {
                                             toggleActionBar(commentId)
                                         },
-                                        account = account,
                                         viewSource = viewSource,
                                         localSite = localSite,
                                         myUserInfo = myUserInfo,
@@ -701,10 +717,10 @@ private fun ShowMoreChildrenNode(
 fun PostAndCommunityContextHeader(
     post: Post,
     community: Community,
-    onCommunityClick: (community: Community) -> Unit,
-    onPostClick: (postId: PostId) -> Unit,
-    blurNSFW: BlurNSFW,
-    showAvatar: Boolean,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
+    onCommunityClick: (CommunityId) -> Unit,
+    onPostClick: (PostId) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -727,8 +743,8 @@ fun PostAndCommunityContextHeader(
                 community = community,
                 onClick = onCommunityClick,
                 showDefaultIcon = false,
-                blurNSFW = blurNSFW,
-                showAvatar = showAvatar,
+                myUserInfo = myUserInfo,
+                appSettings = appSettings,
             )
         }
     }
@@ -742,8 +758,8 @@ fun PostAndCommunityContextHeaderPreview() {
         community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
-        blurNSFW = BlurNSFW.NSFW,
-        showAvatar = true,
+        myUserInfo = sampleMyUserInfo,
+        appSettings = APP_SETTINGS_DEFAULT,
     )
 }
 
@@ -755,25 +771,23 @@ fun CommentFooterLine(
     localSite: LocalSite,
     myUserInfo: MyUserInfo?,
     instantScores: InstantScores,
-    onUpvoteClick: () -> Unit,
-    onDownvoteClick: () -> Unit,
-    onReplyClick: (commentView: CommentView) -> Unit,
-    onSaveClick: (commentView: CommentView) -> Unit,
+    onVoteClick: (CreateCommentLike) -> Unit,
+    onReplyClick: (CommentView) -> Unit,
+    onSaveClick: (SaveComment) -> Unit,
     onViewSourceClick: () -> Unit,
-    onEditCommentClick: (commentView: CommentView) -> Unit,
-    onDeleteCommentClick: (commentView: CommentView) -> Unit,
-    onReportClick: (commentView: CommentView) -> Unit,
-    onRemoveClick: (commentView: CommentView) -> Unit,
-    onDistinguishClick: (commentView: CommentView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
-    onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
+    onEditCommentClick: (CommentView) -> Unit,
+    onDeleteCommentClick: (DeleteComment) -> Unit,
+    onReportClick: (CommentId) -> Unit,
+    onRemoveClick: (CommentView) -> Unit,
+    onDistinguishClick: (DistinguishComment) -> Unit,
+    onBanPersonClick: (BanData) -> Unit,
+    onBanFromCommunityClick: (BanFromCommunityData) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     onViewVotesClick: (CommentId) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    account: Account,
     viewSource: Boolean,
 ) {
     var showMoreOptions by rememberSaveable { mutableStateOf(false) }
@@ -817,7 +831,14 @@ fun CommentFooterLine(
         ) {
             VoteScore(
                 instantScores = instantScores,
-                onVoteClick = onUpvoteClick,
+                onVoteClick = {
+                    onVoteClick(
+                        CreateCommentLike(
+                            comment_id = commentView.comment.id,
+                            vote = VoteAction.UpVote,
+                        )
+                    )
+                },
                 localSite = localSite,
                 myUserInfo = myUserInfo,
                 voteContentType = PostOrCommentType.Comment,
@@ -836,7 +857,14 @@ fun CommentFooterLine(
                 localSite = localSite,
                 myUserInfo = myUserInfo,
                 voteContentType = PostOrCommentType.Comment,
-                onVoteClick = onUpvoteClick,
+                onVoteClick = {
+                    onVoteClick(
+                        CreateCommentLike(
+                            comment_id = commentView.comment.id,
+                            vote = VoteAction.UpVote,
+                        )
+                    )
+                },
                 creatorId = commentView.comment.creator_id,
                 account = account,
             )
@@ -846,7 +874,14 @@ fun CommentFooterLine(
                     localSite = localSite,
                     myUserInfo = myUserInfo,
                     voteContentType = PostOrCommentType.Comment,
-                    onVoteClick = onDownvoteClick,
+                    onVoteClick = {
+                        onVoteClick(
+                            CreateCommentLike(
+                                comment_id = commentView.comment.id,
+                                vote = VoteAction.DownVote,
+                            )
+                        )
+                    },
                     creatorId = commentView.comment.creator_id,
                     account = account,
                 )

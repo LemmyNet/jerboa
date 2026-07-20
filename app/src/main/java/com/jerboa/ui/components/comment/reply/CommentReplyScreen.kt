@@ -28,6 +28,7 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 
 object CommentReplyReturn {
     const val COMMENT_VIEW = "comment-reply::return(comment-view)"
@@ -37,6 +38,7 @@ object CommentReplyReturn {
 @Composable
 fun CommentReplyScreen(
     accountViewModel: AccountViewModel,
+    myUserInfo: MyUserInfo?,
     siteViewModel: SiteViewModel,
     appState: JerboaAppState,
     lowBandwidthMode: Boolean,
@@ -68,7 +70,7 @@ fun CommentReplyScreen(
                 loading = loading,
                 onBackClick = appState::popBackStack,
                 onActionClick = {
-                    if (!account.isAnon()) {
+                    if (myUserInfo != null) {
                         commentReplyViewModel.createComment(
                             replyItem,
                             ctx = ctx,

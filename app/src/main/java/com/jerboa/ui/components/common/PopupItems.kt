@@ -7,20 +7,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.communityNameShown
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.personNameShown
-import it.vercruysse.lemmyapi.datatypes.Person
 
 @Composable
 fun BanPersonPopupMenuItem(
-    person: Person,
-    banned: Boolean,
+    banData: BanData,
     onDismissRequest: () -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (BanData) -> Unit,
 ) {
-    val personNameShown = personNameShown(person, true)
+    val personNameShown = personNameShown(banData.person, true)
     val (banText, banIcon) =
-        if (banned) {
+        if (banData.banned) {
             Pair(stringResource(R.string.unban_person, personNameShown), Icons.Outlined.Restore)
         } else {
             Pair(stringResource(R.string.ban_person, personNameShown), Icons.Outlined.Gavel)
@@ -31,7 +30,7 @@ fun BanPersonPopupMenuItem(
         icon = banIcon,
         onClick = {
             onDismissRequest()
-            onBanPersonClick(person)
+            onBanPersonClick(banData)
         },
     )
 }
