@@ -76,7 +76,6 @@
     <string name="community_link_users_month">%1$s 月用户数</string>
     <string name="community_list_search">搜索…</string>
     <string name="community_pending">待处理</string>
-    <string name="community_sortBy">排序方式</string>
     <string name="community_subscribe">订阅</string>
     <string name="community_users_month">%1$s 月用户数</string>
     <string name="crash_logs">崩溃日志</string>
