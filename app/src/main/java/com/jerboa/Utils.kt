@@ -146,7 +146,7 @@ fun buildCommentsTree(
 
     val depthOffset =
         if (isCommentView && firstComment != null) {
-            getCommentIdDepthFromPath(firstComment.path, rootCommentId!!)
+            getCommentIdDepthFromPath(firstComment.path, rootCommentId)
         } else {
             0
         }

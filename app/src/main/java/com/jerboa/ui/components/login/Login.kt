@@ -17,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.Icon
@@ -136,7 +137,7 @@ fun InstancePicker(
         OutlinedTextField(
             modifier =
                 Modifier
-                    .menuAnchor(MenuAnchorType.PrimaryEditable, true)
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true)
                     .width(OutlinedTextFieldDefaults.MinWidth),
             label = { Text(stringResource(R.string.login_instance)) },
             placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
