@@ -12,7 +12,7 @@
   * [Adding translations](#adding-translations)
   * [Theming guide](#theming-guide)
   * [Updating the instance list](#updating-the-instance-list)
-  * [Generate compose compiler metrics](#generate-compose-compiler-metrics)
+  * [Generate Compose compiler reports and metrics](#generate-compose-compiler-reports-and-metrics)
   * [Testing migrations](#testing-migrations)
   * [Updating the Baseline profiles](#updating-the-baseline-profiles)
 <!-- TOC -->
@@ -102,16 +102,16 @@ You can run it by doing
  ./gradlew app:updateInstances
 ```
 
-## Generate compose compiler metrics
+## Generate Compose compiler reports and metrics
 
-You can generate the compose compiler metrics by executing the following gradle task.
+You can generate the Compose compiler reports and metrics by executing the following Gradle task.
 
 ```shell
 ./gradlew assembleRelease --rerun-tasks -P enableComposeCompilerReports=true
 ```
 
-Then you will find the metrics in `app/build/compose_metrics` directory.
-See [this link for more information on these metrics](https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md)
+The reports and metrics are written to the `app/build/compose_compiler` directory.
+See [the Compose compiler metrics documentation](https://github.com/JetBrains/kotlin/blob/master/plugins/compose/design/compiler-metrics.md) for more information.
 
 ## Testing migrations
 

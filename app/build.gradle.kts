@@ -7,8 +7,8 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
-    kotlin("plugin.serialization") version "2.4.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
+    kotlin("plugin.serialization") version "2.4.10"
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
@@ -19,6 +19,16 @@ kotlin {
         jvmTarget = JvmTarget.fromTarget("17")
         optIn.add("kotlin.RequiresOptIn")
         jvmDefault.set(JvmDefaultMode.ENABLE)
+    }
+}
+
+composeCompiler {
+    stabilityConfigurationFiles.add(
+        rootProject.layout.projectDirectory.file("compose_compiler_config.conf")
+    )
+    if (providers.gradleProperty("enableComposeCompilerReports").orNull == "true") {
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        metricsDestination = layout.buildDirectory.dir("compose_compiler")
     }
 }
 
