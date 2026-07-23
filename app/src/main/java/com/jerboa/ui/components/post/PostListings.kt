@@ -33,7 +33,7 @@ import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.default
 import com.jerboa.rememberJerboaAppState
-import com.jerboa.ui.components.common.PaginationButton
+import com.jerboa.ui.components.common.Paginator
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -191,7 +191,7 @@ fun PostListings(
 
         if (!enableInfiniteScroll && posts != null) {
             item(contentType = "pagination_buttons") {
-                PaginationButton(
+                Paginator(
                     currentPage = currentPage,
                     onNext = onNextPage,
                     onNextEnabled = posts.isNotEmpty(),

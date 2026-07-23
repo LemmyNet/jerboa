@@ -23,7 +23,7 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.ui.components.common.PaginationButton
+import com.jerboa.ui.components.common.Paginator
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
@@ -134,7 +134,7 @@ fun CommentNodes(
             }
             item {
                 if (!enableInfiniteScroll) {
-                    PaginationButton(
+                    Paginator(
                         currentPage = page,
                         onNext = nextPage,
                         onPrevious = previousPage,
@@ -160,7 +160,7 @@ private fun NoMoreComments(
             textAlign = TextAlign.Center,
             text = stringResource(R.string.no_more_comments)
         )
-        PaginationButton(
+        Paginator(
             currentPage = page,
             onNext = { },
             onPrevious = previousPage,
