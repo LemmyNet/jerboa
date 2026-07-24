@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
 import com.jerboa.MissingCommentNode
@@ -24,6 +23,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.ui.components.common.Paginator
+import com.jerboa.ui.theme.SCREEN_BOTTOM_PADDING
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
@@ -130,7 +130,7 @@ fun CommentNodes(
                 swipeToActionPreset = swipeToActionPreset,
             )
             item {
-                if (enableInfiniteScroll) Spacer(modifier = Modifier.height(100.dp))
+                if (enableInfiniteScroll) Spacer(modifier = Modifier.height(SCREEN_BOTTOM_PADDING))
             }
             item {
                 if (!enableInfiniteScroll) {
