@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.content.Context
 import android.content.res.Resources
 import androidx.compose.ui.unit.dp
 import com.jerboa.datatypes.sampleCommentView
@@ -12,7 +11,6 @@ import junitparams.Parameters
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -137,13 +135,6 @@ class UtilsKtTest {
         assertFalse(validateUrl(resources, "").hasError)
         assertFalse(validateUrl(resources, "https://example.com").hasError)
         assertFalse(validateUrl(resources, MAGNET_LINK).hasError)
-    }
-
-    @Test
-    fun testIsImage() {
-        assertTrue(isImage("http://example.com/test.jpg"))
-        assertFalse(isImage("test.jpg"))
-        assertFalse(isImage("http://example.com/test.csv"))
     }
 
     @Test

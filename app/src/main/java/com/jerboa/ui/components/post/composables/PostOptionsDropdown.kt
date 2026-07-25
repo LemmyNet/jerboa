@@ -28,12 +28,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.blockCommunity
 import com.jerboa.feat.blockPerson
 import com.jerboa.feat.copyTextToClipboard
@@ -211,36 +211,36 @@ fun PostOptionsDropdown(
                 )
 
                 when (val mediaType = PostLinkType.fromURL(url)) {
-                    PostLinkType.Image -> {
+                    is PostLinkType.Image -> {
                         PopupMenuItem(
                             text = stringResource(R.string.share_image),
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(scope, ctx, resources, url, mediaType)
+                                shareMedia(scope, ctx, resources, mediaType)
                             },
                         )
                     }
 
-                    PostLinkType.Video -> {
+                    is PostLinkType.Video -> {
                         PopupMenuItem(
                             text = stringResource(R.string.share_video),
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(scope, ctx, resources, url, mediaType)
+                                shareMedia(scope, ctx, resources, mediaType)
                             },
                         )
                     }
 
-                    PostLinkType.Link -> {
-                        if (isMedia(url)) {
+                    is PostLinkType.Link -> {
+                        if (isMedia(mediaType.extension)) {
                             PopupMenuItem(
                                 text = stringResource(R.string.share_media),
                                 icon = Icons.Outlined.Share,
                                 onClick = {
                                     onDismissRequest()
-                                    shareMedia(scope, ctx, resources, url, PostLinkType.Link)
+                                    shareMedia(scope, ctx, resources, mediaType)
                                 },
                             )
                         }

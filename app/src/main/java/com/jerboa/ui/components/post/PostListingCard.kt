@@ -49,9 +49,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
-import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
@@ -67,6 +65,7 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.amMod
 import com.jerboa.feat.canMod
@@ -1027,9 +1026,11 @@ fun PostTitleBlock(
 ) {
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
-    val imagePost = postType == PostLinkType.Image
+
+    // TODO: investigate this weird piece
+    val imagePost = postType is PostLinkType.Image
     // Also support hosts that we don't manually support (Through OGP), but they must link directly to a playable link.
-    val videoPost = postType == PostLinkType.Video ||
+    val videoPost = postType is PostLinkType.Video ||
         DirectFileVideoHost.isDirectUrl(postView.post.embed_video_url) ||
         (postUrl != null && VideoHostComposer.isVideo(postUrl))
 
@@ -1061,7 +1062,7 @@ fun PostTitleBlock(
                 postView = postView,
                 appState = appState,
                 showIfRead = showIfRead,
-                linkType = if (videoPost) PostLinkType.Video else PostLinkType.Image,
+                isVideo = videoPost,
             )
         }
 
@@ -1160,7 +1161,7 @@ fun PostTitleAndMediaPlaceholder(
     postView: PostView,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    linkType: PostLinkType,
+    isVideo: Boolean,
 ) {
     val url = postView.post.url ?: return
 
@@ -1177,7 +1178,13 @@ fun PostTitleAndMediaPlaceholder(
             .fillMaxWidth()
             .aspectRatio(16f / 9f)
             .combinedClickable(
-                onClick = { appState.openMediaViewer(url, linkType) },
+                onClick = {
+                    if (isVideo) {
+                        appState.openVideoViewer(url)
+                    } else {
+                        appState.openMediaViewer(url)
+                    }
+                },
                 onLongClick = { appState.showLinkPopup(url) },
             ),
     ) {
@@ -1186,10 +1193,7 @@ fun PostTitleAndMediaPlaceholder(
             modifier = Modifier.fillMaxSize(),
         ) {
             Icon(
-                imageVector = when (linkType) {
-                    PostLinkType.Video -> Icons.Outlined.PlayCircle
-                    else -> Icons.Outlined.Image
-                },
+                imageVector = if (isVideo) Icons.Outlined.PlayCircle else Icons.Outlined.Image,
                 contentDescription = null,
                 modifier = Modifier.size(LINK_ICON_SIZE),
                 tint = MaterialTheme.colorScheme.outline,

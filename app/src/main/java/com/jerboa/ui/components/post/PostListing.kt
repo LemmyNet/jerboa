@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.jerboa.JerboaAppState
-import com.jerboa.PostLinkType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
@@ -47,6 +45,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
@@ -347,7 +346,7 @@ fun ThumbnailTile(
             val embeddedData = it.getOrThrow()
             val targetUrl = embeddedData.videoUrl ?: postUrl
             val postLinkType = PostLinkType.fromURL(targetUrl)
-            val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType == PostLinkType.Image) postUrl else null
+            val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType is PostLinkType.Image) postUrl else null
 
             ThumbnailBox(
                 thumbnailUrl = thumbnailUrl,
@@ -379,14 +378,10 @@ private fun ThumbnailBox(
         .size(POST_LINK_PIC_SIZE)
         .combinedClickable(
             onClick = {
-                if (postLinkType != PostLinkType.Link) {
-                    appState.openMediaViewer(targetUrl, postLinkType)
+                if (postLinkType is PostLinkType.Link) {
+                    appState.openLink(targetUrl, useCustomTabs, usePrivateTabs)
                 } else {
-                    appState.openLink(
-                        targetUrl,
-                        useCustomTabs,
-                        usePrivateTabs,
-                    )
+                    appState.openMediaViewer(postLinkType)
                 }
             },
             onLongClick = {
@@ -399,7 +394,7 @@ private fun ThumbnailBox(
             PictrsThumbnailImage(
                 thumbnail = thumbnailUrl,
                 blur = blurEnabled,
-                roundBottomEndCorner = postLinkType != PostLinkType.Link,
+                roundBottomEndCorner = postLinkType !is PostLinkType.Link,
                 contentDescription = altText,
                 modifier = postLinkPicMod,
             )
@@ -422,7 +417,7 @@ private fun ThumbnailBox(
         }
 
         // Display a caret in the bottom right corner to denote this as an image/video
-        if (postLinkType != PostLinkType.Link) {
+        if (postLinkType !is PostLinkType.Link) {
             Icon(
                 painter = painterResource(id = R.drawable.triangle),
                 contentDescription = null,
@@ -432,7 +427,7 @@ private fun ThumbnailBox(
                         .align(Alignment.BottomEnd),
                 tint =
                     when (postLinkType) {
-                        PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                        is PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
                         else -> MaterialTheme.jerboaColorScheme.imageHighlight
                     },
             )

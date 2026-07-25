@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -13,7 +12,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.util.Log
 import android.util.TypedValue
 import android.webkit.MimeTypeMap.getFileExtensionFromUrl
@@ -53,7 +51,6 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.SMALL_PADDING
 import it.vercruysse.lemmyapi.datatypes.*
 import kotlinx.coroutines.CoroutineScope
@@ -427,13 +424,6 @@ fun pictrsImageThumbnail(
     return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
 
-fun isImage(url: String): Boolean = imageRegex.matches(url)
-
-val imageRegex =
-    Regex(
-        pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
-    )
-
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -764,47 +754,6 @@ enum class PostViewMode(
      * A list view that has no action bar.
      */
     List(R.string.look_and_feel_post_view_list),
-}
-
-/**
- * For a given post, what sort of content Jerboa treats it as.
- */
-enum class PostLinkType {
-    /**
-     * A Link to an external website. Opens the browser.
-     */
-    Link,
-
-    /**
-     * An Image. Opens the built-in image viewer.
-     */
-    Image,
-
-    /**
-     * A Video. Should open the built-in video viewer.
-     * Also matches audio only
-     */
-    Video,
-
-    ;
-
-    companion object {
-        fun fromURL(url: String): PostLinkType =
-            if (DirectFileVideoHost.isDirectUrl(url)) {
-                Video
-            } else if (isImage(url)) {
-                Image
-            } else {
-                Link
-            }
-    }
-
-    fun toMediaDir(): String =
-        when (this) {
-            Image -> Environment.DIRECTORY_PICTURES
-            Video -> Environment.DIRECTORY_MOVIES
-            Link -> Environment.DIRECTORY_DOWNLOADS
-        }
 }
 
 fun isSameInstance(
@@ -1337,10 +1286,7 @@ fun Context.getInputStream(url: String): InputStream {
 val nonMediaExt = setOf("html", "htm", "xhtml", "")
 
 // Fast guess at checking if the link could be a file that we consider as Media
-fun isMedia(url: String): Boolean {
-    val ext = getFileExtensionFromUrl(url)
-    return !nonMediaExt.contains(ext)
-}
+fun isMedia(ext: String?): Boolean = ext != null && ext !in nonMediaExt
 
 fun Context.startActivitySafe(intent: Intent) {
     try {
