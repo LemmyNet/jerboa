@@ -81,12 +81,18 @@ class PostLinkTypeTest {
 
     @Test
     fun `keeps extensionless and unsupported values as links`() {
-        listOf(
-            "https://example.com/image",
-            "https://example.com/image.csv",
-        ).forEach { url ->
-            assertEquals(PostLinkType.Link(url), PostLinkType.fromURL(url))
-        }
+        assertEquals(
+            PostLinkType.Link("https://example.com/image"),
+            PostLinkType.fromURL("https://example.com/image"),
+        )
+        assertEquals(
+            PostLinkType.Link(
+                sourceUrl = "https://example.com/image.csv",
+                filename = "image.csv",
+                extension = "csv",
+            ),
+            PostLinkType.fromURL("https://example.com/image.csv"),
+        )
     }
 
     @Test
