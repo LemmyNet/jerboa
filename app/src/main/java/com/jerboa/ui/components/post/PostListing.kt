@@ -409,11 +409,12 @@ fun ThumbnailTile(
 
 private enum class ThumbnailKind { LINK, IMAGE, VIDEO }
 
-private fun PostLinkType.toThumbnailKind(): ThumbnailKind = when (this) {
-    is PostLinkType.Link -> ThumbnailKind.LINK
-    is PostLinkType.Video -> ThumbnailKind.VIDEO
-    is PostLinkType.Image -> ThumbnailKind.IMAGE
-}
+private fun PostLinkType.toThumbnailKind(): ThumbnailKind =
+    when (this) {
+        is PostLinkType.Link -> ThumbnailKind.LINK
+        is PostLinkType.Video -> ThumbnailKind.VIDEO
+        is PostLinkType.Image -> ThumbnailKind.IMAGE
+    }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -1188,7 +1188,10 @@ fun PostTitleAndMediaPlaceholder(
             .combinedClickable(
                 onClick = {
                     when (videoSource) {
-                        is PostVideoSource.DirectEmbedUrl -> appState.openVideoViewer(videoSource.url)
+                        is PostVideoSource.DirectEmbedUrl -> {
+                            appState.openVideoViewer(videoSource.url)
+                        }
+
                         is PostVideoSource.ResolvablePostUrl -> {
                             scope.launch(Dispatchers.Main) {
                                 VideoHostComposer.getVideoData(videoSource.url).getOrNull()?.videoUrl?.let {
@@ -1196,7 +1199,10 @@ fun PostTitleAndMediaPlaceholder(
                                 }
                             }
                         }
-                        null -> imageUrl?.let { appState.openMediaViewer(it) }
+
+                        null -> {
+                            imageUrl?.let { appState.openMediaViewer(it) }
+                        }
                     }
                 },
                 onLongClick = { popupUrl?.let { appState.showLinkPopup(it) } },
