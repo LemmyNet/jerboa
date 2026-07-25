@@ -197,7 +197,7 @@ class UtilsKtTest {
     fun testBrokenLanguagesRemappedToEnglish() {
         listOf("pl", "ru", "uk", "kk").forEach { locale ->
             val date = Date.from(Instant.now().minus(Duration.ofDays(1)))
-            prettyTime = PrettyTime(Locale.of(locale))
+            prettyTime = PrettyTime(Locale.forLanguageTag(locale))
 
             val durationString = formatDuration(date, true)
             assertNotEquals("1", durationString)

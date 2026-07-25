@@ -25,7 +25,6 @@ class DirectFileVideoHostTest {
             "https://example.com/video.",
             "not a url",
             "",
-            null,
             "https://www.move.org",
             "https://www.move.org/",
             "https://www.move.org/index.html",

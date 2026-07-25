@@ -4,8 +4,6 @@ import com.jerboa.feat.PostLinkType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-// TODO: combine with ImageViewerScreenAndroidTest and remove as AndroidTest
-
 class ImageViewerScreenTest {
     private val avifPostLink = PostLinkType.fromURL("https://example.com/image.avif")
 
