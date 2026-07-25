@@ -5,7 +5,7 @@ import com.jerboa.ui.components.videoviewer.EmbeddedData
 
 class DirectFileVideoHost : SupportedVideoHost {
     companion object {
-        fun isDirectUrl(url: String?): Boolean = url != null && videoExtensionFromUrl(url) != null
+        fun isDirectUrl(url: String): Boolean = videoExtensionFromUrl(url) != null
     }
 
     override fun isSupported(url: String): Boolean = isDirectUrl(url)

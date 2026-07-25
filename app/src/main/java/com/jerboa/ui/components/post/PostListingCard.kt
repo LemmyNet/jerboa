@@ -96,8 +96,8 @@ import com.jerboa.ui.components.common.ifNotNull
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.components.post.composables.PostOptionsDropdown
+import com.jerboa.ui.components.videoviewer.PostVideoSource
 import com.jerboa.ui.components.videoviewer.VideoHostComposer
-import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
@@ -114,6 +114,8 @@ import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun PostListingCard(
@@ -1026,13 +1028,10 @@ fun PostTitleBlock(
 ) {
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
+    val videoSource = PostVideoSource.fromPost(postView.post)
 
-    // TODO: investigate this weird piece
     val imagePost = postType is PostLinkType.Image
-    // Also support hosts that we don't manually support (Through OGP), but they must link directly to a playable link.
-    val videoPost = postType is PostLinkType.Video ||
-        DirectFileVideoHost.isDirectUrl(postView.post.embed_video_url) ||
-        (postUrl != null && VideoHostComposer.isVideo(postUrl))
+    val videoPost = videoSource != null
 
     when {
         videoPost && expandedImage && !lowBandwidthMode -> {
@@ -1062,7 +1061,7 @@ fun PostTitleBlock(
                 postView = postView,
                 appState = appState,
                 showIfRead = showIfRead,
-                isVideo = videoPost,
+                videoSource = videoSource,
             )
         }
 
@@ -1161,16 +1160,25 @@ fun PostTitleAndMediaPlaceholder(
     postView: PostView,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    isVideo: Boolean,
+    videoSource: PostVideoSource?,
 ) {
-    val url = postView.post.url ?: return
-
     PostName(
         post = postView.post,
         read = postView.read,
         showIfRead = showIfRead,
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
     )
+
+    val imageUrl = postView.post.url
+    val isVideo = videoSource != null
+    if (!isVideo && imageUrl == null) return
+
+    val scope = rememberCoroutineScope()
+    val popupUrl = when (videoSource) {
+        is PostVideoSource.ResolvablePostUrl -> videoSource.url
+        is PostVideoSource.DirectEmbedUrl -> videoSource.url
+        null -> imageUrl
+    }
 
     OutlinedCard(
         shape = MaterialTheme.shapes.medium,
@@ -1179,13 +1187,19 @@ fun PostTitleAndMediaPlaceholder(
             .aspectRatio(16f / 9f)
             .combinedClickable(
                 onClick = {
-                    if (isVideo) {
-                        appState.openVideoViewer(url)
-                    } else {
-                        appState.openMediaViewer(url)
+                    when (videoSource) {
+                        is PostVideoSource.DirectEmbedUrl -> appState.openVideoViewer(videoSource.url)
+                        is PostVideoSource.ResolvablePostUrl -> {
+                            scope.launch(Dispatchers.Main) {
+                                VideoHostComposer.getVideoData(videoSource.url).getOrNull()?.videoUrl?.let {
+                                    appState.openVideoViewer(it)
+                                }
+                            }
+                        }
+                        null -> imageUrl?.let { appState.openMediaViewer(it) }
                     }
                 },
-                onLongClick = { appState.showLinkPopup(url) },
+                onLongClick = { popupUrl?.let { appState.showLinkPopup(it) } },
             ),
     ) {
         Box(
