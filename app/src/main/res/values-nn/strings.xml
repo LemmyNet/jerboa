@@ -56,7 +56,7 @@
     <string name="comment_node_copy_permalink">Kopier fastlenkje</string>
     <string name="comment_node_copy_comment">Kopier kommentartekst</string>
     <string name="comment_node_go_to">Gå til %1$s</string>
-    <string name="comment_node_goto_comment">Gå til kommentar</string>
+    <string name="comment_node_goto_comment">Gå til kommentaren</string>
     <string name="comment_node_in">"i "</string>
     <string name="comment_node_more_replies">%1$s svar til</string>
     <string name="comment_node_comment_copied">Kommentartekst kopiert</string>
@@ -165,7 +165,7 @@
     <string name="look_and_feel_theme_dark">Mørkt</string>
     <string name="look_and_feel_theme_light">Lyst</string>
     <string name="look_and_feel_theme_system">System</string>
-    <string name="look_and_feel_theme_system_black">Systemsvart</string>
+    <string name="look_and_feel_theme_system_black">System (svart)</string>
     <string name="look_and_feel_theme_color_dynamic">Dynamisk</string>
     <string name="look_and_feel_theme_color_beach">Strand</string>
     <string name="look_and_feel_theme_color_blue">Blått</string>
@@ -345,7 +345,7 @@
     <string name="verification_failed_retrieve_site">Klarte ikkje henta nettstad-info</string>
     <string name="verification_no_account">Denne handlinga krev brukarkonto</string>
     <string name="verification_delete_account">Slett kontoen din</string>
-    <string name="verification_account_not_read">Kontoen er ikkje klar enno.</string>
+    <string name="verification_account_not_read">Kontoen er ikkje klar enno</string>
     <string name="verification_account_busy">Kontoen (%s) er ikkje stadfesta enno</string>
     <string name="warning">Åtvaring</string>
     <string name="login_view_model_email_not_verified">E-postadressa til kontoen er ikkje stadfesta enno. Sjå i innboksen.</string>
@@ -380,13 +380,13 @@
     <string name="save">Lagra</string>
     <string name="open_link">Opna lenkje</string>
     <string name="open_link_external">Opna lenkje i ekstern nettlesar</string>
-    <string name="no_activity_found">Fann ikkje nokon aktivitet/app som kan opna lenkja</string>
+    <string name="no_activity_found">Fann ikkje nokon app som kan opna lenkja</string>
     <string name="markdownHelper_insertSpoiler">Set inn røpealarm</string>
     <string name="copy">Kopier</string>
     <string name="share_media">Del mediefil</string>
     <string name="matrix_send_msg">Kopla til via Matrix</string>
     <string name="posts_failed_loading">Klarte ikkje henta innlegg. Prøv på nytt.</string>
-    <string name="failed_sharing_media">Klarte ikkje dela mediefila.</string>
+    <string name="failed_sharing_media">Klarte ikkje dela mediefila</string>
     <string name="app_settings_nothing">Ingenting</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_communities">NSFW utanom frå NSFW-fellesskap</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Utanom NSFW inni fellesskap</string>
@@ -484,8 +484,8 @@
     <string name="backup_database">Reservekopier databasen</string>
     <string name="restore_database">Gjenopprett databasen</string>
     <string name="restore_database_warning">Åtvaring: Dette vil tømma den gjeldande databasen</string>
-    <string name="database_restored">Databasen er no gjenoppretta.</string>
-    <string name="database_backed_up">Databasen er no reservekopiert.</string>
+    <string name="database_restored">Databasen er no gjenoppretta</string>
+    <string name="database_backed_up">Databasen er no reservekopiert</string>
     <string name="settings_screen_backup_and_restore">Reservekopi og gjenoppretting</string>
     <string name="instances">Instansar</string>
     <string name="users">Brukarar</string>
@@ -493,7 +493,16 @@
     <string name="donate">Gje pengegåve</string>
     <string name="donation_dialog_dismiss">Nei takk</string>
     <string name="copy_image">Kopier bilete</string>
-    <string name="failed_copy_media">Klarte ikkje kopiera mediefil</string>
+    <string name="failed_copy_media">Klarte ikkje kopiera mediefila</string>
     <string name="copied">Kopiert</string>
     <string name="media_copied">Mediefil kopiert</string>
+    <string name="settings_disable_video_autoplay">Spel ikkje automatisk av videoar</string>
+    <string name="settings_low_bandwidth_mode">Låg bandbreidd-modus</string>
+    <string name="low_bandwidth_mode_auto">Auto (datatenar)</string>
+    <string name="low_bandwidth_mode_always">Alltid på</string>
+    <string name="low_bandwidth_mode_never">Av</string>
+    <string name="mute">Demp lyd</string>
+    <string name="unmute">Opphev lyddemping</string>
+    <string name="play">Spel av</string>
+    <string name="pause">Pause</string>
 </resources>
