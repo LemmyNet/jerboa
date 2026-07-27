@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.jerboa.JerboaAppState
-import com.jerboa.PostLinkType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.BanFromCommunityData
@@ -47,16 +46,20 @@ import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.VoteType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
+import com.jerboa.toHttps
 import com.jerboa.ui.components.common.EmbeddedDataLoader
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.SwipeToAction
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.settings.about.TORRENT_HELP_LINK
+import com.jerboa.ui.components.videoviewer.PostVideoSource
+import com.jerboa.ui.components.videoviewer.VideoHostComposer
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -73,6 +76,8 @@ import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -313,23 +318,58 @@ fun ThumbnailTile(
     appState: JerboaAppState,
     lowBandwidthMode: Boolean,
 ) {
-    val postUrl = post.url ?: return // no URL means no thumbnail to render
-
     if (lowBandwidthMode) {
-        // Skip EmbeddedDataLoader (which would fetch metadata over the
-        // network) and render the same link placeholder the normal path
-        // falls back to when no thumbnail is available.
-        val postLinkType = PostLinkType.fromURL(postUrl)
-        ThumbnailBox(
-            thumbnailUrl = null,
-            targetUrl = postUrl,
-            postLinkType = postLinkType,
-            blurEnabled = blurEnabled,
-            altText = post.alt_text,
-            appState = appState,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-        )
+        // Skip EmbeddedDataLoader (which would fetch metadata over the network). Video
+        // sources are classified synchronously; hosted videos are only resolved on tap.
+        when (val videoSource = PostVideoSource.fromPost(post)) {
+            is PostVideoSource.ResolvablePostUrl -> {
+                val scope = rememberCoroutineScope()
+                ThumbnailBox(
+                    thumbnailUrl = null,
+                    kind = ThumbnailKind.VIDEO,
+                    blurEnabled = blurEnabled,
+                    altText = post.alt_text,
+                    onClick = {
+                        scope.launch(Dispatchers.Main) {
+                            VideoHostComposer.getVideoData(videoSource.url).getOrNull()?.videoUrl?.let {
+                                appState.openVideoViewer(it)
+                            }
+                        }
+                    },
+                    onLongClick = { appState.showLinkPopup(videoSource.url) },
+                )
+            }
+
+            is PostVideoSource.DirectEmbedUrl -> {
+                ThumbnailBox(
+                    thumbnailUrl = post.thumbnail_url?.toHttps(),
+                    kind = ThumbnailKind.VIDEO,
+                    blurEnabled = blurEnabled,
+                    altText = post.alt_text,
+                    onClick = { appState.openVideoViewer(videoSource.url) },
+                    onLongClick = { appState.showLinkPopup(videoSource.url) },
+                )
+            }
+
+            null -> {
+                val postUrl = post.url ?: return
+                val postLinkType = PostLinkType.fromURL(postUrl)
+                ThumbnailBox(
+                    thumbnailUrl = null,
+                    kind = postLinkType.toThumbnailKind(),
+                    blurEnabled = blurEnabled,
+                    altText = post.alt_text,
+                    onClick = {
+                        if (postLinkType is PostLinkType.Link) {
+                            appState.openLink(postUrl, useCustomTabs, usePrivateTabs)
+                        } else {
+                            appState.openMediaViewer(postLinkType)
+                        }
+                    },
+                    onLongClick = { appState.showLinkPopup(postUrl) },
+                )
+            }
+        }
     } else {
         EmbeddedDataLoader(post, imageDetails, {
             AsyncImage(
@@ -345,53 +385,52 @@ fun ThumbnailTile(
                 return@EmbeddedDataLoader
             }
             val embeddedData = it.getOrThrow()
-            val targetUrl = embeddedData.videoUrl ?: postUrl
+            val targetUrl = embeddedData.videoUrl ?: post.url ?: return@EmbeddedDataLoader
             val postLinkType = PostLinkType.fromURL(targetUrl)
-            val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType == PostLinkType.Image) postUrl else null
+            val thumbnailUrl = embeddedData.thumbnailUrl ?: if (postLinkType is PostLinkType.Image) post.url else null
 
             ThumbnailBox(
                 thumbnailUrl = thumbnailUrl,
-                targetUrl = targetUrl,
-                postLinkType = postLinkType,
+                kind = postLinkType.toThumbnailKind(),
                 blurEnabled = blurEnabled,
                 altText = post.alt_text,
-                appState = appState,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                onClick = {
+                    if (postLinkType is PostLinkType.Link) {
+                        appState.openLink(targetUrl, useCustomTabs, usePrivateTabs)
+                    } else {
+                        appState.openMediaViewer(postLinkType)
+                    }
+                },
+                onLongClick = { appState.showLinkPopup(targetUrl) },
             )
         }
     }
 }
 
+private enum class ThumbnailKind { LINK, IMAGE, VIDEO }
+
+private fun PostLinkType.toThumbnailKind(): ThumbnailKind =
+    when (this) {
+        is PostLinkType.Link -> ThumbnailKind.LINK
+        is PostLinkType.Video -> ThumbnailKind.VIDEO
+        is PostLinkType.Image -> ThumbnailKind.IMAGE
+    }
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThumbnailBox(
     thumbnailUrl: String?,
-    targetUrl: String,
-    postLinkType: PostLinkType,
+    kind: ThumbnailKind,
     blurEnabled: Boolean,
     altText: String?,
-    appState: JerboaAppState,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     val postLinkPicMod = Modifier
         .size(POST_LINK_PIC_SIZE)
         .combinedClickable(
-            onClick = {
-                if (postLinkType != PostLinkType.Link) {
-                    appState.openMediaViewer(targetUrl, postLinkType)
-                } else {
-                    appState.openLink(
-                        targetUrl,
-                        useCustomTabs,
-                        usePrivateTabs,
-                    )
-                }
-            },
-            onLongClick = {
-                appState.showLinkPopup(targetUrl)
-            },
+            onClick = onClick,
+            onLongClick = onLongClick,
         )
 
     Box {
@@ -399,7 +438,7 @@ private fun ThumbnailBox(
             PictrsThumbnailImage(
                 thumbnail = thumbnailUrl,
                 blur = blurEnabled,
-                roundBottomEndCorner = postLinkType != PostLinkType.Link,
+                roundBottomEndCorner = kind != ThumbnailKind.LINK,
                 contentDescription = altText,
                 modifier = postLinkPicMod,
             )
@@ -422,7 +461,7 @@ private fun ThumbnailBox(
         }
 
         // Display a caret in the bottom right corner to denote this as an image/video
-        if (postLinkType != PostLinkType.Link) {
+        if (kind != ThumbnailKind.LINK) {
             Icon(
                 painter = painterResource(id = R.drawable.triangle),
                 contentDescription = null,
@@ -431,8 +470,8 @@ private fun ThumbnailBox(
                         .size(THUMBNAIL_CARET_SIZE)
                         .align(Alignment.BottomEnd),
                 tint =
-                    when (postLinkType) {
-                        PostLinkType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                    when (kind) {
+                        ThumbnailKind.VIDEO -> MaterialTheme.jerboaColorScheme.videoHighlight
                         else -> MaterialTheme.jerboaColorScheme.imageHighlight
                     },
             )

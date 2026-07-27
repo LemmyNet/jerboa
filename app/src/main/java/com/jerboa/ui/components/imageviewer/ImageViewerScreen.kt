@@ -48,13 +48,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
-import com.jerboa.PostLinkType
 import com.jerboa.R
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
@@ -76,6 +75,7 @@ fun ImageViewerScreen(
     val ctx = LocalContext.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
+    val postLinkType = remember(url) { PostLinkType.fromURL(url) }
 
     val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewerLoader
 
@@ -109,10 +109,10 @@ fun ImageViewerScreen(
     var retryHash by remember { mutableIntStateOf(0) }
 
     var imageState by remember {
-        mutableStateOf(ImageState.LOADING)
+        mutableStateOf<ImageState>(ImageState.Loading)
     }
 
-    val image = remember {
+    val image = remember(retryHash) {
         ImageRequest
             .Builder(ctx)
             .placeholder(null)
@@ -122,8 +122,11 @@ fun ImageViewerScreen(
                 onStart = {
                     Log.d("ImageViewerScreen", "Image loading started for $url")
                 },
-                onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
-                onError = { _, _ -> imageState = ImageState.FAILED },
+                onSuccess = { _, _ -> imageState = ImageState.Success },
+                onError = { _, result ->
+                    Log.e("ImageViewerScreen", "Image loading failed for $url: ${result.throwable}")
+                    imageState = imageStateFromError(postLinkType, result.throwable)
+                },
                 onCancel = {
                     Log.d("ImageViewerScreen", "Image loading cancelled for $url")
                 },
@@ -135,19 +138,19 @@ fun ImageViewerScreen(
 
     Scaffold(
         topBar = {
-            ViewerHeader(showTopBar, url, appState)
+            ViewerHeader(showTopBar, postLinkType, appState)
         },
         content = {
             Box(
                 Modifier.background(backColor),
             ) {
-                if (imageState == ImageState.FAILED) {
+                if (imageState is ImageState.Failed || imageState is ImageState.FailedDecode) {
                     Column(
                         Modifier
                             .fillMaxSize()
                             .clickable {
                                 retryHash++
-                                imageState = ImageState.LOADING
+                                imageState = ImageState.Loading
                             },
                         Arrangement.Center,
                         Alignment.CenterHorizontally,
@@ -156,10 +159,15 @@ fun ImageViewerScreen(
                             imageVector = Icons.Outlined.ErrorOutline,
                             contentDescription = stringResource(id = R.string.image_error_icon),
                         )
-                        Text(text = stringResource(id = R.string.image_failed_loading))
+                        Text(
+                            text = when (val state = imageState) {
+                                is ImageState.FailedDecode -> stringResource(R.string.image_unsupported_format, state.extension)
+                                else -> stringResource(R.string.image_failed_loading)
+                            },
+                        )
                     }
                 } else {
-                    if (imageState == ImageState.LOADING) {
+                    if (imageState == ImageState.Loading) {
                         val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
 
                         if (currentProgress.value.progressAvailable) {
@@ -206,7 +214,7 @@ fun ImageViewerScreen(
 @Composable
 fun ViewerHeader(
     showTopBar: Boolean = true,
-    url: String = "",
+    postLinkType: PostLinkType,
     appState: JerboaAppState,
 ) {
     val topBarAlpha by animateFloatAsState(
@@ -236,7 +244,7 @@ fun ViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Image)
+                    shareMedia(appState.coroutineScope, ctx, resources, postLinkType)
                 },
             ) {
                 Icon(
@@ -249,7 +257,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.fromURL(url))
+                    storeMedia(appState.coroutineScope, ctx, resources, postLinkType)
                 },
             ) {
                 Icon(
@@ -268,8 +276,30 @@ fun ImageActivityPreview() {
     ImageViewerScreen(url = "", appState = rememberJerboaAppState())
 }
 
-enum class ImageState {
-    SUCCESS,
-    LOADING,
-    FAILED,
+sealed interface ImageState {
+    data object Success : ImageState
+
+    data object Loading : ImageState
+
+    data object Failed : ImageState
+
+    data class FailedDecode(
+        val extension: String,
+    ) : ImageState
+}
+
+internal fun imageStateFromError(
+    postLinkType: PostLinkType,
+    throwable: Throwable,
+): ImageState {
+    val isDecoderFailure = generateSequence(throwable) { it.cause }.any {
+        it::class.simpleName?.contains("DecodeException") == true ||
+            it.message?.contains("decode", ignoreCase = true) == true
+    }
+
+    if (!isDecoderFailure) return ImageState.Failed
+
+    return (postLinkType as? PostLinkType.Image)
+        ?.let { ImageState.FailedDecode(it.extension) }
+        ?: ImageState.Failed
 }

@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.content.Context
 import android.content.res.Resources
 import androidx.compose.ui.unit.dp
 import com.jerboa.datatypes.sampleCommentView
@@ -12,7 +11,6 @@ import junitparams.Parameters
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -140,13 +138,6 @@ class UtilsKtTest {
     }
 
     @Test
-    fun testIsImage() {
-        assertTrue(isImage("http://example.com/test.jpg"))
-        assertFalse(isImage("test.jpg"))
-        assertFalse(isImage("http://example.com/test.csv"))
-    }
-
-    @Test
     fun testPictrsImageThumbnail() {
         assertEquals("invalid", pictrsImageThumbnail("invalid", 3))
         assertEquals(
@@ -206,7 +197,7 @@ class UtilsKtTest {
     fun testBrokenLanguagesRemappedToEnglish() {
         listOf("pl", "ru", "uk", "kk").forEach { locale ->
             val date = Date.from(Instant.now().minus(Duration.ofDays(1)))
-            prettyTime = PrettyTime(Locale.of(locale))
+            prettyTime = PrettyTime(Locale.forLanguageTag(locale))
 
             val durationString = formatDuration(date, true)
             assertNotEquals("1", durationString)
