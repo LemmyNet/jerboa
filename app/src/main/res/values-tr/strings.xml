@@ -503,4 +503,11 @@
     <string name="unmute">Sesi aç</string>
     <string name="play">Oynat</string>
     <string name="pause">Duraklat</string>
+    <string name="image_unsupported_format">Resim formatı desteklenmiyor: %1$s.</string>
+    <string name="low_bandwidth_mode_always">Her zaman açık</string>
+    <string name="low_bandwidth_mode_never">Kapalı</string>
+    <string name="search_in">Arama</string>
+    <string name="limit_to">Sınırla</string>
+    <string name="settings_low_bandwidth_mode">Düşük veri modu</string>
+    <string name="low_bandwidth_mode_auto">Otomatik (Veri Tasarrufu)</string>
 </resources>
