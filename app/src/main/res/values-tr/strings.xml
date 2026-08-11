@@ -479,7 +479,7 @@
     <string name="you_have_no_blocked_users">Engellenmiş kullanıcınız yok</string>
     <string name="you_have_no_blocked_communities">Engellenmiş topluluğunuz yok</string>
     <string name="you_have_no_blocked_instances">Engellenmiş sunucunuz yok</string>
-    <string name="by">tarafından:</string>
+    <string name="by">tarafından</string>
     <string name="donate">Bağış Yap</string>
     <string name="users">Kullanıcılar</string>
     <string name="communities">Topluluklar</string>
