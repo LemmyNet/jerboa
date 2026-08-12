@@ -288,8 +288,8 @@
     <string name="topAppBar_back">Geri</string>
     <string name="url_invalid">Geçersiz URL</string>
     <string name="utils_login_first">Önce giriş yapın</string>
-    <string name="upvote">Artıla</string>
-    <string name="downvote">Eksile</string>
+    <string name="upvote">Yukarı oy ver</string>
+    <string name="downvote">Aşağı oy ver</string>
     <string name="upvoted">Artılandı</string>
     <string name="downvoted">Eksilendi</string>
     <string name="saved_image">Görsel kaydedildi</string>
