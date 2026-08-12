@@ -467,7 +467,7 @@
     <string name="unhide_post">Gönderiyi gizleme</string>
     <string name="show_upvotes">Yukarı oyları göster</string>
     <string name="show_downvotes">Aşağı oyları göster</string>
-    <string name="show_upvote_percentage">Yukarı oy yüzdesini göster</string>
+    <string name="show_upvote_percentage">Yukarı oy % göster</string>
     <string name="score">Puan</string>
     <string name="info">Bilgi</string>
     <string name="settings_about_baseline_profile">Temel profil</string>
