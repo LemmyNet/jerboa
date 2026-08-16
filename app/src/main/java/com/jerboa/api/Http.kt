@@ -4,12 +4,16 @@ import android.net.TrafficStats
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
-import io.ktor.client.plugins.UserAgent
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.logging.*
 import io.ktor.http.HttpHeaders
-import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.LemmyApiBaseController
-import it.vercruysse.lemmyapi.setDefaultClientConfig
+import it.vercruysse.lemmyapi.LemmyApiClient
+import it.vercruysse.lemmyapi.LemmyApiOptions
+import it.vercruysse.lemmyapi.LemmyAuth
+import it.vercruysse.lemmyapi.LemmyInstance
+import it.vercruysse.lemmyapi.LemmyVersion
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +22,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.concurrent.TimeUnit
 
 // TODO get rid of a default instance, use a list of defaults and pick a random one
 const val DEFAULT_INSTANCE = "lemmy.ml"
@@ -40,12 +43,9 @@ object API {
     // TODO add check for this
     val apiFailState: StateFlow<Boolean> = _apiFailState
 
-    val httpClient: OkHttpClient =
+    val okHttpClient: OkHttpClient =
         OkHttpClient
             .Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
             .addNetworkInterceptor { chain ->
                 if (SDK_INT >= 36) {
                     TrafficStats.setThreadStatsTag(Thread.currentThread().threadId().toInt())
@@ -61,27 +61,29 @@ object API {
                     .let(chain::proceed)
             }.build()
 
-    init {
-        LemmyApi.setDefaultClientConfig {
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        Log.d("LemmyAPI", message)
-                    }
+    val httpClient = HttpClient(OkHttp) {
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Log.d("LemmyAPI", message)
                 }
-                level = LogLevel.ALL
-                sanitizeHeader { header -> header == HttpHeaders.Authorization }
             }
-
-            install(UserAgent) {
-                agent = "Jerboa"
-            }
-
-            engine {
-                preconfigured = httpClient
-            }
+            level = LogLevel.ALL
+            sanitizeHeader { header -> header == HttpHeaders.Authorization }
         }
+
+        engine {
+            preconfigured = okHttpClient
+        }
+
     }
+
+    val lemmyApiClient = LemmyApiClient(
+        httpClient = httpClient,
+        options = LemmyApiOptions(
+            userAgent = "Jerboa",
+        ),
+    )
 
     suspend fun getInstance(): LemmyApiBaseController {
         initialized.await()
@@ -120,17 +122,19 @@ object API {
         instance: String,
         auth: String? = null,
     ): LemmyApiBaseController {
-        setLemmyInstance(LemmyApi.getLemmyApi(instance, auth))
+        setLemmyInstance(createTempInstanceSafe(instance, auth))
         return newApi
     }
 
     fun setLemmyInstance(api: LemmyApiBaseController) {
-        Log.d("setLemmyInstance", "Setting lemmy instance to ${api.baseUrl}")
-        version = api.version.toString()
+        Log.d("setLemmyInstance", "Setting lemmy instance to ${api.instance.url}")
+        version = api.version.value
         newApi = api
         initialized.complete(Unit)
     }
 
+    // TODO: Not ideal
+    // We need like loading/setup/verification startup screen to properly init or handle this stuff
     suspend fun createTempInstanceSafe(
         host: String,
         auth: String? = null,
@@ -146,13 +150,26 @@ object API {
     suspend fun createTempInstance(
         host: String,
         auth: String? = null,
-    ): LemmyApiBaseController = LemmyApi.getLemmyApi(host, auth)
+    ): LemmyApiBaseController {
+        return lemmyApiClient.connect(
+            LemmyInstance(host),
+            LemmyAuth.fromToken(auth),
+        ).getOrThrow()
+    }
 
     fun createTempInstanceVersion(
         host: String,
         version: String,
         auth: String? = null,
-    ): LemmyApiBaseController = LemmyApi.getLemmyApi(host, version, auth)
+    ): LemmyApiBaseController {
+        // Can still fail if the given version is unsupported by LemmyApi
+        // only really possible by having an old instance account (pre v0.18.0)
+        return lemmyApiClient.connectForVersion(
+            LemmyInstance(host),
+            LemmyAuth.fromToken(auth),
+            LemmyVersion(version),
+        ).getOrThrow()
+    }
 
     suspend fun checkIfLemmyInstance(url: String): Boolean {
         try {
@@ -164,7 +181,7 @@ object API {
                 return false
             } else {
                 return withContext(Dispatchers.IO) {
-                    return@withContext if (LemmyApi.isLemmyInstance(url)) {
+                    return@withContext if (lemmyApiClient.nodeInfoClient.isLemmyInstance(LemmyInstance(host)).getOrDefault(false)) {
                         TEMP_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
                         true
                     } else {

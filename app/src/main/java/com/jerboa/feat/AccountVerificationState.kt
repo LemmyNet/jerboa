@@ -92,7 +92,7 @@ suspend fun checkInstance(instance: String): CheckState =
     withContext(Dispatchers.IO) {
         try {
             val response =
-                API.httpClient
+                API.okHttpClient
                     .newCall(Request.Builder().url("https://$instance").build())
                     .execute()
             response.close()
@@ -134,7 +134,7 @@ suspend fun checkIfAccountIsDeleted(
             } else {
                 Pair(CheckState.Failed, null)
             }
-        } else if ((res.exceptionOrNull() as? LemmyBadRequestException)?.code == 404) {
+        } else if ((res.exceptionOrNull() as? LemmyBadRequestException)?.statusCode == 404) {
             return@withContext Pair(CheckState.Failed, null)
         } else {
             return@withContext Pair(CheckState.ConnectionFailed, null)
@@ -157,7 +157,7 @@ suspend fun checkIfJWTValid(api: LemmyApiBaseController): CheckState {
         return@withContext if (resp.isSuccess) {
             CheckState.Passed
             //  Could check for exact body response `{"error":"not_logged_in"}` but could change over time and is unneeded
-        } else if ((resp.exceptionOrNull() as? LemmyBadRequestException)?.code in 400..499) {
+        } else if ((resp.exceptionOrNull() as? LemmyBadRequestException)?.statusCode in 400..499) {
             CheckState.Failed
         } else {
             CheckState.ConnectionFailed

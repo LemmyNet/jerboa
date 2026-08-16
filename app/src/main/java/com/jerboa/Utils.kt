@@ -313,7 +313,7 @@ suspend fun openLink(
     useCustomTab: Boolean,
     usePrivateTab: Boolean,
 ) {
-    val baseUrl = API.getInstance().baseUrl
+    val baseUrl = API.getInstance().instance.url
     val (formatted, parsedUrl) = parseUrl(baseUrl, url) ?: return
 
     val userUrl = looksLikeUserUrl(parsedUrl)
@@ -1421,7 +1421,7 @@ fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
     return snapshot?.data?.toFile()?.inputStream()
-        ?: API.httpClient
+        ?: API.okHttpClient
             .newCall(
                 Request
                     .Builder()
@@ -1558,7 +1558,7 @@ fun MyUserInfo?.amAdmin(): Boolean {
 }
 
 fun MyUserInfo?.userViewType(): UserViewType {
-    if (this?.local_user_view?.local_user?.admin == true) {
+    return if (this?.local_user_view?.local_user?.admin == true) {
         UserViewType.Admin
     } else if (this?.moderates?.isNotEmpty() == true) {
         UserViewType.Mod
