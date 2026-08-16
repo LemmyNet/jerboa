@@ -183,4 +183,5 @@
     <string name="deny_reason">Motivo da recusa</string>
     <string name="feature_in_local">Destacar em local</string>
     <string name="feature_in_community">Destacar na comunidade</string>
+    <string name="show_downvotes">Mostrar votos negativos</string>
 </resources>
