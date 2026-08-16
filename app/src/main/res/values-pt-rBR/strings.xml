@@ -187,4 +187,9 @@
     <string name="creator">Autoria</string>
     <string name="upvoted">Com votos positivos</string>
     <string name="days_until_expiration">Dias até a expiração</string>
+    <string name="answer">Resposta</string>
+    <string name="hide_post">Ocultar publicação</string>
+    <string name="unhide_post">Desocultar publicação</string>
+    <string name="post_hidden">Publicação oculta</string>
+    <string name="post_unhidden">Publicação desoculta</string>
 </resources>
