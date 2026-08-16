@@ -83,7 +83,7 @@
     <string name="post_listing_report_post">Denunciar publicação</string>
     <string name="edit">Editar</string>
     <string name="restore">Restaurar</string>
-    <string name="delete">Apagar</string>
+    <string name="delete">Excluir</string>
     <string name="private_message_to">"para "</string>
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Responder</string>
@@ -171,7 +171,7 @@
     <string name="remove_post">Apagar publicação</string>
     <string name="share_post">Compartilhar publicação</string>
     <string name="loading">Carregando</string>
-    <string name="save">Guardar</string>
+    <string name="save">Salvar</string>
     <string name="remove_content">Apagar conteúdo</string>
     <string name="show_upvote_percentage">Mostrar % de votos positivos</string>
     <string name="show_upvotes">Mostrar votos positivos</string>
@@ -184,4 +184,6 @@
     <string name="feature_in_local">Destacar em local</string>
     <string name="feature_in_community">Destacar na comunidade</string>
     <string name="show_downvotes">Mostrar votos negativos</string>
+    <string name="creator">Autoria</string>
+    <string name="upvoted">Com votos positivos</string>
 </resources>
