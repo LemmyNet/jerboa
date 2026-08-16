@@ -186,4 +186,5 @@
     <string name="show_downvotes">Mostrar votos negativos</string>
     <string name="creator">Autoria</string>
     <string name="upvoted">Com votos positivos</string>
+    <string name="days_until_expiration">Dias até a expiração</string>
 </resources>
