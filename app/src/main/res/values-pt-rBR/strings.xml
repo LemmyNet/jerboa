@@ -78,7 +78,7 @@
     <string name="post_listing_new">( %1$s novos )</string>
     <string name="post_listing_comments_count">%1$s comentários</string>
     <string name="post_listing_go_to">Ir para %1$s</string>
-    <string name="copy_link">Copiar Link</string>
+    <string name="copy_link">Copiar link</string>
     <string name="post_listing_copy_permalink">Copiar Link da Publicação</string>
     <string name="post_listing_report_post">Denunciar publicação</string>
     <string name="edit">Editar</string>
