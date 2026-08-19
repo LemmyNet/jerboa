@@ -159,11 +159,11 @@
     <string name="sorttype_hot">Em Alta</string>
     <string name="sorttype_new">Novos</string>
     <string name="sorttype_old">Antigos</string>
-    <string name="sorttype_topday">Melhores do Dia</string>
-    <string name="sorttype_topweek">Melhores da Semana</string>
-    <string name="sorttype_topmonth">Melhores do Mês</string>
-    <string name="sorttype_topyear">Melhores do Ano</string>
-    <string name="sorttype_topall">Melhores de Todos os Tempos</string>
+    <string name="sorttype_topday">Melhores do dia</string>
+    <string name="sorttype_topweek">Melhores da semana</string>
+    <string name="sorttype_topmonth">Melhores do mês</string>
+    <string name="sorttype_topyear">Melhores do ano</string>
+    <string name="sorttype_topall">Melhores de todos os tempos</string>
     <string name="sorttype_mostcomments">Mais Comentários</string>
     <string name="sorttype_newcomments">Novos Comentários</string>
     <string name="unlock_post">Destrancar publicação</string>
