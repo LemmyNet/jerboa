@@ -221,4 +221,18 @@
     <string name="homeHeader_filter">Selecionar feed</string>
     <string name="home_moderator_view">Visualização do moderador</string>
     <string name="lessOptions">Mostrar menos opções</string>
+    <string name="bottomBar_registrations">Ir para os cadastros</string>
+    <string name="commentFooter_reply">Responder a este comentário</string>
+    <string name="commentReply_link">Ir para a resposta</string>
+    <string name="crash_logs">Registros de falhas</string>
+    <string name="crash_logs_all_deleted">Todos os registros de falhas excluídos</string>
+    <string name="crash_logs_copy">Copiar registro de falhas</string>
+    <string name="crash_logs_delete">Excluir todos os registros de falhas</string>
+    <string name="createPost_selectCommunity">Selecionar uma comunidade da lista</string>
+    <string name="create_post_tag_nsfw">Marcar publicação como imprópria para o trabalho (NSFW)</string>
+    <string name="dialogs_server_version_outdated_short">A versão do servidor (%1$s) é muito antiga.</string>
+    <string name="inbox_filter">Filtrar</string>
+    <string name="inbox_markAllRead">Marcar tudo como lido</string>
+    <string name="login_totp">Insira o token de autenticação de duas etapas, se estiver ativada</string>
+    <string name="look_and_feel_secure_window">Impedir capturas de tela</string>
 </resources>
