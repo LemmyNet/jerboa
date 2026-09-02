@@ -475,7 +475,7 @@
     <string name="unhide_post">Unhide post</string>
     <string name="show_upvotes">Show upvotes</string>
     <string name="show_downvotes">Show downvotes</string>
-    <string name="show_upvote_percentage">Show upvote %</string>
+    <string name="show_upvote_percentage" formatted="false">Show upvote %</string>
     <string name="score">Score</string>
     <string name="info">Info</string>
     <string name="settings_about_baseline_profile">Baseline profile</string>
