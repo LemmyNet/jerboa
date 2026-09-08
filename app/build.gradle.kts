@@ -143,7 +143,7 @@ dependencies {
 
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
