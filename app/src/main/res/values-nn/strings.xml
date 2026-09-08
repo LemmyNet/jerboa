@@ -466,7 +466,7 @@
     <string name="unhide_post">Fjern gøyming av innlegg</string>
     <string name="show_upvotes">Vis opprøyster</string>
     <string name="show_downvotes">Vis nedrøyster</string>
-    <string name="show_upvote_percentage">Vis opprøystings-%</string>
+    <string name="show_upvote_percentage" formatted="false">Vis opprøystings-%</string>
     <string name="score">Poeng</string>
     <string name="info">Info</string>
     <string name="settings_about_baseline_profile">Baseline-profil</string>
