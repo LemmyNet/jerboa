@@ -15,8 +15,9 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.db.entity.Account
 import com.jerboa.matchLoginErrorMsgToStringRes
-import it.vercruysse.lemmyapi.LemmyApi
 import it.vercruysse.lemmyapi.LemmyApiBaseController
+import it.vercruysse.lemmyapi.LemmyAuth
+import it.vercruysse.lemmyapi.LemmyInstance
 import it.vercruysse.lemmyapi.datatypes.Login
 import it.vercruysse.lemmyapi.exception.NotSupportedException
 import kotlinx.coroutines.launch
@@ -38,17 +39,19 @@ class LoginViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             loading = true
-            lateinit var tempInstance: LemmyApiBaseController
+            val tempInstance: LemmyApiBaseController
+            val auth: String?
             try {
-                val nodeInfo = LemmyApi.getNodeInfo(instance).getOrThrow()
+                val nodeInfo = API.lemmyApiClient.nodeInfoClient.getNodeInfoSafe(LemmyInstance(instance)).getOrThrow()
 
-                if (!LemmyApi.isLemmyInstance(nodeInfo)) {
+                if (!API.lemmyApiClient.nodeInfoClient.isLemmyInstance(nodeInfo)) {
                     throw UnknownHostException()
                 }
 
-                tempInstance = API.createTempInstanceVersion(instance, LemmyApi.getVersion(nodeInfo))
+                tempInstance = API.createTempInstanceVersion(instance, API.lemmyApiClient.nodeInfoClient.getVersion(nodeInfo))
                 val resp = tempInstance.login(form = form).getOrThrow()
-                tempInstance.auth = resp.jwt
+                auth = resp.jwt
+                tempInstance.updateAuth(LemmyAuth.fromToken(auth))
             } catch (e: Throwable) {
                 loading = false
 
@@ -106,7 +109,7 @@ class LoginViewModel : ViewModel() {
                                 name = luv.person.name,
                                 current = true,
                                 instance = instance,
-                                jwt = tempInstance.auth!!,
+                                jwt = auth!!,
                                 defaultListingType = luv.local_user.default_listing_type.ordinal,
                                 defaultSortType = luv.local_user.default_post_sort_type.ordinal,
                                 verificationState = 0,

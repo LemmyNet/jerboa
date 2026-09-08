@@ -221,9 +221,12 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.5.0-alpha.8")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.6.0-beta.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
-    // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.5.1")
+    val ktor = "3.5.2"
+    implementation("io.ktor:ktor-client-core:$ktor")
+    implementation("io.ktor:ktor-client-okhttp:$ktor")
+    implementation("io.ktor:ktor-client-logging:$ktor")
+
 }

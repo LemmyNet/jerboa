@@ -28,7 +28,7 @@ class SendvidVideoHost : SupportedVideoHost {
                 .url(url)
                 .build()
 
-            val response = API.httpClient.newCall(request).execute()
+            val response = API.okHttpClient.newCall(request).execute()
 
             if (!response.isSuccessful) {
                 throw ResourceMissing()

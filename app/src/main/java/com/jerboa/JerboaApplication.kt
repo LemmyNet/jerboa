@@ -27,7 +27,7 @@ class JerboaApplication :
         imageLoader =
             ImageLoader
                 .Builder(this)
-                .okHttpClient(API.httpClient)
+                .okHttpClient(API.okHttpClient)
                 .crossfade(true)
                 .error(R.drawable.error_placeholder)
                 .placeholder(R.drawable.ic_launcher_mono)

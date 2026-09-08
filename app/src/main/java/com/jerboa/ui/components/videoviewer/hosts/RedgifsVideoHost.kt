@@ -43,7 +43,7 @@ class RedgifsVideoHost : SupportedVideoHost {
                 .url(apiUrl)
                 .build()
 
-            val response = API.httpClient.newCall(request).execute()
+            val response = API.okHttpClient.newCall(request).execute()
 
             if (!response.isSuccessful) {
                 throw ResourceMissing()
