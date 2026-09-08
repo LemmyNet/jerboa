@@ -33,13 +33,13 @@ composeCompiler {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 87
         versionName = "0.0.87"
 
