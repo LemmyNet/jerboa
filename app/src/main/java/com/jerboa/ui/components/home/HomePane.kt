@@ -39,6 +39,7 @@ import com.jerboa.SelectionVisibilityState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.postViewMode
 import com.jerboa.feat.PostActionBarMode
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -108,7 +109,7 @@ fun HomePane(
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostRemoveReturn.POST_VIEW, homeViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
-    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, homeViewModel::updateBanned)
+    appState.ConsumeReturn<PersonView>(BanPersonReturn.BAN_DATA_VIEW, homeViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(BanFromCommunityReturn.BAN_DATA_VIEW, homeViewModel::updateBannedFromCommunity)
 
     val baseModifier =
@@ -150,9 +151,6 @@ fun HomePane(
                     appState = appState,
                     postListState = postListState,
                     snackbarHostState = snackbarHostState,
-                    postActionBarMode = postActionBarMode,
-                    swipeToActionPreset = swipeToActionPreset,
-                    disableVideoAutoplay = disableVideoAutoplay,
                     onPostClick = onPostClick,
                     selectionState = selectionState,
                 )
@@ -162,20 +160,9 @@ fun HomePane(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    account.doIfReadyElseDisplayInfo(
-                        appState,
-                        ctx,
-                        resources,
-                        snackbarHostState,
-                        scope,
-                        myUserInfoViewModel,
-                        accountViewModel,
-                        loginAsToast = false,
-                    ) {
                         appState.toCreatePost(
                             community = null,
                         )
-                    }
                 },
             ) {
                 Icon(
@@ -198,9 +185,6 @@ fun MainPostListingsContent(
     appState: JerboaAppState,
     postListState: LazyListState,
     snackbarHostState: SnackbarHostState,
-    postActionBarMode: PostActionBarMode,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
     onPostClick: (PostView) -> Unit,
     selectionState: SelectionVisibilityState<PostId>,
 ) {
@@ -236,6 +220,7 @@ fun MainPostListingsContent(
         PostListings(
             posts = posts,
             siteRes = siteRes,
+            myUserInfo = myUserInfo,
             // No community moderators available here
             contentAboveListings = { tagline?.let {TaglineDisplay(it)} },
             onUpvoteClick = { postView ->
@@ -330,7 +315,6 @@ fun MainPostListingsContent(
             },
             account = account,
             listState = postListState,
-            postViewMode = getPostViewMode(appSettingsViewModel),
             appState = appState,
             onMarkAsRead = { postView ->
                 if (postView.post_actions?.read_at != null) {
@@ -344,10 +328,7 @@ fun MainPostListingsContent(
                 }
             },
             showIfRead = true,
-            postActionBarMode = postActionBarMode,
             showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
-            swipeToActionPreset = swipeToActionPreset,
-            disableVideoAutoplay = disableVideoAutoplay,
             selectionState = selectionState,
         )
     }

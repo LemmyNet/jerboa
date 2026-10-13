@@ -41,6 +41,7 @@ import com.jerboa.JerboaAppState
 import com.jerboa.PostLinkType
 import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.db.entity.Account
@@ -89,7 +90,6 @@ fun PostListing(
     showCommunityName: Boolean = true,
     fullBody: Boolean,
     account: Account,
-    postViewMode: PostViewMode,
     appState: JerboaAppState,
     showIfRead: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
@@ -103,7 +103,7 @@ fun PostListing(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (personView: PersonView) -> Unit,
+    onBanPersonClick: (banData: BanData) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,

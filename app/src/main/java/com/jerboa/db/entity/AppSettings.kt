@@ -6,6 +6,7 @@ import androidx.core.content.getSystemService
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jerboa.PostViewMode
 import com.jerboa.db.DEFAULT_AUTO_PLAY_GIFS
 import com.jerboa.db.DEFAULT_BACK_CONFIRMATION_MODE
 import com.jerboa.db.DEFAULT_BLUR_NSFW
@@ -31,6 +32,7 @@ import com.jerboa.db.DEFAULT_THEME_COLOR
 import com.jerboa.db.DEFAULT_USE_CUSTOM_TABS
 import com.jerboa.db.DEFAULT_USE_PRIVATE_TABS
 import com.jerboa.feat.LowBandwidthMode
+import com.jerboa.getEnumFromIntSetting
 import com.jerboa.toEnumSafe
 import com.jerboa.ui.theme.DEFAULT_FONT_SIZE
 
@@ -169,3 +171,11 @@ fun AppSettings.lowBandwidthMode(ctx: Context): Boolean {
     val connectivityManager = ctx.getSystemService<ConnectivityManager>()
     return this.lowBandwidthMode.toEnumSafe<LowBandwidthMode>().isActive(connectivityManager)
 }
+
+/**
+ * A special case of toEnumSafe, where the int still exists in the DB.
+ */
+fun AppSettings.postViewMode(): PostViewMode =
+    getEnumFromIntSetting<PostViewMode>(this) {
+        it.postViewMode
+    }

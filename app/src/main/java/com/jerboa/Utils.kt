@@ -1311,12 +1311,11 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
 }
 
 inline fun <reified E : Enum<E>> getEnumFromIntSetting(
-    appSettings: LiveData<AppSettings>,
+    appSettings: AppSettings,
     getter: (AppSettings) -> Int,
 ): E {
     val enums = enumValues<E>()
-    val setting = appSettings.value ?: APP_SETTINGS_DEFAULT
-    val index = getter(setting)
+    val index = getter(appSettings)
 
     return if (index >= enums.size) { // Fallback to default
         enums[getter(APP_SETTINGS_DEFAULT)]

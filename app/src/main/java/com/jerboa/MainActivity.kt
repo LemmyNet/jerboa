@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
 
                     ShowAppStartupDialogs(
                         appSettingsViewModel = appSettingsViewModel,
-                        myUserInfo=  myUserInfo,
+                        myUserInfo = myUserInfo,
                     )
 
                     val drawerState = rememberDrawerState(DrawerValue.Closed)

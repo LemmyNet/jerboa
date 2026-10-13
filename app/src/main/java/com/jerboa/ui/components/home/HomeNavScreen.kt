@@ -199,7 +199,6 @@ fun HomeNavScreen(
                     MainDrawer(
                         myUserInfo = myUserInfo,
                         unreadCounts = unreadCounts,
-                        appSettings = appSettings,
                         accountViewModel = accountViewModel,
                         homeViewModel = homeViewModel,
                         scope = scope,

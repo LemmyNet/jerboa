@@ -17,18 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
-import com.jerboa.PostViewMode
 import com.jerboa.SelectionVisibilityState
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
+import com.jerboa.datatypes.sampleGetSiteRes
 import com.jerboa.datatypes.sampleLinkPostView
+import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.feat.BlurNSFW
-import com.jerboa.feat.PostActionBarMode
-import com.jerboa.feat.SwipeToActionPreset
-import com.jerboa.feat.default
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.TriggerWhenReachingEnd
@@ -36,11 +36,8 @@ import com.jerboa.ui.components.common.selectedItemContainerColor
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
-import it.vercruysse.lemmyapi.datatypes.LocalSite
-import it.vercruysse.lemmyapi.datatypes.LocalUserVoteDisplayMode
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
-import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
 
@@ -48,9 +45,9 @@ import it.vercruysse.lemmyapi.datatypes.PostView
 @Composable
 fun PostListings(
     posts: List<PostView>,
-    admins: List<PersonView>,
+    siteRes: GetSiteResponse,
     myUserInfo: MyUserInfo?,
-    localSite: LocalSite,
+    appSettings: AppSettings,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -62,7 +59,7 @@ fun PostListings(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (personView: PersonView) -> Unit,
+    onBanPersonClick: (banData: BanData) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
@@ -73,23 +70,11 @@ fun PostListings(
     account: Account,
     showCommunityName: Boolean = true,
     listState: LazyListState,
-    postViewMode: PostViewMode,
-    showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreviews: Boolean,
     appState: JerboaAppState,
-    markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
-    postActionBarMode: PostActionBarMode,
     showPostAppendRetry: Boolean,
-    swipeToActionPreset: SwipeToActionPreset,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
     selectionState: SelectionVisibilityState<PostId>,
-    siteRes: GetSiteResponse,
 ) {
     LazyColumn(
         state = listState,
@@ -117,11 +102,9 @@ fun PostListings(
             ) {
                 PostListing(
                     postView = postView,
-                    admins = admins,
+                    siteRes = siteRes,
                     myUserInfo = myUserInfo,
-                    localSite = localSite,
-                    useCustomTabs = useCustomTabs,
-                    usePrivateTabs = usePrivateTabs,
+                    appSettings = appSettings,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     onReplyClick = onReplyClick,
@@ -142,21 +125,10 @@ fun PostListings(
                     showCommunityName = showCommunityName,
                     fullBody = false,
                     account = account,
-                    postViewMode = postViewMode,
-                    showVotingArrowsInListView = showVotingArrowsInListView,
-                    enableDownVotes = enableDownVotes,
-                    showAvatar = showAvatar,
-                    blurNSFW = blurNSFW,
                     appState = appState,
-                    showPostLinkPreview = showPostLinkPreviews,
                     showIfRead = showIfRead,
-                    voteDisplayMode = voteDisplayMode,
-                    postActionBarMode = postActionBarMode,
-                    swipeToActionPreset = swipeToActionPreset,
-                    disableVideoAutoplay = disableVideoAutoplay,
-                    lowBandwidthMode = lowBandwidthMode,
                 ).let {
-                    if (!postView.read && markAsReadOnScroll) {
+                    if (postView.post_actions?.read_at == null && appSettings.markAsReadOnScroll) {
                         DisposableEffect(key1 = postView.post.id) {
                             onDispose {
                                 if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
@@ -188,8 +160,9 @@ fun PostListings(
 fun PreviewPostListings() {
     PostListings(
         posts = listOf(samplePostView, sampleLinkPostView),
-        admins = emptyList(),
-        moderators = emptyList(),
+        myUserInfo = sampleMyUserInfo,
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -209,25 +182,11 @@ fun PreviewPostListings() {
         loadMorePosts = {},
         account = AnonAccount,
         listState = rememberLazyListState(),
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-        enableDownVotes = true,
-        showAvatar = true,
-        useCustomTabs = false,
-        usePrivateTabs = false,
-        blurNSFW = BlurNSFW.NSFW,
-        showPostLinkPreviews = true,
         appState = rememberJerboaAppState(),
-        markAsReadOnScroll = false,
         onMarkAsRead = {},
         showIfRead = true,
-        voteDisplayMode = LocalUserVoteDisplayMode.default(),
-        postActionBarMode = PostActionBarMode.Long,
         showPostAppendRetry = false,
-        swipeToActionPreset = SwipeToActionPreset.TwoSides,
         onReplyClick = {},
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
         selectionState = SelectionVisibilityState.NoSelection,
     )
 }
