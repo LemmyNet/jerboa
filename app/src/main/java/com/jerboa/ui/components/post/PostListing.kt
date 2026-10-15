@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.post
 
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,17 +45,20 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.feat.BlurNSFW
+import com.jerboa.db.entity.postViewMode
 import com.jerboa.feat.InstantScores
-import com.jerboa.feat.PostActionBarMode
+import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
 import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
+import com.jerboa.toEnum
 import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.EmbeddedDataLoader
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.SwipeToAction
+import com.jerboa.ui.components.common.enableDownvotes
+import com.jerboa.ui.components.common.enableUpvotes
 import com.jerboa.ui.components.common.rememberSwipeActionState
 import com.jerboa.ui.components.settings.about.TORRENT_HELP_LINK
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -69,10 +71,8 @@ import com.jerboa.ui.theme.jerboaColorScheme
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.ImageDetails
-import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
-import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
@@ -91,6 +91,7 @@ fun PostListing(
     fullBody: Boolean,
     account: Account,
     appState: JerboaAppState,
+    // TODO is this a setting?
     showIfRead: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -112,6 +113,9 @@ fun PostListing(
 ) {
     val ctx = LocalContext.current
     val resources = LocalResources.current
+
+    val localSite = siteRes.site_view.local_site
+
     // This stores vote data
     var instantScores by remember {
         mutableStateOf(
@@ -153,22 +157,28 @@ fun PostListing(
         }
     }
 
+    val enableDownVotes = enableDownvotes(localSite, PostOrCommentType.Post)
+    val enableUpvotes = enableUpvotes(localSite, PostOrCommentType.Post)
+
     val swipeState = rememberSwipeActionState(
         swipeToActionPreset = appSettings.swipeToActionPreset.toEnumSafe(),
+        enableUpVotes = enableUpvotes,
         enableDownVotes = enableDownVotes,
         onAction = swipeAction,
         rememberKey = postView,
     )
 
+    val postViewMode = appSettings.postViewMode()
+    val swipeToActionPreset: SwipeToActionPreset = appSettings.swipeToActionPreset.toEnum()
     val swipeableContent: @Composable RowScope.() -> Unit = {
         Row {
             when (postViewMode) {
                 PostViewMode.Card -> {
                     PostListingCard(
                         postView = postView,
-                        admins = admins,
                         myUserInfo = myUserInfo,
-                        localSite = localSite,
+                        siteRes = siteRes,
+                        appSettings = appSettings,
                         instantScores = instantScores,
                         onUpvoteClick = upvoteClick,
                         onDownvoteClick = downvoteClick,
@@ -196,25 +206,17 @@ fun PostListing(
                         fullBody = fullBody,
                         account = account,
                         expandedImage = true,
-                        showAvatar = showAvatar,
-                        useCustomTabs = useCustomTabs,
-                        usePrivateTabs = usePrivateTabs,
-                        blurNSFW = blurNSFW,
-                        showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showIfRead = showIfRead,
-                        postActionBarMode = postActionBarMode,
-                        disableVideoAutoplay = disableVideoAutoplay,
-                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 
                 PostViewMode.SmallCard -> {
                     PostListingCard(
                         postView = postView,
-                        admins = admins,
                         myUserInfo = myUserInfo,
-                        localSite = localSite,
+                        siteRes = siteRes,
+                        appSettings = appSettings,
                         instantScores = instantScores,
                         onUpvoteClick = upvoteClick,
                         onDownvoteClick = downvoteClick,
@@ -242,16 +244,8 @@ fun PostListing(
                         fullBody = fullBody,
                         account = account,
                         expandedImage = false,
-                        showAvatar = showAvatar,
-                        useCustomTabs = useCustomTabs,
-                        usePrivateTabs = usePrivateTabs,
-                        blurNSFW = blurNSFW,
-                        showPostLinkPreview = showPostLinkPreview,
                         appState = appState,
                         showIfRead = showIfRead,
-                        postActionBarMode = postActionBarMode,
-                        disableVideoAutoplay = disableVideoAutoplay,
-                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
 
@@ -260,19 +254,15 @@ fun PostListing(
                         postView = postView,
                         instantScores = instantScores,
                         myUserInfo = myUserInfo,
-                        localSite = localSite,
+                        siteRes = siteRes,
+                        appSettings = appSettings,
                         onUpvoteClick = upvoteClick,
                         onDownvoteClick = downvoteClick,
                         onPostClick = onPostClick,
                         showCommunityName = showCommunityName,
                         account = account,
-                        showVotingArrowsInListView = showVotingArrowsInListView,
-                        useCustomTabs = useCustomTabs,
-                        usePrivateTabs = usePrivateTabs,
-                        blurNSFW = blurNSFW,
                         appState = appState,
                         showIfRead = showIfRead,
-                        lowBandwidthMode = lowBandwidthMode,
                     )
                 }
             }
@@ -293,7 +283,6 @@ fun PostListing(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ThumbnailTile(
     post: Post,
@@ -354,7 +343,6 @@ fun ThumbnailTile(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThumbnailBox(
     thumbnailUrl: String?,

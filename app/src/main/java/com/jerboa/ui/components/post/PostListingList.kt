@@ -33,6 +33,7 @@ import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
@@ -52,10 +53,12 @@ import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALLER_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.SiteResponse
 import it.vercruysse.lemmyapi.enums.VoteAction
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -64,19 +67,15 @@ fun PostListingList(
     postView: PostView,
     instantScores: InstantScores,
     myUserInfo: MyUserInfo?,
-    localSite: LocalSite,
+    siteRes: GetSiteResponse,
+    appSettings: AppSettings,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     showCommunityName: Boolean = true,
     account: Account,
-    showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    lowBandwidthMode: Boolean,
 ) {
     Column(
         modifier =

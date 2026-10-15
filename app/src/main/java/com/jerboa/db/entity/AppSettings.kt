@@ -174,6 +174,7 @@ fun AppSettings.lowBandwidthMode(ctx: Context): Boolean {
 
 /**
  * A special case of toEnumSafe, where the int still exists in the DB.
+ * TODO why is this needed? Why not just do toEnum like the rest?
  */
 fun AppSettings.postViewMode(): PostViewMode =
     getEnumFromIntSetting<PostViewMode>(this) {

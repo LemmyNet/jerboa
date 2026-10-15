@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.JerboaAppState
 import com.jerboa.PostLinkType
 import com.jerboa.R
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.getAspectRatio
@@ -63,6 +64,7 @@ import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
@@ -103,6 +105,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.VERTICAL_SPACING
 import com.jerboa.ui.theme.XXL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
@@ -117,9 +120,9 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun PostListingCard(
     postView: PostView,
-    admins: List<PersonView>,
+    siteRes: GetSiteResponse,
     myUserInfo: MyUserInfo?,
-    localSite: LocalSite,
+    appSettings: AppSettings,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -132,7 +135,7 @@ fun PostListingCard(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (personView: PersonView) -> Unit,
+    onBanPersonClick: (banData: BanData) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
@@ -145,16 +148,8 @@ fun PostListingCard(
     account: Account,
     expandedImage: Boolean,
     showCommunityName: Boolean = true,
-    showAvatar: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurNSFW: BlurNSFW,
-    showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    postActionBarMode: PostActionBarMode,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
 ) {
     Column(
         modifier =
@@ -168,23 +163,17 @@ fun PostListingCard(
         //  Title + metadata + attribution + body
         PostTitleAttributionBody(
             postView = postView,
+            appSettings = appSettings,
             fullBody = fullBody,
             viewSource = viewSource,
             expandedImage = expandedImage,
             account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            showPostLinkPreview = showPostLinkPreview,
             appState = appState,
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
-            blurNSFW = blurNSFW,
             onPersonClick = onPersonClick,
             onCommunityClick = onCommunityClick,
-            showAvatar = showAvatar,
             showCommunityName = showCommunityName,
-            disableVideoAutoplay = disableVideoAutoplay,
-            lowBandwidthMode = lowBandwidthMode,
         )
 
         Spacer(modifier = Modifier.padding(vertical = VERTICAL_SPACING))
@@ -655,13 +644,12 @@ fun PostFooterLinePreview() {
 @Composable
 fun PostCommunityAndCreatorBlock(
     postView: PostView,
+    appSettings: AppSettings,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
-    showAvatar: Boolean,
     fullBody: Boolean,
-    blurNSFW: BlurNSFW,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -669,6 +657,7 @@ fun PostCommunityAndCreatorBlock(
     ) {
         val centerMod = Modifier.align(Alignment.CenterVertically)
 
+        val showAvatar = appSettings.
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
         ) {
@@ -794,36 +783,29 @@ fun CommunityIcon(
 @Composable
 fun PostTitleAttributionBody(
     postView: PostView,
+    appSettings: AppSettings,
     fullBody: Boolean,
     viewSource: Boolean,
     expandedImage: Boolean,
     account: Account,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     clickBody: () -> Unit = {},
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     showIfRead: Boolean,
-    blurNSFW: BlurNSFW,
     showCommunityName: Boolean,
-    showAvatar: Boolean,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING),
     ) {
         PostCommunityAndCreatorBlock(
             postView = postView,
+            appSettings = appSettings,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             showCommunityName = showCommunityName,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
-            showAvatar = showAvatar,
             fullBody = fullBody,
-            blurNSFW = blurNSFW,
         )
 
         PostTitleBlock(
