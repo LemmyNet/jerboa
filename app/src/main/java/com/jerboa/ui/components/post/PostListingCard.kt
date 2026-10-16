@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -54,6 +55,7 @@ import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.datatypes.getAspectRatio
+import com.jerboa.datatypes.sampleGetSiteRes
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
@@ -62,9 +64,11 @@ import com.jerboa.datatypes.sampleLocalSite
 import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.lowBandwidthMode
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostActionBarMode
@@ -73,7 +77,9 @@ import com.jerboa.feat.needBlur
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
 import com.jerboa.rememberJerboaAppState
+import com.jerboa.showAvatar
 import com.jerboa.siFormat
+import com.jerboa.toEnum
 import com.jerboa.toHttps
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
@@ -163,11 +169,11 @@ fun PostListingCard(
         //  Title + metadata + attribution + body
         PostTitleAttributionBody(
             postView = postView,
+            myUserInfo = myUserInfo,
             appSettings = appSettings,
             fullBody = fullBody,
             viewSource = viewSource,
             expandedImage = expandedImage,
-            account = account,
             appState = appState,
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
@@ -181,9 +187,9 @@ fun PostListingCard(
         // Footer bar
         PostFooterLine(
             postView = postView,
-            admins = admins,
             myUserInfo = myUserInfo,
-            localSite = localSite,
+            appSettings = appSettings,
+            siteRes = siteRes,
             instantScores = instantScores,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
@@ -206,7 +212,6 @@ fun PostListingCard(
             showReply = showReply,
             account = account,
             viewSource = viewSource,
-            postActionBarMode = postActionBarMode,
             fromPostActivity = fullBody,
             scope = appState.coroutineScope,
         )
@@ -219,11 +224,9 @@ fun PostListingCard(
 fun PreviewPostListingCard() {
     PostListingCard(
         postView = samplePostView,
-        admins = emptyList(),
         myUserInfo = sampleMyUserInfo,
-        localSite = sampleLocalSite,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -243,18 +246,12 @@ fun PreviewPostListingCard() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
-        showPostLinkPreview = true,
         showIfRead = true,
-        postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
@@ -264,11 +261,9 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListingCard(
         postView = sampleLinkPostView,
-        admins = emptyList(),
         myUserInfo = sampleMyUserInfo,
-        localSite = sampleLocalSite,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -288,18 +283,12 @@ fun PreviewLinkPostListing() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
-        showPostLinkPreview = true,
         showIfRead = true,
-        postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
@@ -309,11 +298,9 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListingCard(
         postView = sampleImagePostView,
-        admins = emptyList(),
         myUserInfo = sampleMyUserInfo,
-        localSite = sampleLocalSite,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -333,18 +320,12 @@ fun PreviewImagePostListingCard() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
-        showPostLinkPreview = true,
         showIfRead = true,
-        postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = true,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
@@ -354,11 +335,9 @@ fun PreviewImagePostListingCard() {
 fun PreviewImagePostListingSmallCard() {
     PostListingCard(
         postView = sampleImagePostView,
-        admins = emptyList(),
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         myUserInfo = sampleMyUserInfo,
-        localSite = sampleLocalSite,
-        useCustomTabs = false,
-        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -378,18 +357,12 @@ fun PreviewImagePostListingSmallCard() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
-        showPostLinkPreview = true,
         showIfRead = true,
-        postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
@@ -399,11 +372,9 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListingCard(
         postView = sampleLinkNoThumbnailPostView,
-        admins = emptyList(),
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         myUserInfo = sampleMyUserInfo,
-        localSite = sampleLocalSite,
-        useCustomTabs = false,
-        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -423,27 +394,21 @@ fun PreviewLinkNoThumbnailPostListing() {
         onPersonClick = {},
         fullBody = false,
         account = AnonAccount,
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
         appState = rememberJerboaAppState(),
-        showPostLinkPreview = true,
         showIfRead = true,
-        postActionBarMode = PostActionBarMode.Long,
         instantScores = sampleInstantScores,
         onViewSourceClick = {},
         viewSource = false,
         expandedImage = false,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
 @Composable
 fun PostFooterLine(
     postView: PostView,
-    admins: List<PersonView>,
+    siteRes: GetSiteResponse,
+    appSettings: AppSettings,
     myUserInfo: MyUserInfo?,
-    localSite: LocalSite,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -454,7 +419,7 @@ fun PostFooterLine(
     onHidePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onRemoveClick: (postView: PostView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (banData: BanData) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (postView: PostView) -> Unit,
     onFeaturePostClick: (data: PostFeatureData) -> Unit,
@@ -466,7 +431,6 @@ fun PostFooterLine(
     showReply: Boolean = false,
     account: Account,
     viewSource: Boolean,
-    postActionBarMode: PostActionBarMode,
     fromPostActivity: Boolean,
     scope: CoroutineScope,
 ) {
@@ -476,7 +440,7 @@ fun PostFooterLine(
 
         PostOptionsDropdown(
             postView = postView,
-            admins = admins,
+            siteRes = siteRes,
             myUserInfo = myUserInfo,
             onDismissRequest = { showMoreOptions = false },
             onCommunityClick = onCommunityClick,
@@ -498,6 +462,8 @@ fun PostFooterLine(
         )
     }
 
+
+    val postActionBarMode: PostActionBarMode= appSettings.postActionBarMode.toEnum()
     val horizontalArrangement =
         when (postActionBarMode) {
             PostActionBarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
@@ -522,6 +488,7 @@ fun PostFooterLine(
                 modifier = Modifier.weight(1F, true),
             )
         }
+        val localSite = siteRes.site_view.local_site
         VoteScore(
             instantScores = instantScores,
             myUserInfo = myUserInfo,
@@ -571,8 +538,8 @@ fun PostFooterLine(
             ActionBarButton(
                 icon = Icons.AutoMirrored.Outlined.Comment,
                 contentDescription = stringResource(R.string.postListing_reply),
+                myUserInfo = myUserInfo,
                 onClick = { onReplyClick(postView) },
-                account = account,
             )
         }
         SavedButton(
@@ -583,9 +550,9 @@ fun PostFooterLine(
         ActionBarButton(
             icon = Icons.Outlined.MoreVert,
             contentDescription = stringResource(R.string.moreOptions),
-            account = account,
+            myUserInfo = myUserInfo,
             onClick = { showMoreOptions = !showMoreOptions },
-            requiresAccount = false,
+            requiresLogin = false,
             modifier = if (postActionBarMode == PostActionBarMode.LeftHandShort) {
                 Modifier.weight(
                     1F,
@@ -611,10 +578,10 @@ fun PostFooterLine(
 fun PostFooterLinePreview() {
     PostFooterLine(
         postView = samplePostView,
-        admins = emptyList(),
         myUserInfo = sampleMyUserInfo,
-        localSite = sampleLocalSite,
         instantScores = sampleInstantScores,
+        siteRes = sampleGetSiteRes,
+        appSettings = APP_SETTINGS_DEFAULT,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -634,7 +601,6 @@ fun PostFooterLinePreview() {
         onViewSourceClick = {},
         account = AnonAccount,
         viewSource = false,
-        postActionBarMode = PostActionBarMode.Long,
         fromPostActivity = true,
         scope = rememberCoroutineScope(),
     )
@@ -645,19 +611,24 @@ fun PostFooterLinePreview() {
 fun PostCommunityAndCreatorBlock(
     postView: PostView,
     appSettings: AppSettings,
+    myUserInfo: MyUserInfo?,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: PersonId) -> Unit,
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
 ) {
+    val ctx = LocalContext.current
+
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth(),
     ) {
         val centerMod = Modifier.align(Alignment.CenterVertically)
 
-        val showAvatar = appSettings.
+        val showAvatar = myUserInfo.showAvatar(appSettings,ctx)
+        val blurNSFW: BlurNSFW = appSettings.blurNSFW.toEnum()
+
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(SMALLER_PADDING, Alignment.Start),
         ) {
@@ -688,7 +659,7 @@ fun PostCommunityAndCreatorBlock(
                 showTags = fullBody,
                 // Set this to false, we already know this
                 isPostCreator = false,
-                isCommunityBanned = postView.creator_banned_from_community,
+                isBanned = postView.creator_banned || postView.creator_banned_from_community,
                 color = MaterialTheme.colorScheme.outline,
                 showAvatar = !showCommunityName && showAvatar,
                 modifier = centerMod,
@@ -754,10 +725,10 @@ fun PostCommunityAndCreatorPreview() {
     val postView = sampleLinkPostView
     PostCommunityAndCreatorBlock(
         postView = postView,
+        myUserInfo = sampleMyUserInfo,
+        appSettings = APP_SETTINGS_DEFAULT,
         onCommunityClick = {},
         onPersonClick = {},
-        showAvatar = true,
-        blurNSFW = BlurNSFW.NSFW,
         fullBody = true,
     )
 }
@@ -783,11 +754,11 @@ fun CommunityIcon(
 @Composable
 fun PostTitleAttributionBody(
     postView: PostView,
+    myUserInfo: MyUserInfo?,
     appSettings: AppSettings,
     fullBody: Boolean,
     viewSource: Boolean,
     expandedImage: Boolean,
-    account: Account,
     appState: JerboaAppState,
     clickBody: () -> Unit = {},
     onCommunityClick: (community: Community) -> Unit,
@@ -800,6 +771,7 @@ fun PostTitleAttributionBody(
     ) {
         PostCommunityAndCreatorBlock(
             postView = postView,
+            myUserInfo = myUserInfo,
             appSettings = appSettings,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
@@ -810,20 +782,16 @@ fun PostTitleAttributionBody(
 
         PostTitleBlock(
             postView = postView,
+            myUserInfo = myUserInfo,
+            appSettings = appSettings,
             expandedImage = expandedImage,
             fullBody = fullBody,
-            account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
             appState = appState,
             showIfRead = showIfRead,
-            blurNSFW = blurNSFW,
-            disableVideoAutoplay = disableVideoAutoplay,
-            lowBandwidthMode = lowBandwidthMode,
         )
 
         // The metadata card
-        if (fullBody && showPostLinkPreview) {
+        if (fullBody && appSettings.showPostLinkPreviews) {
             MetadataCard(post = postView.post)
 
             if (postView.post.url?.startsWith("magnet") == true) {
@@ -895,22 +863,16 @@ fun PostBody(
 fun PreviewStoryTitleAndMetadata() {
     PostTitleAttributionBody(
         postView = samplePostView,
+        myUserInfo = sampleMyUserInfo,
+        appSettings = APP_SETTINGS_DEFAULT,
         fullBody = false,
         viewSource = false,
         expandedImage = false,
-        account = AnonAccount,
-        useCustomTabs = false,
-        usePrivateTabs = false,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
-        blurNSFW = BlurNSFW.NSFW,
         onPersonClick = {},
         onCommunityClick = {},
-        showAvatar = true,
         showCommunityName = true,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
@@ -921,29 +883,23 @@ fun PreviewSourcePost() {
     val pv = sampleMarkdownPostView
     PostTitleAttributionBody(
         postView = pv,
+        myUserInfo = sampleMyUserInfo,
+        appSettings = APP_SETTINGS_DEFAULT,
         fullBody = true,
         viewSource = true,
         expandedImage = false,
-        account = AnonAccount,
-        useCustomTabs = false,
-        usePrivateTabs = false,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
-        blurNSFW = BlurNSFW.NSFW,
         onPersonClick = {},
         onCommunityClick = {},
-        showAvatar = true,
         showCommunityName = true,
-        disableVideoAutoplay = false,
-        lowBandwidthMode = false,
     )
 }
 
 @Composable
 fun SavedButton(
     saved: Boolean,
-    account: Account,
+    myUserInfo: MyUserInfo?,
     onSaveClick: () -> Unit,
 ) {
     ActionBarButton(
@@ -952,6 +908,7 @@ fun SavedButton(
         } else {
             Icons.Outlined.BookmarkBorder
         },
+        myUserInfo = myUserInfo,
         contentDescription = if (saved) {
             stringResource(R.string.removeBookmark)
         } else {
@@ -963,7 +920,6 @@ fun SavedButton(
         } else {
             MaterialTheme.colorScheme.outline
         },
-        account = account,
     )
 }
 
@@ -971,17 +927,15 @@ fun SavedButton(
 @Composable
 fun PostTitleBlock(
     postView: PostView,
+    myUserInfo: MyUserInfo?,
+    appSettings: AppSettings,
     expandedImage: Boolean,
     fullBody: Boolean,
-    account: Account,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
     appState: JerboaAppState,
+    // TODO this necessary?
     showIfRead: Boolean,
-    blurNSFW: BlurNSFW,
-    disableVideoAutoplay: Boolean,
-    lowBandwidthMode: Boolean,
 ) {
+    val ctx = LocalContext.current
     val postUrl = postView.post.url
     val postType = postUrl?.let { PostLinkType.fromURL(it) }
     val imagePost = postType == PostLinkType.Image
@@ -989,15 +943,15 @@ fun PostTitleBlock(
     val videoPost = postType == PostLinkType.Video ||
         DirectFileVideoHost.isDirectUrl(postView.post.embed_video_url) ||
         (postUrl != null && VideoHostComposer.isVideo(postUrl))
+    val lowBandwidthMode = appSettings.lowBandwidthMode(ctx)
 
     when {
         videoPost && expandedImage && !lowBandwidthMode -> {
             PostTitleAndVideoLink(
                 postView = postView,
+                appSettings = appSettings,
                 appState = appState,
                 showIfRead = showIfRead,
-                blurNSFW = blurNSFW,
-                disableVideoAutoplay = disableVideoAutoplay,
             )
         }
 
@@ -1074,10 +1028,9 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndVideoLink(
     postView: PostView,
+    appSettings: AppSettings,
     appState: JerboaAppState,
-    blurNSFW: BlurNSFW,
     showIfRead: Boolean,
-    disableVideoAutoplay: Boolean,
 ) {
     // Title of the post
     PostName(

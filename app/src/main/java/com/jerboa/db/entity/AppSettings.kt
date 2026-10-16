@@ -164,9 +164,11 @@ data class AppSettings(
         name = "low_bandwidth_mode",
         defaultValue = DEFAULT_LOW_BANDWIDTH_MODE.toString(),
     )
+    @Deprecated("Use appSettings.lowBandwidthMode(ctx) instead")
     val lowBandwidthMode: Int,
 )
 
+@Suppress("DEPRECATION")
 fun AppSettings.lowBandwidthMode(ctx: Context): Boolean {
     val connectivityManager = ctx.getSystemService<ConnectivityManager>()
     return this.lowBandwidthMode.toEnumSafe<LowBandwidthMode>().isActive(connectivityManager)

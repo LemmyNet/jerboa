@@ -33,6 +33,7 @@ import com.jerboa.R
 import com.jerboa.amAdmin
 import com.jerboa.api.API.getInstanceOrNull
 import com.jerboa.communityNameShown
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.feat.blockCommunity
@@ -51,6 +52,7 @@ import com.jerboa.util.cascade.CascadeCenteredDropdownMenu
 import it.vercruysse.lemmyapi.datatypes.BlockCommunity
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Community
+import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
@@ -68,7 +70,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun PostOptionsDropdown(
     postView: PostView,
-    admins: List<PersonView>,
+    siteRes: GetSiteResponse,
     myUserInfo: MyUserInfo?,
     onDismissRequest: () -> Unit,
     onCommunityClick: (Community) -> Unit,
@@ -78,7 +80,7 @@ fun PostOptionsDropdown(
     onHidePostClick: (PostView) -> Unit,
     onReportClick: (PostView) -> Unit,
     onRemoveClick: (PostView) -> Unit,
-    onBanPersonClick: (person: Person) -> Unit,
+    onBanPersonClick: (banData: BanData) -> Unit,
     onBanFromCommunityClick: (banData: BanFromCommunityData) -> Unit,
     onLockPostClick: (PostView) -> Unit,
     onFeaturePostClick: (PostFeatureData) -> Unit,
