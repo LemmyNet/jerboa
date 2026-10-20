@@ -41,7 +41,7 @@ fun PersonName(
     } else {
         ItemAndInstanceTitle(
             title = name,
-            apId = person.actor_id,
+            apId = person.ap_id,
             local = person.local,
             itemColor = color,
             itemStyle = style,
@@ -65,6 +65,7 @@ fun PersonNameFederatedPreview() {
 @Composable
 fun PersonProfileLink(
     person: Person,
+    modifier: Modifier = Modifier,
     isBanned: Boolean,
     clickable: Boolean = true,
     showTags: Boolean = false,
@@ -73,7 +74,6 @@ fun PersonProfileLink(
     color: Color = MaterialTheme.colorScheme.tertiary,
     showAvatar: Boolean,
     onClick: (personId: PersonId) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -130,6 +130,7 @@ fun PersonProfileLinkPreview() {
     PersonProfileLink(
         person = samplePerson,
         onClick = {},
+        isBanned = false,
         showAvatar = true,
     )
 }
@@ -140,7 +141,7 @@ fun PersonProfileLinkPreviewTags() {
     PersonProfileLink(
         person = samplePerson,
         isPostCreator = true,
-        isCommunityBanned = true,
+        isBanned = true,
         isDistinguished = true,
         showTags = true,
         onClick = {},

@@ -520,6 +520,7 @@ suspend fun SnackbarHostState.doSnackbarAction(
     }
 }
 
+// TODO this shouldn't be necessary. After the site and myUserInfo returns, then its in a ready state.
 fun Account.isReadyAndIfNotShowSimplifiedInfoToast(
     ctx: Context,
     resources: Resources,

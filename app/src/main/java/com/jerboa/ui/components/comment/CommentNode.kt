@@ -71,7 +71,6 @@ import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
 import com.jerboa.feat.SwipeToActionPreset
 import com.jerboa.feat.SwipeToActionType
-import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.isPostCreator
 import com.jerboa.showAvatar
 import com.jerboa.toEnumSafe
@@ -93,20 +92,15 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
-import it.vercruysse.lemmyapi.datatypes.BanFromCommunity
-import it.vercruysse.lemmyapi.datatypes.BanPerson
 import it.vercruysse.lemmyapi.datatypes.BlockPerson
 import it.vercruysse.lemmyapi.datatypes.Comment
 import it.vercruysse.lemmyapi.datatypes.CommentId
 import it.vercruysse.lemmyapi.datatypes.CommentView
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.CommunityId
-import it.vercruysse.lemmyapi.datatypes.CreateComment
 import it.vercruysse.lemmyapi.datatypes.CreateCommentLike
-import it.vercruysse.lemmyapi.datatypes.CreateCommentReport
 import it.vercruysse.lemmyapi.datatypes.DeleteComment
 import it.vercruysse.lemmyapi.datatypes.DistinguishComment
-import it.vercruysse.lemmyapi.datatypes.EditComment
 import it.vercruysse.lemmyapi.datatypes.GetComments
 import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
 import it.vercruysse.lemmyapi.datatypes.LocalSite
@@ -116,7 +110,6 @@ import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.Post
 import it.vercruysse.lemmyapi.datatypes.PostId
-import it.vercruysse.lemmyapi.datatypes.RemoveComment
 import it.vercruysse.lemmyapi.datatypes.SaveComment
 import it.vercruysse.lemmyapi.enums.VoteAction
 
@@ -136,7 +129,7 @@ fun CommentNodeHeader(
         deleted = commentView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = isPostCreator(commentView),
-        isCommunityBanned = commentView.creator_banned_from_community,
+        isBanned = commentView.creator_banned_from_community,
         collapsedCommentsCount = commentView.comment.child_count,
         isExpanded = isExpanded,
         onClick = onClick,

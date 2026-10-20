@@ -7,7 +7,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -39,8 +38,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -60,9 +57,6 @@ import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleUnreadCountsResponse
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.AnonAccount
-import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
@@ -227,7 +221,6 @@ fun CommentNavigationBottomAppBar(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun CommentOrPostNodeHeader(
     creator: Person,
@@ -237,10 +230,10 @@ fun CommentOrPostNodeHeader(
     deleted: Boolean,
     isPostCreator: Boolean,
     isDistinguished: Boolean,
-    isCommunityBanned: Boolean,
+    isBanned: Boolean,
+    showAvatar: Boolean,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Long = 0,
-    myUserInfo: MyUserInfo?,
     onPersonClick: (personId: PersonId) -> Unit,
     onClick: () -> Unit,
     onLongCLick: () -> Unit,
@@ -281,7 +274,7 @@ fun CommentOrPostNodeHeader(
                 showTags = true,
                 isPostCreator = isPostCreator,
                 isDistinguished = isDistinguished,
-                isCommunityBanned = isCommunityBanned,
+                isBanned = isBanned,
                 showAvatar = showAvatar,
                 modifier = centerMod,
             )
@@ -319,7 +312,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onPersonClick = {},
         isPostCreator = true,
         isDistinguished = false,
-        isCommunityBanned = false,
+        isBanned = false,
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
@@ -378,7 +371,7 @@ fun ActionBarButtonAndBadgePreview() {
         contentDescription = null,
         text = siFormat(2000),
         noClick = true,
-        account = AnonAccount,
+        myUserInfo = sampleMyUserInfo,
         onClick = {},
     )
 }
@@ -393,18 +386,15 @@ fun ActionBarButtonAndBadge(
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.outline,
     noClick: Boolean = false,
-    account: Account,
+    myUserInfo: MyUserInfo?,
     requiresAccount: Boolean = true,
 ) {
-    val ctx = LocalContext.current
-    val resources = LocalResources.current
-
     val barMod =
         if (noClick) {
             modifier
         } else {
             modifier.clickable(onClick = {
-                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx, resources)) {
+                if (!requiresAccount || myUserInfo != null) {
                     onClick()
                 }
             })
@@ -638,13 +628,13 @@ private fun LazyListScope.personList(
                 person = person,
                 onClick = onPersonClick,
                 showAvatar = showAvatar,
+                isBanned = false,
                 modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             )
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommentsAndPosts(
     usersActiveDay: Long,

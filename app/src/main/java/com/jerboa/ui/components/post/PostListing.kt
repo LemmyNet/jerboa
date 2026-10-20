@@ -287,11 +287,8 @@ fun PostListing(
 fun ThumbnailTile(
     post: Post,
     imageDetails: ImageDetails?,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
-    blurEnabled: Boolean,
     appState: JerboaAppState,
-    lowBandwidthMode: Boolean,
+    appSettings: AppSettings,
 ) {
     val postUrl = post.url ?: return // no URL means no thumbnail to render
 

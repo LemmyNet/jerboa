@@ -32,7 +32,6 @@ import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.BlurNSFW
 import com.jerboa.feat.InstantScores
-import com.jerboa.feat.VoteType
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -66,7 +65,7 @@ fun CommentReplyNodeHeader(
         isPostCreator = false,
         isNsfw = false,
         isDistinguished = commentReplyView.comment.distinguished,
-        isCommunityBanned = commentReplyView.creator_banned_from_community,
+        isBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,

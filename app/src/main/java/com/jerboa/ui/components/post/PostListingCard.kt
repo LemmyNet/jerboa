@@ -60,7 +60,6 @@ import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
-import com.jerboa.datatypes.sampleLocalSite
 import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.sampleMyUserInfo
 import com.jerboa.datatypes.samplePostView
@@ -79,6 +78,7 @@ import com.jerboa.isSameInstance
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.showAvatar
 import com.jerboa.siFormat
+import com.jerboa.toBool
 import com.jerboa.toEnum
 import com.jerboa.toHttps
 import com.jerboa.ui.components.common.ActionBarButton
@@ -112,13 +112,11 @@ import com.jerboa.ui.theme.VERTICAL_SPACING
 import com.jerboa.ui.theme.XXL_PADDING
 import it.vercruysse.lemmyapi.datatypes.Community
 import it.vercruysse.lemmyapi.datatypes.GetSiteResponse
-import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
-import it.vercruysse.lemmyapi.datatypes.Person
 import it.vercruysse.lemmyapi.datatypes.PersonId
-import it.vercruysse.lemmyapi.datatypes.PersonView
 import it.vercruysse.lemmyapi.datatypes.PostId
 import it.vercruysse.lemmyapi.datatypes.PostView
+import it.vercruysse.lemmyapi.datatypes.Site
 import it.vercruysse.lemmyapi.enums.VoteAction
 import kotlinx.coroutines.CoroutineScope
 
@@ -171,6 +169,7 @@ fun PostListingCard(
             postView = postView,
             myUserInfo = myUserInfo,
             appSettings = appSettings,
+            siteRes = siteRes,
             fullBody = fullBody,
             viewSource = viewSource,
             expandedImage = expandedImage,
@@ -544,7 +543,7 @@ fun PostFooterLine(
         }
         SavedButton(
             saved = postView.post_actions?.saved_at != null,
-            account = account,
+            myUserInfo = myUserInfo,
             onSaveClick = { onSaveClick(postView) },
         )
         ActionBarButton(
@@ -756,6 +755,7 @@ fun PostTitleAttributionBody(
     postView: PostView,
     myUserInfo: MyUserInfo?,
     appSettings: AppSettings,
+    siteRes: GetSiteResponse,
     fullBody: Boolean,
     viewSource: Boolean,
     expandedImage: Boolean,
@@ -782,8 +782,8 @@ fun PostTitleAttributionBody(
 
         PostTitleBlock(
             postView = postView,
-            myUserInfo = myUserInfo,
             appSettings = appSettings,
+            siteRes = siteRes,
             expandedImage = expandedImage,
             fullBody = fullBody,
             appState = appState,
@@ -865,6 +865,7 @@ fun PreviewStoryTitleAndMetadata() {
         postView = samplePostView,
         myUserInfo = sampleMyUserInfo,
         appSettings = APP_SETTINGS_DEFAULT,
+        siteRes = sampleGetSiteRes,
         fullBody = false,
         viewSource = false,
         expandedImage = false,
@@ -885,6 +886,7 @@ fun PreviewSourcePost() {
         postView = pv,
         myUserInfo = sampleMyUserInfo,
         appSettings = APP_SETTINGS_DEFAULT,
+        siteRes = sampleGetSiteRes,
         fullBody = true,
         viewSource = true,
         expandedImage = false,
@@ -927,8 +929,8 @@ fun SavedButton(
 @Composable
 fun PostTitleBlock(
     postView: PostView,
-    myUserInfo: MyUserInfo?,
     appSettings: AppSettings,
+    siteRes: GetSiteResponse,
     expandedImage: Boolean,
     fullBody: Boolean,
     appState: JerboaAppState,
@@ -958,9 +960,9 @@ fun PostTitleBlock(
         imagePost && expandedImage && !lowBandwidthMode -> {
             PostTitleAndImageLink(
                 postView = postView,
+                appSettings = appSettings,
                 appState = appState,
                 showIfRead = showIfRead,
-                blurNSFW = blurNSFW,
             )
         }
 
@@ -979,13 +981,10 @@ fun PostTitleBlock(
         else -> {
             PostTitleAndThumbnail(
                 postView = postView,
-                account = account,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                appSettings = appSettings,
+                siteRes = siteRes,
                 appState = appState,
                 showIfRead = showIfRead,
-                blurNSFW = blurNSFW,
-                lowBandwidthMode = lowBandwidthMode,
             )
         }
     }
@@ -995,8 +994,8 @@ fun PostTitleBlock(
 fun PostTitleAndImageLink(
     postView: PostView,
     appState: JerboaAppState,
+    appSettings: AppSettings,
     showIfRead: Boolean,
-    blurNSFW: BlurNSFW,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url?.toHttps()
@@ -1012,7 +1011,7 @@ fun PostTitleAndImageLink(
     url?.let { cUrl ->
         PictrsUrlImage(
             url = cUrl,
-            blur = blurNSFW.needBlur(postView),
+            blur = appSettings.blurNSFW.toEnum<BlurNSFW>().needBlur(postView),
             contentDescription = postView.post.alt_text,
             modifier = Modifier
                 .ifNotNull(postView.image_details?.getAspectRatio()) {
@@ -1056,8 +1055,8 @@ fun PostTitleAndVideoLink(
                     // Need fixed aspect ratio for videos, to prevent feed hopping
                     aspectRatio = videoData.aspectRatio ?: (16F / 9F),
                     hostId = videoData.typeName,
-                    blur = blurNSFW.needBlur(postView),
-                    disableVideoAutoplay = disableVideoAutoplay,
+                    blur = appSettings.blurNSFW.toEnum<BlurNSFW>().needBlur(postView),
+                    disableVideoAutoplay = appSettings.disableVideoAutoplay.toBool(),
                     appState = appState,
                 )
             }
@@ -1111,13 +1110,10 @@ fun PostTitleAndMediaPlaceholder(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-    account: Account,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    appSettings: AppSettings,
+    siteRes: GetSiteResponse,
     appState: JerboaAppState,
     showIfRead: Boolean,
-    blurNSFW: BlurNSFW,
-    lowBandwidthMode: Boolean,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -1133,16 +1129,13 @@ fun PostTitleAndThumbnail(
                 read = postView.post_actions?.read_at != null,
                 showIfRead = showIfRead,
             )
-            HostnameSimplified(postView.post.url, account)
+            HostnameSimplified(postView.post.url, siteRes.site_view.site)
         }
         ThumbnailTile(
             post = postView.post,
             imageDetails = postView.image_details,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurEnabled = blurNSFW.needBlur(postView),
             appState = appState,
-            lowBandwidthMode = lowBandwidthMode,
+            appSettings = appSettings,
         )
     }
 }
@@ -1150,10 +1143,10 @@ fun PostTitleAndThumbnail(
 @Composable
 fun HostnameSimplified(
     url: String?,
-    account: Account,
+    site: Site,
 ) {
     url?.also { postUrl ->
-        if (!isSameInstance(postUrl, account.instance)) {
+        if (!isSameInstance(postUrl, site)) {
             val hostName = hostNameCleaned(postUrl)
             hostName?.also {
                 Text(
@@ -1171,7 +1164,7 @@ fun HostnameSimplified(
 fun CommentNewCountRework(
     comments: Long,
     readComments: Long?,
-    account: Account,
+    myUserInfo: MyUserInfo?,
     modifier: Modifier = Modifier,
 ) {
     val read = readComments ?: 0

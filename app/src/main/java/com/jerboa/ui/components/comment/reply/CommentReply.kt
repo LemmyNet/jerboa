@@ -154,7 +154,7 @@ fun PostNodeHeader(
         deleted = postView.post.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = true,
-        isCommunityBanned = postView.creator_banned_from_community,
+        isBanned = postView.creator_banned_from_community,
         onClick = {},
         onLongCLick = {},
         showAvatar = showAvatar,

@@ -816,8 +816,8 @@ enum class PostLinkType {
 
 fun isSameInstance(
     url: String,
-    instance: String,
-): Boolean = hostName(url) == instance
+    site: Site,
+): Boolean = hostName(url) == hostName(site.ap_id)
 
 fun getCommentParentId(comment: Comment): CommentId? = getCommentParentId(comment.path)
 
