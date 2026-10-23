@@ -58,7 +58,6 @@ import it.vercruysse.lemmyapi.datatypes.LocalSite
 import it.vercruysse.lemmyapi.datatypes.MyUserInfo
 import it.vercruysse.lemmyapi.datatypes.PersonId
 import it.vercruysse.lemmyapi.datatypes.PostView
-import it.vercruysse.lemmyapi.datatypes.SiteResponse
 import it.vercruysse.lemmyapi.enums.VoteAction
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -72,11 +71,13 @@ fun PostListingList(
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     onPostClick: (postView: PostView) -> Unit,
-    showCommunityName: Boolean = true,
+    showCommunityName: Boolean,
     account: Account,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
+    val localSite = siteRes.site_view.local_site
+
     Column(
         modifier =
             Modifier
@@ -92,7 +93,7 @@ fun PostListingList(
                     SMALL_PADDING,
                 ),
         ) {
-            if (showVotingArrowsInListView) {
+            if (appSettings.showVotingArrowsInListView) {
                 PostVotingTile(
                     instantScores = instantScores,
                     myUserInfo = myUserInfo,
@@ -100,7 +101,6 @@ fun PostListingList(
                     creatorId = postView.post.creator_id,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
-                    account = account,
                 )
             }
             Column(
@@ -124,13 +124,13 @@ fun PostListingList(
                             clickable = false,
                             showDefaultIcon = false,
                             showAvatar = false,
-                            blurNSFW = blurNSFW,
                             modifier = centerMod,
                         )
                         DotSpacer(modifier = centerMod)
                     }
                     PersonProfileLink(
                         person = postView.creator,
+                        isBanned = postView.creator_banned || postView.creator_banned_from_community,
                         onClick = {},
                         clickable = false,
                         color = MaterialTheme.colorScheme.outline,
@@ -278,7 +278,6 @@ fun PostVotingTile(
     creatorId: PersonId,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
-    account: Account,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -296,7 +295,6 @@ fun PostVotingTile(
             voteContentType = PostOrCommentType.Post,
             creatorId = creatorId,
             onVoteClick = onUpvoteClick,
-            account = account,
             // TODO what is hide scores for?
 //            hideScores = true,
         )
@@ -329,7 +327,6 @@ fun PostVotingTile(
                 voteContentType = PostOrCommentType.Post,
                 creatorId = creatorId,
                 onVoteClick = onDownvoteClick,
-                account = account,
                 // TODO
 //                hideScores = true,
             )

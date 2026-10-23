@@ -16,6 +16,7 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.toApiState
 import com.jerboa.appendData
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.feat.showBlockPersonToast
 import com.jerboa.findAndUpdateComment
@@ -390,14 +391,14 @@ class PostViewModel(
         }
     }
 
-    fun updateBanned(personView: PersonView) {
+    fun updateBanned(banData: BanData) {
         when (val existing = postRes) {
             is ApiState.Success -> {
                 val data = existing.data
                 // Only update the creator if it matches
                 val newPostView =
-                    if (data.post_view.creator.id == personView.person.id) {
-                        data.post_view.copy(creator = personView.person)
+                    if (data.post_view.creator.id == banData.person.id) {
+                        data.post_view.copy(creator = banData.person)
                     } else {
                         data.post_view
                     }
@@ -411,7 +412,7 @@ class PostViewModel(
         // Also do all the comments
         when (val existing = commentsRes) {
             is ApiState.Success -> {
-                val comments = findAndUpdateCommentCreator(existing.data.items, personView.person)
+                val comments = findAndUpdateCommentCreator(existing.data.items, banData.person)
                 val newRes = ApiState.Success(existing.data.copy(items = comments))
                 commentsRes = newRes
             }

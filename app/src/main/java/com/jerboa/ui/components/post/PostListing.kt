@@ -45,6 +45,7 @@ import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.PostFeatureData
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.lowBandwidthMode
 import com.jerboa.db.entity.postViewMode
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
@@ -289,9 +290,12 @@ fun ThumbnailTile(
     imageDetails: ImageDetails?,
     appState: JerboaAppState,
     appSettings: AppSettings,
+    blurEnabled: Boolean,
 ) {
     val postUrl = post.url ?: return // no URL means no thumbnail to render
 
+    val ctx = LocalContext.current
+    val lowBandwidthMode = appSettings.lowBandwidthMode(ctx)
     if (lowBandwidthMode) {
         // Skip EmbeddedDataLoader (which would fetch metadata over the
         // network) and render the same link placeholder the normal path
@@ -301,11 +305,10 @@ fun ThumbnailTile(
             thumbnailUrl = null,
             targetUrl = postUrl,
             postLinkType = postLinkType,
-            blurEnabled = blurEnabled,
             altText = post.alt_text,
             appState = appState,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            appSettings = appSettings,
+            blurEnabled = blurEnabled,
         )
     } else {
         EmbeddedDataLoader(post, imageDetails, {
@@ -330,11 +333,10 @@ fun ThumbnailTile(
                 thumbnailUrl = thumbnailUrl,
                 targetUrl = targetUrl,
                 postLinkType = postLinkType,
-                blurEnabled = blurEnabled,
+                appSettings = appSettings,
                 altText = post.alt_text,
                 appState = appState,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                blurEnabled = blurEnabled,
             )
         }
     }
@@ -345,12 +347,12 @@ private fun ThumbnailBox(
     thumbnailUrl: String?,
     targetUrl: String,
     postLinkType: PostLinkType,
-    blurEnabled: Boolean,
     altText: String?,
     appState: JerboaAppState,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    appSettings: AppSettings,
+    blurEnabled: Boolean,
 ) {
+
     val postLinkPicMod = Modifier
         .size(POST_LINK_PIC_SIZE)
         .combinedClickable(
@@ -360,8 +362,7 @@ private fun ThumbnailBox(
                 } else {
                     appState.openLink(
                         targetUrl,
-                        useCustomTabs,
-                        usePrivateTabs,
+                        appSettings
                     )
                 }
             },
@@ -374,7 +375,7 @@ private fun ThumbnailBox(
         if (thumbnailUrl != null) {
             PictrsThumbnailImage(
                 thumbnail = thumbnailUrl,
-                blur = blurEnabled,
+                blurEnabled = blurEnabled,
                 roundBottomEndCorner = postLinkType != PostLinkType.Link,
                 contentDescription = altText,
                 modifier = postLinkPicMod,

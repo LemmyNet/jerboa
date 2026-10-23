@@ -55,9 +55,10 @@ fun CircularIcon(
                 context = ctx,
                 path = icon,
                 size = thumbnailSize,
-                blur = blur,
+                blurEnabled = blur,
             )
         }
+
 
     AsyncImage(
         model = imageRequest,
@@ -101,7 +102,7 @@ fun getImageRequest(
     context: Context,
     path: String,
     size: Int,
-    blur: Boolean,
+    blurEnabled: Boolean,
 ): ImageRequest {
     val builder =
         ImageRequest
@@ -109,7 +110,7 @@ fun getImageRequest(
             .data(pictrsImageThumbnail(path, size))
             .crossfade(true)
 
-    if (blur && Build.VERSION.SDK_INT < 31) {
+    if (blurEnabled && Build.VERSION.SDK_INT < 31) {
         builder.transformations(
             listOf(
                 BlurTransformation(
@@ -126,7 +127,7 @@ fun getImageRequest(
 @Composable
 fun PictrsThumbnailImage(
     thumbnail: String,
-    blur: Boolean,
+    blurEnabled: Boolean,
     roundBottomEndCorner: Boolean,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
@@ -138,7 +139,7 @@ fun PictrsThumbnailImage(
                 context = ctx,
                 path = thumbnail,
                 size = THUMBNAIL_SIZE,
-                blur = blur,
+                blurEnabled = blurEnabled,
             )
         }
 
@@ -150,7 +151,7 @@ fun PictrsThumbnailImage(
             modifier
                 .getBlurredOrRounded(
                     rounded = false,
-                    blur = blur,
+                    blur = blurEnabled,
                 ).clip(
                     RoundedCornerShape(
                         12f,
@@ -176,7 +177,7 @@ fun PictrsUrlImage(
                 context = ctx,
                 path = url,
                 size = MAX_IMAGE_SIZE,
-                blur = blur,
+                blurEnabled = blur,
             )
         }
 
@@ -207,7 +208,7 @@ fun PictrsBannerImage(
                 context = ctx,
                 path = url,
                 size = MAX_IMAGE_SIZE,
-                blur = blur,
+                blurEnabled = blur,
             )
         }
 

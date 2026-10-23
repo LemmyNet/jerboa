@@ -54,6 +54,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
+import com.jerboa.datatypes.BanData
 import com.jerboa.datatypes.BanFromCommunityData
 import com.jerboa.datatypes.getLocalizedCommentSortTypeName
 import com.jerboa.db.entity.AppSettings
@@ -143,7 +144,7 @@ fun PostPane(
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
     appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
     appState.ConsumeReturn<CommentView>(CommentRemoveReturn.COMMENT_VIEW, postViewModel::updateComment)
-    appState.ConsumeReturn<PersonView>(BanPersonReturn.PERSON_VIEW, postViewModel::updateBanned)
+    appState.ConsumeReturn<BanData>(BanPersonReturn.BAN_DATA_VIEW, postViewModel::updateBanned)
     appState.ConsumeReturn<BanFromCommunityData>(
         BanFromCommunityReturn.BAN_DATA_VIEW,
         postViewModel::updateBannedFromCommunity,
@@ -388,8 +389,8 @@ fun MainPostScreenBody(
                         onRemoveClick = { pv ->
                             appState.toPostRemove(post = pv.post)
                         },
-                        onBanPersonClick = { pv ->
-                            appState.toBanPerson(personView = pv)
+                        onBanPersonClick = { d ->
+                            appState.toBanPerson(banData = d)
                         },
                         onBanFromCommunityClick = { d ->
                             appState.toBanFromCommunity(banData = d)
@@ -418,7 +419,6 @@ fun MainPostScreenBody(
                         showReply = true,
                         fullBody = true,
                         account = account,
-                        postViewMode = PostViewMode.SmallCard,
                         appState = appState,
                         showIfRead = false,
                     )

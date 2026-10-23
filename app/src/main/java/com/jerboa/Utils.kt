@@ -310,8 +310,7 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
 suspend fun openLink(
     url: String,
     navController: NavController,
-    useCustomTab: Boolean,
-    usePrivateTab: Boolean,
+    appSettings: AppSettings,
 ) {
     val baseUrl = API.getInstance().instance.url
     val (formatted, parsedUrl) = parseUrl(baseUrl, url) ?: return
@@ -331,28 +330,31 @@ suspend fun openLink(
             )
         navController.navigate(route)
     } else {
-        openLinkRaw(url, navController, useCustomTab, usePrivateTab)
+        openLinkRaw(
+            url = url,
+            navController = navController,
+            appSettings = appSettings
+        )
     }
 }
 
 fun openLinkRaw(
     url: String,
     navController: NavController,
-    useCustomTab: Boolean,
-    usePrivateTab: Boolean,
+    appSettings: AppSettings,
 ) {
     val extras =
         Intent().apply {
-            if (usePrivateTab) {
+            if (appSettings.usePrivateTabs) {
                 // In non CustomTab mode this causes it to not open the link in Chrome
-                if (useCustomTab) {
+                if (appSettings.useCustomTabs) {
                     putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
                 }
                 putExtra("private_browsing_mode", true)
             }
         }
 
-    if (useCustomTab) {
+    if (appSettings.useCustomTabs) {
         val intent = CustomTabsIntent.Builder().build()
         intent.intent.putExtras(extras)
         intent.launchUrl(navController.context, Uri.parse(url))

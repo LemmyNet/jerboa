@@ -16,8 +16,6 @@ import com.jerboa.SHOW_UPVOTE_PCT_THRESHOLD
 import com.jerboa.datatypes.sampleInstantScores
 import com.jerboa.datatypes.sampleLocalSite
 import com.jerboa.datatypes.sampleMyUserInfo
-import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.InstantScores
 import com.jerboa.feat.PostOrCommentType
 import it.vercruysse.lemmyapi.datatypes.LocalSite
@@ -39,7 +37,6 @@ fun VoteGeneric(
      */
     creatorId: PersonId,
     onVoteClick: () -> Unit,
-    account: Account,
 ) {
     val iconAndColor = iconAndColor(voteAction, instantScores)
 
@@ -80,11 +77,11 @@ fun VoteGeneric(
     if (voteData.enabled) {
         ActionBarButton(
             onClick = onVoteClick,
+            myUserInfo = myUserInfo,
             contentColor = iconAndColor.second,
             icon = iconAndColor.first,
             text = voteStr,
             contentDescription = contentDescription,
-            account = account,
         )
     }
     }
@@ -102,7 +99,6 @@ fun VoteGenericPreview() {
         voteAction = VoteAction.UpVote,
         onVoteClick = { },
         creatorId = 0,
-        account = AnonAccount,
     )
 }
 
@@ -113,7 +109,6 @@ fun VoteScore(
     localSite: LocalSite,
     voteContentType: PostOrCommentType,
     onVoteClick: () -> Unit,
-    account: Account,
 ) {
     val iconAndColor = scoreIconAndColor(myVote = instantScores.myVote)
 
@@ -135,11 +130,11 @@ fun VoteScore(
     if (enabled && !hideScore) {
         ActionBarButton(
             onClick = onVoteClick,
+            myUserInfo = myUserInfo,
             contentColor = iconAndColor.second,
             icon = iconAndColor.first,
             text = scoreStr,
             contentDescription = stringResource(R.string.score),
-            account = account,
         )
     }
 }
@@ -153,7 +148,6 @@ fun VoteScorePreview() {
         localSite = sampleLocalSite,
         voteContentType = PostOrCommentType.Post,
         onVoteClick = { },
-        account = AnonAccount,
     )
 }
 
@@ -163,7 +157,6 @@ fun UpvotePercentage(
     myUserInfo: MyUserInfo?,
     localSite: LocalSite,
     voteContentType: PostOrCommentType,
-    account: Account,
 ) {
     val upvotePct = upvotePercent(
         upvotes = instantScores.upvotes,
@@ -176,12 +169,12 @@ fun UpvotePercentage(
     if (showPct) {
         ActionBarButton(
             onClick = {},
+            myUserInfo = myUserInfo,
             noClick = true,
             contentColor = MaterialTheme.colorScheme.outline,
             icon = Icons.Outlined.Percent,
             text = formatPercent(upvotePct),
             contentDescription = stringResource(R.string.upvote_percentage),
-            account = account,
         )
     }
 }
@@ -194,7 +187,6 @@ fun UpvotePercentagePreview() {
         myUserInfo = sampleMyUserInfo,
         localSite = sampleLocalSite,
         voteContentType = PostOrCommentType.Post,
-        account = AnonAccount,
     )
 }
 

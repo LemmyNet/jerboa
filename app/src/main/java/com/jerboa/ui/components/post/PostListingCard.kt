@@ -483,7 +483,7 @@ fun PostFooterLine(
             CommentNewCountRework(
                 comments = postView.post.comments,
                 readComments = postView.post_actions?.read_comments_amount,
-                account = account,
+                myUserInfo = myUserInfo,
                 modifier = Modifier.weight(1F, true),
             )
         }
@@ -528,7 +528,7 @@ fun PostFooterLine(
             CommentNewCountRework(
                 comments = postView.post.comments,
                 readComments = postView.post_actions?.read_comments_amount,
-                account = account,
+                myUserInfo = myUserInfo,
                 modifier = Modifier.weight(1F, true),
             )
         }
@@ -566,7 +566,7 @@ fun PostFooterLine(
             CommentNewCountRework(
                 comments = postView.post.comments,
                 readComments = postView.post_actions?.read_comments_amount,
-                account = account,
+                myUserInfo = myUserInfo,
             )
         }
     }
@@ -1115,6 +1115,8 @@ fun PostTitleAndThumbnail(
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
+    val blurEnabled = appSettings.blurNSFW.toEnum<BlurNSFW>().needBlur(postView)
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -1135,6 +1137,7 @@ fun PostTitleAndThumbnail(
             post = postView.post,
             imageDetails = postView.image_details,
             appState = appState,
+            blurEnabled = blurEnabled,
             appSettings = appSettings,
         )
     }
@@ -1181,7 +1184,7 @@ fun CommentNewCountRework(
         contentDescription = null,
         text = siFormat(comments),
         noClick = true,
-        account = account,
+        myUserInfo = myUserInfo,
         onClick = {},
         modifier = modifier,
     )
@@ -1190,5 +1193,9 @@ fun CommentNewCountRework(
 @Preview
 @Composable
 fun CommentCountPreview() {
-    CommentNewCountRework(42, 0, account = AnonAccount)
+    CommentNewCountRework(
+        comments = 42,
+        readComments = 0,
+        myUserInfo = sampleMyUserInfo,
+    )
 }
