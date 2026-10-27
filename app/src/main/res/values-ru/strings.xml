@@ -182,7 +182,7 @@
     <string name="post_listing_report_post">Пожаловаться на пост</string>
     <string name="restore">Восстановить</string>
     <string name="share_link">Поделиться ссылкой</string>
-    <string name="share_post">Поделиться публикацией</string>
+    <string name="share_post">Поделиться постом</string>
     <string name="privateMessage_reply">Ответить на сообщение</string>
     <string name="private_message_from">Откуда</string>
     <string name="private_message_reply_reply">Ответить</string>
@@ -396,8 +396,8 @@
     <string name="restore_comment">Вернуть комментарий</string>
     <string name="remove_post">Удалить пост</string>
     <string name="restore_post">Вернуть пост</string>
-    <string name="lock_post">Заморозить пост</string>
-    <string name="unlock_post">Разморозить бост</string>
+    <string name="lock_post">Заблокировать пост</string>
+    <string name="unlock_post">Разблокировать пост</string>
     <string name="type_your_reason">Введите причину</string>
     <string name="swipe_to_action_presets">Преднастройка для смахивающего жеста</string>
     <string name="swipe_action_preset_disabled">Отключить</string>
@@ -406,4 +406,8 @@
     <string name="only_right_swipe_action_preset">Только справа</string>
     <string name="only_left_swipe_action_preset">Только слева</string>
     <string name="swipe_action_preset_only_votes">Только оценки</string>
+    <string name="remove_content">Удалить содержимое</string>
+    <string name="show_upvotes">Показать голоса за</string>
+    <string name="show_downvotes">Показать голоса против</string>
+    <string name="show_upvote_percentage" formatted="false">Показать % голосов за</string>
 </resources>
