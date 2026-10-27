@@ -1,3 +1,24 @@
+## What's Changed in 0.0.88
+
+- Remove duplicate translation key by @MV-GH in [#2178](https://github.com/LemmyNet/jerboa/pull/2178)
+- Update baselineprofiles + tweak compose compiler config by @MV-GH in [#2181](https://github.com/LemmyNet/jerboa/pull/2181)
+- Fix some deprecations by @MV-GH in [#2182](https://github.com/LemmyNet/jerboa/pull/2182)
+- Expand Search Functionality by @MV-GH in [#2176](https://github.com/LemmyNet/jerboa/pull/2176)
+- AGP 9 upgrade by @MV-GH in [#2053](https://github.com/LemmyNet/jerboa/pull/2053)
+- Fix scroll stuck/glitchy in comments when scrolling up to an image by @MV-GH in [#2162](https://github.com/LemmyNet/jerboa/pull/2162)
+- Implement view pooling for AndroidViews by @MV-GH in [#2163](https://github.com/LemmyNet/jerboa/pull/2163)
+- Fix lint due to new unescaped translation from weblate by @MV-GH in [#2164](https://github.com/LemmyNet/jerboa/pull/2164)
+- Changing renovate to monthly by @dessalines in [#2161](https://github.com/LemmyNet/jerboa/pull/2161)
+- Improve ImageViewerScreen logging by @MV-GH in [#2160](https://github.com/LemmyNet/jerboa/pull/2160)
+- Upgrade room-db-export to toast failure messages by @dessalines in [#2145](https://github.com/LemmyNet/jerboa/pull/2145)
+
+## New Contributors
+
+- @Zangideutschi made their first contribution
+- @nad0u made their first contribution
+
+**Full Changelog**: https://github.com/LemmyNet/jerboa/compare/0.0.87...0.0.88
+
 ## What's Changed in 0.0.87
 
 - restrict low bandwidth auto mode to Data Saver by @KiaraGrouwstra in [#2123](https://github.com/LemmyNet/jerboa/pull/2123)

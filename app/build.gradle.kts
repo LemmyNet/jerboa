@@ -40,8 +40,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 37
-        versionCode = 87
-        versionName = "0.0.87"
+        versionCode = 88
+        versionName = "0.0.88"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -225,7 +225,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.2-v1patch")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // For custom logging plugin
