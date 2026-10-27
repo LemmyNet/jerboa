@@ -33,4 +33,5 @@
     <string name="view_votes">檢視投票</string>
     <string name="remove_content">移除內容</string>
     <string name="deny_reason">拒絕原因</string>
+    <string name="copy_link">複製連結</string>
 </resources>

@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.JerboaAppState
-import com.jerboa.PostLinkType
 import com.jerboa.R
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.copyImageToClipboard
 import com.jerboa.feat.copyTextToClipboard
 import com.jerboa.feat.shareLink
@@ -64,10 +64,10 @@ fun LinkDropDownMenu(
                 icon = Icons.Outlined.OpenInFull,
                 onClick = {
                     onDismissRequest()
-                    if (mediaType == PostLinkType.Link) {
+                    if (mediaType is PostLinkType.Link) {
                         appState.openLink(link, useCustomTabs, usePrivateTabs)
                     } else {
-                        appState.openMediaViewer(link, mediaType)
+                        appState.openMediaViewer(mediaType)
                     }
                 },
             )
@@ -101,14 +101,14 @@ fun LinkDropDownMenu(
             )
 
             when (mediaType) {
-                PostLinkType.Image -> {
+                is PostLinkType.Image -> {
                     HorizontalDivider()
                     PopupMenuItem(
                         text = stringResource(R.string.copy_image),
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
                             onDismissRequest()
-                            copyImageToClipboard(appState.coroutineScope, ctx, resources, link)
+                            copyImageToClipboard(appState.coroutineScope, ctx, resources, mediaType)
                         },
                     )
                     PopupMenuItem(
@@ -116,7 +116,7 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Share,
                         onClick = {
                             onDismissRequest()
-                            shareMedia(appState.coroutineScope, ctx, resources, link, mediaType)
+                            shareMedia(appState.coroutineScope, ctx, resources, mediaType)
                         },
                     )
                     PopupMenuItem(
@@ -124,19 +124,19 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Download,
                         onClick = {
                             onDismissRequest()
-                            storeMedia(appState.coroutineScope, ctx, resources, link, mediaType)
+                            storeMedia(appState.coroutineScope, ctx, resources, mediaType)
                         },
                     )
                 }
 
-                PostLinkType.Video -> {
+                is PostLinkType.Video -> {
                     HorizontalDivider()
                     PopupMenuItem(
                         text = stringResource(R.string.share_video),
                         icon = Icons.Outlined.Share,
                         onClick = {
                             onDismissRequest()
-                            shareMedia(appState.coroutineScope, ctx, resources, link, mediaType)
+                            shareMedia(appState.coroutineScope, ctx, resources, mediaType)
                         },
                     )
                     PopupMenuItem(
@@ -144,20 +144,20 @@ fun LinkDropDownMenu(
                         icon = Icons.Outlined.Download,
                         onClick = {
                             onDismissRequest()
-                            storeMedia(appState.coroutineScope, ctx, resources, link, mediaType)
+                            storeMedia(appState.coroutineScope, ctx, resources, mediaType)
                         },
                     )
                 }
 
-                PostLinkType.Link -> {
-                    if (isMedia(link)) {
+                is PostLinkType.Link -> {
+                    if (isMedia(mediaType.extension)) {
                         HorizontalDivider()
                         PopupMenuItem(
                             text = stringResource(R.string.share_media),
                             icon = Icons.Outlined.Share,
                             onClick = {
                                 onDismissRequest()
-                                shareMedia(appState.coroutineScope, ctx, resources, link, PostLinkType.Link)
+                                shareMedia(appState.coroutineScope, ctx, resources, mediaType)
                             },
                         )
                         PopupMenuItem(
@@ -165,7 +165,7 @@ fun LinkDropDownMenu(
                             icon = Icons.Outlined.Download,
                             onClick = {
                                 onDismissRequest()
-                                storeMedia(appState.coroutineScope, ctx, resources, link, PostLinkType.Link)
+                                storeMedia(appState.coroutineScope, ctx, resources, mediaType)
                             },
                         )
                     }

@@ -22,7 +22,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
 import com.jerboa.MainActivity
-import com.jerboa.PostLinkType
 import com.jerboa.R
 import com.jerboa.getInputStream
 import com.jerboa.registerActivityResultLauncher
@@ -34,12 +33,12 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.util.UUID
 
 fun storeMedia(
     scope: CoroutineScope,
     ctx: Context,
     resources: Resources,
-    url: String,
     mediaType: PostLinkType,
 ) {
     if (SDK_INT < 29 && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -48,45 +47,49 @@ fun storeMedia(
         appCompat
             .registerActivityResultLauncher(ActivityResultContracts.RequestPermission()) { granted ->
                 if (granted) {
-                    actualStoreImage(scope, ctx, url, mediaType)
+                    actualStoreImage(scope, ctx, mediaType)
                 } else {
                     Toast.makeText(ctx, resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 }
             }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     } else {
-        actualStoreImage(scope, ctx, url, mediaType)
+        actualStoreImage(scope, ctx, mediaType)
     }
 }
 
 private fun actualStoreImage(
     scope: CoroutineScope,
     ctx: Context,
-    url: String,
     mediaType: PostLinkType,
 ) {
     scope.launch {
-        saveMedia(url, ctx, mediaType)
+        saveMedia(ctx, mediaType)
     }
 }
 
 // Needs to check for permission before this for API 29 and below
 private suspend fun saveMedia(
-    rawUrl: String,
     context: Context,
     mediaType: PostLinkType,
 ) {
-    val toastId = if (mediaType == PostLinkType.Image) R.string.saving_image else R.string.saving_media
+    val toastId = if (mediaType is PostLinkType.Image) R.string.saving_image else R.string.saving_media
     Toast.makeText(context, context.getString(toastId), Toast.LENGTH_SHORT).show()
 
-    val uri = rawUrl.parseUriWithProxyImageSupport()
-    val url = uri.toString()
-    val fileName = uri.pathSegments.last()
-    val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+    val fileName = when (mediaType) {
+        is PostLinkType.Image -> mediaType.filename
+        is PostLinkType.Video -> mediaType.filename
+        is PostLinkType.Link -> mediaType.filename ?: UUID.randomUUID().toString()
+    }
+    val extension = when (mediaType) {
+        is PostLinkType.Image -> mediaType.extension
+        is PostLinkType.Video -> mediaType.extension
+        is PostLinkType.Link -> mediaType.extension ?: ""
+    }
     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
     try {
         withContext(Dispatchers.IO) {
-            context.getInputStream(rawUrl).use {
+            context.getInputStream(mediaType.sourceUrl).use {
                 if (SDK_INT < 29) {
                     saveMediaP(context, it, mimeType, fileName, mediaType)
                 } else {
@@ -94,7 +97,7 @@ private suspend fun saveMedia(
                 }
             }
         }
-        val toastId2 = if (mediaType == PostLinkType.Image) R.string.saved_image else R.string.saved_media
+        val toastId2 = if (mediaType is PostLinkType.Image) R.string.saved_image else R.string.saved_media
         Toast.makeText(context, context.getString(toastId2), Toast.LENGTH_SHORT).show()
     } catch (e: IOException) {
         Log.d("saveMedia", "failed saving media", e)
@@ -115,21 +118,22 @@ fun shareMedia(
     scope: CoroutineScope,
     ctx: Context,
     resources: Resources,
-    rawUrl: String,
     mediaType: PostLinkType,
 ) {
-    if (mediaType == PostLinkType.Link) {
-        shareLink(rawUrl, ctx, resources)
+    if (mediaType is PostLinkType.Link) {
+        shareLink(mediaType.sourceUrl, ctx, resources)
         return
     }
 
     try {
-        val uri = rawUrl.parseUriWithProxyImageSupport()
-        val fileName = uri.pathSegments.last()
+        val fileName = when (mediaType) {
+            is PostLinkType.Image -> mediaType.filename
+            is PostLinkType.Video -> mediaType.filename
+        }
         val file = File(ctx.cacheDir, fileName)
 
         scope.launch(Dispatchers.IO) {
-            ctx.getInputStream(rawUrl).use { input ->
+            ctx.getInputStream(mediaType.sourceUrl).use { input ->
                 file.outputStream().use {
                     input.copyTo(it)
                 }
@@ -142,9 +146,8 @@ fun shareMedia(
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_STREAM, fileUri)
             type = when (mediaType) {
-                PostLinkType.Image -> "image/*"
-                PostLinkType.Video -> "video/*"
-                PostLinkType.Link -> throw IllegalStateException("Should be impossible")
+                is PostLinkType.Image -> "image/*"
+                is PostLinkType.Video -> "video/*"
             }
             clipData = ClipData.newUri(ctx.contentResolver, fileName, fileUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -217,17 +220,16 @@ fun copyImageToClipboard(
     scope: CoroutineScope,
     ctx: Context,
     resources: Resources,
-    rawUrl: String,
+    image: PostLinkType.Image,
 ) {
     try {
         val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        val uri = rawUrl.parseUriWithProxyImageSupport()
-        val fileName = uri.pathSegments.last()
+        val fileName = image.filename
         val file = File(ctx.cacheDir, fileName)
 
         scope.launch(Dispatchers.IO) {
-            ctx.getInputStream(rawUrl).use { input ->
+            ctx.getInputStream(image.sourceUrl).use { input ->
                 file.outputStream().use {
                     input.copyTo(it)
                 }
@@ -261,9 +263,9 @@ private fun saveMediaQ(
     mediaType: PostLinkType,
 ): Uri {
     val mimeTypeWithFallback = mimeType ?: when (mediaType) {
-        PostLinkType.Image -> "image/jpeg"
-        PostLinkType.Video -> "video/mpeg"
-        PostLinkType.Link -> null
+        is PostLinkType.Image -> "image/jpeg"
+        is PostLinkType.Video -> "video/mpeg"
+        is PostLinkType.Link -> null
     }
 
     val values =
@@ -279,9 +281,9 @@ private fun saveMediaQ(
     try {
         val insert =
             when (mediaType) {
-                PostLinkType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                PostLinkType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                PostLinkType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                is PostLinkType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                is PostLinkType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                is PostLinkType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
             }
 
         uri = resolver.insert(insert, values)
@@ -326,3 +328,10 @@ private fun saveMediaP(
     val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
     MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
 }
+
+private fun PostLinkType.toMediaDir(): String =
+    when (this) {
+        is PostLinkType.Image -> Environment.DIRECTORY_PICTURES
+        is PostLinkType.Video -> Environment.DIRECTORY_MOVIES
+        is PostLinkType.Link -> Environment.DIRECTORY_DOWNLOADS
+    }

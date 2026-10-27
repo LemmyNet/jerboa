@@ -34,7 +34,7 @@ import com.jerboa.api.API
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.isImage
+import com.jerboa.feat.PostLinkType
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CheckboxField
 import com.jerboa.ui.components.common.CircularIcon
@@ -136,7 +136,7 @@ fun CreateEditPostBody(
             isUploadingImage = isUploadingImage,
         )
 
-        if (isImage(url)) {
+        if (PostLinkType.fromURL(url) is PostLinkType.Image) {
             PictrsUrlImage(
                 url = url,
                 blur = false,
@@ -176,7 +176,7 @@ fun CreateEditPostBody(
                 isUploadingImage = isUploadingCustomThumbnailImage,
             )
 
-            if (isImage(customThumbnail)) {
+            if (PostLinkType.fromURL(customThumbnail) is PostLinkType.Image) {
                 PictrsUrlImage(
                     url = customThumbnail,
                     blur = false,

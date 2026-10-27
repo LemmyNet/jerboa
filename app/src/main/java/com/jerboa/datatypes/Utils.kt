@@ -19,4 +19,4 @@ fun Comment.getContent(): String =
         this.content
     }
 
-fun ImageDetails.getAspectRatio(): Float? = this.width.toFloat() / this.height.toFloat()
+fun ImageDetails.getAspectRatio(): Float = this.width.toFloat() / this.height.toFloat()

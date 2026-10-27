@@ -53,15 +53,16 @@ import com.jerboa.R
 import com.jerboa.datatypes.getAspectRatio
 import com.jerboa.toHttps
 import com.jerboa.ui.components.videoviewer.EmbeddedData
+import com.jerboa.ui.components.videoviewer.PostVideoSource
 import com.jerboa.ui.components.videoviewer.VideoHostComposer
 import com.jerboa.ui.components.videoviewer.VideoState
 import com.jerboa.ui.components.videoviewer.formatTime
-import com.jerboa.ui.components.videoviewer.hosts.DirectFileVideoHost
 import it.vercruysse.lemmyapi.datatypes.ImageDetails
 import it.vercruysse.lemmyapi.datatypes.Post
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun EmbeddedDataLoader(
@@ -70,57 +71,57 @@ fun EmbeddedDataLoader(
     placeholder: (@Composable () -> Unit)? = null,
     content: @Composable (Result<EmbeddedData>) -> Unit,
 ) {
-    val url = post.url?.toHttps()
-    val embeddedVideoUrl = post.embed_video_url?.toHttps()
+    when (val source = PostVideoSource.fromPost(post)) {
+        is PostVideoSource.ResolvablePostUrl -> {
+            val scope = rememberCoroutineScope()
+            // Cache: must have dimensions on first render/frame, to prevent backscroll or return navigation from jumping the feed
+            var videoDataState by remember { mutableStateOf(VideoHostComposer.getVideoDataFromCache(source.url)) }
 
-    // Custom logic must have precedence over default embeddedVideoUrl handling
-    if (url != null && VideoHostComposer.isVideo(url)) {
-        val scope = rememberCoroutineScope()
-        // Cache: must have dimensions on first render/frame, to prevent backscroll or return navigation from jumping the feed
-        var videoDataState by remember { mutableStateOf(VideoHostComposer.getVideoDataFromCache(url)) }
+            LaunchedEffect(post) {
+                scope.launch(Dispatchers.Main) {
+                    videoDataState = VideoHostComposer.getVideoData(source.url)
+                }
+            }
 
-        LaunchedEffect(post) {
-            scope.launch(Dispatchers.Main) {
-                videoDataState = VideoHostComposer.getVideoData(url)
+            val state = videoDataState
+            if (state != null) {
+                content(state)
+            } else if (placeholder != null) {
+                placeholder()
             }
         }
 
-        val state = videoDataState
-        if (state != null) {
-            content(state)
-        } else if (placeholder != null) {
-            placeholder()
+        is PostVideoSource.DirectEmbedUrl -> {
+            content(
+                Result.success(
+                    EmbeddedData(
+                        thumbnailUrl = imageDetails?.link ?: post.thumbnail_url?.toHttps(),
+                        videoUrl = source.url,
+                        aspectRatio = imageDetails?.getAspectRatio(),
+                        height = imageDetails?.height?.toInt(),
+                        width = imageDetails?.width?.toInt(),
+                        title = post.embed_title ?: post.name,
+                        typeName = null,
+                    ),
+                ),
+            )
         }
 
-        // Only support video URLs (Not links to html pages)
-    } else if (embeddedVideoUrl != null && DirectFileVideoHost.isDirectUrl(embeddedVideoUrl)) {
-        content(
-            Result.success(
-                EmbeddedData(
-                    thumbnailUrl = imageDetails?.link ?: post.thumbnail_url?.toHttps(),
-                    videoUrl = embeddedVideoUrl,
-                    aspectRatio = imageDetails?.getAspectRatio(),
-                    height = imageDetails?.height?.toInt(),
-                    width = imageDetails?.width?.toInt(),
-                    title = post.embed_title ?: post.name,
-                    typeName = null,
+        null -> {
+            content(
+                Result.success(
+                    EmbeddedData(
+                        thumbnailUrl = post.thumbnail_url?.toHttps() ?: imageDetails?.link,
+                        videoUrl = null,
+                        aspectRatio = imageDetails?.getAspectRatio(),
+                        height = imageDetails?.height?.toInt(),
+                        width = imageDetails?.width?.toInt(),
+                        title = post.name,
+                        typeName = null,
+                    ),
                 ),
-            ),
-        )
-    } else {
-        content(
-            Result.success(
-                EmbeddedData(
-                    thumbnailUrl = post.thumbnail_url?.toHttps() ?: imageDetails?.link,
-                    videoUrl = null,
-                    aspectRatio = imageDetails?.getAspectRatio(),
-                    height = imageDetails?.height?.toInt(),
-                    width = imageDetails?.width?.toInt(),
-                    title = post.name,
-                    typeName = null,
-                ),
-            ),
-        )
+            )
+        }
     }
 }
 
@@ -177,7 +178,7 @@ fun EmbeddedVideoPlayer(
         while (isActive) {
             currentPosition = exoPlayer.currentPosition
             totalDuration = exoPlayer.duration.coerceAtLeast(1L)
-            delay(500)
+            delay(500.milliseconds)
         }
     }
 

@@ -335,6 +335,7 @@
     <string name="private_message_placeholder">Type your message here</string>
     <string name="private_message_success">Message sent</string>
     <string name="image_failed_loading">Failed loading the image, tap to retry.</string>
+    <string name="image_unsupported_format">Image format: %1$s isn\'t supported.</string>
     <string name="image_error_icon">This icon depicts a error symbol as a exclamation mark within a circle.</string>
     <string name="retry">Retry</string>
     <string name="no_network">No network connection found</string>
@@ -474,7 +475,7 @@
     <string name="unhide_post">Unhide post</string>
     <string name="show_upvotes">Show upvotes</string>
     <string name="show_downvotes">Show downvotes</string>
-    <string name="show_upvote_percentage">Show upvote %</string>
+    <string name="show_upvote_percentage" formatted="false">Show upvote %</string>
     <string name="score">Score</string>
     <string name="info">Info</string>
     <string name="settings_about_baseline_profile">Baseline profile</string>

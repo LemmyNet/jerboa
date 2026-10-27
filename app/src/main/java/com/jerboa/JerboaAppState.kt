@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.BanFromCommunityData
+import com.jerboa.feat.PostLinkType
 import com.jerboa.model.ReplyItem
 import com.jerboa.state.VideoAppState
 import com.jerboa.ui.components.ban.BanFromCommunityReturn
@@ -129,15 +130,13 @@ class JerboaAppState(
         navController.navigate(Route.VideoViewArgs.makeRoute(encodedUrl))
     }
 
-    fun openMediaViewer(
-        url: String,
-        mediaType: PostLinkType? = null,
-    ) {
-        val fullType = mediaType ?: PostLinkType.fromURL(url)
-        if (fullType == PostLinkType.Video) {
-            openVideoViewer(url)
+    fun openMediaViewer(url: String) = openMediaViewer(PostLinkType.fromURL(url))
+
+    fun openMediaViewer(mediaType: PostLinkType) {
+        if (mediaType is PostLinkType.Video) {
+            openVideoViewer(mediaType.sourceUrl)
         } else {
-            openImageViewer(url)
+            openImageViewer(mediaType.sourceUrl)
         }
     }
 

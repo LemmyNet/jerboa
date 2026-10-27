@@ -435,7 +435,7 @@
     <string name="post_hidden">Rejtett bejegyzés</string>
     <string name="hide_post">Bejegyzés rejtése</string>
     <string name="show_downvotes">Lepontozások mutatása</string>
-    <string name="show_upvote_percentage">Felpontozás % mutatása</string>
+    <string name="show_upvote_percentage" formatted="false">Felpontozás % mutatása</string>
     <string name="score">Pontszám</string>
     <string name="info">Infó</string>
     <string name="settings_about_baseline_profile">Baseline profil</string>

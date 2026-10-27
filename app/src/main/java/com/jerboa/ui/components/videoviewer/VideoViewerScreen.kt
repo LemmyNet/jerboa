@@ -2,7 +2,6 @@ package com.jerboa.ui.components.videoviewer
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.net.Uri
 import android.util.Log
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
 import androidx.compose.animation.core.animateFloatAsState
@@ -75,8 +74,8 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.jerboa.JerboaAppState
-import com.jerboa.PostLinkType
 import com.jerboa.R
+import com.jerboa.feat.PostLinkType
 import com.jerboa.feat.shareMedia
 import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
@@ -136,7 +135,7 @@ fun VideoViewerScreen(
 
     val exoPlayer = remember {
         val player = ExoPlayer.Builder(ctx).build()
-        player.setMediaItem(MediaItem.fromUri(Uri.parse(url)))
+        player.setMediaItem(MediaItem.fromUri(url))
         player.volume = if (appState.videoAppState.isVideoPlayerMuted.value) 0f else 1f
         player.prepare()
         player.playWhenReady = true
@@ -307,6 +306,7 @@ fun VideoViewerHeader(
         animationSpec = tween(BACK_FADE_TIME),
         label = "topBarAlpha",
     )
+    val linkType = remember(url) { PostLinkType.fromURL(url) }
 
     val ctx = LocalContext.current
     val resources = LocalResources.current
@@ -329,7 +329,7 @@ fun VideoViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Video)
+                    shareMedia(appState.coroutineScope, ctx, resources, linkType)
                 },
             ) {
                 Icon(
@@ -341,7 +341,7 @@ fun VideoViewerHeader(
 
             IconButton(
                 onClick = {
-                    storeMedia(appState.coroutineScope, ctx, resources, url, PostLinkType.Video)
+                    storeMedia(appState.coroutineScope, ctx, resources, linkType)
                 },
             ) {
                 Icon(

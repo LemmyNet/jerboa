@@ -1,11 +1,8 @@
 package com.jerboa.ui.components.videoviewer.hosts
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class DirectFileVideoHostTest {
     @Test
     fun testIsDirectUrl() {
@@ -28,7 +25,6 @@ class DirectFileVideoHostTest {
             "https://example.com/video.",
             "not a url",
             "",
-            null,
             "https://www.move.org",
             "https://www.move.org/",
             "https://www.move.org/index.html",

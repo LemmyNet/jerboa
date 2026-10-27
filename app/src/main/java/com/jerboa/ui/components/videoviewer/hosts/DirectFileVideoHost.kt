@@ -1,19 +1,11 @@
 package com.jerboa.ui.components.videoviewer.hosts
 
-import android.net.Uri
+import com.jerboa.feat.videoExtensionFromUrl
 import com.jerboa.ui.components.videoviewer.EmbeddedData
 
 class DirectFileVideoHost : SupportedVideoHost {
     companion object {
-        private val videoExtensions: List<String> =
-            listOf("mp4", "mp3", "ogg", "flv", "m4a", "3gp", "mkv", "mpeg", "mov", "webm")
-
-        fun isDirectUrl(url: String?): Boolean {
-            if (url == null) return false
-            val uri = Uri.parse(url)
-            val lastPathSegment = uri.lastPathSegment ?: return false
-            return videoExtensions.any { lastPathSegment.endsWith(".$it") }
-        }
+        fun isDirectUrl(url: String): Boolean = videoExtensionFromUrl(url) != null
     }
 
     override fun isSupported(url: String): Boolean = isDirectUrl(url)

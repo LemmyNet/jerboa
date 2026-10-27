@@ -33,13 +33,13 @@ composeCompiler {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 88
         versionName = "0.0.88"
 
@@ -136,14 +136,14 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.06.01")
+    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
@@ -229,5 +229,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // For custom logging plugin
-    implementation("io.ktor:ktor-client-logging:3.5.1")
+    implementation("io.ktor:ktor-client-logging:3.5.2")
 }
