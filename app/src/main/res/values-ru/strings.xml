@@ -87,7 +87,7 @@
     <string name="login_totp">Введите токен 2FA, если он есть</string>
     <string name="login_password">Пароль</string>
     <string name="login_view_model_incorrect_login">Неверные данные для входа</string>
-    <string name="login_view_model_is_not_a_lemmy_instance">%1$s - не экземпляр Lemmy</string>
+    <string name="login_view_model_is_not_a_lemmy_instance">%1$s не является экземпляром Lemmy</string>
     <string name="look_and_feel_screen_show_content_for_collapsed_comments">Показывать содержимое свернутых комментариев</string>
     <string name="look_and_feel_font_size">Размер шрифта: %1$s</string>
     <string name="look_and_feel_look_and_feel">Внешний вид и предпочтения</string>
@@ -141,7 +141,7 @@
     <string name="personProfile_viewAvatar">Просмотреть изображение профиля</string>
     <string name="personProfile_viewBanner">Просмотреть изображение баннера</string>
     <string name="person_iconAdmin">Это администратор</string>
-    <string name="person_iconBanned">Забананен</string>
+    <string name="person_iconBanned">забанен</string>
     <string name="person_iconBot">Это бот</string>
     <string name="person_iconModerator">Это модератор</string>
     <string name="person_profile_screen_about">О пользователе</string>
@@ -323,7 +323,7 @@
     <string name="home_switch_anon">Перейти в анонимный режим</string>
     <string name="login_already_logged_in">Вы уже вошли в систему под этой учетной записью</string>
     <string name="mark_as_read_on_scroll">Отмечать как прочитанное при пролистывании</string>
-    <string name="actionbar_info_header">%1$s@%2$s Информация</string>
+    <string name="actionbar_info_header">%1$s@%2$s информация</string>
     <string name="person_profile_dm_person">Отправить сообщение</string>
     <string name="private_message_failed">Не удалось отправить сообщение, повторная попытка…</string>
     <string name="private_message_placeholder">Пишите ваше сообщение здесь</string>
@@ -341,7 +341,7 @@
     <string name="verification_failed_retrieve_site">Не удалось получить информацию о сайте</string>
     <string name="verification_no_account">Для этого действия требуется учетная запись</string>
     <string name="verification_delete_account">Удалить вашу учетную запись</string>
-    <string name="verification_account_not_read">Эта учетная запись еще не готова.</string>
+    <string name="verification_account_not_read">Эта учетная запись еще не готова</string>
     <string name="verification_account_busy">Эта учетная запись (%s) проверяется</string>
     <string name="warning">Предупреждение</string>
     <string name="login_view_model_email_not_verified">Электронная почта этой учетной записи не подтверждена, проверьте входящие сообщения</string>
@@ -385,7 +385,7 @@
     <string name="app_settings_nothing">Ничего</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_communities">размывать NSFW везде, кроме сообществ NSFW</string>
     <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Кроме NSFW внутри сообщества</string>
-    <string name="time_ago_failed_to_parse">Не удалось разобрать дату</string>
+    <string name="time_ago_failed_to_parse">Не удалось разобрать дату и время</string>
     <string name="comment_gone">Запись об этом комментарии отсутствует</string>
     <string name="server_version_not_supported">Версия (%s) не поддерживается</string>
     <string name="comment_removed">Комментарий удалён</string>
@@ -410,4 +410,24 @@
     <string name="show_upvotes">Показать голоса за</string>
     <string name="show_downvotes">Показать голоса против</string>
     <string name="show_upvote_percentage" formatted="false">Показать % голосов за</string>
+    <string name="bottomBar_reports">Перейти к жалобам</string>
+    <string name="bottomBar_registrations">Перейти к регистрациям</string>
+    <string name="sorttype_mostcomments_long">Самые обсуждаемые</string>
+    <string name="sorttype_newcomments_long">Новые комментарии</string>
+    <string name="image_unsupported_format">Формат изображения: %1$s не поддерживается.</string>
+    <string name="settings_disable_video_autoplay">Отключить автоматическое воспроизведение видео</string>
+    <string name="settings_low_bandwidth_mode">Режим экономии трафика</string>
+    <string name="low_bandwidth_mode_always">Всегда включён</string>
+    <string name="low_bandwidth_mode_never">Выключен</string>
+    <string name="user_block_toast_failure">Не удалось рас/заблокировать пользователя</string>
+    <string name="person_banned">Забанен %1$s</string>
+    <string name="person_banned_for_x_days">Забанен %1$s на %2$d дней</string>
+    <string name="person_banned_from_community">Забанен %1$s с %2$s</string>
+    <string name="person_banned_from_community_for_x_days">Забанен %1$s с %2$s на %3$d дней</string>
+    <string name="person_unbanned">Разбанен %1$s</string>
+    <string name="person_unbanned_from_community">Разбанен %1$s с %2$s</string>
+    <string name="ban_person">Забанить %1$s</string>
+    <string name="ban_person_from_community">Забанить %1$s с %2$s</string>
+    <string name="unban_person">Разбанить %1$s</string>
+    <string name="unban_person_from_community">Разбанить %1$s с %2$s</string>
 </resources>
