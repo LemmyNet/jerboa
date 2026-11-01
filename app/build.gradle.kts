@@ -8,7 +8,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
-    kotlin("plugin.serialization") version "2.4.10"
+    kotlin("plugin.serialization") version "2.4.21"
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
