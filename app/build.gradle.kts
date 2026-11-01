@@ -195,7 +195,7 @@ dependencies {
 
     // optional - Test helpers
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.8.4")
+    androidTestImplementation("androidx.room:room-testing:2.8.5")
 
     implementation("io.arrow-kt:arrow-core:2.2.3")
 
