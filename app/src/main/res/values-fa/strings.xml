@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="remove_post">حذف نوشته</string>
+    <string name="restore_post">بازیابی نوشته</string>
+    <string name="lock_post">قفل کردن نوشته</string>
+    <string name="unlock_post">برداشتن قفل نوشته</string>
+    <string name="share_post">اشتراک‌گذاری نوشته</string>
+    <string name="remove_comment">حذف نظر</string>
+    <string name="remove_content">حذف محتوا</string>
+    <string name="restore_comment">بازیابی نظر</string>
+    <string name="communities">انجمن ها</string>
+    <string name="users">کاربران</string>
+    <string name="message">پیام</string>
+    <string name="edit">ویرایش</string>
+    <string name="show_upvotes">نمایش رأی‌های مثبت</string>
+    <string name="show_downvotes">نمایش رأی‌های منفی</string>
+    <string name="show_upvote_percentage" formatted="false">نمایش درصد رأی‌های مثبت</string>
+    <string name="view_source">نمایش منبع</string>
 </resources>
