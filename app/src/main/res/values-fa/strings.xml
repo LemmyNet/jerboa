@@ -24,4 +24,10 @@
     <string name="save">ذخیره</string>
     <string name="creator">سازنده</string>
     <string name="title">عنوان</string>
+    <string name="upvoted">رأی مثبت داده شده</string>
+    <string name="days_until_expiration">روزهای مانده تا انقضا</string>
+    <string name="upvote">رای مثبت</string>
+    <string name="downvote">رای منفی</string>
+    <string name="view_votes">مشاهده رأی‌ها</string>
+    <string name="by">توسط</string>
 </resources>
