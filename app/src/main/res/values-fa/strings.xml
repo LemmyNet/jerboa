@@ -30,4 +30,6 @@
     <string name="downvote">رای منفی</string>
     <string name="view_votes">مشاهده رأی‌ها</string>
     <string name="by">توسط</string>
+    <string name="instances">نمونه‌ها</string>
+    <string name="blocks">مسدودشده ها</string>
 </resources>
