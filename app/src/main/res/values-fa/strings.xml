@@ -20,4 +20,5 @@
     <string name="loading">در حال بارگذاری</string>
     <string name="reason">دلیل</string>
     <string name="delete">پاک کردن</string>
+    <string name="restore">بازگردانی</string>
 </resources>
