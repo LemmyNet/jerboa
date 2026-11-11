@@ -32,4 +32,11 @@
     <string name="by">توسط</string>
     <string name="instances">نمونه‌ها</string>
     <string name="blocks">مسدودشده ها</string>
+    <string name="reports">گزارش ها</string>
+    <string name="reporter">گزارش دهنده</string>
+    <string name="answer">پاسخ</string>
+    <string name="applicant">متقاضی</string>
+    <string name="deny_reason">دلیل رد درخواست</string>
+    <string name="approve">تأیید</string>
+    <string name="deny">رد</string>
 </resources>
