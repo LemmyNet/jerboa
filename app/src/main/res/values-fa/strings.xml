@@ -17,4 +17,5 @@
     <string name="show_upvote_percentage" formatted="false">نمایش درصد رأی‌های مثبت</string>
     <string name="view_source">نمایش منبع</string>
     <string name="locked">قفل شد</string>
+    <string name="loading">در حال بارگذاری</string>
 </resources>
