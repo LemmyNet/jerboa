@@ -21,4 +21,6 @@
     <string name="reason">دلیل</string>
     <string name="delete">پاک کردن</string>
     <string name="restore">بازگردانی</string>
+    <string name="save">ذخیره</string>
+    <string name="creator">سازنده</string>
 </resources>
