@@ -23,4 +23,5 @@
     <string name="restore">بازگردانی</string>
     <string name="save">ذخیره</string>
     <string name="creator">سازنده</string>
+    <string name="title">عنوان</string>
 </resources>
