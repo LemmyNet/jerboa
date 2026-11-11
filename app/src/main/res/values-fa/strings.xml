@@ -18,4 +18,6 @@
     <string name="view_source">نمایش منبع</string>
     <string name="locked">قفل شد</string>
     <string name="loading">در حال بارگذاری</string>
+    <string name="reason">دلیل</string>
+    <string name="delete">پاک کردن</string>
 </resources>
