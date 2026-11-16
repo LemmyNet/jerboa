@@ -501,18 +501,6 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
-                        route = Route.REGISTRATION_APPLICATIONS,
-                    ) {
-                        RegistrationApplicationsScreen(
-                            appState = appState,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            drawerState = drawerState,
-                            lowBandwidthMode = lowBandwidthMode,
-                        )
-                    }
-
-                    composable(
                         route = Route.REPORTS,
                     ) {
                         ReportsScreen(
@@ -649,15 +637,6 @@ class MainActivity : AppCompatActivity() {
                             lowBandwidthMode = lowBandwidthMode,
                             onBack = appState::popBackStack,
                             onProfile = appState::toProfile,
-                        )
-                    }
-
-                    composable(
-                        route = Route.POST_REMOVE,
-                    ) {
-                        PostRemoveScreen(
-                            appState = appState,
-                            accountViewModel = accountViewModel,
                         )
                     }
 
