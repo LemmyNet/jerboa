@@ -1,10 +1,10 @@
 plugins {
-    id("com.android.application") version "9.3.1" apply false
-    id("com.android.library") version "9.3.1" apply false
-    id("com.android.test") version "9.3.1" apply false
+    id("com.android.application") version "9.4.0" apply false
+    id("com.android.library") version "9.4.0" apply false
+    id("com.android.test") version "9.4.0" apply false
     id("org.jmailen.kotlinter") version "5.6.0" apply false
-    id("com.google.devtools.ksp") version "2.3.10" apply false
-    id("androidx.baselineprofile") version "1.5.0-beta01" apply false
+    id("com.google.devtools.ksp") version "2.3.13" apply false
+    id("androidx.baselineprofile") version "1.5.0" apply false
 }
 
 subprojects {
@@ -20,6 +20,6 @@ subprojects {
 // https://kotlinlang.org/docs/whatsnew23.html#compose-compiler-stack-traces-for-minified-android-applications
 buildscript {
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21")
     }
 }

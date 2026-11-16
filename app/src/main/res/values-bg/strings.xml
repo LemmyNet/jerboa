@@ -505,4 +505,7 @@
     <string name="low_bandwidth_mode_auto">Автоматично (Икономия на данни)</string>
     <string name="low_bandwidth_mode_always">Винаги включено</string>
     <string name="low_bandwidth_mode_never">Изключено</string>
+    <string name="search_in">Търсене във</string>
+    <string name="limit_to">Ограничаване до</string>
+    <string name="image_unsupported_format">Форматът на изображението: %1$s не се поддържа.</string>
 </resources>

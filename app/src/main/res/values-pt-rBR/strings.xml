@@ -173,7 +173,7 @@
     <string name="loading">Carregando</string>
     <string name="save">Salvar</string>
     <string name="remove_content">Apagar conteúdo</string>
-    <string name="show_upvote_percentage">Mostrar % de votos positivos</string>
+    <string name="show_upvote_percentage" formatted="false">Mostrar % de votos positivos</string>
     <string name="show_upvotes">Mostrar votos positivos</string>
     <string name="remove_comment">Apagar comentário</string>
     <string name="reports">Denúncias</string>

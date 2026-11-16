@@ -453,7 +453,7 @@
     <string name="unhide_post">取消隐藏帖子</string>
     <string name="show_upvotes">显示顶数</string>
     <string name="show_downvotes">显示踩数</string>
-    <string name="show_upvote_percentage">显示顶数百分比%</string>
+    <string name="show_upvote_percentage" formatted="false">显示顶数百分比%</string>
     <string name="score">分数</string>
     <string name="info">信息</string>
     <string name="settings_about_baseline_profile">基线配置文件</string>

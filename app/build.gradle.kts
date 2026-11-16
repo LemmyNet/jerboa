@@ -7,8 +7,8 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
-    kotlin("plugin.serialization") version "2.4.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
 }
 
 // Temp disabled until https://issuetracker.google.com/issues/430991549 fixed
@@ -33,15 +33,15 @@ composeCompiler {
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 87
-        versionName = "0.0.87"
+        targetSdk = 37
+        versionCode = 88
+        versionName = "0.0.88"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -136,14 +136,14 @@ dependencies {
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.06.01")
+    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation("androidx.activity:activity-ktx")
     implementation("androidx.activity:activity-compose")
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
@@ -185,17 +185,17 @@ dependencies {
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.5")
 
-    implementation("androidx.room:room-runtime:2.8.4")
-    annotationProcessor("androidx.room:room-compiler:2.8.4")
+    implementation("androidx.room:room-runtime:2.8.5")
+    annotationProcessor("androidx.room:room-compiler:2.8.5")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.5")
 
     // optional - Test helpers
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.8.4")
+    androidTestImplementation("androidx.room:room-testing:2.8.5")
 
     implementation("io.arrow-kt:arrow-core:2.2.3")
 
@@ -225,7 +225,7 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     baselineProfile(project(":benchmarks"))
 
-    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.1")
+    implementation("it.vercruysse.lemmyapi:lemmy-api:0.4.2-v1patch")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // For custom logging plugin
