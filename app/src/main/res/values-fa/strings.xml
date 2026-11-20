@@ -411,4 +411,15 @@
     <string name="save_image">ذخیره تصویر</string>
     <string name="share_video">اشتراک‌گذاری ویدیو</string>
     <string name="save_video">ذخیره ویدیو</string>
+    <string name="copy">رونویسی</string>
+    <string name="share_media">اشتراک‌گذاری رسانه</string>
+    <string name="open_link">باز کردن پیوند</string>
+    <string name="open_link_external">باز کردن پیوند در برنامه خارجی</string>
+    <string name="no_activity_found">هیچ برنامه‌ای برای باز کردن این پیوند یافت نشد</string>
+    <string name="markdownHelper_insertSpoiler">درج اسپویلر</string>
+    <string name="matrix_send_msg">برقراری ارتباط در ماتریس</string>
+    <string name="posts_failed_loading">بارگذاری نوشته‌ها ناموفق بود؛ دوباره تلاش کنید</string>
+    <string name="failed_sharing_media">اشتراک‌گذاری رسانه ناموفق بود</string>
+    <string name="app_settings_nothing">هیچ‌کدام</string>
+    <string name="app_settings_blur_nsfw_except_from_nsfw_communities">محو کردن محتوای نامناسب، به‌جز محتوای انجمن‌های نامناسب</string>
 </resources>
