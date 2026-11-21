@@ -74,6 +74,7 @@ import com.jerboa.feat.needBlur
 import com.jerboa.feat.simulateModerators
 import com.jerboa.hostNameCleaned
 import com.jerboa.isSameInstance
+import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
 import com.jerboa.toHttps
@@ -86,6 +87,7 @@ import com.jerboa.ui.components.common.EmbeddedDataLoader
 import com.jerboa.ui.components.common.EmbeddedVideoPlayer
 import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
+import com.jerboa.ui.components.common.NsfwBadge
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.UpvotePercentage
@@ -779,11 +781,19 @@ fun PostCommunityAndCreatorBlock(
                 )
             }
         }
-        TimeAgo(
-            published = postView.post.published,
-            updated = postView.post.updated,
+        Row(
             modifier = centerMod,
-        )
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            NsfwBadge(
+                modifier = Modifier.padding(end = SMALLER_PADDING),
+                visible = nsfwCheck(postView),
+            )
+            TimeAgo(
+                published = postView.post.published,
+                updated = postView.post.updated,
+            )
+        }
     }
 }
 
